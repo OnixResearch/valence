@@ -1,0 +1,16 @@
+[workspace]
+members = ["crates/valence-core", "crates/valence-cli"]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+license = "AGPL-3.0-or-later"
+repository = "https://github.com/OnixResearch/valence"
+homepage = "https://github.com/OnixResearch/valence"
+version = "0.1.0"
+
+[workspace.dependencies]
+blake3 = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+valence-core = { path = "crates/valence-core" }
