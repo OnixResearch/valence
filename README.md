@@ -89,6 +89,14 @@ and Mantle release binary identity metadata. Success proves measured-byte
 identity and linkage only; it is not a correctness, semantic-equivalence, or
 release-eligibility proof.
 
+Nickel contracts in `contracts/stack-provenance/` provide a preflight gate for
+static metadata shape and bounded-claim invariants. They check schema strings,
+role names, claim scope, BLAKE3 digest syntax, parent linkage, required
+non-claims, report shape, and evidence-tier promotion failures before Rust byte
+measurement is treated as eligible to run. Nickel does not read or measure the
+binary; Rust remains the authority for measured-byte identity and digest
+comparison.
+
 ## Boundary
 
 Valence supports bounded local evidence replay for selected evidence surfaces.
@@ -106,6 +114,7 @@ general HIR/THIR/MIR extraction.
 nix develop                # enter devshell
 cargo test --workspace     # run all tests
 cargo build -p valence-cli # build the CLI
+nix build .#checks.x86_64-linux.stack-provenance-nickel-contracts --no-link
 ./target/debug/valence version
 ```
 
