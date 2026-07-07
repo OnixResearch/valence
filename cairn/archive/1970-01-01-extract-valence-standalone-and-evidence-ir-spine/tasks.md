@@ -7,7 +7,7 @@
 
 ## Phase 2: Archive
 
-- [ ] [serial] r[valence.evidence_ir.canonical_form] Verify and archive the change via `cairn gate` (proposal/design/tasks), `cairn sync --execute`, `cairn archive --execute`.
+- [x] [serial] r[valence.evidence_ir.canonical_form] Verify and archive the change via `cairn gate` (proposal/design/tasks), `cairn sync --execute`, `cairn archive --execute`.
 
 ## Verification Coverage
 

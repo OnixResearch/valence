@@ -52,11 +52,21 @@ in-memory artifacts.
 
 Renders and checks the current-head Valence evidence page from typed inputs.
 
+### `stack_provenance_adapter` (v1)
+
+Builds and verifies the stack-specific sidecar that links verified Octet
+provenance exports to Mantle release bundles. Mantle treats the sidecar as
+opaque external evidence; Valence owns the stack semantics: schema, claim scope,
+BLAKE3 digest binding, binary hash binding, parent artifact identity, evidence
+tier preservation, and non-claim enforcement.
+
 ## CLI
 
 ```bash
 valence check <FILE>                        Validate a canonical Evidence IR artifact
 valence explain --id <ID> --manifest <FILE> Resolve a stable source ID to its span
+valence stack-provenance build --octet-export <FILE> --binary-hash <B3> --output <FILE>
+valence stack-provenance verify --manifest <FILE> --sidecar <FILE>
 valence version                             Print version
 ```
 
@@ -66,13 +76,23 @@ rejects overclaims, and exits 0 (valid) / 1 (invalid) / 2 (I/O error).
 `explain` reads a spans manifest, resolves the source ID, prints the span,
 and exits 0 (found) / 1 (not found) / 2 (I/O error).
 
+`stack-provenance build` reads an Octet Valence provenance export that has
+already passed Octet artifact verification, binds it to a release binary hash,
+and writes a canonical Valence sidecar. `stack-provenance verify` checks a
+Mantle manifest external-evidence record with role `stack-provenance-trace`
+against that sidecar and reports stale digests, missing roles, weakened
+boundaries, and tier-promotion attempts.
+
 ## Boundary
 
 Valence supports bounded local evidence replay for selected evidence surfaces.
-It does not claim behavioral correctness, semantic equivalence, exhaustive
-Rust coverage, pure-cache eligibility, cross-machine determinism,
-cross-toolchain determinism, external consumer compatibility, mechanized
-language soundness, or general HIR/THIR/MIR extraction.
+For stack provenance, Octet exports verified artifact facts, Mantle bundles the
+sidecar opaquely as optional external evidence, and Valence performs the
+stack-specific semantic verification. It does not claim behavioral correctness,
+semantic equivalence, exhaustive Rust coverage, pure-cache eligibility,
+cross-machine determinism, cross-toolchain determinism, external consumer
+compatibility, mechanized language soundness, requirement satisfaction, or
+general HIR/THIR/MIR extraction.
 
 ## Quick start
 

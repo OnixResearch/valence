@@ -10,6 +10,15 @@ use valence_core::evidence_ir::EvidenceSpan;
 use valence_core::evidence_ir::REQUIRED_NON_CLAIM;
 use valence_core::evidence_ir::VerificationRole;
 use valence_core::evidence_ir::build_evidence_artifact;
+use valence_core::stack_provenance_adapter::MANTLE_STACK_PROVENANCE_ROLE;
+use valence_core::stack_provenance_adapter::OCTET_VALENCE_EXPORT_SCHEMA;
+use valence_core::stack_provenance_adapter::STACK_PROVENANCE_CLAIM_SCOPE;
+use valence_core::stack_provenance_adapter::STACK_PROVENANCE_NON_CLAIM;
+use valence_core::stack_provenance_adapter::STACK_PROVENANCE_SIDECAR_SCHEMA;
+
+const BINARY_HASH: &str = "1111111111111111111111111111111111111111111111111111111111111111";
+const STATUS_HASH: &str = "2222222222222222222222222222222222222222222222222222222222222222";
+const RESULTS_HASH: &str = "3333333333333333333333333333333333333333333333333333333333333333";
 
 fn valence_binary() -> String {
     env!("CARGO_BIN_EXE_valence").to_owned()
@@ -153,10 +162,162 @@ fn explain_reports_not_found_for_unknown_id() {
 }
 
 #[test]
+fn stack_provenance_builds_and_verifies_mantle_sidecar() {
+    let export_path = "/tmp/valence-cli-octet-export.json";
+    let sidecar_path = "/tmp/valence-cli-stack-sidecar.json";
+    let manifest_path = "/tmp/valence-cli-mantle-manifest.json";
+    write_text(export_path, &sample_octet_export_json());
+
+    let build_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("build")
+        .arg("--octet-export")
+        .arg(export_path)
+        .arg("--binary-hash")
+        .arg(BINARY_HASH)
+        .arg("--output")
+        .arg(sidecar_path)
+        .output()
+        .expect("run stack provenance build");
+    let build_stdout = String::from_utf8_lossy(&build_output.stdout);
+    assert!(build_output.status.success(), "build should succeed: {build_stdout}");
+    assert!(build_stdout.contains("valid: true"), "stdout should report valid: {build_stdout}");
+
+    let sidecar_json = fs::read_to_string(sidecar_path).expect("read sidecar");
+    let digest = blake3::hash(sidecar_json.as_bytes()).to_hex().to_string();
+    write_text(manifest_path, &mantle_manifest_json(&digest));
+
+    let verify_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("verify")
+        .arg("--manifest")
+        .arg(manifest_path)
+        .arg("--sidecar")
+        .arg(sidecar_path)
+        .output()
+        .expect("run stack provenance verify");
+    let verify_stdout = String::from_utf8_lossy(&verify_output.stdout);
+    assert!(verify_output.status.success(), "verify should succeed: {verify_stdout}");
+    assert!(verify_stdout.contains("issue_count=0"), "stdout should report zero issues: {verify_stdout}");
+}
+
+#[test]
+fn stack_provenance_verify_rejects_tampered_sidecar_digest() {
+    let export_path = "/tmp/valence-cli-octet-export-tamper.json";
+    let sidecar_path = "/tmp/valence-cli-stack-sidecar-tamper.json";
+    let manifest_path = "/tmp/valence-cli-mantle-manifest-tamper.json";
+    write_text(export_path, &sample_octet_export_json());
+
+    let build_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("build")
+        .arg("--octet-export")
+        .arg(export_path)
+        .arg("--binary-hash")
+        .arg(BINARY_HASH)
+        .arg("--output")
+        .arg(sidecar_path)
+        .output()
+        .expect("run stack provenance build");
+    assert!(build_output.status.success(), "build should succeed before tamper");
+    write_text(manifest_path, &mantle_manifest_json(STATUS_HASH));
+
+    let verify_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("verify")
+        .arg("--manifest")
+        .arg(manifest_path)
+        .arg("--sidecar")
+        .arg(sidecar_path)
+        .output()
+        .expect("run stack provenance verify");
+    let verify_stdout = String::from_utf8_lossy(&verify_output.stdout);
+    assert!(!verify_output.status.success(), "verify should reject digest: {verify_stdout}");
+    assert!(
+        verify_stdout.contains("sidecar_digest_mismatch"),
+        "stdout should report digest mismatch: {verify_stdout}"
+    );
+}
+
+#[test]
 fn version_command_succeeds() {
     let output = Command::new(valence_binary()).arg("version").output().expect("run valence version");
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(output.status.success(), "version should succeed: {stdout}");
     assert!(stdout.contains("valence"), "stdout should contain 'valence': {stdout}");
+}
+
+fn write_text(path: &str, content: &str) {
+    let mut tmp = fs::File::create(path).expect("create temp file");
+    tmp.write_all(content.as_bytes()).expect("write temp file");
+}
+
+fn sample_octet_export_json() -> String {
+    serde_json::json!({
+        "schema_version": OCTET_VALENCE_EXPORT_SCHEMA,
+        "artifact_dir": "target/octet-artifact",
+        "verification_status": "valid",
+        "artifacts": [
+            {
+                "artifact": "status.json",
+                "blake3": STATUS_HASH
+            },
+            {
+                "artifact": "results.jsonl",
+                "blake3": RESULTS_HASH
+            }
+        ],
+        "provenance_records": [
+            {
+                "source_id": "octet.standards.formal-proof",
+                "checker_id": "octet-artifact-verifier",
+                "evidence_tier": "formal_proof",
+                "artifact": "status.json",
+                "blake3": STATUS_HASH,
+                "checked_scope": "standards/proof-claims/catalog.ncl",
+                "verifier_identity": "octet-verus-rail",
+                "proof_artifact_identity": RESULTS_HASH,
+                "parent_artifacts": ["results.jsonl"]
+            }
+        ],
+        "proof_cards": [
+            {
+                "proof_or_property_id": "octet.no-unwrap-proof",
+                "source_requirement_or_policy_id": "r[octet.policy.no_unwrap]",
+                "policy_id": "octet.standards.formal-proof",
+                "rail_index": 0,
+                "receipt_path": "status.json",
+                "artifact_blake3_identities": [
+                    {
+                        "artifact": "status.json",
+                        "blake3": STATUS_HASH
+                    }
+                ],
+                "evidence_tier": "formal_proof",
+                "evidence_origin": "octet_verified_receipt",
+                "status": "valid",
+                "non_claims": [STACK_PROVENANCE_NON_CLAIM]
+            }
+        ],
+        "diagnostics": [],
+        "non_claims": [STACK_PROVENANCE_NON_CLAIM]
+    })
+    .to_string()
+}
+
+fn mantle_manifest_json(digest: &str) -> String {
+    serde_json::json!({
+        "external_evidence": [
+            {
+                "role": MANTLE_STACK_PROVENANCE_ROLE,
+                "schema": STACK_PROVENANCE_SIDECAR_SCHEMA,
+                "relative_path": "external-evidence/stack-provenance.json",
+                "digest_blake3": digest,
+                "claim_scope": STACK_PROVENANCE_CLAIM_SCOPE,
+                "non_claims": [STACK_PROVENANCE_NON_CLAIM]
+            }
+        ]
+    })
+    .to_string()
 }

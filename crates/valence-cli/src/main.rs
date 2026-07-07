@@ -17,6 +17,8 @@ USAGE:
 COMMANDS:
     check <FILE>                        Validate a canonical Evidence IR artifact
     explain --id <ID> --manifest <FILE> Resolve a stable source ID to its span
+    stack-provenance build --octet-export <FILE> --binary-hash <B3> --output <FILE>
+    stack-provenance verify --manifest <FILE> --sidecar <FILE>
     version                             Print version
 
 EXIT CODES:
@@ -39,6 +41,7 @@ fn main() -> ExitCode {
         }
         "check" => run_check(&args[2..]),
         "explain" => run_explain(&args[2..]),
+        "stack-provenance" => run_stack_provenance(&args[2..]),
         "help" | "--help" | "-h" => {
             print!("{USAGE}");
             ExitCode::SUCCESS
@@ -78,6 +81,171 @@ fn run_check(args: &[String]) -> ExitCode {
             println!("issue={code}");
         }
         ExitCode::from(1)
+    }
+}
+
+fn run_stack_provenance(args: &[String]) -> ExitCode {
+    let Some(command) = args.first() else {
+        eprintln!("usage: valence stack-provenance <build|verify> ...");
+        return ExitCode::from(2);
+    };
+    match command.as_str() {
+        "build" => run_stack_provenance_build(&args[1..]),
+        "verify" => run_stack_provenance_verify(&args[1..]),
+        other => {
+            eprintln!("unknown stack-provenance command: {other}");
+            ExitCode::from(2)
+        }
+    }
+}
+
+fn run_stack_provenance_build(args: &[String]) -> ExitCode {
+    let mut octet_export_path: Option<PathBuf> = None;
+    let mut binary_hash: Option<String> = None;
+    let mut output_path: Option<PathBuf> = None;
+
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--octet-export" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --octet-export requires a value");
+                    return ExitCode::from(2);
+                }
+                octet_export_path = Some(PathBuf::from(&args[i]));
+            }
+            "--binary-hash" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --binary-hash requires a value");
+                    return ExitCode::from(2);
+                }
+                binary_hash = Some(args[i].clone());
+            }
+            "--output" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --output requires a value");
+                    return ExitCode::from(2);
+                }
+                output_path = Some(PathBuf::from(&args[i]));
+            }
+            other => {
+                eprintln!("unknown option: {other}");
+                return ExitCode::from(2);
+            }
+        }
+        i += 1;
+    }
+
+    let Some(octet_export_path) = octet_export_path else {
+        eprintln!("error: --octet-export is required");
+        return ExitCode::from(2);
+    };
+    let Some(binary_hash) = binary_hash else {
+        eprintln!("error: --binary-hash is required");
+        return ExitCode::from(2);
+    };
+    let Some(output_path) = output_path else {
+        eprintln!("error: --output is required");
+        return ExitCode::from(2);
+    };
+
+    let octet_export_json = match fs::read_to_string(&octet_export_path) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", octet_export_path.display());
+            return ExitCode::from(2);
+        }
+    };
+    let sidecar_json = match valence_core::stack_provenance_adapter::build_sidecar_json_from_octet_export_json(
+        &octet_export_json,
+        &binary_hash,
+    ) {
+        Ok(sidecar_json) => sidecar_json,
+        Err(report) => {
+            print_stack_provenance_report(&report);
+            return ExitCode::from(1);
+        }
+    };
+    if let Err(error) = fs::write(&output_path, sidecar_json) {
+        eprintln!("error: cannot write {}: {error}", output_path.display());
+        return ExitCode::from(2);
+    }
+    println!("valid: true");
+    println!("wrote: {}", output_path.display());
+    ExitCode::SUCCESS
+}
+
+fn run_stack_provenance_verify(args: &[String]) -> ExitCode {
+    let mut manifest_path: Option<PathBuf> = None;
+    let mut sidecar_path: Option<PathBuf> = None;
+
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--manifest" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --manifest requires a value");
+                    return ExitCode::from(2);
+                }
+                manifest_path = Some(PathBuf::from(&args[i]));
+            }
+            "--sidecar" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --sidecar requires a value");
+                    return ExitCode::from(2);
+                }
+                sidecar_path = Some(PathBuf::from(&args[i]));
+            }
+            other => {
+                eprintln!("unknown option: {other}");
+                return ExitCode::from(2);
+            }
+        }
+        i += 1;
+    }
+
+    let Some(manifest_path) = manifest_path else {
+        eprintln!("error: --manifest is required");
+        return ExitCode::from(2);
+    };
+    let Some(sidecar_path) = sidecar_path else {
+        eprintln!("error: --sidecar is required");
+        return ExitCode::from(2);
+    };
+    let manifest_json = match fs::read_to_string(&manifest_path) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", manifest_path.display());
+            return ExitCode::from(2);
+        }
+    };
+    let sidecar_json = match fs::read_to_string(&sidecar_path) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", sidecar_path.display());
+            return ExitCode::from(2);
+        }
+    };
+    let report =
+        valence_core::stack_provenance_adapter::verify_mantle_external_evidence_sidecar(&manifest_json, &sidecar_json);
+    print_stack_provenance_report(&report);
+    if report.valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
+    }
+}
+
+fn print_stack_provenance_report(report: &valence_core::stack_provenance_adapter::StackProvenanceReport) {
+    println!("valid: {}", report.valid);
+    println!("issue_count={}", report.issue_codes.len());
+    for code in &report.issue_codes {
+        println!("issue={code}");
     }
 }
 
@@ -164,6 +332,8 @@ mod tests {
     fn usage_documentation_is_stable() {
         assert!(USAGE.contains("check <FILE>"));
         assert!(USAGE.contains("explain --id <ID> --manifest <FILE>"));
+        assert!(USAGE.contains("stack-provenance build"));
+        assert!(USAGE.contains("stack-provenance verify"));
         assert!(USAGE.contains("version"));
         assert!(USAGE.contains("EXIT CODES"));
     }

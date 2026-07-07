@@ -34,3 +34,4 @@ pub mod evidence_index;
 pub mod evidence_ir;
 pub mod function_object;
 pub mod provenance;
+pub mod stack_provenance_adapter;

@@ -45,7 +45,7 @@ pub struct ProvenanceLink {
 }
 
 /// A provenance chain threading source → function → requirement → artifact → binary.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProvenanceChain {
     pub schema: String,
     pub links: Vec<ProvenanceLink>,

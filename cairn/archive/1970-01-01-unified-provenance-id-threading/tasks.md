@@ -5,7 +5,7 @@
 
 ## Phase 2: Archive
 
-- [ ] [serial] r[valence.provenance] Verify and archive the change.
+- [x] [serial] r[valence.provenance] Verify and archive the change.
 
 ## Verification Coverage
 
