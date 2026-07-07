@@ -43,6 +43,33 @@ const BUILT_BINARY_OVERCLAIM_PATTERNS: &[&str] = &[
     "guarantees whole-program safety",
 ];
 const BLAKE3_HEX_LENGTH: usize = 64;
+const PRESERVES_STRING_QUOTE_OVERHEAD: usize = 2;
+const PRESERVES_OPTION_NONE: &str = "<none>";
+const PRESERVES_OPTION_SOME_TAG: &str = "some";
+const PRESERVES_METADATA_NON_CLAIM: &str = "Preserves stack-provenance values prove canonical metadata identity only; they do not prove measured-byte identity, behavioral correctness, semantic equivalence, requirement satisfaction, release eligibility, verifier soundness, or whole-program safety";
+
+/// Canonical text encoding label used for stack-provenance Preserves values.
+pub const STACK_PROVENANCE_PRESERVES_ENCODING: &str = "valence.stack-provenance-preserves-text.v1";
+
+/// Preserves metadata surface identity and canonical value bytes.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct StackProvenancePreservesEvidence {
+    pub surface: String,
+    pub preserves_encoding: String,
+    pub preserves_value: String,
+    pub preserves_content_hash: String,
+    pub non_claims: Vec<String>,
+}
+
+/// Semantic comparison between two built-binary thread reports by Preserves value.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct StackProvenancePreservesDiff {
+    pub equal: bool,
+    pub baseline_preserves_content_hash: String,
+    pub candidate_preserves_content_hash: String,
+    pub changed_fields: Vec<String>,
+    pub non_claims: Vec<String>,
+}
 
 /// Verified Octet export consumed by the adapter.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -183,6 +210,8 @@ pub struct BuiltBinaryThreadReport {
     pub requirement_ids: Vec<String>,
     pub artifact_identities: Vec<StackArtifactIdentity>,
     pub non_claims: Vec<String>,
+    #[serde(default)]
+    pub preserves_content_hash: String,
 }
 
 /// Canonical Valence stack-provenance sidecar.
@@ -434,6 +463,366 @@ pub fn verify_built_binary_thread(input: BuiltBinaryThreadInput<'_>) -> BuiltBin
     built_binary_report(issue_codes, binary_hash, sidecar_digest_blake3, Some(input.octet_export), Some(input.sidecar))
 }
 
+/// Project an Octet export into canonical Preserves metadata evidence.
+#[must_use]
+pub fn preserves_evidence_for_octet_export(export: &OctetValenceProvenanceExport) -> StackProvenancePreservesEvidence {
+    stack_preserves_evidence("octet-valence-provenance-export", preserves_octet_export_value(export))
+}
+
+/// Project a stack sidecar into canonical Preserves metadata evidence.
+#[must_use]
+pub fn preserves_evidence_for_stack_sidecar(sidecar: &StackProvenanceSidecar) -> StackProvenancePreservesEvidence {
+    stack_preserves_evidence("stack-provenance-sidecar", preserves_sidecar_value(sidecar))
+}
+
+/// Project a Mantle release manifest view into canonical Preserves metadata evidence.
+#[must_use]
+pub fn preserves_evidence_for_mantle_manifest(
+    manifest: &MantleReleaseManifestView,
+) -> StackProvenancePreservesEvidence {
+    stack_preserves_evidence("mantle-release-manifest-view", preserves_mantle_manifest_value(manifest))
+}
+
+/// Project a built-binary thread input envelope into canonical Preserves metadata evidence.
+///
+/// The projection intentionally ignores raw `binary_bytes` and `sidecar_bytes`; Rust byte hashing
+/// remains the authority for those identities.
+#[must_use]
+pub fn preserves_evidence_for_built_binary_thread_input(
+    input: &BuiltBinaryThreadInput<'_>,
+) -> StackProvenancePreservesEvidence {
+    stack_preserves_evidence(
+        "built-binary-thread-input",
+        preserves_record("built-binary-thread-input", &[
+            ("binary_hash", preserves_string(&input.sidecar.binary_hash)),
+            ("mantle_manifest", preserves_mantle_manifest_value(input.mantle_manifest)),
+            ("octet_export", preserves_octet_export_value(input.octet_export)),
+            ("sidecar", preserves_sidecar_value(input.sidecar)),
+        ]),
+    )
+}
+
+/// Project a built-binary thread verification report into canonical Preserves metadata evidence.
+#[must_use]
+pub fn preserves_evidence_for_built_binary_thread_report(
+    report: &BuiltBinaryThreadReport,
+) -> StackProvenancePreservesEvidence {
+    stack_preserves_evidence("built-binary-thread-report", preserves_built_binary_thread_report_value(report))
+}
+
+/// Compute the BLAKE3 hash over canonical Preserves bytes for a built-binary thread report.
+#[must_use]
+pub fn preserves_content_hash_for_built_binary_thread_report(report: &BuiltBinaryThreadReport) -> String {
+    blake3_hex(preserves_built_binary_thread_report_value(report).as_bytes())
+}
+
+/// Compare two built-binary thread reports by Preserves semantic value.
+#[must_use]
+pub fn compare_built_binary_thread_reports_by_preserves(
+    baseline: &BuiltBinaryThreadReport,
+    candidate: &BuiltBinaryThreadReport,
+) -> StackProvenancePreservesDiff {
+    let baseline_hash = preserves_content_hash_for_built_binary_thread_report(baseline);
+    let candidate_hash = preserves_content_hash_for_built_binary_thread_report(candidate);
+    let changed_fields = built_binary_report_changed_fields(baseline, candidate);
+    StackProvenancePreservesDiff {
+        equal: baseline_hash == candidate_hash,
+        baseline_preserves_content_hash: baseline_hash,
+        candidate_preserves_content_hash: candidate_hash,
+        changed_fields,
+        non_claims: vec![
+            PRESERVES_METADATA_NON_CLAIM.to_owned(),
+            BUILT_BINARY_THREAD_NON_CLAIM.to_owned(),
+        ],
+    }
+}
+
+fn stack_preserves_evidence(surface: &str, preserves_value: String) -> StackProvenancePreservesEvidence {
+    StackProvenancePreservesEvidence {
+        surface: surface.to_owned(),
+        preserves_encoding: STACK_PROVENANCE_PRESERVES_ENCODING.to_owned(),
+        preserves_content_hash: blake3_hex(preserves_value.as_bytes()),
+        preserves_value,
+        non_claims: vec![
+            PRESERVES_METADATA_NON_CLAIM.to_owned(),
+            STACK_PROVENANCE_NON_CLAIM.to_owned(),
+        ],
+    }
+}
+
+fn preserves_octet_export_value(export: &OctetValenceProvenanceExport) -> String {
+    preserves_record("octet-valence-provenance-export", &[
+        ("artifact_dir", preserves_string(&export.artifact_dir)),
+        ("artifacts", preserves_artifact_identities(&export.artifacts)),
+        ("diagnostics", preserves_string_list(&export.diagnostics)),
+        ("non_claims", preserves_string_list(&export.non_claims)),
+        ("proof_cards", preserves_proof_cards(&export.proof_cards)),
+        ("provenance_records", preserves_octet_provenance_records(&export.provenance_records)),
+        ("schema_version", preserves_string(&export.schema_version)),
+        ("verification_status", preserves_string(&export.verification_status)),
+    ])
+}
+
+fn preserves_sidecar_value(sidecar: &StackProvenanceSidecar) -> String {
+    preserves_record("stack-provenance-sidecar", &[
+        ("binary_hash", preserves_string(&sidecar.binary_hash)),
+        ("chain", preserves_chain(&sidecar.chain)),
+        ("claim_scope", preserves_string(&sidecar.claim_scope)),
+        ("diagnostics", preserves_string_list(&sidecar.diagnostics)),
+        ("non_claims", preserves_string_list(&sidecar.non_claims)),
+        ("octet_export_artifact_dir", preserves_string(&sidecar.octet_export_artifact_dir)),
+        ("parent_artifacts", preserves_artifact_identities(&sidecar.parent_artifacts)),
+        ("schema", preserves_string(&sidecar.schema)),
+    ])
+}
+
+fn preserves_mantle_manifest_value(manifest: &MantleReleaseManifestView) -> String {
+    preserves_record("mantle-release-manifest-view", &[
+        ("binaries", preserves_mantle_binaries(&manifest.binaries)),
+        ("external_evidence", preserves_external_evidence(&manifest.external_evidence)),
+        ("provenance_coverage", preserves_coverage(manifest.provenance_coverage.as_ref())),
+    ])
+}
+
+fn preserves_built_binary_thread_report_value(report: &BuiltBinaryThreadReport) -> String {
+    preserves_record("built-binary-thread-report", &[
+        ("artifact_identities", preserves_artifact_identities(&report.artifact_identities)),
+        ("binary_hash", preserves_string(&report.binary_hash)),
+        ("issue_codes", preserves_string_list(&report.issue_codes)),
+        ("non_claims", preserves_string_list(&report.non_claims)),
+        ("requirement_ids", preserves_string_list(&report.requirement_ids)),
+        ("sidecar_digest_blake3", preserves_string(&report.sidecar_digest_blake3)),
+        ("source_ids", preserves_string_list(&report.source_ids)),
+        ("valid", preserves_bool(report.valid)),
+    ])
+}
+
+fn preserves_artifact_identities(artifacts: &[StackArtifactIdentity]) -> String {
+    let mut ordered = artifacts.to_vec();
+    ordered.sort_by(|left, right| (&left.artifact, &left.blake3).cmp(&(&right.artifact, &right.blake3)));
+    preserves_list(
+        ordered
+            .iter()
+            .map(|artifact| {
+                preserves_record("artifact-identity", &[
+                    ("artifact", preserves_string(&artifact.artifact)),
+                    ("blake3", preserves_string(&artifact.blake3)),
+                ])
+            })
+            .collect(),
+    )
+}
+
+fn preserves_octet_provenance_records(records: &[OctetProvenanceRecord]) -> String {
+    let mut ordered = records.to_vec();
+    ordered.sort_by(|left, right| {
+        (&left.source_id, &left.checker_id, &left.artifact, &left.blake3).cmp(&(
+            &right.source_id,
+            &right.checker_id,
+            &right.artifact,
+            &right.blake3,
+        ))
+    });
+    preserves_list(ordered.iter().map(preserves_octet_provenance_record).collect())
+}
+
+fn preserves_octet_provenance_record(record: &OctetProvenanceRecord) -> String {
+    preserves_record("octet-provenance-record", &[
+        ("artifact", preserves_string(&record.artifact)),
+        ("blake3", preserves_string(&record.blake3)),
+        ("checked_scope", preserves_string(&record.checked_scope)),
+        ("checker_id", preserves_string(&record.checker_id)),
+        ("evidence_tier", preserves_string(&record.evidence_tier)),
+        ("human_action", preserves_optional_string(record.human_action.as_deref())),
+        ("parent_artifacts", preserves_string_list(&record.parent_artifacts)),
+        ("proof_artifact_identity", preserves_optional_string(record.proof_artifact_identity.as_deref())),
+        ("source_id", preserves_string(&record.source_id)),
+        ("verifier_identity", preserves_optional_string(record.verifier_identity.as_deref())),
+    ])
+}
+
+fn preserves_proof_cards(cards: &[OctetProofCard]) -> String {
+    let mut ordered = cards.to_vec();
+    ordered.sort_by(|left, right| {
+        (&left.proof_or_property_id, &left.policy_id, left.rail_index).cmp(&(
+            &right.proof_or_property_id,
+            &right.policy_id,
+            right.rail_index,
+        ))
+    });
+    preserves_list(ordered.iter().map(preserves_proof_card).collect())
+}
+
+fn preserves_proof_card(card: &OctetProofCard) -> String {
+    preserves_record("octet-proof-card", &[
+        ("artifact_blake3_identities", preserves_artifact_identities(&card.artifact_blake3_identities)),
+        ("diagnostics", preserves_string_list(&card.diagnostics)),
+        ("evidence_origin", preserves_string(&card.evidence_origin)),
+        ("evidence_tier", preserves_string(&card.evidence_tier)),
+        ("non_claims", preserves_string_list(&card.non_claims)),
+        ("policy_id", preserves_string(&card.policy_id)),
+        ("proof_or_property_id", preserves_string(&card.proof_or_property_id)),
+        ("rail_index", preserves_u32(card.rail_index)),
+        ("receipt_path", preserves_string(&card.receipt_path)),
+        ("source_requirement_or_policy_id", preserves_string(&card.source_requirement_or_policy_id)),
+        ("status", preserves_string(&card.status)),
+    ])
+}
+
+fn preserves_chain(chain: &ProvenanceChain) -> String {
+    preserves_record("provenance-chain", &[
+        ("boundary", preserves_string(&chain.boundary)),
+        ("links", preserves_links(&chain.links)),
+        ("schema", preserves_string(&chain.schema)),
+    ])
+}
+
+fn preserves_links(links: &[ProvenanceLink]) -> String {
+    let mut ordered = links.to_vec();
+    ordered.sort_by(|left, right| {
+        (&left.source_id, &left.function_object_id).cmp(&(&right.source_id, &right.function_object_id))
+    });
+    preserves_list(ordered.iter().map(preserves_link).collect())
+}
+
+fn preserves_link(link: &ProvenanceLink) -> String {
+    preserves_record("provenance-link", &[
+        ("artifact_hash", preserves_optional_string(link.artifact_hash.as_deref())),
+        ("binary_hash", preserves_optional_string(link.binary_hash.as_deref())),
+        ("function_object_id", preserves_string(&link.function_object_id)),
+        ("requirement_ids", preserves_string_list(&link.requirement_ids)),
+        ("source_id", preserves_string(&link.source_id)),
+    ])
+}
+
+fn preserves_external_evidence(records: &[MantleExternalEvidenceRecord]) -> String {
+    let mut ordered = records.to_vec();
+    ordered.sort_by(|left, right| {
+        (&left.role, &left.relative_path, &left.digest_blake3).cmp(&(
+            &right.role,
+            &right.relative_path,
+            &right.digest_blake3,
+        ))
+    });
+    preserves_list(ordered.iter().map(preserves_external_evidence_record).collect())
+}
+
+fn preserves_external_evidence_record(record: &MantleExternalEvidenceRecord) -> String {
+    preserves_record("mantle-external-evidence", &[
+        ("claim_scope", preserves_string(&record.claim_scope)),
+        ("digest_blake3", preserves_string(&record.digest_blake3)),
+        ("non_claims", preserves_string_list(&record.non_claims)),
+        ("relative_path", preserves_string(&record.relative_path)),
+        ("role", preserves_string(&record.role)),
+        ("schema", preserves_string(&record.schema)),
+    ])
+}
+
+fn preserves_mantle_binaries(binaries: &[MantleBinaryIdentity]) -> String {
+    let mut ordered = binaries.to_vec();
+    ordered.sort_by(|left, right| {
+        (&left.relative_path, &left.digest_blake3).cmp(&(&right.relative_path, &right.digest_blake3))
+    });
+    preserves_list(ordered.iter().map(preserves_mantle_binary).collect())
+}
+
+fn preserves_mantle_binary(binary: &MantleBinaryIdentity) -> String {
+    preserves_record("mantle-binary-identity", &[
+        ("digest_blake3", preserves_string(&binary.digest_blake3)),
+        ("relative_path", preserves_string(&binary.relative_path)),
+    ])
+}
+
+fn preserves_coverage(coverage: Option<&MantleProvenanceCoverageView>) -> String {
+    match coverage {
+        Some(coverage) => {
+            preserves_record(PRESERVES_OPTION_SOME_TAG, &[("value", preserves_string(&coverage.binary_hash))])
+        }
+        None => PRESERVES_OPTION_NONE.to_owned(),
+    }
+}
+
+fn preserves_optional_string(value: Option<&str>) -> String {
+    match value {
+        Some(value) => preserves_record(PRESERVES_OPTION_SOME_TAG, &[("value", preserves_string(value))]),
+        None => PRESERVES_OPTION_NONE.to_owned(),
+    }
+}
+
+fn preserves_bool(value: bool) -> String {
+    if value { "#t".to_owned() } else { "#f".to_owned() }
+}
+
+fn preserves_u32(value: u32) -> String {
+    value.to_string()
+}
+
+fn preserves_string_list(values: &[String]) -> String {
+    let mut ordered = values.to_vec();
+    ordered.sort();
+    preserves_list(ordered.iter().map(|value| preserves_string(value)).collect())
+}
+
+fn preserves_list(values: Vec<String>) -> String {
+    format!("[{}]", values.join(" "))
+}
+
+fn preserves_record(tag: &str, fields: &[(&str, String)]) -> String {
+    let mut ordered_fields = fields.iter().map(|(field, value)| (*field, value.as_str())).collect::<Vec<_>>();
+    ordered_fields.sort_by(|left, right| left.0.cmp(right.0));
+    let rendered_fields =
+        ordered_fields.iter().map(|(field, value)| format!("{}={}", field, value)).collect::<Vec<_>>();
+    format!("<{} {}>", tag, rendered_fields.join(" "))
+}
+
+fn preserves_string(value: &str) -> String {
+    let mut rendered = String::with_capacity(value.len() + PRESERVES_STRING_QUOTE_OVERHEAD);
+    rendered.push('"');
+    for character in value.chars() {
+        match character {
+            '"' => rendered.push_str("\\\""),
+            '\\' => rendered.push_str("\\\\"),
+            '\n' => rendered.push_str("\\n"),
+            '\r' => rendered.push_str("\\r"),
+            '\t' => rendered.push_str("\\t"),
+            character if character.is_control() => rendered.push_str(&format!("\\u{{{:x}}}", character as u32)),
+            character => rendered.push(character),
+        }
+    }
+    rendered.push('"');
+    rendered
+}
+
+fn built_binary_report_changed_fields(
+    baseline: &BuiltBinaryThreadReport,
+    candidate: &BuiltBinaryThreadReport,
+) -> Vec<String> {
+    let mut changed = Vec::new();
+    push_changed_field(&mut changed, baseline.valid == candidate.valid, "valid");
+    push_changed_field(&mut changed, baseline.issue_codes == candidate.issue_codes, "issue_codes");
+    push_changed_field(&mut changed, baseline.binary_hash == candidate.binary_hash, "binary_hash");
+    push_changed_field(
+        &mut changed,
+        baseline.sidecar_digest_blake3 == candidate.sidecar_digest_blake3,
+        "sidecar_digest_blake3",
+    );
+    push_changed_field(&mut changed, baseline.source_ids == candidate.source_ids, "source_ids");
+    push_changed_field(&mut changed, baseline.requirement_ids == candidate.requirement_ids, "requirement_ids");
+    push_changed_field(
+        &mut changed,
+        baseline.artifact_identities == candidate.artifact_identities,
+        "artifact_identities",
+    );
+    push_changed_field(&mut changed, baseline.non_claims == candidate.non_claims, "non_claims");
+    changed
+}
+
+fn push_changed_field(changed: &mut Vec<String>, unchanged: bool, field: &str) {
+    if !unchanged {
+        changed.push(field.to_owned());
+    }
+}
+
 fn built_binary_report(
     mut issue_codes: Vec<String>,
     binary_hash: String,
@@ -461,7 +850,7 @@ fn built_binary_report(
         })
         .unwrap_or_default();
     let artifact_identities = octet_export.map(|export| export.artifacts.clone()).unwrap_or_default();
-    BuiltBinaryThreadReport {
+    let mut report = BuiltBinaryThreadReport {
         valid: issue_codes.is_empty(),
         issue_codes,
         binary_hash,
@@ -473,7 +862,10 @@ fn built_binary_report(
             BUILT_BINARY_THREAD_NON_CLAIM.to_owned(),
             STACK_PROVENANCE_NON_CLAIM.to_owned(),
         ],
-    }
+        preserves_content_hash: String::new(),
+    };
+    report.preserves_content_hash = preserves_content_hash_for_built_binary_thread_report(&report);
+    report
 }
 
 fn validate_sidecar_external_evidence(
@@ -842,6 +1234,114 @@ mod tests {
 
         assert!(!report.valid);
         assert!(report.issue_codes.contains(&"octet_export_malformed".to_owned()));
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct PreservesCorpusFixture {
+        schema: String,
+        entries: Vec<StackProvenancePreservesEvidence>,
+        drift_cases: Vec<PreservesDriftCaseFixture>,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct PreservesDriftCaseFixture {
+        id: String,
+        baseline_report: BuiltBinaryThreadReport,
+        candidate_report: BuiltBinaryThreadReport,
+        expected_diff: StackProvenancePreservesDiff,
+    }
+
+    #[test]
+    fn stack_provenance_preserves_corpus_is_fresh() {
+        let corpus = preserves_corpus_fixture();
+        assert_eq!(corpus.schema, "valence.stack-provenance-preserves-corpus.v1");
+        assert_eq!(corpus.entries, sample_preserves_corpus_entries());
+        for entry in &corpus.entries {
+            assert_eq!(entry.preserves_encoding, STACK_PROVENANCE_PRESERVES_ENCODING);
+            assert_eq!(entry.preserves_content_hash, blake3_hex(entry.preserves_value.as_bytes()));
+            assert!(entry.non_claims.contains(&PRESERVES_METADATA_NON_CLAIM.to_owned()));
+        }
+    }
+
+    #[test]
+    fn stack_provenance_preserves_report_diff_fixture_is_fresh() {
+        let corpus = preserves_corpus_fixture();
+        assert_eq!(corpus.drift_cases.len(), 1);
+        let case = &corpus.drift_cases[0];
+        assert_eq!(case.id, "report-diagnostic-change");
+        let actual_diff =
+            compare_built_binary_thread_reports_by_preserves(&case.baseline_report, &case.candidate_report);
+        assert_eq!(actual_diff, case.expected_diff);
+        assert!(!actual_diff.equal);
+        assert_eq!(actual_diff.changed_fields, vec!["valid".to_owned(), "issue_codes".to_owned()]);
+    }
+
+    #[test]
+    fn stack_provenance_preserves_report_diff_ignores_json_field_order() {
+        let report = sample_built_binary_thread_report();
+        let reordered = serde_json::json!({
+            "valid": report.valid,
+            "source_ids": report.source_ids.clone(),
+            "sidecar_digest_blake3": report.sidecar_digest_blake3.clone(),
+            "requirement_ids": report.requirement_ids.clone(),
+            "preserves_content_hash": report.preserves_content_hash.clone(),
+            "non_claims": report.non_claims.clone(),
+            "issue_codes": report.issue_codes.clone(),
+            "binary_hash": report.binary_hash.clone(),
+            "artifact_identities": report.artifact_identities.clone(),
+        });
+        let parsed: BuiltBinaryThreadReport = serde_json::from_value(reordered).unwrap();
+        let diff = compare_built_binary_thread_reports_by_preserves(&report, &parsed);
+        assert!(diff.equal, "unexpected diff: {diff:?}");
+        assert!(diff.changed_fields.is_empty());
+    }
+
+    fn preserves_corpus_fixture() -> PreservesCorpusFixture {
+        serde_json::from_str(include_str!("../../../contracts/stack-provenance/preserves-corpus/corpus.json"))
+            .expect("parse preserves corpus")
+    }
+
+    fn sample_preserves_corpus_entries() -> Vec<StackProvenancePreservesEvidence> {
+        let binary_bytes = b"valence-built-binary-fixture";
+        let binary_hash = blake3_hex(binary_bytes);
+        let export = sample_export();
+        let sidecar = build_stack_provenance_sidecar(&export, &binary_hash);
+        let sidecar_json = serde_json::to_vec_pretty(&sidecar).unwrap();
+        let sidecar_digest = blake3_hex(&sidecar_json);
+        let manifest = mantle_release_manifest(&sidecar_digest, &binary_hash);
+        let input = BuiltBinaryThreadInput {
+            binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: &sidecar_json,
+            mantle_manifest: &manifest,
+        };
+        let input_evidence = preserves_evidence_for_built_binary_thread_input(&input);
+        let report = verify_built_binary_thread(input);
+        vec![
+            preserves_evidence_for_octet_export(&export),
+            preserves_evidence_for_stack_sidecar(&sidecar),
+            preserves_evidence_for_mantle_manifest(&manifest),
+            input_evidence,
+            preserves_evidence_for_built_binary_thread_report(&report),
+        ]
+    }
+
+    fn sample_built_binary_thread_report() -> BuiltBinaryThreadReport {
+        let binary_bytes = b"valence-built-binary-fixture";
+        let binary_hash = blake3_hex(binary_bytes);
+        let export = sample_export();
+        let sidecar = build_stack_provenance_sidecar(&export, &binary_hash);
+        let sidecar_json = serde_json::to_vec_pretty(&sidecar).unwrap();
+        let sidecar_digest = blake3_hex(&sidecar_json);
+        let manifest = mantle_release_manifest(&sidecar_digest, &binary_hash);
+        verify_built_binary_thread(BuiltBinaryThreadInput {
+            binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: &sidecar_json,
+            mantle_manifest: &manifest,
+        })
     }
 
     fn sample_export() -> OctetValenceProvenanceExport {

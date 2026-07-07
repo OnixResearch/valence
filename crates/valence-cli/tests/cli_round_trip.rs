@@ -22,6 +22,7 @@ const STATUS_HASH: &str = "22222222222222222222222222222222222222222222222222222
 const RESULTS_HASH: &str = "3333333333333333333333333333333333333333333333333333333333333333";
 const BUILT_BINARY_BYTES: &[u8] = b"valence-cli-built-binary-fixture";
 const TAMPERED_BINARY_BYTES: &[u8] = b"valence-cli-built-binary-fixture-tampered";
+const BLAKE3_HEX_LENGTH: usize = 64;
 
 fn valence_binary() -> String {
     env!("CARGO_BIN_EXE_valence").to_owned()
@@ -295,6 +296,7 @@ fn stack_provenance_verify_built_binary_accepts_measured_thread() {
             .iter()
             .any(|claim| claim == BUILT_BINARY_THREAD_NON_CLAIM)
     );
+    assert_eq!(report["preserves_content_hash"].as_str().expect("preserves content hash").len(), BLAKE3_HEX_LENGTH);
 }
 
 #[test]

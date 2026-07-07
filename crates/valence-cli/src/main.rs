@@ -377,6 +377,7 @@ fn print_built_binary_thread_report(report: &valence_core::stack_provenance_adap
     println!("issue_count={}", report.issue_codes.len());
     println!("binary_hash={}", report.binary_hash);
     println!("sidecar_digest_blake3={}", report.sidecar_digest_blake3);
+    println!("preserves_content_hash={}", report.preserves_content_hash);
     for code in &report.issue_codes {
         println!("issue={code}");
     }

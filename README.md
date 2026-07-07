@@ -97,6 +97,14 @@ measurement is treated as eligible to run. Nickel does not read or measure the
 binary; Rust remains the authority for measured-byte identity and digest
 comparison.
 
+Preserves corpus fixtures in `contracts/stack-provenance/preserves-corpus/`
+provide canonical metadata value identity for the same stack-provenance surfaces.
+Valence projects Octet export metadata, sidecars, Mantle manifest views,
+built-binary thread input envelopes, and verification reports into deterministic
+Preserves text values, then records BLAKE3 `preserves_content_hash` values over
+those canonical metadata bytes. These hashes are additive receipt evidence; they
+do not replace raw binary BLAKE3 measurements or Mantle sidecar byte digests.
+
 ## Boundary
 
 Valence supports bounded local evidence replay for selected evidence surfaces.
@@ -113,6 +121,7 @@ general HIR/THIR/MIR extraction.
 ```bash
 nix develop                # enter devshell
 cargo test --workspace     # run all tests
+cargo test stack_provenance_preserves -- --nocapture
 cargo build -p valence-cli # build the CLI
 nix build .#checks.x86_64-linux.stack-provenance-nickel-contracts --no-link
 ./target/debug/valence version
