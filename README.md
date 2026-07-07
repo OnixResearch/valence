@@ -150,3 +150,7 @@ AGPL-3.0-or-later
   module is the natural core for future property-vocabulary resolution.
 - `../mantle/` — build system that will record covered valence/requirement IDs
   in release-evidence bundles in Phase 2.
+- unison-lang.org/docs/the-big-idea — design reference for content-addressed
+  definitions, names-as-metadata, codebase-as-database tooling, effect labels,
+  durable typed values, and structured refactoring. Valence uses these patterns
+  as design input only and does not adopt the Unison language or runtime.
