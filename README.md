@@ -105,6 +105,14 @@ Preserves text values, then records BLAKE3 `preserves_content_hash` values over
 those canonical metadata bytes. These hashes are additive receipt evidence; they
 do not replace raw binary BLAKE3 measurements or Mantle sidecar byte digests.
 
+Rust also parses high-risk stack-provenance strings into typed internal boundary
+values before making verifier decisions. BLAKE3 values are separated by role
+(binary digest, sidecar byte digest, artifact digest, and Preserves metadata
+hash), while schema versions, claim scope, Mantle role, verification status, and
+evidence tiers are parsed into narrow enums. This is internal hardening only: the
+public JSON contracts and CLI output remain string-compatible, and typed values
+do not broaden the measured-byte identity-and-linkage-only claim.
+
 ## Boundary
 
 Valence supports bounded local evidence replay for selected evidence surfaces.

@@ -43,6 +43,7 @@ const BUILT_BINARY_OVERCLAIM_PATTERNS: &[&str] = &[
     "guarantees whole-program safety",
 ];
 const BLAKE3_HEX_LENGTH: usize = 64;
+const BLAKE3_PREFIX: &str = "b3:";
 const PRESERVES_STRING_QUOTE_OVERHEAD: usize = 2;
 const PRESERVES_OPTION_NONE: &str = "<none>";
 const PRESERVES_OPTION_SOME_TAG: &str = "some";
@@ -50,6 +51,318 @@ const PRESERVES_METADATA_NON_CLAIM: &str = "Preserves stack-provenance values pr
 
 /// Canonical text encoding label used for stack-provenance Preserves values.
 pub const STACK_PROVENANCE_PRESERVES_ENCODING: &str = "valence.stack-provenance-preserves-text.v1";
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct Blake3Digest<'a> {
+    normalized: &'a str,
+}
+
+impl<'a> Blake3Digest<'a> {
+    fn parse(value: &'a str) -> Option<Self> {
+        let normalized = value.strip_prefix(BLAKE3_PREFIX).unwrap_or(value);
+        if normalized.len() == BLAKE3_HEX_LENGTH && normalized.chars().all(|character| character.is_ascii_hexdigit()) {
+            Some(Self { normalized })
+        } else {
+            None
+        }
+    }
+
+    fn matches(self, other: Self) -> bool {
+        self.normalized.eq_ignore_ascii_case(other.normalized)
+    }
+
+    fn normalized(self) -> &'a str {
+        self.normalized
+    }
+}
+
+/// BLAKE3 digest for measured binary bytes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct BinaryDigest<'a>(Blake3Digest<'a>);
+
+impl<'a> BinaryDigest<'a> {
+    /// Parse a string-compatible binary digest.
+    #[must_use]
+    pub fn parse(value: &'a str) -> Option<Self> {
+        Blake3Digest::parse(value).map(Self)
+    }
+
+    /// Return the canonical digest bytes as lowercase/uppercase preserving hex without the optional
+    /// `b3:` prefix.
+    #[must_use]
+    pub fn normalized(self) -> &'a str {
+        self.0.normalized()
+    }
+
+    #[must_use]
+    pub fn matches(self, other: Self) -> bool {
+        self.0.matches(other.0)
+    }
+}
+
+/// BLAKE3 digest for Valence sidecar bytes as recorded by Mantle.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SidecarDigest<'a>(Blake3Digest<'a>);
+
+impl<'a> SidecarDigest<'a> {
+    /// Parse a string-compatible sidecar digest.
+    #[must_use]
+    pub fn parse(value: &'a str) -> Option<Self> {
+        Blake3Digest::parse(value).map(Self)
+    }
+
+    #[must_use]
+    pub fn normalized(self) -> &'a str {
+        self.0.normalized()
+    }
+
+    #[must_use]
+    pub fn matches(self, other: Self) -> bool {
+        self.0.matches(other.0)
+    }
+}
+
+/// BLAKE3 digest for Octet or Valence artifact identities.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ArtifactDigest<'a>(Blake3Digest<'a>);
+
+impl<'a> ArtifactDigest<'a> {
+    /// Parse a string-compatible artifact digest.
+    #[must_use]
+    pub fn parse(value: &'a str) -> Option<Self> {
+        Blake3Digest::parse(value).map(Self)
+    }
+
+    #[must_use]
+    pub fn normalized(self) -> &'a str {
+        self.0.normalized()
+    }
+}
+
+/// BLAKE3 digest for canonical Preserves metadata bytes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PreservesMetadataDigest<'a>(Blake3Digest<'a>);
+
+impl<'a> PreservesMetadataDigest<'a> {
+    /// Parse a string-compatible Preserves metadata digest.
+    #[must_use]
+    pub fn parse(value: &'a str) -> Option<Self> {
+        Blake3Digest::parse(value).map(Self)
+    }
+
+    #[must_use]
+    pub fn normalized(self) -> &'a str {
+        self.0.normalized()
+    }
+}
+
+/// Stack sidecar schema versions accepted by this verifier.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StackProvenanceSidecarSchema {
+    V1,
+}
+
+impl StackProvenanceSidecarSchema {
+    #[must_use]
+    pub fn parse(value: &str) -> Option<Self> {
+        if value == STACK_PROVENANCE_SIDECAR_SCHEMA {
+            Some(Self::V1)
+        } else {
+            None
+        }
+    }
+
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::V1 => STACK_PROVENANCE_SIDECAR_SCHEMA,
+        }
+    }
+}
+
+/// Octet export schema versions accepted by this verifier.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OctetValenceExportSchema {
+    V1,
+}
+
+impl OctetValenceExportSchema {
+    #[must_use]
+    pub fn parse(value: &str) -> Option<Self> {
+        if value == OCTET_VALENCE_EXPORT_SCHEMA {
+            Some(Self::V1)
+        } else {
+            None
+        }
+    }
+
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::V1 => OCTET_VALENCE_EXPORT_SCHEMA,
+        }
+    }
+}
+
+/// Verification statuses accepted by this verifier.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VerificationStatus {
+    Valid,
+}
+
+impl VerificationStatus {
+    #[must_use]
+    pub fn parse(value: &str) -> Option<Self> {
+        if value == VALID_VERIFICATION_STATUS {
+            Some(Self::Valid)
+        } else {
+            None
+        }
+    }
+
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Valid => VALID_VERIFICATION_STATUS,
+        }
+    }
+}
+
+/// Sidecar claim scopes accepted by this verifier.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StackProvenanceClaimScope {
+    IdentityLinkageSidecar,
+}
+
+impl StackProvenanceClaimScope {
+    #[must_use]
+    pub fn parse(value: &str) -> Option<Self> {
+        if value == STACK_PROVENANCE_CLAIM_SCOPE {
+            Some(Self::IdentityLinkageSidecar)
+        } else {
+            None
+        }
+    }
+
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::IdentityLinkageSidecar => STACK_PROVENANCE_CLAIM_SCOPE,
+        }
+    }
+}
+
+/// Mantle external-evidence roles accepted by this verifier.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MantleExternalEvidenceRole {
+    StackProvenanceTrace,
+}
+
+impl MantleExternalEvidenceRole {
+    #[must_use]
+    pub fn parse(value: &str) -> Option<Self> {
+        if value == MANTLE_STACK_PROVENANCE_ROLE {
+            Some(Self::StackProvenanceTrace)
+        } else {
+            None
+        }
+    }
+
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::StackProvenanceTrace => MANTLE_STACK_PROVENANCE_ROLE,
+        }
+    }
+}
+
+/// Evidence tiers accepted or explicitly preserved by this verifier.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EvidenceTier<'a> {
+    FormalProof,
+    ManualReviewRequired,
+    Unknown(&'a str),
+}
+
+impl<'a> EvidenceTier<'a> {
+    #[must_use]
+    pub fn parse(value: &'a str) -> Self {
+        match value {
+            FORMAL_PROOF_TIER => Self::FormalProof,
+            MANUAL_REVIEW_TIER => Self::ManualReviewRequired,
+            unknown => Self::Unknown(unknown),
+        }
+    }
+
+    #[must_use]
+    pub fn as_str(self) -> &'a str {
+        match self {
+            Self::FormalProof => FORMAL_PROOF_TIER,
+            Self::ManualReviewRequired => MANUAL_REVIEW_TIER,
+            Self::Unknown(value) => value,
+        }
+    }
+
+    #[must_use]
+    pub fn is_formal_proof(self) -> bool {
+        matches!(self, Self::FormalProof)
+    }
+
+    #[must_use]
+    pub fn is_manual_review_required(self) -> bool {
+        matches!(self, Self::ManualReviewRequired)
+    }
+
+    #[must_use]
+    pub fn is_unknown(self) -> bool {
+        matches!(self, Self::Unknown(_))
+    }
+}
+
+/// Typed boundary values parsed from a stack sidecar DTO.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StackSidecarBoundaryValues<'a> {
+    pub schema: StackProvenanceSidecarSchema,
+    pub claim_scope: StackProvenanceClaimScope,
+    pub binary_hash: BinaryDigest<'a>,
+    pub parent_artifact_digests: Vec<ArtifactDigest<'a>>,
+}
+
+/// Typed boundary values parsed from an Octet export DTO.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OctetExportBoundaryValues<'a> {
+    pub schema_version: OctetValenceExportSchema,
+    pub verification_status: VerificationStatus,
+    pub artifact_digests: Vec<ArtifactDigest<'a>>,
+    pub provenance_evidence_tiers: Vec<EvidenceTier<'a>>,
+    pub proof_card_evidence_tiers: Vec<EvidenceTier<'a>>,
+    pub proof_card_statuses: Vec<VerificationStatus>,
+}
+
+/// Typed boundary values parsed from Mantle external evidence metadata.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MantleExternalEvidenceBoundaryValues<'a> {
+    pub role: MantleExternalEvidenceRole,
+    pub schema: StackProvenanceSidecarSchema,
+    pub digest_blake3: SidecarDigest<'a>,
+    pub claim_scope: StackProvenanceClaimScope,
+}
+
+/// Typed boundary values parsed from a Mantle release manifest view.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MantleReleaseManifestBoundaryValues<'a> {
+    pub binary_digests: Vec<BinaryDigest<'a>>,
+    pub provenance_coverage_binary_hash: Option<BinaryDigest<'a>>,
+    pub stack_sidecar_external_evidence: MantleExternalEvidenceBoundaryValues<'a>,
+}
+
+/// Typed boundary values parsed from a built-binary thread report.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BuiltBinaryThreadReportBoundaryValues<'a> {
+    pub binary_hash: BinaryDigest<'a>,
+    pub sidecar_digest_blake3: SidecarDigest<'a>,
+    pub preserves_content_hash: Option<PreservesMetadataDigest<'a>>,
+}
 
 /// Preserves metadata surface identity and canonical value bytes.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -234,6 +547,201 @@ pub struct StackProvenanceReport {
     pub issue_codes: Vec<String>,
 }
 
+/// Parse typed boundary values from a stack sidecar DTO.
+pub fn parse_stack_sidecar_boundary_values(
+    sidecar: &StackProvenanceSidecar,
+) -> Result<StackSidecarBoundaryValues<'_>, Vec<String>> {
+    let mut issue_codes = Vec::new();
+    let schema = StackProvenanceSidecarSchema::parse(&sidecar.schema);
+    let claim_scope = StackProvenanceClaimScope::parse(&sidecar.claim_scope);
+    let binary_hash = BinaryDigest::parse(&sidecar.binary_hash);
+    let parent_artifact_digests = parse_artifact_identity_digests(&sidecar.parent_artifacts, &mut issue_codes);
+    if schema.is_none() {
+        issue_codes.push("schema_mismatch".to_owned());
+    }
+    if claim_scope.is_none() {
+        issue_codes.push("claim_scope_mismatch".to_owned());
+    }
+    if binary_hash.is_none() {
+        issue_codes.push("binary_hash_invalid".to_owned());
+    }
+    match (schema, claim_scope, binary_hash, issue_codes.is_empty()) {
+        (Some(schema), Some(claim_scope), Some(binary_hash), true) => Ok(StackSidecarBoundaryValues {
+            schema,
+            claim_scope,
+            binary_hash,
+            parent_artifact_digests,
+        }),
+        _ => Err(sorted_unique(issue_codes)),
+    }
+}
+
+/// Parse typed boundary values from an Octet Valence provenance export DTO.
+pub fn parse_octet_export_boundary_values(
+    export: &OctetValenceProvenanceExport,
+) -> Result<OctetExportBoundaryValues<'_>, Vec<String>> {
+    let mut issue_codes = Vec::new();
+    let schema_version = OctetValenceExportSchema::parse(&export.schema_version);
+    let verification_status = VerificationStatus::parse(&export.verification_status);
+    let mut artifact_digests = parse_artifact_identity_digests(&export.artifacts, &mut issue_codes);
+    for record in &export.provenance_records {
+        if let Some(digest) = ArtifactDigest::parse(&record.blake3) {
+            artifact_digests.push(digest);
+        } else {
+            issue_codes.push("artifact_hash_invalid".to_owned());
+        }
+    }
+    let provenance_evidence_tiers = export
+        .provenance_records
+        .iter()
+        .map(|record| EvidenceTier::parse(&record.evidence_tier))
+        .collect::<Vec<_>>();
+    let mut proof_card_evidence_tiers = Vec::new();
+    let mut proof_card_statuses = Vec::new();
+    for card in &export.proof_cards {
+        artifact_digests.extend(parse_artifact_identity_digests(&card.artifact_blake3_identities, &mut issue_codes));
+        proof_card_evidence_tiers.push(EvidenceTier::parse(&card.evidence_tier));
+        match VerificationStatus::parse(&card.status) {
+            Some(status) => proof_card_statuses.push(status),
+            None => issue_codes.push("proof_card_status_invalid".to_owned()),
+        }
+    }
+    if schema_version.is_none() {
+        issue_codes.push("octet_schema_mismatch".to_owned());
+    }
+    if verification_status.is_none() {
+        issue_codes.push("octet_verification_not_valid".to_owned());
+    }
+    match (schema_version, verification_status, issue_codes.is_empty()) {
+        (Some(schema_version), Some(verification_status), true) => Ok(OctetExportBoundaryValues {
+            schema_version,
+            verification_status,
+            artifact_digests,
+            provenance_evidence_tiers,
+            proof_card_evidence_tiers,
+            proof_card_statuses,
+        }),
+        _ => Err(sorted_unique(issue_codes)),
+    }
+}
+
+/// Parse typed boundary values from Mantle external evidence metadata.
+pub fn parse_mantle_external_evidence_boundary_values(
+    record: &MantleExternalEvidenceRecord,
+) -> Result<MantleExternalEvidenceBoundaryValues<'_>, Vec<String>> {
+    let mut issue_codes = Vec::new();
+    let role = MantleExternalEvidenceRole::parse(&record.role);
+    let schema = StackProvenanceSidecarSchema::parse(&record.schema);
+    let digest_blake3 = SidecarDigest::parse(&record.digest_blake3);
+    let claim_scope = StackProvenanceClaimScope::parse(&record.claim_scope);
+    if role.is_none() {
+        issue_codes.push("mantle_role_missing".to_owned());
+    }
+    if schema.is_none() {
+        issue_codes.push("mantle_schema_mismatch".to_owned());
+    }
+    if digest_blake3.is_none() {
+        issue_codes.push("sidecar_digest_invalid".to_owned());
+    }
+    if claim_scope.is_none() {
+        issue_codes.push("mantle_claim_scope_mismatch".to_owned());
+    }
+    match (role, schema, digest_blake3, claim_scope, issue_codes.is_empty()) {
+        (Some(role), Some(schema), Some(digest_blake3), Some(claim_scope), true) => {
+            Ok(MantleExternalEvidenceBoundaryValues {
+                role,
+                schema,
+                digest_blake3,
+                claim_scope,
+            })
+        }
+        _ => Err(sorted_unique(issue_codes)),
+    }
+}
+
+/// Parse typed boundary values from a Mantle release manifest view.
+pub fn parse_mantle_release_manifest_boundary_values(
+    manifest: &MantleReleaseManifestView,
+) -> Result<MantleReleaseManifestBoundaryValues<'_>, Vec<String>> {
+    let mut issue_codes = Vec::new();
+    let mut binary_digests = Vec::new();
+    for binary in &manifest.binaries {
+        match BinaryDigest::parse(&binary.digest_blake3) {
+            Some(digest) => binary_digests.push(digest),
+            None => issue_codes.push("mantle_binary_digest_invalid".to_owned()),
+        }
+    }
+    let provenance_coverage_binary_hash = match manifest.provenance_coverage.as_ref() {
+        Some(coverage) => match BinaryDigest::parse(&coverage.binary_hash) {
+            Some(digest) => Some(digest),
+            None => {
+                issue_codes.push("provenance_coverage_binary_invalid".to_owned());
+                None
+            }
+        },
+        None => None,
+    };
+    let stack_sidecar_external_evidence = match manifest
+        .external_evidence
+        .iter()
+        .find(|record| MantleExternalEvidenceRole::parse(&record.role).is_some())
+    {
+        Some(record) => match parse_mantle_external_evidence_boundary_values(record) {
+            Ok(boundary) => Some(boundary),
+            Err(record_issues) => {
+                issue_codes.extend(record_issues);
+                None
+            }
+        },
+        None => {
+            issue_codes.push("mantle_role_missing".to_owned());
+            None
+        }
+    };
+    match (stack_sidecar_external_evidence, issue_codes.is_empty()) {
+        (Some(stack_sidecar_external_evidence), true) => Ok(MantleReleaseManifestBoundaryValues {
+            binary_digests,
+            provenance_coverage_binary_hash,
+            stack_sidecar_external_evidence,
+        }),
+        _ => Err(sorted_unique(issue_codes)),
+    }
+}
+
+/// Parse typed boundary values from a built-binary thread report DTO.
+pub fn parse_built_binary_thread_report_boundary_values(
+    report: &BuiltBinaryThreadReport,
+) -> Result<BuiltBinaryThreadReportBoundaryValues<'_>, Vec<String>> {
+    let mut issue_codes = Vec::new();
+    let binary_hash = BinaryDigest::parse(&report.binary_hash);
+    let sidecar_digest_blake3 = SidecarDigest::parse(&report.sidecar_digest_blake3);
+    let preserves_content_hash = if report.preserves_content_hash.is_empty() {
+        None
+    } else {
+        match PreservesMetadataDigest::parse(&report.preserves_content_hash) {
+            Some(digest) => Some(digest),
+            None => {
+                issue_codes.push("preserves_content_hash_invalid".to_owned());
+                None
+            }
+        }
+    };
+    if binary_hash.is_none() {
+        issue_codes.push("binary_hash_invalid".to_owned());
+    }
+    if sidecar_digest_blake3.is_none() {
+        issue_codes.push("sidecar_digest_invalid".to_owned());
+    }
+    match (binary_hash, sidecar_digest_blake3, issue_codes.is_empty()) {
+        (Some(binary_hash), Some(sidecar_digest_blake3), true) => Ok(BuiltBinaryThreadReportBoundaryValues {
+            binary_hash,
+            sidecar_digest_blake3,
+            preserves_content_hash,
+        }),
+        _ => Err(sorted_unique(issue_codes)),
+    }
+}
+
 /// Build a sidecar from a verified Octet export and a release binary hash.
 #[must_use]
 pub fn build_stack_provenance_sidecar(
@@ -263,14 +771,16 @@ pub fn build_stack_provenance_sidecar(
 #[must_use]
 pub fn validate_stack_provenance_sidecar(sidecar: &StackProvenanceSidecar) -> StackProvenanceReport {
     let mut issue_codes = Vec::new();
-    if sidecar.schema != STACK_PROVENANCE_SIDECAR_SCHEMA {
-        issue_codes.push("schema_mismatch".to_owned());
-    }
-    if sidecar.claim_scope != STACK_PROVENANCE_CLAIM_SCOPE {
-        issue_codes.push("claim_scope_mismatch".to_owned());
-    }
-    if !is_blake3ish(&sidecar.binary_hash) {
-        issue_codes.push("binary_hash_invalid".to_owned());
+    match parse_stack_sidecar_boundary_values(sidecar) {
+        Ok(boundary) => issue_codes.extend(validate_chain(&sidecar.chain, boundary.binary_hash)),
+        Err(parse_issues) => {
+            issue_codes.extend(parse_issues);
+            if let Some(binary_hash) = BinaryDigest::parse(&sidecar.binary_hash) {
+                issue_codes.extend(validate_chain(&sidecar.chain, binary_hash));
+            } else {
+                issue_codes.extend(validate_chain_artifact_digests(&sidecar.chain));
+            }
+        }
     }
     if !sidecar.non_claims.iter().any(|claim| claim == STACK_PROVENANCE_NON_CLAIM) {
         issue_codes.push("non_claim_boundary_missing".to_owned());
@@ -281,9 +791,7 @@ pub fn validate_stack_provenance_sidecar(sidecar: &StackProvenanceSidecar) -> St
     if sidecar.parent_artifacts.is_empty() {
         issue_codes.push("parent_artifact_missing".to_owned());
     }
-    issue_codes.extend(validate_chain(&sidecar.chain, &sidecar.binary_hash));
-    issue_codes.sort();
-    issue_codes.dedup();
+    issue_codes = sorted_unique(issue_codes);
     StackProvenanceReport {
         valid: issue_codes.is_empty(),
         issue_codes,
@@ -294,11 +802,8 @@ pub fn validate_stack_provenance_sidecar(sidecar: &StackProvenanceSidecar) -> St
 #[must_use]
 pub fn validate_octet_export(export: &OctetValenceProvenanceExport) -> StackProvenanceReport {
     let mut issue_codes = Vec::new();
-    if export.schema_version != OCTET_VALENCE_EXPORT_SCHEMA {
-        issue_codes.push("octet_schema_mismatch".to_owned());
-    }
-    if export.verification_status != VALID_VERIFICATION_STATUS {
-        issue_codes.push("octet_verification_not_valid".to_owned());
+    if let Err(parse_issues) = parse_octet_export_boundary_values(export) {
+        issue_codes.extend(parse_issues);
     }
     if !export.diagnostics.is_empty() {
         issue_codes.push("octet_diagnostics_present".to_owned());
@@ -308,8 +813,7 @@ pub fn validate_octet_export(export: &OctetValenceProvenanceExport) -> StackProv
     }
     issue_codes.extend(validate_parent_artifacts(export));
     issue_codes.extend(validate_evidence_tiers(export));
-    issue_codes.sort();
-    issue_codes.dedup();
+    issue_codes = sorted_unique(issue_codes);
     StackProvenanceReport {
         valid: issue_codes.is_empty(),
         issue_codes,
@@ -370,26 +874,9 @@ pub fn verify_mantle_external_evidence_sidecar(
         }
     };
     let mut issue_codes = validate_stack_provenance_sidecar(&sidecar).issue_codes;
-    let digest = blake3::hash(sidecar_json.as_bytes()).to_hex().to_string();
-    match manifest.external_evidence.iter().find(|record| record.role == MANTLE_STACK_PROVENANCE_ROLE) {
-        Some(record) => {
-            if record.schema != STACK_PROVENANCE_SIDECAR_SCHEMA {
-                issue_codes.push("mantle_schema_mismatch".to_owned());
-            }
-            if record.claim_scope != STACK_PROVENANCE_CLAIM_SCOPE {
-                issue_codes.push("mantle_claim_scope_mismatch".to_owned());
-            }
-            if record.digest_blake3 != digest {
-                issue_codes.push("sidecar_digest_mismatch".to_owned());
-            }
-            if !record.non_claims.iter().any(|claim| claim == STACK_PROVENANCE_NON_CLAIM) {
-                issue_codes.push("mantle_non_claim_missing".to_owned());
-            }
-        }
-        None => issue_codes.push("mantle_role_missing".to_owned()),
-    }
-    issue_codes.sort();
-    issue_codes.dedup();
+    let digest = blake3_hex(sidecar_json.as_bytes());
+    issue_codes.extend(validate_sidecar_external_evidence(&manifest.external_evidence, &digest));
+    issue_codes = sorted_unique(issue_codes);
     StackProvenanceReport {
         valid: issue_codes.is_empty(),
         issue_codes,
@@ -451,6 +938,9 @@ pub fn verify_built_binary_thread(input: BuiltBinaryThreadInput<'_>) -> BuiltBin
     let mut issue_codes = Vec::new();
     issue_codes.extend(validate_stack_provenance_sidecar(input.sidecar).issue_codes);
     issue_codes.extend(validate_octet_export(input.octet_export).issue_codes);
+    if let Err(parse_issues) = parse_mantle_release_manifest_boundary_values(input.mantle_manifest) {
+        issue_codes.extend(parse_issues);
+    }
     issue_codes.extend(validate_sidecar_external_evidence(
         input.mantle_manifest.external_evidence.as_slice(),
         &sidecar_digest_blake3,
@@ -494,7 +984,7 @@ pub fn preserves_evidence_for_built_binary_thread_input(
     stack_preserves_evidence(
         "built-binary-thread-input",
         preserves_record("built-binary-thread-input", &[
-            ("binary_hash", preserves_string(&input.sidecar.binary_hash)),
+            ("binary_hash", preserves_binary_digest(&input.sidecar.binary_hash)),
             ("mantle_manifest", preserves_mantle_manifest_value(input.mantle_manifest)),
             ("octet_export", preserves_octet_export_value(input.octet_export)),
             ("sidecar", preserves_sidecar_value(input.sidecar)),
@@ -558,21 +1048,21 @@ fn preserves_octet_export_value(export: &OctetValenceProvenanceExport) -> String
         ("non_claims", preserves_string_list(&export.non_claims)),
         ("proof_cards", preserves_proof_cards(&export.proof_cards)),
         ("provenance_records", preserves_octet_provenance_records(&export.provenance_records)),
-        ("schema_version", preserves_string(&export.schema_version)),
-        ("verification_status", preserves_string(&export.verification_status)),
+        ("schema_version", preserves_octet_schema(&export.schema_version)),
+        ("verification_status", preserves_verification_status(&export.verification_status)),
     ])
 }
 
 fn preserves_sidecar_value(sidecar: &StackProvenanceSidecar) -> String {
     preserves_record("stack-provenance-sidecar", &[
-        ("binary_hash", preserves_string(&sidecar.binary_hash)),
+        ("binary_hash", preserves_binary_digest(&sidecar.binary_hash)),
         ("chain", preserves_chain(&sidecar.chain)),
-        ("claim_scope", preserves_string(&sidecar.claim_scope)),
+        ("claim_scope", preserves_claim_scope(&sidecar.claim_scope)),
         ("diagnostics", preserves_string_list(&sidecar.diagnostics)),
         ("non_claims", preserves_string_list(&sidecar.non_claims)),
         ("octet_export_artifact_dir", preserves_string(&sidecar.octet_export_artifact_dir)),
         ("parent_artifacts", preserves_artifact_identities(&sidecar.parent_artifacts)),
-        ("schema", preserves_string(&sidecar.schema)),
+        ("schema", preserves_stack_sidecar_schema(&sidecar.schema)),
     ])
 }
 
@@ -587,11 +1077,11 @@ fn preserves_mantle_manifest_value(manifest: &MantleReleaseManifestView) -> Stri
 fn preserves_built_binary_thread_report_value(report: &BuiltBinaryThreadReport) -> String {
     preserves_record("built-binary-thread-report", &[
         ("artifact_identities", preserves_artifact_identities(&report.artifact_identities)),
-        ("binary_hash", preserves_string(&report.binary_hash)),
+        ("binary_hash", preserves_binary_digest(&report.binary_hash)),
         ("issue_codes", preserves_string_list(&report.issue_codes)),
         ("non_claims", preserves_string_list(&report.non_claims)),
         ("requirement_ids", preserves_string_list(&report.requirement_ids)),
-        ("sidecar_digest_blake3", preserves_string(&report.sidecar_digest_blake3)),
+        ("sidecar_digest_blake3", preserves_sidecar_digest(&report.sidecar_digest_blake3)),
         ("source_ids", preserves_string_list(&report.source_ids)),
         ("valid", preserves_bool(report.valid)),
     ])
@@ -606,7 +1096,7 @@ fn preserves_artifact_identities(artifacts: &[StackArtifactIdentity]) -> String 
             .map(|artifact| {
                 preserves_record("artifact-identity", &[
                     ("artifact", preserves_string(&artifact.artifact)),
-                    ("blake3", preserves_string(&artifact.blake3)),
+                    ("blake3", preserves_artifact_digest(&artifact.blake3)),
                 ])
             })
             .collect(),
@@ -629,10 +1119,10 @@ fn preserves_octet_provenance_records(records: &[OctetProvenanceRecord]) -> Stri
 fn preserves_octet_provenance_record(record: &OctetProvenanceRecord) -> String {
     preserves_record("octet-provenance-record", &[
         ("artifact", preserves_string(&record.artifact)),
-        ("blake3", preserves_string(&record.blake3)),
+        ("blake3", preserves_artifact_digest(&record.blake3)),
         ("checked_scope", preserves_string(&record.checked_scope)),
         ("checker_id", preserves_string(&record.checker_id)),
-        ("evidence_tier", preserves_string(&record.evidence_tier)),
+        ("evidence_tier", preserves_evidence_tier(&record.evidence_tier)),
         ("human_action", preserves_optional_string(record.human_action.as_deref())),
         ("parent_artifacts", preserves_string_list(&record.parent_artifacts)),
         ("proof_artifact_identity", preserves_optional_string(record.proof_artifact_identity.as_deref())),
@@ -658,14 +1148,14 @@ fn preserves_proof_card(card: &OctetProofCard) -> String {
         ("artifact_blake3_identities", preserves_artifact_identities(&card.artifact_blake3_identities)),
         ("diagnostics", preserves_string_list(&card.diagnostics)),
         ("evidence_origin", preserves_string(&card.evidence_origin)),
-        ("evidence_tier", preserves_string(&card.evidence_tier)),
+        ("evidence_tier", preserves_evidence_tier(&card.evidence_tier)),
         ("non_claims", preserves_string_list(&card.non_claims)),
         ("policy_id", preserves_string(&card.policy_id)),
         ("proof_or_property_id", preserves_string(&card.proof_or_property_id)),
         ("rail_index", preserves_u32(card.rail_index)),
         ("receipt_path", preserves_string(&card.receipt_path)),
         ("source_requirement_or_policy_id", preserves_string(&card.source_requirement_or_policy_id)),
-        ("status", preserves_string(&card.status)),
+        ("status", preserves_verification_status(&card.status)),
     ])
 }
 
@@ -687,8 +1177,8 @@ fn preserves_links(links: &[ProvenanceLink]) -> String {
 
 fn preserves_link(link: &ProvenanceLink) -> String {
     preserves_record("provenance-link", &[
-        ("artifact_hash", preserves_optional_string(link.artifact_hash.as_deref())),
-        ("binary_hash", preserves_optional_string(link.binary_hash.as_deref())),
+        ("artifact_hash", preserves_optional_artifact_digest(link.artifact_hash.as_deref())),
+        ("binary_hash", preserves_optional_binary_digest(link.binary_hash.as_deref())),
         ("function_object_id", preserves_string(&link.function_object_id)),
         ("requirement_ids", preserves_string_list(&link.requirement_ids)),
         ("source_id", preserves_string(&link.source_id)),
@@ -709,12 +1199,12 @@ fn preserves_external_evidence(records: &[MantleExternalEvidenceRecord]) -> Stri
 
 fn preserves_external_evidence_record(record: &MantleExternalEvidenceRecord) -> String {
     preserves_record("mantle-external-evidence", &[
-        ("claim_scope", preserves_string(&record.claim_scope)),
-        ("digest_blake3", preserves_string(&record.digest_blake3)),
+        ("claim_scope", preserves_claim_scope(&record.claim_scope)),
+        ("digest_blake3", preserves_sidecar_digest(&record.digest_blake3)),
         ("non_claims", preserves_string_list(&record.non_claims)),
         ("relative_path", preserves_string(&record.relative_path)),
-        ("role", preserves_string(&record.role)),
-        ("schema", preserves_string(&record.schema)),
+        ("role", preserves_mantle_role(&record.role)),
+        ("schema", preserves_stack_sidecar_schema(&record.schema)),
     ])
 }
 
@@ -728,7 +1218,7 @@ fn preserves_mantle_binaries(binaries: &[MantleBinaryIdentity]) -> String {
 
 fn preserves_mantle_binary(binary: &MantleBinaryIdentity) -> String {
     preserves_record("mantle-binary-identity", &[
-        ("digest_blake3", preserves_string(&binary.digest_blake3)),
+        ("digest_blake3", preserves_binary_digest(&binary.digest_blake3)),
         ("relative_path", preserves_string(&binary.relative_path)),
     ])
 }
@@ -736,10 +1226,84 @@ fn preserves_mantle_binary(binary: &MantleBinaryIdentity) -> String {
 fn preserves_coverage(coverage: Option<&MantleProvenanceCoverageView>) -> String {
     match coverage {
         Some(coverage) => {
-            preserves_record(PRESERVES_OPTION_SOME_TAG, &[("value", preserves_string(&coverage.binary_hash))])
+            preserves_record(PRESERVES_OPTION_SOME_TAG, &[("value", preserves_binary_digest(&coverage.binary_hash))])
         }
         None => PRESERVES_OPTION_NONE.to_owned(),
     }
+}
+
+fn preserves_binary_digest(value: &str) -> String {
+    match BinaryDigest::parse(value) {
+        Some(digest) => preserves_string(&digest.normalized().to_ascii_lowercase()),
+        None => preserves_string(value),
+    }
+}
+
+fn preserves_sidecar_digest(value: &str) -> String {
+    match SidecarDigest::parse(value) {
+        Some(digest) => preserves_string(&digest.normalized().to_ascii_lowercase()),
+        None => preserves_string(value),
+    }
+}
+
+fn preserves_artifact_digest(value: &str) -> String {
+    match ArtifactDigest::parse(value) {
+        Some(digest) => preserves_string(&digest.normalized().to_ascii_lowercase()),
+        None => preserves_string(value),
+    }
+}
+
+fn preserves_optional_binary_digest(value: Option<&str>) -> String {
+    match value {
+        Some(value) => preserves_record(PRESERVES_OPTION_SOME_TAG, &[("value", preserves_binary_digest(value))]),
+        None => PRESERVES_OPTION_NONE.to_owned(),
+    }
+}
+
+fn preserves_optional_artifact_digest(value: Option<&str>) -> String {
+    match value {
+        Some(value) => preserves_record(PRESERVES_OPTION_SOME_TAG, &[("value", preserves_artifact_digest(value))]),
+        None => PRESERVES_OPTION_NONE.to_owned(),
+    }
+}
+
+fn preserves_stack_sidecar_schema(value: &str) -> String {
+    match StackProvenanceSidecarSchema::parse(value) {
+        Some(schema) => preserves_string(schema.as_str()),
+        None => preserves_string(value),
+    }
+}
+
+fn preserves_octet_schema(value: &str) -> String {
+    match OctetValenceExportSchema::parse(value) {
+        Some(schema) => preserves_string(schema.as_str()),
+        None => preserves_string(value),
+    }
+}
+
+fn preserves_verification_status(value: &str) -> String {
+    match VerificationStatus::parse(value) {
+        Some(status) => preserves_string(status.as_str()),
+        None => preserves_string(value),
+    }
+}
+
+fn preserves_claim_scope(value: &str) -> String {
+    match StackProvenanceClaimScope::parse(value) {
+        Some(scope) => preserves_string(scope.as_str()),
+        None => preserves_string(value),
+    }
+}
+
+fn preserves_mantle_role(value: &str) -> String {
+    match MantleExternalEvidenceRole::parse(value) {
+        Some(role) => preserves_string(role.as_str()),
+        None => preserves_string(value),
+    }
+}
+
+fn preserves_evidence_tier(value: &str) -> String {
+    preserves_string(EvidenceTier::parse(value).as_str())
 }
 
 fn preserves_optional_string(value: Option<&str>) -> String {
@@ -800,10 +1364,14 @@ fn built_binary_report_changed_fields(
     let mut changed = Vec::new();
     push_changed_field(&mut changed, baseline.valid == candidate.valid, "valid");
     push_changed_field(&mut changed, baseline.issue_codes == candidate.issue_codes, "issue_codes");
-    push_changed_field(&mut changed, baseline.binary_hash == candidate.binary_hash, "binary_hash");
     push_changed_field(
         &mut changed,
-        baseline.sidecar_digest_blake3 == candidate.sidecar_digest_blake3,
+        binary_digest_values_equal(&baseline.binary_hash, &candidate.binary_hash),
+        "binary_hash",
+    );
+    push_changed_field(
+        &mut changed,
+        sidecar_digest_values_equal(&baseline.sidecar_digest_blake3, &candidate.sidecar_digest_blake3),
         "sidecar_digest_blake3",
     );
     push_changed_field(&mut changed, baseline.source_ids == candidate.source_ids, "source_ids");
@@ -821,6 +1389,59 @@ fn push_changed_field(changed: &mut Vec<String>, unchanged: bool, field: &str) {
     if !unchanged {
         changed.push(field.to_owned());
     }
+}
+
+fn binary_digest_values_equal(left: &str, right: &str) -> bool {
+    match (BinaryDigest::parse(left), BinaryDigest::parse(right)) {
+        (Some(left), Some(right)) => left.matches(right),
+        _ => left == right,
+    }
+}
+
+fn sidecar_digest_values_equal(left: &str, right: &str) -> bool {
+    match (SidecarDigest::parse(left), SidecarDigest::parse(right)) {
+        (Some(left), Some(right)) => left.matches(right),
+        _ => left == right,
+    }
+}
+
+fn artifact_digest_values_equal(left: &str, right: &str) -> bool {
+    match (ArtifactDigest::parse(left), ArtifactDigest::parse(right)) {
+        (Some(left), Some(right)) => left.normalized().eq_ignore_ascii_case(right.normalized()),
+        _ => left == right,
+    }
+}
+
+fn optional_binary_digest_values_equal(left: Option<&str>, right: Option<&str>) -> bool {
+    match (left, right) {
+        (Some(left), Some(right)) => binary_digest_values_equal(left, right),
+        (None, None) => true,
+        _ => false,
+    }
+}
+
+fn optional_artifact_digest_values_equal(left: Option<&str>, right: Option<&str>) -> bool {
+    match (left, right) {
+        (Some(left), Some(right)) => artifact_digest_values_equal(left, right),
+        (None, None) => true,
+        _ => false,
+    }
+}
+
+fn provenance_links_match_typed(expected: &[ProvenanceLink], actual: &[ProvenanceLink]) -> bool {
+    expected.len() == actual.len()
+        && expected
+            .iter()
+            .zip(actual.iter())
+            .all(|(expected, actual)| provenance_link_matches_typed(expected, actual))
+}
+
+fn provenance_link_matches_typed(expected: &ProvenanceLink, actual: &ProvenanceLink) -> bool {
+    expected.source_id == actual.source_id
+        && expected.function_object_id == actual.function_object_id
+        && expected.requirement_ids == actual.requirement_ids
+        && optional_artifact_digest_values_equal(expected.artifact_hash.as_deref(), actual.artifact_hash.as_deref())
+        && optional_binary_digest_values_equal(expected.binary_hash.as_deref(), actual.binary_hash.as_deref())
 }
 
 fn built_binary_report(
@@ -873,16 +1494,17 @@ fn validate_sidecar_external_evidence(
     sidecar_digest_blake3: &str,
 ) -> Vec<String> {
     let mut issues = Vec::new();
-    match external_evidence.iter().find(|record| record.role == MANTLE_STACK_PROVENANCE_ROLE) {
+    let measured_sidecar_digest = SidecarDigest::parse(sidecar_digest_blake3);
+    match external_evidence.iter().find(|record| MantleExternalEvidenceRole::parse(&record.role).is_some()) {
         Some(record) => {
-            if record.schema != STACK_PROVENANCE_SIDECAR_SCHEMA {
-                issues.push("mantle_schema_mismatch".to_owned());
-            }
-            if record.claim_scope != STACK_PROVENANCE_CLAIM_SCOPE {
-                issues.push("mantle_claim_scope_mismatch".to_owned());
-            }
-            if !hash_matches(&record.digest_blake3, sidecar_digest_blake3) {
-                issues.push("sidecar_digest_mismatch".to_owned());
+            match (parse_mantle_external_evidence_boundary_values(record), measured_sidecar_digest) {
+                (Ok(boundary), Some(measured_digest)) => {
+                    if !boundary.digest_blake3.matches(measured_digest) {
+                        issues.push("sidecar_digest_mismatch".to_owned());
+                    }
+                }
+                (Ok(_), None) => issues.push("sidecar_digest_invalid".to_owned()),
+                (Err(record_issues), _) => issues.extend(record_issues),
             }
             if !record.non_claims.iter().any(|claim| claim == STACK_PROVENANCE_NON_CLAIM) {
                 issues.push("mantle_non_claim_missing".to_owned());
@@ -899,23 +1521,36 @@ fn validate_measured_binary_identity(
     mantle_manifest: &MantleReleaseManifestView,
 ) -> Vec<String> {
     let mut issues = Vec::new();
-    if !hash_matches(&sidecar.binary_hash, binary_hash) {
-        issues.push("binary_digest_mismatch".to_owned());
+    let measured_binary_hash = match BinaryDigest::parse(binary_hash) {
+        Some(digest) => digest,
+        None => {
+            issues.push("binary_hash_invalid".to_owned());
+            return issues;
+        }
+    };
+    match BinaryDigest::parse(&sidecar.binary_hash) {
+        Some(sidecar_binary_hash) if sidecar_binary_hash.matches(measured_binary_hash) => {}
+        Some(_) | None => issues.push("binary_digest_mismatch".to_owned()),
     }
     for link in &sidecar.chain.links {
-        match link.binary_hash.as_deref() {
-            Some(link_hash) if hash_matches(link_hash, binary_hash) => {}
+        match link.binary_hash.as_deref().and_then(BinaryDigest::parse) {
+            Some(link_hash) if link_hash.matches(measured_binary_hash) => {}
             Some(_) | None => issues.push("provenance_link_binary_mismatch".to_owned()),
         }
     }
-    if !mantle_manifest.binaries.iter().any(|binary| hash_matches(&binary.digest_blake3, binary_hash)) {
+    if !mantle_manifest
+        .binaries
+        .iter()
+        .filter_map(|binary| BinaryDigest::parse(&binary.digest_blake3))
+        .any(|binary_digest| binary_digest.matches(measured_binary_hash))
+    {
         issues.push("missing_mantle_binary_identity".to_owned());
     }
-    if mantle_manifest
-        .provenance_coverage
-        .as_ref()
-        .is_some_and(|coverage| !hash_matches(&coverage.binary_hash, binary_hash))
-    {
+    if mantle_manifest.provenance_coverage.as_ref().is_some_and(|coverage| {
+        BinaryDigest::parse(&coverage.binary_hash)
+            .map(|coverage_hash| !coverage_hash.matches(measured_binary_hash))
+            .unwrap_or(true)
+    }) {
         issues.push("provenance_coverage_binary_mismatch".to_owned());
     }
     issues
@@ -934,7 +1569,7 @@ fn validate_sidecar_matches_octet_export(
         issues.push("octet_parent_artifact_mismatch".to_owned());
     }
     let expected = build_stack_provenance_sidecar(export, binary_hash);
-    if expected.chain.links != sidecar.chain.links {
+    if !provenance_links_match_typed(&expected.chain.links, &sidecar.chain.links) {
         issues.push("sidecar_octet_link_mismatch".to_owned());
     }
     issues
@@ -963,19 +1598,39 @@ fn built_binary_overclaim_detected(claim: &str) -> bool {
 }
 
 fn artifact_identity_set(artifacts: &[StackArtifactIdentity]) -> BTreeSet<(String, String)> {
-    artifacts.iter().map(|artifact| (artifact.artifact.clone(), artifact.blake3.clone())).collect()
+    artifacts
+        .iter()
+        .map(|artifact| {
+            let normalized_digest = ArtifactDigest::parse(&artifact.blake3)
+                .map(ArtifactDigest::normalized)
+                .unwrap_or(artifact.blake3.as_str());
+            (artifact.artifact.clone(), normalized_digest.to_owned())
+        })
+        .collect()
 }
 
 fn blake3_hex(bytes: &[u8]) -> String {
     blake3::hash(bytes).to_hex().to_string()
 }
 
-fn hash_matches(expected: &str, actual: &str) -> bool {
-    normalize_hash(expected) == normalize_hash(actual)
+fn parse_artifact_identity_digests<'a>(
+    artifacts: &'a [StackArtifactIdentity],
+    issue_codes: &mut Vec<String>,
+) -> Vec<ArtifactDigest<'a>> {
+    let mut digests = Vec::new();
+    for artifact in artifacts {
+        match ArtifactDigest::parse(&artifact.blake3) {
+            Some(digest) => digests.push(digest),
+            None => issue_codes.push("artifact_hash_invalid".to_owned()),
+        }
+    }
+    digests
 }
 
-fn normalize_hash(hash: &str) -> &str {
-    hash.strip_prefix("b3:").unwrap_or(hash)
+fn sorted_unique(mut issue_codes: Vec<String>) -> Vec<String> {
+    issue_codes.sort();
+    issue_codes.dedup();
+    issue_codes
 }
 
 fn provenance_link_from_octet(
@@ -1003,17 +1658,25 @@ fn requirement_ids_for_record(record: &OctetProvenanceRecord, proof_cards: &[Oct
     requirements
 }
 
-fn validate_chain(chain: &ProvenanceChain, binary_hash: &str) -> Vec<String> {
+fn validate_chain(chain: &ProvenanceChain, binary_hash: BinaryDigest<'_>) -> Vec<String> {
+    let mut issues = validate_chain_artifact_digests(chain);
+    for link in &chain.links {
+        match link.binary_hash.as_deref().and_then(BinaryDigest::parse) {
+            Some(link_binary_hash) if link_binary_hash.matches(binary_hash) => {}
+            Some(_) | None => issues.push("binary_hash_mismatch".to_owned()),
+        }
+    }
+    issues
+}
+
+fn validate_chain_artifact_digests(chain: &ProvenanceChain) -> Vec<String> {
     let mut issues = check_provenance_chain(chain)
         .issue_codes
         .into_iter()
         .map(|code| format!("chain_{code}"))
         .collect::<Vec<_>>();
     for link in &chain.links {
-        if link.binary_hash.as_deref() != Some(binary_hash) {
-            issues.push("binary_hash_mismatch".to_owned());
-        }
-        if link.artifact_hash.as_deref().is_some_and(|hash| !is_blake3ish(hash)) {
+        if link.artifact_hash.as_deref().is_some_and(|hash| ArtifactDigest::parse(hash).is_none()) {
             issues.push("artifact_hash_invalid".to_owned());
         }
     }
@@ -1039,27 +1702,30 @@ fn validate_parent_artifacts(export: &OctetValenceProvenanceExport) -> Vec<Strin
 fn validate_evidence_tiers(export: &OctetValenceProvenanceExport) -> Vec<String> {
     let mut issues = Vec::new();
     for card in &export.proof_cards {
+        let typed_tier = EvidenceTier::parse(&card.evidence_tier);
         if !card.diagnostics.is_empty() {
             issues.push("proof_card_diagnostics_present".to_owned());
         }
-        if card.evidence_origin == EXTERNAL_TRELLIS_ORIGIN && card.evidence_tier == FORMAL_PROOF_TIER {
+        if typed_tier.is_unknown() {
+            issues.push("unknown_evidence_tier".to_owned());
+        }
+        if card.evidence_origin == EXTERNAL_TRELLIS_ORIGIN && typed_tier.is_formal_proof() {
             issues.push("manual_review_evidence_promoted".to_owned());
         }
     }
     for record in &export.provenance_records {
-        if record.human_action.is_some() && record.evidence_tier == FORMAL_PROOF_TIER {
+        let typed_tier = EvidenceTier::parse(&record.evidence_tier);
+        if typed_tier.is_unknown() {
+            issues.push("unknown_evidence_tier".to_owned());
+        }
+        if record.human_action.is_some() && typed_tier.is_formal_proof() {
             issues.push("manual_review_evidence_promoted".to_owned());
         }
-        if record.evidence_tier == MANUAL_REVIEW_TIER && record.human_action.as_deref().unwrap_or_default().is_empty() {
+        if typed_tier.is_manual_review_required() && record.human_action.as_deref().unwrap_or_default().is_empty() {
             issues.push("manual_review_action_missing".to_owned());
         }
     }
     issues
-}
-
-fn is_blake3ish(hash: &str) -> bool {
-    let raw = hash.strip_prefix("b3:").unwrap_or(hash);
-    raw.len() == BLAKE3_HEX_LENGTH && raw.chars().all(|character| character.is_ascii_hexdigit())
 }
 
 #[cfg(test)]
@@ -1128,6 +1794,137 @@ mod tests {
 
         assert!(!report.valid);
         assert_eq!(report.issue_codes, vec!["octet_export_malformed".to_owned()]);
+    }
+
+    #[test]
+    fn typed_boundary_parsers_accept_valid_stack_metadata() {
+        let binary_bytes = b"valence-built-binary-fixture";
+        let binary_hash = blake3_hex(binary_bytes);
+        let export = sample_export();
+        let sidecar = build_stack_provenance_sidecar(&export, &binary_hash);
+        let sidecar_json = serde_json::to_vec_pretty(&sidecar).unwrap();
+        let sidecar_digest = blake3_hex(&sidecar_json);
+        let manifest = mantle_release_manifest(&sidecar_digest, &binary_hash);
+        let report = verify_built_binary_thread(BuiltBinaryThreadInput {
+            binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: &sidecar_json,
+            mantle_manifest: &manifest,
+        });
+
+        let export_values = parse_octet_export_boundary_values(&export).expect("typed octet export");
+        assert_eq!(export_values.schema_version, OctetValenceExportSchema::V1);
+        assert_eq!(export_values.verification_status, VerificationStatus::Valid);
+        assert_eq!(export_values.provenance_evidence_tiers, vec![EvidenceTier::FormalProof]);
+        assert_eq!(export_values.proof_card_statuses, vec![VerificationStatus::Valid]);
+
+        let sidecar_values = parse_stack_sidecar_boundary_values(&sidecar).expect("typed sidecar");
+        assert_eq!(sidecar_values.schema, StackProvenanceSidecarSchema::V1);
+        assert_eq!(sidecar_values.claim_scope, StackProvenanceClaimScope::IdentityLinkageSidecar);
+        assert!(sidecar_values.binary_hash.matches(BinaryDigest::parse(&binary_hash).unwrap()));
+
+        let manifest_values = parse_mantle_release_manifest_boundary_values(&manifest).expect("typed manifest");
+        assert_eq!(
+            manifest_values.stack_sidecar_external_evidence.role,
+            MantleExternalEvidenceRole::StackProvenanceTrace
+        );
+        assert!(
+            manifest_values
+                .binary_digests
+                .iter()
+                .any(|digest| digest.matches(BinaryDigest::parse(&binary_hash).unwrap()))
+        );
+
+        let report_values = parse_built_binary_thread_report_boundary_values(&report).expect("typed report");
+        assert!(report_values.binary_hash.matches(BinaryDigest::parse(&report.binary_hash).unwrap()));
+        assert!(
+            report_values
+                .sidecar_digest_blake3
+                .matches(SidecarDigest::parse(&report.sidecar_digest_blake3).unwrap())
+        );
+        assert!(report_values.preserves_content_hash.is_some());
+    }
+
+    #[test]
+    fn typed_boundary_parsers_reject_invalid_strings() {
+        let mut export = sample_export();
+        export.schema_version = "octet-valence-provenance-export/v0".to_owned();
+        export.verification_status = "warning".to_owned();
+        export.artifacts[0].blake3 = "not-a-blake3-digest".to_owned();
+        export.provenance_records[0].evidence_tier = "experimental_machine_review".to_owned();
+        export.proof_cards[0].status = "stale".to_owned();
+        let report = validate_octet_export(&export);
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"artifact_hash_invalid".to_owned()));
+        assert!(report.issue_codes.contains(&"octet_schema_mismatch".to_owned()));
+        assert!(report.issue_codes.contains(&"octet_verification_not_valid".to_owned()));
+        assert!(report.issue_codes.contains(&"proof_card_status_invalid".to_owned()));
+        assert!(report.issue_codes.contains(&"unknown_evidence_tier".to_owned()));
+
+        let mut sidecar = build_stack_provenance_sidecar(&sample_export(), BINARY_HASH);
+        sidecar.schema = "valence.stack-provenance-sidecar.v0".to_owned();
+        sidecar.claim_scope = "correctness-proof".to_owned();
+        sidecar.binary_hash = "short".to_owned();
+        let sidecar_issues = parse_stack_sidecar_boundary_values(&sidecar).unwrap_err();
+        assert!(sidecar_issues.contains(&"binary_hash_invalid".to_owned()));
+        assert!(sidecar_issues.contains(&"claim_scope_mismatch".to_owned()));
+        assert!(sidecar_issues.contains(&"schema_mismatch".to_owned()));
+
+        let bad_record = MantleExternalEvidenceRecord {
+            role: "other-role".to_owned(),
+            schema: "valence.stack-provenance-sidecar.v0".to_owned(),
+            relative_path: "external-evidence/stack-provenance.json".to_owned(),
+            digest_blake3: "not-a-digest".to_owned(),
+            claim_scope: "correctness-proof".to_owned(),
+            non_claims: vec![STACK_PROVENANCE_NON_CLAIM.to_owned()],
+        };
+        let mantle_issues = parse_mantle_external_evidence_boundary_values(&bad_record).unwrap_err();
+        assert!(mantle_issues.contains(&"mantle_role_missing".to_owned()));
+        assert!(mantle_issues.contains(&"mantle_schema_mismatch".to_owned()));
+        assert!(mantle_issues.contains(&"sidecar_digest_invalid".to_owned()));
+        assert!(mantle_issues.contains(&"mantle_claim_scope_mismatch".to_owned()));
+    }
+
+    #[test]
+    fn unknown_evidence_tier_is_preserved_but_conservative() {
+        let mut export = sample_export();
+        export.provenance_records[0].evidence_tier = "experimental_machine_review".to_owned();
+        let report = validate_octet_export(&export);
+        let evidence = preserves_evidence_for_octet_export(&export);
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"unknown_evidence_tier".to_owned()));
+        assert!(!report.issue_codes.contains(&"manual_review_evidence_promoted".to_owned()));
+        assert!(evidence.preserves_value.contains("experimental_machine_review"));
+    }
+
+    #[test]
+    fn typed_digest_roles_accept_prefixed_uppercase_hashes_without_json_shape_changes() {
+        let binary_bytes = b"valence-built-binary-fixture";
+        let binary_hash = blake3_hex(binary_bytes);
+        let prefixed_binary_hash = format!("b3:{}", binary_hash.to_ascii_uppercase());
+        let export = sample_export();
+        let mut sidecar = build_stack_provenance_sidecar(&export, &binary_hash);
+        sidecar.binary_hash = prefixed_binary_hash.clone();
+        for link in &mut sidecar.chain.links {
+            link.binary_hash = Some(prefixed_binary_hash.clone());
+        }
+        let sidecar_json = serde_json::to_vec_pretty(&sidecar).unwrap();
+        let sidecar_digest = blake3_hex(&sidecar_json);
+        let prefixed_sidecar_digest = format!("b3:{}", sidecar_digest.to_ascii_uppercase());
+        let manifest = mantle_release_manifest(&prefixed_sidecar_digest, &prefixed_binary_hash);
+        let report = verify_built_binary_thread(BuiltBinaryThreadInput {
+            binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: &sidecar_json,
+            mantle_manifest: &manifest,
+        });
+
+        assert!(report.valid, "unexpected issues: {:?}", report.issue_codes);
+        assert_eq!(sidecar.binary_hash, prefixed_binary_hash);
     }
 
     #[test]
