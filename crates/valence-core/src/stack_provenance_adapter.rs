@@ -26,10 +26,22 @@ pub const MANTLE_STACK_PROVENANCE_ROLE: &str = "stack-provenance-trace";
 pub const STACK_PROVENANCE_CLAIM_SCOPE: &str = "identity-linkage-sidecar";
 /// Required sidecar non-claim.
 pub const STACK_PROVENANCE_NON_CLAIM: &str = "stack provenance proves identity and linkage only; it does not prove behavioral correctness, semantic equivalence, whole-program safety, or requirement satisfaction";
+/// Required built-binary thread non-claim.
+pub const BUILT_BINARY_THREAD_NON_CLAIM: &str = "built-binary thread verification proves measured-byte identity and linkage only; it does not prove behavioral correctness, semantic equivalence, requirement satisfaction, release eligibility, verifier soundness, or whole-program safety";
 const FORMAL_PROOF_TIER: &str = "formal_proof";
 const MANUAL_REVIEW_TIER: &str = "manual_review_required";
 const EXTERNAL_TRELLIS_ORIGIN: &str = "external_trellis_import";
 const VALID_VERIFICATION_STATUS: &str = "valid";
+const BUILT_BINARY_OVERCLAIM_PATTERNS: &[&str] = &[
+    "proves behavioral correctness",
+    "proves semantic equivalence",
+    "proves requirement satisfaction",
+    "proves release eligibility",
+    "proves whole-program safety",
+    "certifies release eligibility",
+    "guarantees behavioral correctness",
+    "guarantees whole-program safety",
+];
 const BLAKE3_HEX_LENGTH: usize = 64;
 
 /// Verified Octet export consumed by the adapter.
@@ -125,6 +137,52 @@ pub struct MantleExternalEvidenceRecord {
 struct MantleManifestView {
     #[serde(default)]
     external_evidence: Vec<MantleExternalEvidenceRecord>,
+}
+
+/// Minimal Mantle binary identity consumed by the Valence semantic verifier.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MantleBinaryIdentity {
+    pub relative_path: String,
+    pub digest_blake3: String,
+}
+
+/// Minimal Mantle provenance coverage view consumed by built-binary threading.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MantleProvenanceCoverageView {
+    pub binary_hash: String,
+}
+
+/// Minimal Mantle release manifest view for stack-specific Valence verification.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MantleReleaseManifestView {
+    #[serde(default)]
+    pub external_evidence: Vec<MantleExternalEvidenceRecord>,
+    #[serde(default)]
+    pub binaries: Vec<MantleBinaryIdentity>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provenance_coverage: Option<MantleProvenanceCoverageView>,
+}
+
+/// Pure input for verifying that stack provenance reaches measured binary bytes.
+pub struct BuiltBinaryThreadInput<'a> {
+    pub binary_bytes: &'a [u8],
+    pub octet_export: &'a OctetValenceProvenanceExport,
+    pub sidecar: &'a StackProvenanceSidecar,
+    pub sidecar_bytes: &'a [u8],
+    pub mantle_manifest: &'a MantleReleaseManifestView,
+}
+
+/// Deterministic report for built-binary thread verification.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct BuiltBinaryThreadReport {
+    pub valid: bool,
+    pub issue_codes: Vec<String>,
+    pub binary_hash: String,
+    pub sidecar_digest_blake3: String,
+    pub source_ids: Vec<String>,
+    pub requirement_ids: Vec<String>,
+    pub artifact_identities: Vec<StackArtifactIdentity>,
+    pub non_claims: Vec<String>,
 }
 
 /// Canonical Valence stack-provenance sidecar.
@@ -309,6 +367,225 @@ pub fn verify_mantle_external_evidence_sidecar(
     }
 }
 
+/// Parse local artifacts and verify that provenance reaches measured binary bytes.
+#[must_use]
+pub fn verify_built_binary_thread_json(
+    binary_bytes: &[u8],
+    octet_export_json: &str,
+    sidecar_json: &str,
+    mantle_manifest_json: &str,
+) -> BuiltBinaryThreadReport {
+    let binary_hash = blake3_hex(binary_bytes);
+    let sidecar_digest_blake3 = blake3_hex(sidecar_json.as_bytes());
+    let mut issue_codes = Vec::new();
+    let octet_export = match serde_json::from_str::<OctetValenceProvenanceExport>(octet_export_json) {
+        Ok(export) => export,
+        Err(_) => {
+            issue_codes.push("octet_export_malformed".to_owned());
+            return built_binary_report(issue_codes, binary_hash, sidecar_digest_blake3, None, None);
+        }
+    };
+    let sidecar = match serde_json::from_str::<StackProvenanceSidecar>(sidecar_json) {
+        Ok(sidecar) => sidecar,
+        Err(_) => {
+            issue_codes.push("sidecar_malformed".to_owned());
+            return built_binary_report(issue_codes, binary_hash, sidecar_digest_blake3, Some(&octet_export), None);
+        }
+    };
+    let mantle_manifest = match serde_json::from_str::<MantleReleaseManifestView>(mantle_manifest_json) {
+        Ok(manifest) => manifest,
+        Err(_) => {
+            issue_codes.push("mantle_manifest_malformed".to_owned());
+            return built_binary_report(
+                issue_codes,
+                binary_hash,
+                sidecar_digest_blake3,
+                Some(&octet_export),
+                Some(&sidecar),
+            );
+        }
+    };
+    verify_built_binary_thread(BuiltBinaryThreadInput {
+        binary_bytes,
+        octet_export: &octet_export,
+        sidecar: &sidecar,
+        sidecar_bytes: sidecar_json.as_bytes(),
+        mantle_manifest: &mantle_manifest,
+    })
+}
+
+/// Verify the measured built binary against Octet, Valence, and Mantle identities.
+#[must_use]
+pub fn verify_built_binary_thread(input: BuiltBinaryThreadInput<'_>) -> BuiltBinaryThreadReport {
+    let binary_hash = blake3_hex(input.binary_bytes);
+    let sidecar_digest_blake3 = blake3_hex(input.sidecar_bytes);
+    let mut issue_codes = Vec::new();
+    issue_codes.extend(validate_stack_provenance_sidecar(input.sidecar).issue_codes);
+    issue_codes.extend(validate_octet_export(input.octet_export).issue_codes);
+    issue_codes.extend(validate_sidecar_external_evidence(
+        input.mantle_manifest.external_evidence.as_slice(),
+        &sidecar_digest_blake3,
+    ));
+    issue_codes.extend(validate_measured_binary_identity(&binary_hash, input.sidecar, input.mantle_manifest));
+    issue_codes.extend(validate_sidecar_matches_octet_export(input.octet_export, input.sidecar, &binary_hash));
+    issue_codes.extend(validate_built_binary_claim_boundary(input.octet_export, input.sidecar));
+    issue_codes.sort();
+    issue_codes.dedup();
+    built_binary_report(issue_codes, binary_hash, sidecar_digest_blake3, Some(input.octet_export), Some(input.sidecar))
+}
+
+fn built_binary_report(
+    mut issue_codes: Vec<String>,
+    binary_hash: String,
+    sidecar_digest_blake3: String,
+    octet_export: Option<&OctetValenceProvenanceExport>,
+    sidecar: Option<&StackProvenanceSidecar>,
+) -> BuiltBinaryThreadReport {
+    issue_codes.sort();
+    issue_codes.dedup();
+    let source_ids = sidecar
+        .map(|sidecar| {
+            let mut ids = sidecar.chain.links.iter().map(|link| link.source_id.clone()).collect::<Vec<_>>();
+            ids.sort();
+            ids.dedup();
+            ids
+        })
+        .unwrap_or_default();
+    let requirement_ids = sidecar
+        .map(|sidecar| {
+            let mut ids =
+                sidecar.chain.links.iter().flat_map(|link| link.requirement_ids.iter().cloned()).collect::<Vec<_>>();
+            ids.sort();
+            ids.dedup();
+            ids
+        })
+        .unwrap_or_default();
+    let artifact_identities = octet_export.map(|export| export.artifacts.clone()).unwrap_or_default();
+    BuiltBinaryThreadReport {
+        valid: issue_codes.is_empty(),
+        issue_codes,
+        binary_hash,
+        sidecar_digest_blake3,
+        source_ids,
+        requirement_ids,
+        artifact_identities,
+        non_claims: vec![
+            BUILT_BINARY_THREAD_NON_CLAIM.to_owned(),
+            STACK_PROVENANCE_NON_CLAIM.to_owned(),
+        ],
+    }
+}
+
+fn validate_sidecar_external_evidence(
+    external_evidence: &[MantleExternalEvidenceRecord],
+    sidecar_digest_blake3: &str,
+) -> Vec<String> {
+    let mut issues = Vec::new();
+    match external_evidence.iter().find(|record| record.role == MANTLE_STACK_PROVENANCE_ROLE) {
+        Some(record) => {
+            if record.schema != STACK_PROVENANCE_SIDECAR_SCHEMA {
+                issues.push("mantle_schema_mismatch".to_owned());
+            }
+            if record.claim_scope != STACK_PROVENANCE_CLAIM_SCOPE {
+                issues.push("mantle_claim_scope_mismatch".to_owned());
+            }
+            if !hash_matches(&record.digest_blake3, sidecar_digest_blake3) {
+                issues.push("sidecar_digest_mismatch".to_owned());
+            }
+            if !record.non_claims.iter().any(|claim| claim == STACK_PROVENANCE_NON_CLAIM) {
+                issues.push("mantle_non_claim_missing".to_owned());
+            }
+        }
+        None => issues.push("mantle_role_missing".to_owned()),
+    }
+    issues
+}
+
+fn validate_measured_binary_identity(
+    binary_hash: &str,
+    sidecar: &StackProvenanceSidecar,
+    mantle_manifest: &MantleReleaseManifestView,
+) -> Vec<String> {
+    let mut issues = Vec::new();
+    if !hash_matches(&sidecar.binary_hash, binary_hash) {
+        issues.push("binary_digest_mismatch".to_owned());
+    }
+    for link in &sidecar.chain.links {
+        match link.binary_hash.as_deref() {
+            Some(link_hash) if hash_matches(link_hash, binary_hash) => {}
+            Some(_) | None => issues.push("provenance_link_binary_mismatch".to_owned()),
+        }
+    }
+    if !mantle_manifest.binaries.iter().any(|binary| hash_matches(&binary.digest_blake3, binary_hash)) {
+        issues.push("missing_mantle_binary_identity".to_owned());
+    }
+    if mantle_manifest
+        .provenance_coverage
+        .as_ref()
+        .is_some_and(|coverage| !hash_matches(&coverage.binary_hash, binary_hash))
+    {
+        issues.push("provenance_coverage_binary_mismatch".to_owned());
+    }
+    issues
+}
+
+fn validate_sidecar_matches_octet_export(
+    export: &OctetValenceProvenanceExport,
+    sidecar: &StackProvenanceSidecar,
+    binary_hash: &str,
+) -> Vec<String> {
+    let mut issues = Vec::new();
+    if sidecar.octet_export_artifact_dir != export.artifact_dir {
+        issues.push("octet_export_artifact_dir_mismatch".to_owned());
+    }
+    if artifact_identity_set(&sidecar.parent_artifacts) != artifact_identity_set(&export.artifacts) {
+        issues.push("octet_parent_artifact_mismatch".to_owned());
+    }
+    let expected = build_stack_provenance_sidecar(export, binary_hash);
+    if expected.chain.links != sidecar.chain.links {
+        issues.push("sidecar_octet_link_mismatch".to_owned());
+    }
+    issues
+}
+
+fn validate_built_binary_claim_boundary(
+    export: &OctetValenceProvenanceExport,
+    sidecar: &StackProvenanceSidecar,
+) -> Vec<String> {
+    let overclaim_present = export
+        .non_claims
+        .iter()
+        .chain(sidecar.non_claims.iter())
+        .chain(export.proof_cards.iter().flat_map(|card| card.non_claims.iter()))
+        .any(|claim| built_binary_overclaim_detected(claim));
+    if overclaim_present {
+        vec!["overclaim_detected".to_owned()]
+    } else {
+        Vec::new()
+    }
+}
+
+fn built_binary_overclaim_detected(claim: &str) -> bool {
+    let lower_claim = claim.to_ascii_lowercase();
+    BUILT_BINARY_OVERCLAIM_PATTERNS.iter().any(|pattern| lower_claim.contains(pattern))
+}
+
+fn artifact_identity_set(artifacts: &[StackArtifactIdentity]) -> BTreeSet<(String, String)> {
+    artifacts.iter().map(|artifact| (artifact.artifact.clone(), artifact.blake3.clone())).collect()
+}
+
+fn blake3_hex(bytes: &[u8]) -> String {
+    blake3::hash(bytes).to_hex().to_string()
+}
+
+fn hash_matches(expected: &str, actual: &str) -> bool {
+    normalize_hash(expected) == normalize_hash(actual)
+}
+
+fn normalize_hash(hash: &str) -> &str {
+    hash.strip_prefix("b3:").unwrap_or(hash)
+}
+
 fn provenance_link_from_octet(
     record: &OctetProvenanceRecord,
     proof_cards: &[OctetProofCard],
@@ -461,6 +738,112 @@ mod tests {
         assert_eq!(report.issue_codes, vec!["octet_export_malformed".to_owned()]);
     }
 
+    #[test]
+    fn built_binary_thread_accepts_measured_binary_identity() {
+        let binary_bytes = b"valence-built-binary-fixture";
+        let binary_hash = blake3_hex(binary_bytes);
+        let export = sample_export();
+        let sidecar = build_stack_provenance_sidecar(&export, &binary_hash);
+        let sidecar_json = serde_json::to_vec_pretty(&sidecar).unwrap();
+        let sidecar_digest = blake3_hex(&sidecar_json);
+        let manifest = mantle_release_manifest(&sidecar_digest, &binary_hash);
+        let report = verify_built_binary_thread(BuiltBinaryThreadInput {
+            binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: &sidecar_json,
+            mantle_manifest: &manifest,
+        });
+
+        assert!(report.valid, "unexpected issues: {:?}", report.issue_codes);
+        assert_eq!(report.binary_hash, binary_hash);
+        assert_eq!(report.source_ids, vec!["octet.standards.formal-proof".to_owned()]);
+        assert!(report.non_claims.contains(&BUILT_BINARY_THREAD_NON_CLAIM.to_owned()));
+    }
+
+    #[test]
+    fn built_binary_thread_rejects_stale_bytes_and_missing_binary_identity() {
+        let binary_bytes = b"valence-built-binary-fixture";
+        let stale_binary_bytes = b"valence-built-binary-fixture-tampered";
+        let binary_hash = blake3_hex(binary_bytes);
+        let export = sample_export();
+        let sidecar = build_stack_provenance_sidecar(&export, &binary_hash);
+        let sidecar_json = serde_json::to_vec_pretty(&sidecar).unwrap();
+        let sidecar_digest = blake3_hex(&sidecar_json);
+        let manifest = mantle_release_manifest(&sidecar_digest, &binary_hash);
+        let report = verify_built_binary_thread(BuiltBinaryThreadInput {
+            binary_bytes: stale_binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: &sidecar_json,
+            mantle_manifest: &manifest,
+        });
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"binary_digest_mismatch".to_owned()));
+        assert!(report.issue_codes.contains(&"provenance_link_binary_mismatch".to_owned()));
+        assert!(report.issue_codes.contains(&"missing_mantle_binary_identity".to_owned()));
+    }
+
+    #[test]
+    fn built_binary_thread_rejects_stale_sidecar_digest_and_octet_mismatch() {
+        let binary_bytes = b"valence-built-binary-fixture";
+        let binary_hash = blake3_hex(binary_bytes);
+        let mut export = sample_export();
+        let sidecar = build_stack_provenance_sidecar(&export, &binary_hash);
+        export.artifacts[0].blake3 = RESULTS_HASH.to_owned();
+        export.provenance_records[0].blake3 = RESULTS_HASH.to_owned();
+        let sidecar_json = serde_json::to_vec_pretty(&sidecar).unwrap();
+        let manifest = mantle_release_manifest(STATUS_HASH, &binary_hash);
+        let report = verify_built_binary_thread(BuiltBinaryThreadInput {
+            binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: &sidecar_json,
+            mantle_manifest: &manifest,
+        });
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"sidecar_digest_mismatch".to_owned()));
+        assert!(report.issue_codes.contains(&"octet_parent_artifact_mismatch".to_owned()));
+        assert!(report.issue_codes.contains(&"sidecar_octet_link_mismatch".to_owned()));
+    }
+
+    #[test]
+    fn built_binary_thread_rejects_missing_parent_tier_promotion_and_overclaim() {
+        let binary_bytes = b"valence-built-binary-fixture";
+        let binary_hash = blake3_hex(binary_bytes);
+        let mut export = sample_export();
+        export.provenance_records[0].parent_artifacts.push("missing-parent.json".to_owned());
+        export.proof_cards[0].evidence_origin = EXTERNAL_TRELLIS_ORIGIN.to_owned();
+        export.proof_cards[0].evidence_tier = FORMAL_PROOF_TIER.to_owned();
+        export.non_claims.push("proves semantic equivalence".to_owned());
+        let sidecar = build_stack_provenance_sidecar(&export, &binary_hash);
+        let sidecar_json = serde_json::to_vec_pretty(&sidecar).unwrap();
+        let sidecar_digest = blake3_hex(&sidecar_json);
+        let manifest = mantle_release_manifest(&sidecar_digest, &binary_hash);
+        let report = verify_built_binary_thread(BuiltBinaryThreadInput {
+            binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: &sidecar_json,
+            mantle_manifest: &manifest,
+        });
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"parent_artifact_missing".to_owned()));
+        assert!(report.issue_codes.contains(&"manual_review_evidence_promoted".to_owned()));
+        assert!(report.issue_codes.contains(&"overclaim_detected".to_owned()));
+    }
+
+    #[test]
+    fn built_binary_thread_json_rejects_malformed_manifest() {
+        let report = verify_built_binary_thread_json(b"binary", "not json", "not json", "not json");
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"octet_export_malformed".to_owned()));
+    }
+
     fn sample_export() -> OctetValenceProvenanceExport {
         OctetValenceProvenanceExport {
             schema_version: OCTET_VALENCE_EXPORT_SCHEMA.to_owned(),
@@ -523,5 +906,30 @@ mod tests {
             ]
         })
         .to_string()
+    }
+
+    fn mantle_release_manifest(sidecar_digest: &str, binary_hash: &str) -> MantleReleaseManifestView {
+        serde_json::from_value(serde_json::json!({
+            "binaries": [
+                {
+                    "relative_path": "bin/valence-fixture",
+                    "digest_blake3": binary_hash
+                }
+            ],
+            "external_evidence": [
+                {
+                    "role": MANTLE_STACK_PROVENANCE_ROLE,
+                    "schema": STACK_PROVENANCE_SIDECAR_SCHEMA,
+                    "relative_path": "external-evidence/stack-provenance.json",
+                    "digest_blake3": sidecar_digest,
+                    "claim_scope": STACK_PROVENANCE_CLAIM_SCOPE,
+                    "non_claims": [STACK_PROVENANCE_NON_CLAIM]
+                }
+            ],
+            "provenance_coverage": {
+                "binary_hash": binary_hash
+            }
+        }))
+        .unwrap()
     }
 }

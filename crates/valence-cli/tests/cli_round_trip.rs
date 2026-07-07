@@ -10,6 +10,7 @@ use valence_core::evidence_ir::EvidenceSpan;
 use valence_core::evidence_ir::REQUIRED_NON_CLAIM;
 use valence_core::evidence_ir::VerificationRole;
 use valence_core::evidence_ir::build_evidence_artifact;
+use valence_core::stack_provenance_adapter::BUILT_BINARY_THREAD_NON_CLAIM;
 use valence_core::stack_provenance_adapter::MANTLE_STACK_PROVENANCE_ROLE;
 use valence_core::stack_provenance_adapter::OCTET_VALENCE_EXPORT_SCHEMA;
 use valence_core::stack_provenance_adapter::STACK_PROVENANCE_CLAIM_SCOPE;
@@ -19,6 +20,8 @@ use valence_core::stack_provenance_adapter::STACK_PROVENANCE_SIDECAR_SCHEMA;
 const BINARY_HASH: &str = "1111111111111111111111111111111111111111111111111111111111111111";
 const STATUS_HASH: &str = "2222222222222222222222222222222222222222222222222222222222222222";
 const RESULTS_HASH: &str = "3333333333333333333333333333333333333333333333333333333333333333";
+const BUILT_BINARY_BYTES: &[u8] = b"valence-cli-built-binary-fixture";
+const TAMPERED_BINARY_BYTES: &[u8] = b"valence-cli-built-binary-fixture-tampered";
 
 fn valence_binary() -> String {
     env!("CARGO_BIN_EXE_valence").to_owned()
@@ -240,6 +243,110 @@ fn stack_provenance_verify_rejects_tampered_sidecar_digest() {
 }
 
 #[test]
+fn stack_provenance_verify_built_binary_accepts_measured_thread() {
+    let binary_path = "/tmp/valence-cli-built-binary";
+    let export_path = "/tmp/valence-cli-built-binary-octet-export.json";
+    let sidecar_path = "/tmp/valence-cli-built-binary-sidecar.json";
+    let manifest_path = "/tmp/valence-cli-built-binary-mantle-manifest.json";
+    let binary_hash = blake3::hash(BUILT_BINARY_BYTES).to_hex().to_string();
+    fs::write(binary_path, BUILT_BINARY_BYTES).expect("write binary fixture");
+    write_text(export_path, &sample_octet_export_json());
+
+    let build_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("build")
+        .arg("--octet-export")
+        .arg(export_path)
+        .arg("--binary-hash")
+        .arg(&binary_hash)
+        .arg("--output")
+        .arg(sidecar_path)
+        .output()
+        .expect("run stack provenance build");
+    assert!(build_output.status.success(), "build should succeed");
+
+    let sidecar_json = fs::read_to_string(sidecar_path).expect("read sidecar");
+    let digest = blake3::hash(sidecar_json.as_bytes()).to_hex().to_string();
+    write_text(manifest_path, &mantle_release_manifest_json(&digest, &binary_hash));
+
+    let verify_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("verify-built-binary")
+        .arg("--binary")
+        .arg(binary_path)
+        .arg("--octet-export")
+        .arg(export_path)
+        .arg("--sidecar")
+        .arg(sidecar_path)
+        .arg("--manifest")
+        .arg(manifest_path)
+        .arg("--json")
+        .output()
+        .expect("run built binary verify");
+    let stdout = String::from_utf8_lossy(&verify_output.stdout);
+    assert!(verify_output.status.success(), "verify should succeed: {stdout}");
+    let report: serde_json::Value = serde_json::from_slice(&verify_output.stdout).expect("json report");
+    assert_eq!(report["valid"], true);
+    assert_eq!(report["binary_hash"], binary_hash);
+    assert!(
+        report["non_claims"]
+            .as_array()
+            .expect("non claims")
+            .iter()
+            .any(|claim| claim == BUILT_BINARY_THREAD_NON_CLAIM)
+    );
+}
+
+#[test]
+fn stack_provenance_verify_built_binary_rejects_tampered_bytes() {
+    let binary_path = "/tmp/valence-cli-built-binary-tampered";
+    let export_path = "/tmp/valence-cli-built-binary-octet-export-tampered.json";
+    let sidecar_path = "/tmp/valence-cli-built-binary-sidecar-tampered.json";
+    let manifest_path = "/tmp/valence-cli-built-binary-mantle-manifest-tampered.json";
+    let binary_hash = blake3::hash(BUILT_BINARY_BYTES).to_hex().to_string();
+    fs::write(binary_path, TAMPERED_BINARY_BYTES).expect("write binary fixture");
+    write_text(export_path, &sample_octet_export_json());
+
+    let build_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("build")
+        .arg("--octet-export")
+        .arg(export_path)
+        .arg("--binary-hash")
+        .arg(&binary_hash)
+        .arg("--output")
+        .arg(sidecar_path)
+        .output()
+        .expect("run stack provenance build");
+    assert!(build_output.status.success(), "build should succeed before tamper");
+
+    let sidecar_json = fs::read_to_string(sidecar_path).expect("read sidecar");
+    let digest = blake3::hash(sidecar_json.as_bytes()).to_hex().to_string();
+    write_text(manifest_path, &mantle_release_manifest_json(&digest, &binary_hash));
+
+    let verify_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("verify-built-binary")
+        .arg("--binary")
+        .arg(binary_path)
+        .arg("--octet-export")
+        .arg(export_path)
+        .arg("--sidecar")
+        .arg(sidecar_path)
+        .arg("--manifest")
+        .arg(manifest_path)
+        .output()
+        .expect("run built binary verify");
+    let stdout = String::from_utf8_lossy(&verify_output.stdout);
+    assert!(!verify_output.status.success(), "verify should reject tamper: {stdout}");
+    assert!(stdout.contains("binary_digest_mismatch"), "stdout should report binary mismatch: {stdout}");
+    assert!(
+        stdout.contains("missing_mantle_binary_identity"),
+        "stdout should report missing binary identity: {stdout}"
+    );
+}
+
+#[test]
 fn version_command_succeeds() {
     let output = Command::new(valence_binary()).arg("version").output().expect("run valence version");
 
@@ -318,6 +425,31 @@ fn mantle_manifest_json(digest: &str) -> String {
                 "non_claims": [STACK_PROVENANCE_NON_CLAIM]
             }
         ]
+    })
+    .to_string()
+}
+
+fn mantle_release_manifest_json(digest: &str, binary_hash: &str) -> String {
+    serde_json::json!({
+        "binaries": [
+            {
+                "relative_path": "bin/valence-fixture",
+                "digest_blake3": binary_hash
+            }
+        ],
+        "external_evidence": [
+            {
+                "role": MANTLE_STACK_PROVENANCE_ROLE,
+                "schema": STACK_PROVENANCE_SIDECAR_SCHEMA,
+                "relative_path": "external-evidence/stack-provenance.json",
+                "digest_blake3": digest,
+                "claim_scope": STACK_PROVENANCE_CLAIM_SCOPE,
+                "non_claims": [STACK_PROVENANCE_NON_CLAIM]
+            }
+        ],
+        "provenance_coverage": {
+            "binary_hash": binary_hash
+        }
     })
     .to_string()
 }

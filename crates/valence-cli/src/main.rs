@@ -19,6 +19,7 @@ COMMANDS:
     explain --id <ID> --manifest <FILE> Resolve a stable source ID to its span
     stack-provenance build --octet-export <FILE> --binary-hash <B3> --output <FILE>
     stack-provenance verify --manifest <FILE> --sidecar <FILE>
+    stack-provenance verify-built-binary --binary <PATH> --octet-export <FILE> --sidecar <FILE> --manifest <FILE> [--json]
     version                             Print version
 
 EXIT CODES:
@@ -92,6 +93,7 @@ fn run_stack_provenance(args: &[String]) -> ExitCode {
     match command.as_str() {
         "build" => run_stack_provenance_build(&args[1..]),
         "verify" => run_stack_provenance_verify(&args[1..]),
+        "verify-built-binary" => run_stack_provenance_verify_built_binary(&args[1..]),
         other => {
             eprintln!("unknown stack-provenance command: {other}");
             ExitCode::from(2)
@@ -241,11 +243,145 @@ fn run_stack_provenance_verify(args: &[String]) -> ExitCode {
     }
 }
 
+fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
+    let mut binary_path: Option<PathBuf> = None;
+    let mut octet_export_path: Option<PathBuf> = None;
+    let mut sidecar_path: Option<PathBuf> = None;
+    let mut manifest_path: Option<PathBuf> = None;
+    let mut json_output = false;
+
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--binary" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --binary requires a value");
+                    return ExitCode::from(2);
+                }
+                binary_path = Some(PathBuf::from(&args[i]));
+            }
+            "--octet-export" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --octet-export requires a value");
+                    return ExitCode::from(2);
+                }
+                octet_export_path = Some(PathBuf::from(&args[i]));
+            }
+            "--sidecar" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --sidecar requires a value");
+                    return ExitCode::from(2);
+                }
+                sidecar_path = Some(PathBuf::from(&args[i]));
+            }
+            "--manifest" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --manifest requires a value");
+                    return ExitCode::from(2);
+                }
+                manifest_path = Some(PathBuf::from(&args[i]));
+            }
+            "--json" => json_output = true,
+            other => {
+                eprintln!("unknown option: {other}");
+                return ExitCode::from(2);
+            }
+        }
+        i += 1;
+    }
+
+    let Some(binary_path) = binary_path else {
+        eprintln!("error: --binary is required");
+        return ExitCode::from(2);
+    };
+    let Some(octet_export_path) = octet_export_path else {
+        eprintln!("error: --octet-export is required");
+        return ExitCode::from(2);
+    };
+    let Some(sidecar_path) = sidecar_path else {
+        eprintln!("error: --sidecar is required");
+        return ExitCode::from(2);
+    };
+    let Some(manifest_path) = manifest_path else {
+        eprintln!("error: --manifest is required");
+        return ExitCode::from(2);
+    };
+
+    let binary_bytes = match fs::read(&binary_path) {
+        Ok(bytes) => bytes,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", binary_path.display());
+            return ExitCode::from(2);
+        }
+    };
+    let octet_export_json = match fs::read_to_string(&octet_export_path) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", octet_export_path.display());
+            return ExitCode::from(2);
+        }
+    };
+    let sidecar_json = match fs::read_to_string(&sidecar_path) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", sidecar_path.display());
+            return ExitCode::from(2);
+        }
+    };
+    let manifest_json = match fs::read_to_string(&manifest_path) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", manifest_path.display());
+            return ExitCode::from(2);
+        }
+    };
+
+    let report = valence_core::stack_provenance_adapter::verify_built_binary_thread_json(
+        &binary_bytes,
+        &octet_export_json,
+        &sidecar_json,
+        &manifest_json,
+    );
+    if json_output {
+        match serde_json::to_string_pretty(&report) {
+            Ok(json) => println!("{json}"),
+            Err(error) => {
+                eprintln!("error: cannot serialize report: {error}");
+                return ExitCode::from(2);
+            }
+        }
+    } else {
+        print_built_binary_thread_report(&report);
+    }
+    if report.valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
+    }
+}
+
 fn print_stack_provenance_report(report: &valence_core::stack_provenance_adapter::StackProvenanceReport) {
     println!("valid: {}", report.valid);
     println!("issue_count={}", report.issue_codes.len());
     for code in &report.issue_codes {
         println!("issue={code}");
+    }
+}
+
+fn print_built_binary_thread_report(report: &valence_core::stack_provenance_adapter::BuiltBinaryThreadReport) {
+    println!("valid: {}", report.valid);
+    println!("issue_count={}", report.issue_codes.len());
+    println!("binary_hash={}", report.binary_hash);
+    println!("sidecar_digest_blake3={}", report.sidecar_digest_blake3);
+    for code in &report.issue_codes {
+        println!("issue={code}");
+    }
+    for non_claim in &report.non_claims {
+        println!("non_claim={non_claim}");
     }
 }
 
@@ -334,6 +470,7 @@ mod tests {
         assert!(USAGE.contains("explain --id <ID> --manifest <FILE>"));
         assert!(USAGE.contains("stack-provenance build"));
         assert!(USAGE.contains("stack-provenance verify"));
+        assert!(USAGE.contains("stack-provenance verify-built-binary"));
         assert!(USAGE.contains("version"));
         assert!(USAGE.contains("EXIT CODES"));
     }

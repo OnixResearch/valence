@@ -67,6 +67,7 @@ valence check <FILE>                        Validate a canonical Evidence IR art
 valence explain --id <ID> --manifest <FILE> Resolve a stable source ID to its span
 valence stack-provenance build --octet-export <FILE> --binary-hash <B3> --output <FILE>
 valence stack-provenance verify --manifest <FILE> --sidecar <FILE>
+valence stack-provenance verify-built-binary --binary <PATH> --octet-export <FILE> --sidecar <FILE> --manifest <FILE> [--json]
 valence version                             Print version
 ```
 
@@ -81,7 +82,12 @@ already passed Octet artifact verification, binds it to a release binary hash,
 and writes a canonical Valence sidecar. `stack-provenance verify` checks a
 Mantle manifest external-evidence record with role `stack-provenance-trace`
 against that sidecar and reports stale digests, missing roles, weakened
-boundaries, and tier-promotion attempts.
+boundaries, and tier-promotion attempts. `stack-provenance verify-built-binary`
+measures the binary bytes with BLAKE3 and accepts only when that digest matches
+the sidecar, every provenance link, the Octet export-derived sidecar content,
+and Mantle release binary identity metadata. Success proves measured-byte
+identity and linkage only; it is not a correctness, semantic-equivalence, or
+release-eligibility proof.
 
 ## Boundary
 
