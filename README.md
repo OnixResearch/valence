@@ -37,6 +37,37 @@ The Evidence IR v1 spine:
   reject overclaims. Fails closed.
 - `explain_span`: resolve a stable source ID to its span from a JSON manifest.
 
+### `evidence_model` (v1)
+
+Unison-inspired Evidence IR support models:
+
+- content-addressed evidence definitions: BLAKE3 over typed canonical content
+  and dependency identities, with display names, paths, and aliases treated as
+  review metadata;
+- name-binding history: deterministic alias/name/path bindings to content
+  identities, with ambiguous and stale bindings failing closed;
+- queryable evidence graph: typed nodes and edges for definitions, artifacts,
+  requirements, verifiers, receipts, binaries, sidecars, and aliases, plus pure
+  dependency, coverage, binary-traceability, verifier-evidence, and alias
+  queries;
+- verifier capability labels: deterministic capability sets and fail-closed
+  policy checks for denied or unknown effects;
+- dependency-closure verifier cache keys: cache reuse is a hit only when all
+  identity inputs match and the capability set is pure or explicitly
+  replay-safe;
+- executable receipt transcripts: in-memory fixtures bind inputs to expected
+  reports, issue codes, and hashes without implicit refresh;
+- structured refactoring sessions: dry-run-first alias/name/path and
+  requirement-binding migrations that preserve content identity and block
+  semantic-equivalence claims;
+- typed durable storage envelopes: schema/type/codec/content-hash validation
+  before persisted evidence values are decoded.
+
+These surfaces are identity, linkage, cache-key, fixture, and decode-compatibility
+models only. They do not prove behavioral correctness, semantic equivalence,
+verifier soundness, release eligibility, requirement satisfaction, evidence
+truth, or whole-program safety.
+
 ### `function_object` (v1, extracted from octet)
 
 Function Object v1 DTOs, canonical hash payloads, caveat summaries, and
