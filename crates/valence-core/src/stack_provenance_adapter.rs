@@ -1950,6 +1950,7 @@ mod tests {
         assert!(report.non_claims.contains(&BUILT_BINARY_THREAD_NON_CLAIM.to_owned()));
     }
 
+    // r[verify valence.stack_provenance_adapter.cross_repo_fixtures.negative]
     #[test]
     fn built_binary_thread_rejects_stale_bytes_and_missing_binary_identity() {
         let binary_bytes = b"valence-built-binary-fixture";
@@ -1974,6 +1975,7 @@ mod tests {
         assert!(report.issue_codes.contains(&"missing_mantle_binary_identity".to_owned()));
     }
 
+    // r[verify valence.stack_provenance_adapter.cross_repo_fixtures.negative]
     #[test]
     fn built_binary_thread_rejects_stale_sidecar_digest_and_octet_mismatch() {
         let binary_bytes = b"valence-built-binary-fixture";
@@ -1998,6 +2000,7 @@ mod tests {
         assert!(report.issue_codes.contains(&"sidecar_octet_link_mismatch".to_owned()));
     }
 
+    // r[verify valence.stack_provenance_adapter.cross_repo_fixtures.negative]
     #[test]
     fn built_binary_thread_rejects_missing_parent_tier_promotion_and_overclaim() {
         let binary_bytes = b"valence-built-binary-fixture";

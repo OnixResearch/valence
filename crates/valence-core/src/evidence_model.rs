@@ -22,6 +22,7 @@ use serde::Deserialize;
 use serde::Serialize;
 
 use crate::evidence_ir::check_evidence_artifact;
+use crate::stack_provenance_adapter::verify_built_binary_thread_json;
 
 /// Prefix used for BLAKE3 identities rendered in Valence receipts.
 pub const BLAKE3_IDENTITY_PREFIX: &str = "b3:";
@@ -897,6 +898,7 @@ pub fn decide_cache_reuse(
 pub enum TranscriptVerifierAction {
     EvidenceIrCheck,
     CapabilityPolicyCheck,
+    StackProvenanceBuiltBinaryCheck,
 }
 
 /// Expected report shape for transcript scenarios.
@@ -1343,6 +1345,7 @@ fn run_transcript_action(transcript: &ReceiptTranscript) -> ObservedTranscriptRe
     match transcript.verifier_action {
         TranscriptVerifierAction::EvidenceIrCheck => run_evidence_ir_transcript(transcript),
         TranscriptVerifierAction::CapabilityPolicyCheck => run_capability_policy_transcript(transcript),
+        TranscriptVerifierAction::StackProvenanceBuiltBinaryCheck => run_stack_provenance_transcript(transcript),
     }
 }
 
@@ -1374,6 +1377,28 @@ fn run_capability_policy_transcript(transcript: &ReceiptTranscript) -> ObservedT
     let capability_hash = capability_set_identity(&capabilities).unwrap_or_else(|_| hash_str(EMPTY_HASH_INPUT));
     hashes.insert("capabilities".to_owned(), capability_hash);
     observed_report(report.valid, report.issue_codes.into_iter().map(ToOwned::to_owned).collect(), hashes)
+}
+
+fn run_stack_provenance_transcript(transcript: &ReceiptTranscript) -> ObservedTranscriptReport {
+    let Some(binary_bytes) = transcript.inputs.get("binary_bytes").and_then(serde_json::Value::as_str) else {
+        return observed_report(false, vec![ISSUE_INPUT_MISSING.to_owned()], BTreeMap::new());
+    };
+    let Some(octet_export_json) = transcript.inputs.get("octet_export_json").and_then(serde_json::Value::as_str) else {
+        return observed_report(false, vec![ISSUE_INPUT_MISSING.to_owned()], BTreeMap::new());
+    };
+    let Some(sidecar_json) = transcript.inputs.get("sidecar_json").and_then(serde_json::Value::as_str) else {
+        return observed_report(false, vec![ISSUE_INPUT_MISSING.to_owned()], BTreeMap::new());
+    };
+    let Some(mantle_manifest_json) = transcript.inputs.get("mantle_manifest_json").and_then(serde_json::Value::as_str)
+    else {
+        return observed_report(false, vec![ISSUE_INPUT_MISSING.to_owned()], BTreeMap::new());
+    };
+    let report =
+        verify_built_binary_thread_json(binary_bytes.as_bytes(), octet_export_json, sidecar_json, mantle_manifest_json);
+    let mut hashes = BTreeMap::new();
+    hashes.insert("binary_hash".to_owned(), report.binary_hash.clone());
+    hashes.insert("sidecar_digest_blake3".to_owned(), report.sidecar_digest_blake3.clone());
+    observed_report(report.valid, report.issue_codes, hashes)
 }
 
 fn observed_report(

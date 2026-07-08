@@ -30,6 +30,7 @@
 //! general HIR/THIR/MIR extraction.
 
 pub mod evidence_codebase_index;
+pub mod evidence_harness;
 pub mod evidence_index;
 pub mod evidence_ir;
 pub mod evidence_model;

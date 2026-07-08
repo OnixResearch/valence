@@ -443,3 +443,246 @@ r[valence.evidence_ir.typed_durable_storage.docs]
 - GIVEN documentation or receipts describe typed durable evidence storage
 - WHEN the supported claim is stated
 - THEN the output MUST state that typed storage proves decode identity and compatibility only, not evidence truth, correctness, verifier soundness, or requirement satisfaction.
+
+### Requirement: Executable transcript fixture runner
+r[valence.evidence_ir.transcript_fixture_runner] Valence MUST provide a test harness that discovers checked-in executable transcript fixtures, evaluates them deterministically, and reports stable pass/fail diagnostics.
+
+#### Scenario: Transcript fixtures load from pass and fail roots
+r[valence.evidence_ir.transcript_fixture_runner.fixtures]
+- GIVEN pass and fail transcript fixture directories
+- WHEN the transcript fixture runner starts
+- THEN it MUST load typed transcript fixtures with schema identity, scenario identity, inputs, verifier action, expected report fields, expected issue codes, expected hashes, and non-claims.
+
+#### Scenario: Transcript execution stays pure
+r[valence.evidence_ir.transcript_fixture_runner.pure]
+- GIVEN a transcript fixture that targets a supported verifier action
+- WHEN the runner evaluates the fixture
+- THEN it MUST call pure in-memory verifier functions and MUST NOT perform filesystem, process, network, or clock I/O inside the evaluation core.
+
+#### Scenario: Positive transcript fixtures pass
+r[valence.evidence_ir.transcript_fixture_runner.positive]
+- GIVEN positive transcript fixtures for valid Evidence IR or stack-provenance workflows
+- WHEN the runner evaluates them
+- THEN observed validity, issue codes, and expected hashes MUST match the fixture expectations.
+
+#### Scenario: Negative transcript fixtures fail as expected
+r[valence.evidence_ir.transcript_fixture_runner.negative]
+- GIVEN negative transcript fixtures for malformed input, overclaims, stale hashes, or denied capabilities
+- WHEN the runner evaluates them
+- THEN each fixture MUST produce the expected deterministic failure diagnostics.
+
+#### Scenario: Refresh is explicit
+r[valence.evidence_ir.transcript_fixture_runner.refresh]
+- GIVEN verifier output or expected hashes intentionally change
+- WHEN maintainers refresh transcript expectations
+- THEN the refresh MUST be explicit, reviewable, and MUST NOT update fixtures during normal validation.
+
+#### Scenario: Fixture discovery order is stable
+r[valence.evidence_ir.transcript_fixture_runner.stability]
+- GIVEN equivalent transcript fixture sets discovered in different filesystem orders
+- WHEN the runner renders its report
+- THEN the report MUST be byte-stable or canonical-value stable.
+
+### Requirement: Evidence model property invariants
+r[valence.evidence_ir.property_invariants] Valence MUST provide deterministic property and invariant tests for pure evidence-model values that cover identity stability, graph determinism, alias failure, and cache-key equality.
+
+#### Scenario: Rename-only churn preserves content identity
+r[valence.evidence_ir.property_invariants.rename_stability]
+- GIVEN evidence definitions whose display names, aliases, or paths change without changing canonical content or dependency identities
+- WHEN identity invariants run
+- THEN the evidence definition identity MUST remain stable.
+
+#### Scenario: Dependency changes alter identity
+r[valence.evidence_ir.property_invariants.dependency_sensitivity]
+- GIVEN an evidence definition dependency content identity changes
+- WHEN identity invariants run
+- THEN the evidence definition identity MUST change.
+
+#### Scenario: Graph identity is deterministic
+r[valence.evidence_ir.property_invariants.graph_determinism]
+- GIVEN equivalent graph nodes and edges in different input order
+- WHEN graph invariants run
+- THEN graph export identity and query results MUST remain deterministic.
+
+#### Scenario: Ambiguous aliases fail closed
+r[valence.evidence_ir.property_invariants.alias_fail_closed]
+- GIVEN an alias resolves to multiple current content identities or a stale binding
+- WHEN alias invariants run
+- THEN resolution MUST fail closed with deterministic diagnostics.
+
+#### Scenario: Cache keys compare every field
+r[valence.evidence_ir.property_invariants.cache_key_equality]
+- GIVEN cached and current verifier keys differ in any identity field or capability class
+- WHEN cache invariants run
+- THEN Valence MUST report a miss or block rather than a cache hit.
+
+### Requirement: Malformed input corpus gates
+r[valence.evidence_ir.malformed_input_corpus] Valence MUST provide a checked-in malformed-input corpus that exercises fail-closed diagnostics for Evidence IR and evidence-model boundaries.
+
+#### Scenario: Corpus runner uses pure validation cores
+r[valence.evidence_ir.malformed_input_corpus.runner]
+- GIVEN malformed corpus fixtures that target pure validators
+- WHEN the corpus gate runs
+- THEN the runner MUST evaluate them without process, filesystem, network, or clock I/O inside the validation core.
+
+#### Scenario: Diagnostics are normalized
+r[valence.evidence_ir.malformed_input_corpus.diagnostics]
+- GIVEN a malformed input produces multiple issue codes
+- WHEN the corpus report is rendered
+- THEN issue codes and unexpected-success diagnostics MUST be sorted deterministically.
+
+#### Scenario: Digest and graph failures are covered
+r[valence.evidence_ir.malformed_input_corpus.digest_and_graph]
+- GIVEN malformed BLAKE3 strings, duplicate graph nodes, or dangling graph edges
+- WHEN the corpus gate runs
+- THEN each case MUST fail closed with deterministic diagnostics.
+
+#### Scenario: Binding and capability failures are covered
+r[valence.evidence_ir.malformed_input_corpus.bindings_and_capabilities]
+- GIVEN stale bindings, ambiguous aliases, unknown capabilities, or denied capabilities
+- WHEN the corpus gate runs
+- THEN each case MUST fail closed with deterministic diagnostics.
+
+#### Scenario: Boundary and storage failures are covered
+r[valence.evidence_ir.malformed_input_corpus.boundary_and_storage]
+- GIVEN weakened non-claim boundaries or durable storage envelope mismatches
+- WHEN the corpus gate runs
+- THEN each case MUST fail closed with deterministic diagnostics.
+
+### Requirement: Stable golden report normalization
+r[valence.evidence_ir.golden_report_normalization] Valence MUST compare structured harness reports through canonical normalized values rather than raw stdout snapshots except at CLI boundaries.
+
+#### Scenario: Reports normalize deterministically
+r[valence.evidence_ir.golden_report_normalization.stability]
+- GIVEN semantically equivalent report values with different object field order or fixture discovery order
+- WHEN Valence normalizes the reports
+- THEN the normalized value and content hash MUST match.
+
+#### Scenario: Semantic diffs name changed fields
+r[valence.evidence_ir.golden_report_normalization.semantic_diff]
+- GIVEN a normalized golden report and a changed candidate report
+- WHEN the comparison fails
+- THEN Valence SHOULD render deterministic changed-field diagnostics.
+
+#### Scenario: Raw stdout snapshots stay at CLI boundaries
+r[valence.evidence_ir.golden_report_normalization.raw_stdout_boundary]
+- GIVEN a test is not checking CLI stdout/stderr contract behavior
+- WHEN it records expected output
+- THEN it SHOULD use structured normalized report values rather than raw stdout text.
+
+#### Scenario: Unnormalizable reports fail closed
+r[valence.evidence_ir.golden_report_normalization.fail_closed]
+- GIVEN a report cannot be parsed or normalized as a structured value, or a golden hash is stale
+- WHEN the golden gate runs
+- THEN the gate MUST fail closed with deterministic diagnostics.
+
+#### Scenario: Golden refresh is explicit
+r[valence.evidence_ir.golden_report_normalization.refresh]
+- GIVEN expected report output intentionally changes
+- WHEN maintainers refresh golden values
+- THEN the refresh MUST be explicit and produce reviewable diffs.
+
+### Requirement: Capability enforcement harness
+r[valence.evidence_ir.capability_enforcement_harness] Valence MUST separate pure capability-label policy tests from opt-in sandbox enforcement probes.
+
+#### Scenario: Enforcement availability is explicit
+r[valence.evidence_ir.capability_enforcement_harness.availability]
+- GIVEN sandbox enforcement support is unavailable or unsupported for an effect
+- WHEN enforcement probes are reported
+- THEN the status MUST be `unavailable` or `skipped`, not successful enforcement.
+
+#### Scenario: Label policy tests cover allowed and denied capabilities
+r[valence.evidence_ir.capability_enforcement_harness.policy]
+- GIVEN pure, local, unknown, or denied capability labels
+- WHEN pure policy tests run
+- THEN allowed labels MUST pass and unknown or denied labels MUST fail deterministically.
+
+#### Scenario: Denied-effect probes are opt-in
+r[valence.evidence_ir.capability_enforcement_harness.denied_effects]
+- GIVEN filesystem, process, network, clock, remote-builder, or secret effect probes
+- WHEN the deep or nightly enforcement lane runs
+- THEN the probes MUST require explicit opt-in and report pass, fail, skipped, or unavailable status per effect.
+
+#### Scenario: Missing sandbox support is not false success
+r[valence.evidence_ir.capability_enforcement_harness.no_false_success]
+- GIVEN an enforcement backend is missing or cannot block a requested denied effect
+- WHEN the enforcement report is rendered
+- THEN the report MUST NOT claim the effect was successfully blocked.
+
+#### Scenario: Capability enforcement claims remain bounded
+r[valence.evidence_ir.capability_enforcement_harness.non_claims]
+- GIVEN capability labels or enforcement reports are emitted
+- WHEN the supported claim is stated
+- THEN the report MUST state that labels are metadata unless an enforcement backend actually blocks effects.
+
+### Requirement: Requirement coverage evidence report
+r[valence.evidence_ir.requirement_coverage_report] Valence MUST provide a deterministic report that maps accepted requirement IDs to implementation and verification evidence markers.
+
+#### Scenario: Coverage rows are deterministic
+r[valence.evidence_ir.requirement_coverage_report.rows]
+- GIVEN accepted requirement IDs and discovered evidence markers
+- WHEN Valence builds the coverage report
+- THEN report rows MUST be sorted deterministically by requirement identity.
+
+#### Scenario: Implementation and verification markers are distinct
+r[valence.evidence_ir.requirement_coverage_report.markers]
+- GIVEN source or test markers use `r[impl ...]` or `r[verify ...]`
+- WHEN Valence classifies coverage evidence
+- THEN implementation evidence and verification evidence MUST be reported separately.
+
+#### Scenario: Coverage computation core is pure
+r[valence.evidence_ir.requirement_coverage_report.shell]
+- GIVEN in-memory requirement and marker sets
+- WHEN coverage computation runs
+- THEN it MUST produce report rows without filesystem or process I/O.
+
+#### Scenario: Covered requirements report positive evidence
+r[valence.evidence_ir.requirement_coverage_report.positive]
+- GIVEN a requirement has both implementation and verification markers
+- WHEN the coverage report is built
+- THEN the report SHOULD mark that requirement as covered by traceability evidence.
+
+#### Scenario: Missing coverage is reported deterministically
+r[valence.evidence_ir.requirement_coverage_report.missing]
+- GIVEN an accepted requirement lacks implementation or verification markers
+- WHEN the coverage report is built
+- THEN the missing evidence MUST be reported with deterministic diagnostics.
+
+#### Scenario: Coverage claims remain bounded
+r[valence.evidence_ir.requirement_coverage_report.non_claims]
+- GIVEN coverage reports describe requirement evidence
+- WHEN the supported claim is stated
+- THEN the report MUST state that marker coverage proves traceability only, not correctness, verifier soundness, semantic equivalence, or requirement satisfaction.
+
+### Requirement: Fast and deep test suite partitioning
+r[valence.evidence_ir.test_suite_partition] Valence MUST define explicit test suite lanes for fast deterministic checks, deeper optional integration checks, and expensive/nightly validation.
+
+#### Scenario: Fast lane is hermetic
+r[valence.evidence_ir.test_suite_partition.fast]
+- GIVEN the fast test lane
+- WHEN developers run ordinary local validation
+- THEN the lane MUST use hermetic checked-in fixtures and MUST NOT require live sibling repositories, network access, or host-specific sandbox enforcement.
+
+#### Scenario: Deep lane contains optional integrations
+r[valence.evidence_ir.test_suite_partition.deep]
+- GIVEN cross-repo stack checks or sandbox enforcement probes are requested
+- WHEN the deep lane runs
+- THEN those checks SHOULD run there or in the nightly lane with explicit pass, fail, skipped, or unavailable reporting.
+
+#### Scenario: Lane reporting is stable
+r[valence.evidence_ir.test_suite_partition.reporting]
+- GIVEN any suite lane completes
+- WHEN the harness renders its summary
+- THEN the summary MUST use deterministic ordering and stable status labels for pass, fail, skipped, and unavailable checks.
+
+#### Scenario: CI and local commands are documented
+r[valence.evidence_ir.test_suite_partition.ci]
+- GIVEN maintainers need to run a suite lane locally or in CI
+- WHEN they inspect the harness documentation
+- THEN each lane MUST have a stable command or documented invocation.
+
+#### Scenario: Suite partition claims remain bounded
+r[valence.evidence_ir.test_suite_partition.non_claims]
+- GIVEN suite-lane reports describe validation evidence
+- WHEN the supported claim is stated
+- THEN the report MUST state that lanes schedule evidence gates only and do not prove correctness, verifier soundness, semantic equivalence, or requirement satisfaction.
