@@ -35,5 +35,6 @@ pub mod evidence_index;
 pub mod evidence_ir;
 pub mod evidence_model;
 pub mod function_object;
+pub mod hegel_property;
 pub mod provenance;
 pub mod stack_provenance_adapter;

@@ -68,7 +68,7 @@ models only. They do not prove behavioral correctness, semantic equivalence,
 verifier soundness, release eligibility, requirement satisfaction, evidence
 truth, or whole-program safety.
 
-### `evidence_harness` (v1)
+### `evidence_harness` / `hegel_property` (v1)
 
 Deterministic testing-harness cores for the Evidence IR model:
 
@@ -77,13 +77,15 @@ Deterministic testing-harness cores for the Evidence IR model:
 - normalized golden report identity and semantic diffs;
 - requirement marker coverage rows for `r[impl ...]` and `r[verify ...]`;
 - capability-label policy checks and opt-in denied-effect probe reporting;
-- fast/deep/nightly suite lane definitions and stable status summaries.
+- fast/deep/nightly suite lane definitions and stable status summaries;
+- Hegel RS property receipt DTOs, validation, and fast/deep generated-input lane definitions.
 
 See `docs/testing-harness.md` for lane commands and fixture-refresh guidance.
-Harness reports prove deterministic fixture behavior, marker traceability, and
-suite scheduling only; they do not prove correctness, verifier soundness,
-semantic equivalence, requirement satisfaction, sandbox effectiveness, or
-whole-program safety.
+Harness and Hegel reports prove deterministic fixture behavior, marker
+traceability, suite scheduling, or bounded generated-input checks only; they do
+not prove correctness, verifier soundness, semantic equivalence, requirement
+satisfaction, sandbox effectiveness, release eligibility, or whole-program
+safety.
 
 ### `function_object` (v1, extracted from octet)
 
@@ -191,6 +193,7 @@ nix develop                # enter devshell
 cargo test --workspace     # run all tests
 cargo test stack_provenance_preserves -- --nocapture
 cargo test -p valence-core evidence_harness
+cargo test -p valence-core hegel_property_laws
 cargo build -p valence-cli # build the CLI
 nix build .#checks.x86_64-linux.stack-provenance-nickel-contracts --no-link
 ./target/debug/valence version

@@ -12,6 +12,14 @@ nix develop --option builders '' -c cargo test -p valence-core evidence_harness
 
 Runs hermetic transcript fixtures, malformed corpus cases, property invariants, golden normalization, requirement coverage, capability-label policy checks, and suite-summary checks. It must not require live sibling repositories, network access, or host-specific sandbox support.
 
+Hegel fast lane:
+
+```bash
+nix develop --option builders '' -c cargo test -p valence-core hegel_property_laws
+```
+
+Runs bounded Hegel RS generated-input checks over pure Valence cores. The named fast budget is `HEGEL_FAST_CASE_BUDGET`, Hegel uses deterministic or replayable settings, and failures should be copied into concrete regression fixtures before relying on them for future review.
+
 Deep lane:
 
 ```bash
@@ -19,6 +27,8 @@ nix develop --option builders '' -c cargo test --workspace stack_provenance -- -
 ```
 
 Runs stack-provenance-focused checks and opt-in integration-style probes when their fixtures/backends are available. Missing sandbox support is reported as `unavailable` or `skipped`, never as successful enforcement.
+
+Hegel deep coverage may use larger budgets or stateful models, but it stays opt-in and must report pass, fail, skipped, or unavailable status rather than becoming a hidden prerequisite for ordinary validation.
 
 <!-- r[verify valence.stack_provenance_adapter.cross_repo_fixtures.deep] -->
 Optional sibling-repo integration may be added to this lane or the nightly lane. The fast lane remains backed by frozen checked-in fixtures rather than live `../octet`, `../mantle`, `../trellis`, or `../cairn` checkouts.
