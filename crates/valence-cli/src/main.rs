@@ -74,6 +74,7 @@ fn run_check(args: &[String]) -> ExitCode {
     if report.valid {
         println!("valid: true");
         println!("issue_count=0");
+        print_non_claims(&report.non_claims);
         ExitCode::SUCCESS
     } else {
         println!("valid: false");
@@ -81,6 +82,7 @@ fn run_check(args: &[String]) -> ExitCode {
         for code in &report.issue_codes {
             println!("issue={code}");
         }
+        print_non_claims(&report.non_claims);
         ExitCode::from(1)
     }
 }
@@ -361,6 +363,13 @@ fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
         ExitCode::SUCCESS
     } else {
         ExitCode::from(1)
+    }
+}
+
+fn print_non_claims(non_claims: &[String]) {
+    println!("non_claim_count={}", non_claims.len());
+    for claim in non_claims {
+        println!("non_claim={claim}");
     }
 }
 

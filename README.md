@@ -96,6 +96,9 @@ identity for selected Rust functions.
 Builds, queries, renders, and boundary-checks evidence-codebase indexes from
 in-memory artifacts.
 
+Kani receipts use dedicated contract and stub Evidence IR kinds with required
+non-claim labels; see `docs/kani-evidence-boundaries.md`.
+
 ### `evidence_index` (v1, extracted from octet)
 
 Renders and checks the current-head Valence evidence page from typed inputs.
@@ -120,7 +123,8 @@ valence version                             Print version
 ```
 
 `check` reads a JSON artifact, validates schema + hash + non-claim boundary,
-rejects overclaims, and exits 0 (valid) / 1 (invalid) / 2 (I/O error).
+rejects overclaims, prints visible `non_claim=` lines, and exits 0 (valid) /
+1 (invalid) / 2 (I/O error).
 
 `explain` reads a spans manifest, resolves the source ID, prints the span,
 and exits 0 (found) / 1 (not found) / 2 (I/O error).

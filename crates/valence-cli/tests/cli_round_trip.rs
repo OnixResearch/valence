@@ -7,6 +7,15 @@ use std::io::Write;
 use std::process::Command;
 
 use valence_core::evidence_ir::EvidenceSpan;
+use valence_core::evidence_ir::KANI_CONTRACT_ARTIFACT_KIND;
+use valence_core::evidence_ir::KANI_NON_CLAIM_ALIASING;
+use valence_core::evidence_ir::KANI_NON_CLAIM_BOUNDED_ONLY;
+use valence_core::evidence_ir::KANI_NON_CLAIM_CONCURRENCY_ASYNC;
+use valence_core::evidence_ir::KANI_NON_CLAIM_FFI_STUB;
+use valence_core::evidence_ir::KANI_NON_CLAIM_RECURSIVE_TERMINATION;
+use valence_core::evidence_ir::KANI_NON_CLAIM_VERIFIER_SOUNDNESS;
+use valence_core::evidence_ir::KANI_NON_CLAIM_WHOLE_PROGRAM;
+use valence_core::evidence_ir::KaniContractFacet;
 use valence_core::evidence_ir::REQUIRED_NON_CLAIM;
 use valence_core::evidence_ir::VerificationRole;
 use valence_core::evidence_ir::build_evidence_artifact;
@@ -26,6 +35,20 @@ const BLAKE3_HEX_LENGTH: usize = 64;
 
 fn valence_binary() -> String {
     env!("CARGO_BIN_EXE_valence").to_owned()
+}
+
+fn kani_non_claims() -> Vec<String> {
+    vec![
+        "evidence artifact records identity and linkage only".to_owned(),
+        REQUIRED_NON_CLAIM.to_owned(),
+        KANI_NON_CLAIM_WHOLE_PROGRAM.to_owned(),
+        KANI_NON_CLAIM_VERIFIER_SOUNDNESS.to_owned(),
+        KANI_NON_CLAIM_ALIASING.to_owned(),
+        KANI_NON_CLAIM_CONCURRENCY_ASYNC.to_owned(),
+        KANI_NON_CLAIM_FFI_STUB.to_owned(),
+        KANI_NON_CLAIM_RECURSIVE_TERMINATION.to_owned(),
+        KANI_NON_CLAIM_BOUNDED_ONLY.to_owned(),
+    ]
 }
 
 #[test]
@@ -68,6 +91,61 @@ fn check_accepts_library_emitted_artifact() {
     assert!(output.status.success(), "check should succeed: {stdout}");
     assert!(stdout.contains("valid: true"), "stdout should report valid: {stdout}");
     assert!(stdout.contains("issue_count=0"), "stdout should report zero issues: {stdout}");
+}
+
+#[test]
+fn check_prints_kani_non_claim_boundaries() {
+    let artifact = build_evidence_artifact(
+        KANI_CONTRACT_ARTIFACT_KIND,
+        "kani:contract:cli-boundary",
+        None,
+        VerificationRole::Property,
+        serde_json::json!({
+            "contract_facets": [
+                KaniContractFacet::Postcondition.as_str(),
+                KaniContractFacet::ContractHarness.as_str(),
+            ],
+            "target": {
+                "crate_target": "valence-core",
+                "source_id": "src/lib.rs::checked_add",
+                "target_scope": "fn checked_add::<u32>",
+                "monomorphization": "u32",
+            },
+            "toolchain": {
+                "kani_version": "kani fixture",
+                "rust_toolchain": "nightly fixture",
+                "cbmc_version": "cbmc fixture",
+                "solver": "minisat fixture",
+            },
+            "receipt": {
+                "status": "passed",
+                "receipt_hash": "b3:kani-contract-receipt",
+            },
+            "claim_classification": "passing_contract",
+            "termination_claimed": false,
+        }),
+        kani_non_claims(),
+    )
+    .expect("build Kani artifact");
+    let json = serde_json::to_string_pretty(&artifact).expect("serialize Kani artifact");
+
+    let mut tmp = fs::File::create("/tmp/valence-cli-kani-artifact.json").expect("create temp file");
+    tmp.write_all(json.as_bytes()).expect("write temp file");
+
+    let output = Command::new(valence_binary())
+        .arg("check")
+        .arg("/tmp/valence-cli-kani-artifact.json")
+        .output()
+        .expect("run valence check");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(output.status.success(), "Kani check should succeed: {stdout}");
+    assert!(stdout.contains("valid: true"), "stdout should report valid: {stdout}");
+    assert!(stdout.contains("non_claim_count="), "stdout should report non-claim count: {stdout}");
+    assert!(
+        stdout.contains(KANI_NON_CLAIM_VERIFIER_SOUNDNESS),
+        "stdout should report Kani verifier-soundness boundary: {stdout}"
+    );
 }
 
 #[test]

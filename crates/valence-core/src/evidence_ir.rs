@@ -36,6 +36,63 @@ pub const EVIDENCE_IR_SCHEMA: &str = "valence.evidence-ir.v1";
 pub const REQUIRED_NON_CLAIM: &str =
     "does not claim behavioral correctness, semantic equivalence, or whole-program verification";
 
+/// Kani contract evidence artifact kind.
+pub const KANI_CONTRACT_ARTIFACT_KIND: &str = "kani-contract-evidence-v1";
+
+/// Kani stub evidence artifact kind.
+pub const KANI_STUB_ARTIFACT_KIND: &str = "kani-stub-evidence-v1";
+
+/// Kani non-claim label: no whole-program correctness claim.
+pub const KANI_NON_CLAIM_WHOLE_PROGRAM: &str = "kani.boundary.whole_program";
+
+/// Kani non-claim label: no verifier, solver, CBMC, or Rust model soundness claim.
+pub const KANI_NON_CLAIM_VERIFIER_SOUNDNESS: &str = "kani.boundary.verifier_soundness";
+
+/// Kani non-claim label: aliasing assumptions remain explicit boundaries.
+pub const KANI_NON_CLAIM_ALIASING: &str = "kani.boundary.aliasing";
+
+/// Kani non-claim label: concurrency and async behavior remain explicit boundaries.
+pub const KANI_NON_CLAIM_CONCURRENCY_ASYNC: &str = "kani.boundary.concurrency_async";
+
+/// Kani non-claim label: FFI, plain stubs, and environmental models remain boundaries.
+pub const KANI_NON_CLAIM_FFI_STUB: &str = "kani.boundary.ffi_stub";
+
+/// Kani non-claim label: recursive termination requires separate complete evidence.
+pub const KANI_NON_CLAIM_RECURSIVE_TERMINATION: &str = "kani.boundary.recursive_termination";
+
+/// Kani non-claim label: bounded-only evidence is not unbounded verification.
+pub const KANI_NON_CLAIM_BOUNDED_ONLY: &str = "kani.boundary.bounded_only";
+
+const KANI_REQUIRED_NON_CLAIMS: &[&str] = &[
+    KANI_NON_CLAIM_WHOLE_PROGRAM,
+    KANI_NON_CLAIM_VERIFIER_SOUNDNESS,
+    KANI_NON_CLAIM_ALIASING,
+    KANI_NON_CLAIM_CONCURRENCY_ASYNC,
+    KANI_NON_CLAIM_FFI_STUB,
+    KANI_NON_CLAIM_RECURSIVE_TERMINATION,
+    KANI_NON_CLAIM_BOUNDED_ONLY,
+];
+
+const KANI_CONTRACT_FACETS: &[&str] = &[
+    "precondition",
+    "postcondition",
+    "loop_invariant",
+    "loop_decreases",
+    "quantifier",
+    "contract_harness",
+];
+
+const KANI_CONTRACT_PASSING_CLASSIFICATION: &str = "passing_contract";
+const KANI_CONTRACT_LOOP_CLASSIFICATION: &str = "partial_correctness_loop_contract";
+const KANI_CONTRACT_BOUNDED_CLASSIFICATION: &str = "bounded_harness";
+const KANI_RECEIPT_STATUS_PASSED: &str = "passed";
+const KANI_RECEIPT_STATUS_FAILED: &str = "failed";
+const KANI_RECEIPT_STATUS_BOUNDED_ONLY: &str = "bounded_only";
+const KANI_STUB_KIND_VERIFIED_CONTRACT: &str = "verified_contract_stub";
+const KANI_STUB_KIND_PLAIN: &str = "plain_stub";
+const KANI_STUB_KIND_ENVIRONMENTAL: &str = "environmental_stub";
+const KANI_TARGET_SCOPE_ALL_MONOMORPHIZATIONS: &str = "all_monomorphizations";
+
 /// Overclaim strings the checker rejects if present in `non_claims` or `payload`.
 const OVERCLAIM_MARKERS: &[&str] = &[
     "proves semantic equivalence",
@@ -43,6 +100,13 @@ const OVERCLAIM_MARKERS: &[&str] = &[
     "proves exhaustive coverage",
     "certified correct",
     "fully verified runtime",
+    "whole-program Kani proof",
+    "proves Kani verifier soundness",
+    "proves solver soundness",
+    "proves all Rust behavior",
+    "covers all monomorphizations",
+    "promotes bounded Kani evidence to unbounded verification",
+    "plain stub verified",
 ];
 
 /// The verification role of an evidence artifact.
@@ -69,6 +133,52 @@ impl VerificationRole {
             Self::Property => "property",
             Self::RecordedOnly => "recorded_only",
             Self::Boundary => "boundary",
+        }
+    }
+}
+
+/// Typed Kani contract facets that Valence recognizes in contract evidence payloads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum KaniContractFacet {
+    Precondition,
+    Postcondition,
+    LoopInvariant,
+    LoopDecreases,
+    Quantifier,
+    ContractHarness,
+}
+
+impl KaniContractFacet {
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Precondition => "precondition",
+            Self::Postcondition => "postcondition",
+            Self::LoopInvariant => "loop_invariant",
+            Self::LoopDecreases => "loop_decreases",
+            Self::Quantifier => "quantifier",
+            Self::ContractHarness => "contract_harness",
+        }
+    }
+}
+
+/// Typed Kani stub kinds that Valence recognizes in stub evidence payloads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum KaniStubKind {
+    VerifiedContractStub,
+    PlainStub,
+    EnvironmentalStub,
+}
+
+impl KaniStubKind {
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::VerifiedContractStub => KANI_STUB_KIND_VERIFIED_CONTRACT,
+            Self::PlainStub => KANI_STUB_KIND_PLAIN,
+            Self::EnvironmentalStub => KANI_STUB_KIND_ENVIRONMENTAL,
         }
     }
 }
@@ -146,6 +256,7 @@ struct EvidenceArtifactHashPayload<'a> {
 pub struct EvidenceCheckReport {
     pub valid: bool,
     pub issue_codes: Vec<&'static str>,
+    pub non_claims: Vec<String>,
 }
 
 /// Build a canonical Evidence IR artifact from typed inputs.
@@ -216,6 +327,7 @@ pub fn check_evidence_artifact(json: &str) -> EvidenceCheckReport {
             return EvidenceCheckReport {
                 valid: false,
                 issue_codes,
+                non_claims: Vec::new(),
             };
         }
     };
@@ -250,6 +362,8 @@ pub fn check_evidence_artifact(json: &str) -> EvidenceCheckReport {
         }
     }
 
+    validate_kani_artifact(&artifact, &mut issue_codes);
+
     let full_json = serde_json::to_string(&artifact.payload).unwrap_or_default();
     let non_claims_joined = artifact.non_claims.join(" ");
     for marker in OVERCLAIM_MARKERS {
@@ -264,7 +378,203 @@ pub fn check_evidence_artifact(json: &str) -> EvidenceCheckReport {
     EvidenceCheckReport {
         valid: issue_codes.is_empty(),
         issue_codes,
+        non_claims: artifact.non_claims,
     }
+}
+
+fn validate_kani_artifact(artifact: &EvidenceArtifact, issue_codes: &mut Vec<&'static str>) {
+    match artifact.artifact_kind.as_str() {
+        KANI_CONTRACT_ARTIFACT_KIND => {
+            validate_kani_non_claims(artifact, issue_codes);
+            validate_kani_contract_artifact(artifact, issue_codes);
+        }
+        KANI_STUB_ARTIFACT_KIND => {
+            validate_kani_non_claims(artifact, issue_codes);
+            validate_kani_stub_artifact(artifact, issue_codes);
+        }
+        _ => {}
+    }
+}
+
+fn validate_kani_non_claims(artifact: &EvidenceArtifact, issue_codes: &mut Vec<&'static str>) {
+    for required in KANI_REQUIRED_NON_CLAIMS {
+        if !artifact.non_claims.iter().any(|claim| claim == required) {
+            issue_codes.push("kani_non_claims_missing_required");
+            break;
+        }
+    }
+}
+
+fn validate_kani_contract_artifact(artifact: &EvidenceArtifact, issue_codes: &mut Vec<&'static str>) {
+    let payload = &artifact.payload;
+    let facets = object_array_strings(payload, "contract_facets");
+    if facets.is_empty() {
+        issue_codes.push("kani_contract_facets_missing");
+    }
+    if facets.iter().any(|facet| !KANI_CONTRACT_FACETS.contains(facet)) {
+        issue_codes.push("kani_contract_unknown_facet");
+    }
+
+    validate_kani_contract_scope(payload, issue_codes);
+    validate_kani_contract_toolchain(payload, issue_codes);
+    validate_kani_contract_receipt(artifact, payload, issue_codes);
+    validate_kani_contract_classification(artifact, payload, &facets, issue_codes);
+}
+
+fn validate_kani_contract_scope(payload: &serde_json::Value, issue_codes: &mut Vec<&'static str>) {
+    let Some(target) = payload.get("target") else {
+        issue_codes.push("kani_contract_target_scope_missing");
+        return;
+    };
+    let required_scope_fields = ["crate_target", "source_id", "target_scope", "monomorphization"];
+    if required_scope_fields.iter().any(|field| object_string(target, field).is_none()) {
+        issue_codes.push("kani_contract_target_scope_missing");
+    }
+    if object_string(target, "target_scope") == Some(KANI_TARGET_SCOPE_ALL_MONOMORPHIZATIONS) {
+        issue_codes.push("kani_contract_all_monomorphization_overclaim");
+    }
+}
+
+fn validate_kani_contract_toolchain(payload: &serde_json::Value, issue_codes: &mut Vec<&'static str>) {
+    let Some(toolchain) = payload.get("toolchain") else {
+        issue_codes.push("kani_contract_toolchain_missing");
+        issue_codes.push("kani_contract_solver_missing");
+        return;
+    };
+    let required_toolchain_fields = ["kani_version", "rust_toolchain", "cbmc_version"];
+    if required_toolchain_fields.iter().any(|field| object_string(toolchain, field).is_none()) {
+        issue_codes.push("kani_contract_toolchain_missing");
+    }
+    if object_string(toolchain, "solver").is_none() {
+        issue_codes.push("kani_contract_solver_missing");
+    }
+}
+
+fn validate_kani_contract_receipt(
+    artifact: &EvidenceArtifact,
+    payload: &serde_json::Value,
+    issue_codes: &mut Vec<&'static str>,
+) {
+    let Some(receipt) = payload.get("receipt") else {
+        issue_codes.push("kani_contract_receipt_missing");
+        issue_codes.push("kani_contract_receipt_status_missing");
+        return;
+    };
+    if object_string(receipt, "receipt_hash").is_none() {
+        issue_codes.push("kani_contract_receipt_missing");
+    }
+    match object_string(receipt, "status") {
+        Some(KANI_RECEIPT_STATUS_PASSED) => {}
+        Some(KANI_RECEIPT_STATUS_FAILED) => {
+            if artifact.verification_role == VerificationRole::Property {
+                issue_codes.push("kani_contract_failed_property");
+            }
+        }
+        Some(KANI_RECEIPT_STATUS_BOUNDED_ONLY) => {
+            if artifact.verification_role == VerificationRole::Property {
+                issue_codes.push("kani_contract_bounded_only_promoted");
+            }
+        }
+        Some(_) => issue_codes.push("kani_contract_receipt_status_unknown"),
+        None => issue_codes.push("kani_contract_receipt_status_missing"),
+    }
+}
+
+fn validate_kani_contract_classification(
+    artifact: &EvidenceArtifact,
+    payload: &serde_json::Value,
+    facets: &[&str],
+    issue_codes: &mut Vec<&'static str>,
+) {
+    match object_string(payload, "claim_classification") {
+        Some(KANI_CONTRACT_PASSING_CLASSIFICATION | KANI_CONTRACT_LOOP_CLASSIFICATION) => {}
+        Some(KANI_CONTRACT_BOUNDED_CLASSIFICATION) => {
+            if artifact.verification_role == VerificationRole::Property {
+                issue_codes.push("kani_contract_bounded_only_promoted");
+            }
+        }
+        Some(_) => issue_codes.push("kani_contract_claim_classification_unknown"),
+        None => issue_codes.push("kani_contract_claim_classification_missing"),
+    }
+    if object_bool(payload, "termination_claimed") == Some(true) && !facets.contains(&"loop_decreases") {
+        issue_codes.push("kani_contract_recursive_termination_overclaim");
+    }
+}
+
+fn validate_kani_stub_artifact(artifact: &EvidenceArtifact, issue_codes: &mut Vec<&'static str>) {
+    match object_string(&artifact.payload, "stub_kind") {
+        Some(KANI_STUB_KIND_VERIFIED_CONTRACT) => validate_verified_kani_stub(artifact, issue_codes),
+        Some(KANI_STUB_KIND_PLAIN) => validate_plain_kani_stub(artifact, issue_codes),
+        Some(KANI_STUB_KIND_ENVIRONMENTAL) => validate_environmental_kani_stub(artifact, issue_codes),
+        Some(_) => issue_codes.push("kani_stub_kind_unknown"),
+        None => issue_codes.push("kani_stub_kind_missing"),
+    }
+}
+
+fn validate_verified_kani_stub(artifact: &EvidenceArtifact, issue_codes: &mut Vec<&'static str>) {
+    let payload = &artifact.payload;
+    let Some(linked_contract) = payload.get("linked_contract") else {
+        issue_codes.push("kani_stub_contract_link_missing");
+        return;
+    };
+    let original_function = object_string(payload, "original_function");
+    let source_scope = object_string(payload, "source_scope");
+    if original_function.is_none() || source_scope.is_none() {
+        issue_codes.push("kani_stub_contract_link_missing");
+    }
+    if original_function != object_string(linked_contract, "original_function") {
+        issue_codes.push("kani_stub_contract_link_mismatch");
+    }
+    if source_scope != object_string(linked_contract, "source_scope") {
+        issue_codes.push("kani_stub_contract_link_mismatch");
+    }
+    if object_string(payload, "stub_signature") != object_string(payload, "original_signature") {
+        issue_codes.push("kani_stub_signature_mismatch");
+    }
+    if object_string(linked_contract, "artifact_hash") != object_string(linked_contract, "expected_artifact_hash") {
+        issue_codes.push("kani_stub_stale_contract_hash");
+    }
+    if object_string(linked_contract, "status") != Some(KANI_RECEIPT_STATUS_PASSED) {
+        issue_codes.push("kani_stub_contract_not_passed");
+    }
+}
+
+fn validate_plain_kani_stub(artifact: &EvidenceArtifact, issue_codes: &mut Vec<&'static str>) {
+    if artifact.verification_role == VerificationRole::Property {
+        issue_codes.push("kani_stub_plain_stub_promoted");
+    }
+    if object_array_strings(&artifact.payload, "assumptions").is_empty() {
+        issue_codes.push("kani_stub_assumptions_missing");
+    }
+}
+
+fn validate_environmental_kani_stub(artifact: &EvidenceArtifact, issue_codes: &mut Vec<&'static str>) {
+    if artifact.verification_role == VerificationRole::Property {
+        issue_codes.push("kani_stub_environment_promoted");
+    }
+    if object_array_strings(&artifact.payload, "assumptions").is_empty() {
+        issue_codes.push("kani_stub_environment_assumptions_missing");
+    }
+}
+
+fn object_string<'a>(value: &'a serde_json::Value, key: &str) -> Option<&'a str> {
+    value.get(key).and_then(serde_json::Value::as_str).map(str::trim).filter(|item| !item.is_empty())
+}
+
+fn object_bool(value: &serde_json::Value, key: &str) -> Option<bool> {
+    value.get(key).and_then(serde_json::Value::as_bool)
+}
+
+fn object_array_strings<'a>(value: &'a serde_json::Value, key: &str) -> Vec<&'a str> {
+    value
+        .get(key)
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .map(str::trim)
+        .filter(|item| !item.is_empty())
+        .collect()
 }
 
 /// Resolves a stable source ID to its span from a JSON manifest.
@@ -341,6 +651,82 @@ mod tests {
             sample_non_claims(),
         )
         .expect("build sample artifact")
+    }
+
+    fn sample_kani_non_claims() -> Vec<String> {
+        let mut claims = sample_non_claims();
+        claims.extend(KANI_REQUIRED_NON_CLAIMS.iter().map(ToString::to_string));
+        claims
+    }
+
+    fn valid_contract_payload(facets: Vec<&str>, status: &str, classification: &str) -> serde_json::Value {
+        serde_json::json!({
+            "contract_facets": facets,
+            "target": {
+                "crate_target": "valence-core",
+                "source_id": "src/lib.rs::checked_add",
+                "target_scope": "fn checked_add::<u32>",
+                "monomorphization": "u32",
+            },
+            "toolchain": {
+                "kani_version": "kani fixture",
+                "rust_toolchain": "nightly fixture",
+                "cbmc_version": "cbmc fixture",
+                "solver": "minisat fixture",
+            },
+            "receipt": {
+                "status": status,
+                "receipt_hash": "b3:kani-contract-receipt",
+            },
+            "claim_classification": classification,
+            "termination_claimed": false,
+        })
+    }
+
+    fn contract_artifact(payload: serde_json::Value, role: VerificationRole) -> EvidenceArtifact {
+        build_evidence_artifact(
+            KANI_CONTRACT_ARTIFACT_KIND,
+            "kani:contract:checked_add",
+            None,
+            role,
+            payload,
+            sample_kani_non_claims(),
+        )
+        .expect("build Kani contract artifact")
+    }
+
+    fn valid_verified_stub_payload() -> serde_json::Value {
+        serde_json::json!({
+            "stub_kind": KaniStubKind::VerifiedContractStub.as_str(),
+            "original_function": "crate::checked_add",
+            "source_scope": "src/lib.rs",
+            "stub_signature": "fn checked_add(u32, u32) -> Option<u32>",
+            "original_signature": "fn checked_add(u32, u32) -> Option<u32>",
+            "linked_contract": {
+                "original_function": "crate::checked_add",
+                "source_scope": "src/lib.rs",
+                "artifact_hash": "b3:contract-artifact",
+                "expected_artifact_hash": "b3:contract-artifact",
+                "status": "passed",
+            },
+        })
+    }
+
+    fn stub_artifact(payload: serde_json::Value, role: VerificationRole) -> EvidenceArtifact {
+        build_evidence_artifact(
+            KANI_STUB_ARTIFACT_KIND,
+            "kani:stub:checked_add",
+            None,
+            role,
+            payload,
+            sample_kani_non_claims(),
+        )
+        .expect("build Kani stub artifact")
+    }
+
+    fn report_for(artifact: EvidenceArtifact) -> EvidenceCheckReport {
+        let json = serde_json::to_string(&artifact).expect("serialize artifact");
+        check_evidence_artifact(&json)
     }
 
     #[test]
@@ -494,6 +880,179 @@ mod tests {
 
         let json = serde_json::to_string(&VerificationRole::RecordedOnly).unwrap();
         assert_eq!(json, "\"recorded_only\"");
+    }
+
+    #[test]
+    fn kani_contract_accepts_scoped_passing_function_contract() {
+        let payload = valid_contract_payload(
+            vec![
+                KaniContractFacet::Precondition.as_str(),
+                KaniContractFacet::Postcondition.as_str(),
+                KaniContractFacet::ContractHarness.as_str(),
+            ],
+            KANI_RECEIPT_STATUS_PASSED,
+            KANI_CONTRACT_PASSING_CLASSIFICATION,
+        );
+        let report = report_for(contract_artifact(payload, VerificationRole::Property));
+
+        assert!(report.valid);
+        assert!(report.issue_codes.is_empty());
+        assert!(report.non_claims.contains(&KANI_NON_CLAIM_WHOLE_PROGRAM.to_owned()));
+    }
+
+    #[test]
+    fn kani_contract_accepts_loop_decreases_for_termination_claim() {
+        let mut payload = valid_contract_payload(
+            vec![
+                KaniContractFacet::LoopInvariant.as_str(),
+                KaniContractFacet::LoopDecreases.as_str(),
+                KaniContractFacet::ContractHarness.as_str(),
+            ],
+            KANI_RECEIPT_STATUS_PASSED,
+            KANI_CONTRACT_LOOP_CLASSIFICATION,
+        );
+        payload["termination_claimed"] = serde_json::json!(true);
+        let report = report_for(contract_artifact(payload, VerificationRole::Property));
+
+        assert!(report.valid);
+        assert!(report.issue_codes.is_empty());
+    }
+
+    #[test]
+    fn kani_contract_keeps_bounded_harness_recorded_only() {
+        let payload = valid_contract_payload(
+            vec![KaniContractFacet::ContractHarness.as_str()],
+            KANI_RECEIPT_STATUS_BOUNDED_ONLY,
+            KANI_CONTRACT_BOUNDED_CLASSIFICATION,
+        );
+        let report = report_for(contract_artifact(payload, VerificationRole::RecordedOnly));
+
+        assert!(report.valid);
+        assert!(report.issue_codes.is_empty());
+    }
+
+    #[test]
+    fn kani_contract_rejects_failed_receipt_as_property() {
+        let payload = valid_contract_payload(
+            vec![KaniContractFacet::Postcondition.as_str()],
+            KANI_RECEIPT_STATUS_FAILED,
+            KANI_CONTRACT_PASSING_CLASSIFICATION,
+        );
+        let report = report_for(contract_artifact(payload, VerificationRole::Property));
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"kani_contract_failed_property"));
+    }
+
+    #[test]
+    fn kani_contract_rejects_missing_target_solver_and_receipt() {
+        let payload = serde_json::json!({
+            "contract_facets": [KaniContractFacet::Postcondition.as_str()],
+            "toolchain": {"kani_version": "kani fixture"},
+            "claim_classification": KANI_CONTRACT_PASSING_CLASSIFICATION,
+        });
+        let report = report_for(contract_artifact(payload, VerificationRole::Property));
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"kani_contract_target_scope_missing"));
+        assert!(report.issue_codes.contains(&"kani_contract_solver_missing"));
+        assert!(report.issue_codes.contains(&"kani_contract_receipt_missing"));
+    }
+
+    #[test]
+    fn kani_contract_rejects_all_monomorphization_and_recursive_termination_overclaims() {
+        let mut payload = valid_contract_payload(
+            vec![KaniContractFacet::LoopInvariant.as_str()],
+            KANI_RECEIPT_STATUS_PASSED,
+            KANI_CONTRACT_LOOP_CLASSIFICATION,
+        );
+        payload["target"]["target_scope"] = serde_json::json!(KANI_TARGET_SCOPE_ALL_MONOMORPHIZATIONS);
+        payload["termination_claimed"] = serde_json::json!(true);
+        let report = report_for(contract_artifact(payload, VerificationRole::Property));
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"kani_contract_all_monomorphization_overclaim"));
+        assert!(report.issue_codes.contains(&"kani_contract_recursive_termination_overclaim"));
+    }
+
+    #[test]
+    fn kani_artifact_rejects_missing_required_non_claims() {
+        let artifact = build_evidence_artifact(
+            KANI_CONTRACT_ARTIFACT_KIND,
+            "kani:contract:weak-boundary",
+            None,
+            VerificationRole::Property,
+            valid_contract_payload(
+                vec![KaniContractFacet::Postcondition.as_str()],
+                KANI_RECEIPT_STATUS_PASSED,
+                KANI_CONTRACT_PASSING_CLASSIFICATION,
+            ),
+            sample_non_claims(),
+        )
+        .expect("build weak-boundary Kani artifact");
+        let report = report_for(artifact);
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"kani_non_claims_missing_required"));
+    }
+
+    #[test]
+    fn kani_stub_accepts_verified_contract_linkage() {
+        let report = report_for(stub_artifact(valid_verified_stub_payload(), VerificationRole::Property));
+
+        assert!(report.valid);
+        assert!(report.issue_codes.is_empty());
+    }
+
+    #[test]
+    fn kani_stub_accepts_environmental_boundary_with_assumptions() {
+        let payload = serde_json::json!({
+            "stub_kind": KaniStubKind::EnvironmentalStub.as_str(),
+            "assumptions": ["allocator returns aligned memory inside modeled range"],
+        });
+        let report = report_for(stub_artifact(payload, VerificationRole::Boundary));
+
+        assert!(report.valid);
+        assert!(report.issue_codes.is_empty());
+    }
+
+    #[test]
+    fn kani_stub_rejects_missing_contract_link() {
+        let payload = serde_json::json!({
+            "stub_kind": KaniStubKind::VerifiedContractStub.as_str(),
+            "original_function": "crate::checked_add",
+            "source_scope": "src/lib.rs",
+            "stub_signature": "fn checked_add(u32, u32) -> Option<u32>",
+            "original_signature": "fn checked_add(u32, u32) -> Option<u32>",
+        });
+        let report = report_for(stub_artifact(payload, VerificationRole::Property));
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"kani_stub_contract_link_missing"));
+    }
+
+    #[test]
+    fn kani_stub_rejects_stale_contract_hash_and_signature_mismatch() {
+        let mut payload = valid_verified_stub_payload();
+        payload["stub_signature"] = serde_json::json!("fn checked_add(u64, u64) -> Option<u64>");
+        payload["linked_contract"]["artifact_hash"] = serde_json::json!("b3:stale-contract-artifact");
+        let report = report_for(stub_artifact(payload, VerificationRole::Property));
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"kani_stub_signature_mismatch"));
+        assert!(report.issue_codes.contains(&"kani_stub_stale_contract_hash"));
+    }
+
+    #[test]
+    fn kani_stub_rejects_plain_stub_promotion_and_missing_assumptions() {
+        let payload = serde_json::json!({
+            "stub_kind": KANI_STUB_KIND_PLAIN,
+        });
+        let report = report_for(stub_artifact(payload, VerificationRole::Property));
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"kani_stub_plain_stub_promoted"));
+        assert!(report.issue_codes.contains(&"kani_stub_assumptions_missing"));
     }
 
     #[test]
