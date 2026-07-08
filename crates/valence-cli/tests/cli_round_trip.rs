@@ -23,6 +23,7 @@ use valence_core::stack_provenance_adapter::BUILT_BINARY_THREAD_NON_CLAIM;
 use valence_core::stack_provenance_adapter::MANTLE_STACK_PROVENANCE_ROLE;
 use valence_core::stack_provenance_adapter::OCTET_VALENCE_EXPORT_SCHEMA;
 use valence_core::stack_provenance_adapter::STACK_PROVENANCE_CLAIM_SCOPE;
+use valence_core::stack_provenance_adapter::STACK_PROVENANCE_GRAPH_NON_CLAIM;
 use valence_core::stack_provenance_adapter::STACK_PROVENANCE_NON_CLAIM;
 use valence_core::stack_provenance_adapter::STACK_PROVENANCE_SIDECAR_SCHEMA;
 
@@ -427,12 +428,87 @@ fn stack_provenance_verify_built_binary_rejects_tampered_bytes() {
 }
 
 #[test]
+fn stack_provenance_graph_report_outputs_json_and_markdown() {
+    let fixture = graph_fixture_path("positive/complete.json");
+    let json_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("graph-report")
+        .arg("--chain")
+        .arg(&fixture)
+        .arg("--format")
+        .arg("json")
+        .output()
+        .expect("run graph report json");
+    let stdout = String::from_utf8_lossy(&json_output.stdout);
+    assert!(json_output.status.success(), "graph report should pass: {stdout}");
+    let report: serde_json::Value = serde_json::from_slice(&json_output.stdout).expect("graph report json");
+    assert_eq!(report["valid"], true);
+    assert_eq!(report["edge_count"], 6);
+    assert_eq!(report["report_hash"].as_str().expect("report hash").len(), BLAKE3_HEX_LENGTH);
+    assert!(
+        report["non_claims"]
+            .as_array()
+            .expect("non claims")
+            .iter()
+            .any(|claim| claim == STACK_PROVENANCE_GRAPH_NON_CLAIM)
+    );
+
+    let markdown_output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("graph-report")
+        .arg("--chain")
+        .arg(&fixture)
+        .arg("--format")
+        .arg("markdown")
+        .output()
+        .expect("run graph report markdown");
+    let markdown = String::from_utf8_lossy(&markdown_output.stdout);
+    assert!(markdown_output.status.success(), "markdown graph report should pass: {markdown}");
+    assert!(markdown.contains("# Stack provenance graph report"), "markdown has heading: {markdown}");
+    assert!(markdown.contains("Cairn lifecycle-gate nodes"), "markdown has Cairn boundary: {markdown}");
+}
+
+#[test]
+fn stack_provenance_graph_report_rejects_unsupported_edge_fixture() {
+    let fixture = graph_fixture_path("negative/unsupported-edge.json");
+    let output = Command::new(valence_binary())
+        .arg("stack-provenance")
+        .arg("graph-report")
+        .arg("--chain")
+        .arg(&fixture)
+        .arg("--format")
+        .arg("json")
+        .output()
+        .expect("run graph report negative");
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(!output.status.success(), "graph report should reject unsupported edge: {stdout}");
+    let report: serde_json::Value = serde_json::from_slice(&output.stdout).expect("graph report json");
+    assert_eq!(report["valid"], false);
+    assert!(
+        report["diagnostics"]
+            .as_array()
+            .expect("diagnostics")
+            .iter()
+            .any(|code| code == "unsupported_edge_kind")
+    );
+}
+
+#[test]
 fn version_command_succeeds() {
     let output = Command::new(valence_binary()).arg("version").output().expect("run valence version");
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(output.status.success(), "version should succeed: {stdout}");
     assert!(stdout.contains("valence"), "stdout should contain 'valence': {stdout}");
+}
+
+fn graph_fixture_path(relative: &str) -> String {
+    let manifest_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    manifest_dir
+        .join("../../fixtures/stack-provenance-chain")
+        .join(relative)
+        .to_string_lossy()
+        .into_owned()
 }
 
 fn write_text(path: &str, content: &str) {

@@ -24,6 +24,8 @@ let Blake3Hex = std.contract.from_predicate (fun value =>
   std.is_string value && std.string.is_match "^[0-9a-fA-F]{64}$" value
 ) in
 
+let Blake3HexContract = Blake3Hex in
+
 let Stage = std.contract.from_predicate (fun value =>
   std.is_string value && (value == "proposal" || value == "design" || value == "tasks" || value == "implementation" || value == "archive")
 ) in
@@ -62,6 +64,38 @@ let Promoted = std.contract.from_predicate (fun value =>
 
 let SteelProfileMode = std.contract.from_predicate (fun value =>
   std.is_string value && (value == "disabled" || value == "comparison" || value == "opt_in" || value == "selected_default" || value == "broad_default")
+) in
+
+let SafeRelativePath = std.contract.from_predicate (fun value =>
+  std.is_string value && std.string.length value > 0 && std.string.is_match "^[A-Za-z0-9][A-Za-z0-9._/-]*$" value
+) in
+
+let TraceabilityRequirementSourceKind = std.contract.from_predicate (fun value =>
+  std.is_string value && (value == "accepted_specs" || value == "requirements_doc")
+) in
+
+let TraceabilityEvidenceSourceKind = std.contract.from_predicate (fun value =>
+  std.is_string value && (value == "rust_source" || value == "nickel_source" || value == "tool_source")
+) in
+
+let TraceabilityMarkerVerb = std.contract.from_predicate (fun value =>
+  std.is_string value && (value == "impl" || value == "verify" || value == "depends" || value == "related")
+) in
+
+let TraceabilityExtension = std.contract.from_predicate (fun value =>
+  std.is_string value && std.string.length value > 0 && std.string.is_match "^[A-Za-z0-9_-]+$" value
+) in
+
+let StackProvenanceGateMode = std.contract.from_predicate (fun value =>
+  std.is_string value && (value == "disabled" || value == "optional" || value == "required")
+) in
+
+let RuntimeCaptureOrigin = std.contract.from_predicate (fun value =>
+  std.is_string value && (value == "boundary_captured" || value == "ingested_telemetry" || value == "wrapper_asserted" || value == "unknown")
+) in
+
+let PositiveNumber = std.contract.from_predicate (fun value =>
+  std.is_number value && value > 0
 ) in
 
 {
@@ -137,6 +171,45 @@ let SteelProfileMode = std.contract.from_predicate (fun value =>
   SteelOrchestrationPolicy = {
     enabled | Bool,
     profiles | Array SteelOrchestrationProfile | default = [],
+  },
+
+  TraceabilityRequirementSource = {
+    root | SafeRelativePath,
+    source_kind | TraceabilityRequirementSourceKind,
+    extensions | NonEmptyArray | Array TraceabilityExtension,
+  },
+
+  TraceabilityEvidenceSource = {
+    root | SafeRelativePath,
+    source_kind | TraceabilityEvidenceSourceKind,
+    extensions | NonEmptyArray | Array TraceabilityExtension,
+  },
+
+  TraceabilityProfile = {
+    id | NonEmptyString,
+    requirement_sources | NonEmptyArray | Array TraceabilityRequirementSource,
+    evidence_sources | NonEmptyArray | Array TraceabilityEvidenceSource,
+    marker_verbs | NonEmptyArray | Array TraceabilityMarkerVerb,
+  },
+
+  TraceabilityPolicy = {
+    default_profile | NonEmptyString,
+    profiles | NonEmptyArray | Array TraceabilityProfile,
+  },
+
+  StackProvenancePolicy = {
+    mode | StackProvenanceGateMode,
+    allowed_claim_scopes | NonEmptyArray | Array NonEmptyString,
+    accepted_valence_policy_hashes | Array Blake3HexContract | default = [],
+    required_boundary | NonEmptyString,
+  },
+
+  RuntimeEvidencePolicy = {
+    allowed_capture_origins | NonEmptyArray | Array RuntimeCaptureOrigin,
+    allowed_hash_algorithms | NonEmptyArray | Array Blake3Algorithm,
+    max_summary_bytes | PositiveNumber,
+    forbidden_summary_fragments | Array NonEmptyString | default = [],
+    aggregation_profiles | Array NonEmptyString | default = [],
   },
 
   ProbeCommandProfile = {
@@ -288,6 +361,9 @@ let SteelProfileMode = std.contract.from_predicate (fun value =>
     registry_label_policy | RegistryLabelPolicy,
     change_metadata_policy | ChangeMetadataPolicy,
     steel_orchestration_policy | SteelOrchestrationPolicy,
+    traceability_policy | TraceabilityPolicy,
+    stack_provenance_gate | StackProvenancePolicy,
+    runtime_evidence_policy | RuntimeEvidencePolicy,
     structured_lifecycle | StructuredLifecycle | default = {},
     probe_policy | ProbePolicy,
     receipt_schemas | NonEmptyArray | Array ReceiptSchema,

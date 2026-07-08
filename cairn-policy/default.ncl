@@ -80,6 +80,57 @@ let Contracts = import "contracts.ncl" in
     }],
   },
 
+  traceability_policy = {
+    default_profile = "valence-default",
+    profiles = [
+      {
+        id = "valence-default",
+        requirement_sources = [
+          { root = "cairn/specs/stack-provenance-adapter/spec.md", source_kind = "accepted_specs", extensions = ["md"] },
+        ],
+        evidence_sources = [
+          { root = "crates/valence-core/src/stack_provenance_adapter.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-core/src/stack_provenance_adapter/graph.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-cli/src/main.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-cli/tests/cli_round_trip.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "contracts/stack-provenance", source_kind = "nickel_source", extensions = ["ncl"] },
+          { root = "README.md", source_kind = "tool_source", extensions = ["md"] },
+        ],
+        marker_verbs = ["impl", "verify", "depends", "related"],
+      },
+      {
+        id = "cairn-default",
+        requirement_sources = [
+          { root = "cairn/specs/stack-provenance-adapter/spec.md", source_kind = "accepted_specs", extensions = ["md"] },
+        ],
+        evidence_sources = [
+          { root = "crates/valence-core/src/stack_provenance_adapter.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-core/src/stack_provenance_adapter/graph.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-cli/src/main.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-cli/tests/cli_round_trip.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "contracts/stack-provenance", source_kind = "nickel_source", extensions = ["ncl"] },
+          { root = "README.md", source_kind = "tool_source", extensions = ["md"] },
+        ],
+        marker_verbs = ["impl", "verify", "depends", "related"],
+      },
+    ],
+  },
+
+  stack_provenance_gate = {
+    mode = "optional",
+    allowed_claim_scopes = ["stack_provenance.v1.lifecycle_policy_conformance"],
+    accepted_valence_policy_hashes = [],
+    required_boundary = "Valence stack provenance verifies identity, linkage, role, digest, and non-claim policy only; it does not prove behavioral correctness, verifier soundness, release eligibility, or requirement satisfaction",
+  },
+
+  runtime_evidence_policy = {
+    allowed_capture_origins = ["boundary_captured", "ingested_telemetry", "wrapper_asserted", "unknown"],
+    allowed_hash_algorithms = ["BLAKE3"],
+    max_summary_bytes = 256,
+    forbidden_summary_fragments = ["SECRET=", "token=", "/home/"],
+    aggregation_profiles = [],
+  },
+
   structured_lifecycle = {
     preserves_receipt_source_map = {},
   },

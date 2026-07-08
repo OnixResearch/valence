@@ -119,6 +119,7 @@ valence explain --id <ID> --manifest <FILE> Resolve a stable source ID to its sp
 valence stack-provenance build --octet-export <FILE> --binary-hash <B3> --output <FILE>
 valence stack-provenance verify --manifest <FILE> --sidecar <FILE>
 valence stack-provenance verify-built-binary --binary <PATH> --octet-export <FILE> --sidecar <FILE> --manifest <FILE> [--json]
+valence stack-provenance graph-report --chain <FILE> [--format json|markdown]
 valence version                             Print version
 ```
 
@@ -137,9 +138,13 @@ against that sidecar and reports stale digests, missing roles, weakened
 boundaries, and tier-promotion attempts. `stack-provenance verify-built-binary`
 measures the binary bytes with BLAKE3 and accepts only when that digest matches
 the sidecar, every provenance link, the Octet export-derived sidecar content,
-and Mantle release binary identity metadata. Success proves measured-byte
-identity and linkage only; it is not a correctness, semantic-equivalence, or
-release-eligibility proof.
+and Mantle release binary identity metadata. `stack-provenance graph-report`
+checks a canonical stack chain that links requirement, span, receipt, proof,
+sidecar, release-bundle, and Cairn gate nodes with typed edges and emits either
+machine JSON or operator Markdown from the same report DTO. Success proves
+measured-byte identity, canonical IDs, typed linkage, role policy, and non-claim
+conformance only; it is not a correctness, semantic-equivalence, verifier
+soundness, requirement-satisfaction, or release-eligibility proof.
 
 Nickel contracts in `contracts/stack-provenance/` provide a preflight gate for
 static metadata shape and bounded-claim invariants. They check schema strings,
@@ -169,9 +174,12 @@ do not broaden the measured-byte identity-and-linkage-only claim.
 
 Valence supports bounded local evidence replay for selected evidence surfaces.
 For stack provenance, Octet exports verified artifact facts, Mantle bundles the
-sidecar opaquely as optional external evidence, and Valence performs the
-stack-specific semantic verification. It does not claim behavioral correctness,
-semantic equivalence, exhaustive Rust coverage, pure-cache eligibility,
+sidecar opaquely as optional external evidence, and Cairn consumes Valence graph
+and sidecar reports as lifecycle/release-policy inputs. Valence is the stack
+semantics verifier for identity, digest, typed-edge, role, and non-claim policy;
+Mantle remains bundle-local and Cairn remains lifecycle-policy-local. Valence
+does not claim behavioral correctness, semantic equivalence, exhaustive Rust
+coverage, pure-cache eligibility,
 cross-machine determinism, cross-toolchain determinism, external consumer
 compatibility, mechanized language soundness, requirement satisfaction, or
 general HIR/THIR/MIR extraction.

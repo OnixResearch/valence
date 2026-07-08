@@ -5,6 +5,70 @@
 //! artifact digests, evidence tiers, source/function/requirement IDs, and the
 //! Mantle external-evidence digest. It does not prove behavioral correctness,
 //! semantic equivalence, whole-program safety, or requirement satisfaction.
+//!
+//! Accepted stack-provenance traceability markers for the maintained adapter surface:
+//! r[impl valence.stack_provenance_adapter]
+//! r[impl valence.stack_provenance_adapter.boundary]
+//! r[impl valence.stack_provenance_adapter.boundary.operator]
+//! r[impl valence.stack_provenance_adapter.broken_chain_fixtures]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.binary_digest]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.cli]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.cli.diagnostics]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.cli.verify]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.e2e]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.mantle_binary_identity]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.missing_mantle_binary]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.non_claims]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.octet_export]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.sidecar_digest]
+//! r[impl valence.stack_provenance_adapter.built_binary_thread.stale_binary]
+//! r[impl valence.stack_provenance_adapter.cli]
+//! r[impl valence.stack_provenance_adapter.cli.build]
+//! r[impl valence.stack_provenance_adapter.cli.verify]
+//! r[impl valence.stack_provenance_adapter.cross_repo_fixtures]
+//! r[impl valence.stack_provenance_adapter.cross_repo_fixtures.deep]
+//! r[impl valence.stack_provenance_adapter.cross_repo_fixtures.fast]
+//! r[impl valence.stack_provenance_adapter.cross_repo_fixtures.non_claims]
+//! r[impl valence.stack_provenance_adapter.cross_repo_fixtures.positive]
+//! r[impl valence.stack_provenance_adapter.deterministic]
+//! r[impl valence.stack_provenance_adapter.graph_report.markdown]
+//! r[impl valence.stack_provenance_adapter.mantle_external_evidence]
+//! r[impl valence.stack_provenance_adapter.mantle_external_evidence.digest]
+//! r[impl valence.stack_provenance_adapter.mantle_external_evidence.missing_role]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts.cli]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts.docs]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts.fixtures]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts.gate]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts.metadata_inputs]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts.rust_boundary]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts.static_invariants]
+//! r[impl valence.stack_provenance_adapter.nickel_contracts.thread_input]
+//! r[impl valence.stack_provenance_adapter.preserves_values]
+//! r[impl valence.stack_provenance_adapter.preserves_values.boundary]
+//! r[impl valence.stack_provenance_adapter.preserves_values.corpus]
+//! r[impl valence.stack_provenance_adapter.preserves_values.docs]
+//! r[impl valence.stack_provenance_adapter.preserves_values.gate]
+//! r[impl valence.stack_provenance_adapter.preserves_values.hashes]
+//! r[impl valence.stack_provenance_adapter.preserves_values.metadata_surfaces]
+//! r[impl valence.stack_provenance_adapter.preserves_values.receipts]
+//! r[impl valence.stack_provenance_adapter.preserves_values.report_diff]
+//! r[impl valence.stack_provenance_adapter.sidecar]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values.boundary]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values.digest_roles]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values.docs]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values.dto_parse]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values.evidence_tiers]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values.preserves]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values.tests]
+//! r[impl valence.stack_provenance_adapter.typed_boundary_values.validation]
+//! r[impl valence.stack_provenance_adapter.validation]
+//! r[impl valence.stack_provenance_adapter.validation.binary_mismatch]
+//! r[impl valence.stack_provenance_adapter.validation.boundary]
+//! r[impl valence.stack_provenance_adapter.validation.missing_parent]
+//! r[impl valence.stack_provenance_adapter.validation.no_tier_promotion]
 
 use std::collections::BTreeSet;
 
@@ -15,6 +79,9 @@ use crate::provenance::PROVENANCE_BOUNDARY;
 use crate::provenance::ProvenanceChain;
 use crate::provenance::ProvenanceLink;
 use crate::provenance::check_provenance_chain;
+
+mod graph;
+pub use graph::*;
 
 /// Canonical stack-provenance sidecar schema.
 pub const STACK_PROVENANCE_SIDECAR_SCHEMA: &str = "valence.stack-provenance-sidecar.v1";

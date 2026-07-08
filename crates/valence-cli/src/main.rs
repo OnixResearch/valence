@@ -20,6 +20,7 @@ COMMANDS:
     stack-provenance build --octet-export <FILE> --binary-hash <B3> --output <FILE>
     stack-provenance verify --manifest <FILE> --sidecar <FILE>
     stack-provenance verify-built-binary --binary <PATH> --octet-export <FILE> --sidecar <FILE> --manifest <FILE> [--json]
+    stack-provenance graph-report --chain <FILE> [--format json|markdown]
     version                             Print version
 
 EXIT CODES:
@@ -96,6 +97,7 @@ fn run_stack_provenance(args: &[String]) -> ExitCode {
         "build" => run_stack_provenance_build(&args[1..]),
         "verify" => run_stack_provenance_verify(&args[1..]),
         "verify-built-binary" => run_stack_provenance_verify_built_binary(&args[1..]),
+        "graph-report" => run_stack_provenance_graph_report(&args[1..]),
         other => {
             eprintln!("unknown stack-provenance command: {other}");
             ExitCode::from(2)
@@ -245,6 +247,71 @@ fn run_stack_provenance_verify(args: &[String]) -> ExitCode {
     }
 }
 
+fn run_stack_provenance_graph_report(args: &[String]) -> ExitCode {
+    // r[impl valence.stack_provenance_adapter.graph_report]
+    let mut chain_path: Option<PathBuf> = None;
+    let mut format = "json".to_owned();
+
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--chain" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --chain requires a value");
+                    return ExitCode::from(2);
+                }
+                chain_path = Some(PathBuf::from(&args[i]));
+            }
+            "--format" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --format requires a value");
+                    return ExitCode::from(2);
+                }
+                format = args[i].clone();
+            }
+            other => {
+                eprintln!("unknown option: {other}");
+                return ExitCode::from(2);
+            }
+        }
+        i += 1;
+    }
+
+    let Some(chain_path) = chain_path else {
+        eprintln!("error: --chain is required");
+        return ExitCode::from(2);
+    };
+    let chain_json = match fs::read_to_string(&chain_path) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", chain_path.display());
+            return ExitCode::from(2);
+        }
+    };
+    let report = valence_core::stack_provenance_adapter::stack_provenance_graph_report_from_json(&chain_json);
+    match format.as_str() {
+        "json" => match serde_json::to_string_pretty(&report) {
+            Ok(json) => println!("{json}"),
+            Err(error) => {
+                eprintln!("error: cannot serialize graph report: {error}");
+                return ExitCode::from(2);
+            }
+        },
+        "markdown" => print!("{}", render_stack_provenance_graph_markdown(&report)),
+        other => {
+            eprintln!("unsupported graph-report format: {other}");
+            return ExitCode::from(2);
+        }
+    }
+    if report.valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
+    }
+}
+
 fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
     let mut binary_path: Option<PathBuf> = None;
     let mut octet_export_path: Option<PathBuf> = None;
@@ -379,6 +446,44 @@ fn print_stack_provenance_report(report: &valence_core::stack_provenance_adapter
     for code in &report.issue_codes {
         println!("issue={code}");
     }
+}
+
+fn render_stack_provenance_graph_markdown(
+    report: &valence_core::stack_provenance_adapter::StackProvenanceGraphReport,
+) -> String {
+    // r[impl valence.stack_provenance_adapter.graph_report]
+    let mut output = String::new();
+    output.push_str("# Stack provenance graph report\n\n");
+    output.push_str(&format!("- valid: {}\n", report.valid));
+    output.push_str(&format!("- artifacts: {}\n", report.artifact_count));
+    output.push_str(&format!("- edges: {}\n", report.edge_count));
+    output.push_str(&format!("- report_hash: {}\n", report.report_hash));
+    output.push_str(&format!("- supported_claim: {}\n", report.supported_claim));
+    output.push_str("\n## Diagnostics\n");
+    if report.diagnostics.is_empty() {
+        output.push_str("- none\n");
+    } else {
+        for diagnostic in &report.diagnostics {
+            output.push_str(&format!("- {diagnostic}\n"));
+        }
+    }
+    output.push_str("\n## Trust boundaries\n");
+    for boundary in &report.trust_boundaries {
+        output.push_str(&format!("- {boundary}\n"));
+    }
+    output.push_str("\n## Manual-review nodes\n");
+    if report.manual_nodes.is_empty() {
+        output.push_str("- none\n");
+    } else {
+        for node in &report.manual_nodes {
+            output.push_str(&format!("- {node}\n"));
+        }
+    }
+    output.push_str("\n## Non-claims\n");
+    for non_claim in &report.non_claims {
+        output.push_str(&format!("- {non_claim}\n"));
+    }
+    output
 }
 
 fn print_built_binary_thread_report(report: &valence_core::stack_provenance_adapter::BuiltBinaryThreadReport) {
