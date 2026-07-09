@@ -867,21 +867,6 @@ r[valence.evidence_ir.state_machine_evidence.validation.core]
 - WHEN validation runs
 - THEN the pure core MUST decide acceptance or rejection without filesystem, process, network, clock, environment, or stdout side effects.
 
-### Requirement: Formal proof links remain separate
-r[valence.evidence_ir.state_machine_evidence.proof_links] Valence MUST preserve optional formal proof links for state-machine invariants as separate evidence records and MUST NOT promote the state-machine exhaustiveness receipt tier.
-
-#### Scenario: Linked proof does not promote lint receipt
-r[valence.evidence_ir.state_machine_evidence.proof_links.no_promotion]
-- GIVEN a valid state-machine exhaustiveness receipt links to a separate Verus or Kani proof receipt
-- WHEN Valence builds or verifies the evidence graph
-- THEN the state-machine receipt MUST remain bounded source-shape evidence while the proof receipt retains its own verifier identity and tier.
-
-#### Scenario: Missing linked proof fails only the link
-r[valence.evidence_ir.state_machine_evidence.proof_links.missing]
-- GIVEN a state-machine receipt references a proof receipt identity that is absent from the evidence graph
-- WHEN Valence validates linked evidence
-- THEN validation MUST report a missing-link diagnostic without treating the state-machine receipt as formal proof.
-
 ### Requirement: State-machine evidence documentation
 r[valence.evidence_ir.state_machine_evidence.docs] Valence documentation MUST describe Octet producer responsibilities, Evidence IR validation boundaries, and consumer interpretation rules for state-machine exhaustiveness receipts.
 
@@ -899,7 +884,6 @@ r[valence.evidence_ir.state_machine_evidence.final_validation.checks]
 - GIVEN the receipt contract, fixtures, validation core, proof-link handling, and documentation are complete
 - WHEN final validation runs
 - THEN focused tests, fixture checks, formatting, and Cairn gates MUST pass or record explicit pre-existing blockers.
-
 
 ### Requirement: ChaosControl Evidence IR export contract
 r[valence.evidence_ir.chaoscontrol_export.contract] Valence MUST support an adapter contract for selected ChaosControl evidence families without taking ownership of VMM, replay, or determinism semantics.
@@ -933,7 +917,6 @@ r[valence.evidence_ir.chaoscontrol_export.final_validation.fixtures]
 - GIVEN valid and invalid ChaosControl export fixtures
 - WHEN focused validation runs
 - THEN valid fixtures MUST pass and invalid fixtures MUST fail closed.
-
 
 ### Requirement: Cairn content-addressed compatibility manifest
 r[valence.evidence_ir.cairn_content_addressed_compat.manifest] Valence MUST define a compatibility manifest for supported Cairn content-addressed Rust evidence receipt families, including schema, hash field, hash-material exclusion profile, Valence artifact kind, verification role, and required non-claim boundary.
@@ -983,7 +966,6 @@ r[valence.evidence_ir.cairn_content_addressed_compat.final_validation]
 - WHEN an operator reads the supported claim
 - THEN the report MUST state that Valence does not prove Cairn lifecycle readiness, source-code correctness, verifier soundness, semantic equivalence, release eligibility, or whole-program safety.
 
-
 ### Requirement: Normalized source identity index
 r[valence.evidence_ir.iddqd_evidence_source_index.source_index] Valence MUST index normalized evidence sources by locator ids derived from the source values rather than by duplicated temporary map keys.
 
@@ -1016,7 +998,6 @@ r[valence.evidence_ir.iddqd_evidence_source_index.final_validation.fixtures]
 - GIVEN valid and invalid evidence source fixtures
 - WHEN focused evidence-codebase-index tests and Cairn gates run
 - THEN unique source identities MUST pass and conflicting duplicate locators or stale provenance identities MUST fail closed.
-
 
 ### Requirement: Oxide primitive reference inventory
 r[valence.evidence_ir.oxide_primitives.reference_inventory] Valence MUST maintain a reference-only inventory for each Oxide primitive or attestation repository used to shape Evidence IR primitives.
@@ -1108,7 +1089,6 @@ r[valence.evidence_ir.oxide_primitives.validation.negative]
 - WHEN the fixture matrix runs
 - THEN invalid examples MUST fail with deterministic diagnostics and no partial acceptance.
 
-
 ### Requirement: Preserves evidence core contract
 r[valence.evidence_ir.preserves_evidence_core.contract] Valence MUST define pure Preserves evidence contracts for canonicalization profiles, envelope schema/version metadata, `preserves_content_hash`, self-hash exclusion profiles, and required non-claims.
 
@@ -1160,7 +1140,6 @@ r[valence.evidence_ir.preserves_evidence_core.final_validation]
 - WHEN an operator reads the supported claim
 - THEN the report MUST state that validation proves only canonical Preserves content identity and bounded envelope compatibility.
 
-
 ### Requirement: Preserves bridge contract
 r[valence.evidence_ir.preserves_bridge.contract] Valence MUST support an adapter contract that maps canonical Preserves evidence envelopes to Valence Evidence IR artifact identity fields.
 
@@ -1193,7 +1172,6 @@ r[valence.evidence_ir.preserves_bridge.final_validation.fixtures]
 - GIVEN valid and invalid bridge fixtures
 - WHEN focused validation runs
 - THEN valid fixtures MUST pass and invalid fixtures MUST fail closed.
-
 
 ### Requirement: Shared evidence identity contract
 r[valence.evidence_ir.shared_identity.contract] Valence MUST provide pure evidence-identity contracts for BLAKE3 digest spellings, digest roles, canonical hash profiles, self-referential hash-field exclusion, and reusable non-claim boundary checks.
@@ -1258,7 +1236,6 @@ r[valence.evidence_ir.shared_identity.final_validation]
 - WHEN an operator reads the supported claim
 - THEN the report MUST state that shared identity proves only syntax, canonical content identity, role separation, and non-claim boundary conformance for the selected profile.
 
-
 ### Requirement: Stack role registry core contract
 r[valence.evidence_ir.stack_role_registry_core.contract] Valence MUST define pure stack role registry contracts for canonical stack roles, schema role bindings, verification role vocabulary, compatibility aliases, and bounded non-claim text.
 
@@ -1301,7 +1278,6 @@ r[valence.evidence_ir.stack_role_registry_core.final_validation]
 - WHEN an operator reads the supported claim
 - THEN the report MUST state that validation proves role/schema/vocabulary compatibility only.
 
-
 ### Requirement: Verification role vocabulary contract
 r[valence.evidence_ir.verification_role_vocabulary.contract] Valence MUST define the canonical vocabulary for Evidence IR verification roles, tier mappings, counting behavior, and non-claim boundaries.
 
@@ -1343,3 +1319,96 @@ r[valence.evidence_ir.verification_role_vocabulary.final_validation.fixtures]
 - GIVEN valid and invalid role fixtures
 - WHEN focused validation runs
 - THEN valid fixtures MUST pass and invalid fixtures MUST fail closed.
+
+### Requirement: FSM default-exhaustive evidence profile
+r[valence.evidence_ir.fsm_default_profile.contract] Valence MUST define an `fsm-default-exhaustive` Evidence IR profile for bounded state-machine evidence that binds closed state/event universes, transition coverage, invalid-transition denial coverage, producer identities, source spans, artifact identities, roles, and required non-claims.
+
+#### Scenario: Valid profile preserves producer boundaries
+r[valence.evidence_ir.fsm_default_profile.contract.boundaries]
+- GIVEN an FSM default-exhaustive evidence record names Octet lint/provenance evidence and optionally Kamacite FSM spec evidence
+- WHEN Valence validates the record
+- THEN validation MUST preserve Octet as source-shape producer, Kamacite as portable schema/receipt producer when present, and Valence as identity/linkage/non-claim verifier.
+
+#### Scenario: Closed universes are bound
+r[valence.evidence_ir.fsm_default_profile.contract.universes]
+- GIVEN an FSM default-exhaustive evidence record declares closed state and event universe identities
+- WHEN Valence validates the record
+- THEN validation MUST require state universe identity, event universe identity, variant inventory identity, transition coverage identity, and invalid-transition denial coverage identity.
+
+### Requirement: Pure FSM evidence validation
+r[valence.evidence_ir.fsm_default_profile.validation] Valence MUST validate FSM default-exhaustive evidence through pure deterministic logic over parsed in-memory values.
+
+#### Scenario: Core has no shell side effects
+r[valence.evidence_ir.fsm_default_profile.validation.pure]
+- GIVEN parsed FSM default-exhaustive evidence values
+- WHEN validation runs
+- THEN the pure core MUST decide acceptance or rejection without filesystem, process, network, clock, environment, or stdout side effects.
+
+### Requirement: Positive FSM default-exhaustive fixtures
+r[valence.evidence_ir.fsm_default_profile.fixtures.positive] Valence MUST include positive fixtures for valid FSM default-exhaustive evidence records.
+
+#### Scenario: Octet-only receipt passes
+r[valence.evidence_ir.fsm_default_profile.fixtures.positive.octet_only]
+- GIVEN a fixture contains an Octet-produced FSM default-exhaustive receipt with source spans, closed universe identities, transition coverage, denial coverage, artifact BLAKE3 identity, parent export identity, and non-claims
+- WHEN the FSM default-exhaustive fixture suite runs
+- THEN the fixture MUST pass and produce deterministic Evidence IR output.
+
+#### Scenario: Octet plus Kamacite linked receipt passes
+r[valence.evidence_ir.fsm_default_profile.fixtures.positive.kamacite_link]
+- GIVEN a fixture contains Octet source-shape evidence linked to a Kamacite FSM spec and receipt identity with preserved non-claims
+- WHEN Valence validates the linked evidence
+- THEN validation MUST preserve both producer identities and report the linkage without treating Kamacite or Octet evidence as runtime correctness proof.
+
+### Requirement: Negative FSM default-exhaustive fixtures
+r[valence.evidence_ir.fsm_default_profile.fixtures.negative] Valence MUST reject malformed, stale, unsupported, or overclaiming FSM default-exhaustive evidence records.
+
+#### Scenario: Missing denial coverage fails
+r[valence.evidence_ir.fsm_default_profile.fixtures.negative.denial_coverage]
+- GIVEN an FSM default-exhaustive record omits invalid-transition denial coverage identity
+- WHEN Valence validates the record
+- THEN validation MUST fail with a deterministic missing-denial-coverage diagnostic.
+
+#### Scenario: Stale universe or coverage identity fails
+r[valence.evidence_ir.fsm_default_profile.fixtures.negative.stale]
+- GIVEN an FSM default-exhaustive record carries malformed or stale universe, inventory, coverage, denial coverage, artifact, or parent export identity
+- WHEN Valence validates the record
+- THEN validation MUST fail with deterministic digest or identity-domain diagnostics.
+
+#### Scenario: Missing non-claims fail
+r[valence.evidence_ir.fsm_default_profile.fixtures.negative.non_claims]
+- GIVEN an FSM default-exhaustive record omits the required bounded evidence non-claims
+- WHEN Valence validates the record
+- THEN validation MUST fail with a deterministic non-claim diagnostic.
+
+#### Scenario: Overclaim fails
+r[valence.evidence_ir.fsm_default_profile.fixtures.negative.overclaim]
+- GIVEN an FSM default-exhaustive record claims behavioral correctness, protocol completeness, liveness, verifier soundness, release eligibility, or exhaustive Rust coverage
+- WHEN Valence validates the record
+- THEN validation MUST reject the record with a deterministic overclaim diagnostic.
+
+### Requirement: Formal proof links remain separate
+r[valence.evidence_ir.fsm_default_profile.proof_links] Valence MUST preserve optional formal proof links for FSM invariants as separate evidence records and MUST NOT promote the FSM default-exhaustive receipt tier.
+
+#### Scenario: Linked proof does not promote FSM receipt
+r[valence.evidence_ir.fsm_default_profile.proof_links.no_promotion]
+- GIVEN a valid FSM default-exhaustive record links to a Verus, Kani, or Trellis proof receipt
+- WHEN Valence builds or verifies the evidence graph
+- THEN the FSM receipt MUST remain bounded source-shape/schema evidence while the proof receipt retains its own verifier identity and tier.
+
+### Requirement: FSM default-exhaustive documentation
+r[valence.evidence_ir.fsm_default_profile.docs] Valence documentation MUST describe Octet, Kamacite, and Valence ownership boundaries for FSM default-exhaustive evidence.
+
+#### Scenario: Consumer boundary is visible
+r[valence.evidence_ir.fsm_default_profile.docs.boundary]
+- GIVEN a consumer reads Valence documentation for FSM default-exhaustive evidence
+- WHEN the supported claim is stated
+- THEN the documentation MUST say Valence validates identity, linkage, role, digest, coverage-record shape, and non-claims only, not Rust semantics, FSM semantics, liveness, or release readiness.
+
+### Requirement: FSM default-exhaustive validation evidence
+r[valence.evidence_ir.fsm_default_profile.final_validation] The FSM default-exhaustive profile change MUST include focused positive and negative tests plus Cairn validation evidence before archive.
+
+#### Scenario: Focused validation covers pass and fail paths
+r[valence.evidence_ir.fsm_default_profile.final_validation.focused]
+- GIVEN implementation is complete
+- WHEN the change is prepared for archive
+- THEN saved evidence MUST identify focused core tests, positive and negative fixture coverage, and Cairn proposal/design/tasks validation results.
