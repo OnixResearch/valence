@@ -218,3 +218,7 @@ AGPL-3.0-or-later
   definitions, names-as-metadata, codebase-as-database tooling, effect labels,
   durable typed values, and structured refactoring. Valence uses these patterns
   as design input only and does not adopt the Unison language or runtime.
+- [oxidecomputer/iddqd](https://github.com/oxidecomputer/iddqd) — reference pattern for derived-key ID maps, duplicate-key rejection, borrowed lookup forms, and property-tested unsafe boundaries.
+- [oxidecomputer/newtype-uuid](https://github.com/oxidecomputer/newtype-uuid) — reference pattern for typed external UUID wrappers; Valence-owned canonical artifact identity remains BLAKE3.
+- [oxidecomputer/daft](https://github.com/oxidecomputer/daft) — reference pattern for semantic diffs of Rust data structures used as review evidence, not semantic-equivalence proof.
+- [oxidecomputer/rats-corim](https://github.com/oxidecomputer/rats-corim), [oxidecomputer/vm-attest](https://github.com/oxidecomputer/vm-attest), [oxidecomputer/dice-util](https://github.com/oxidecomputer/dice-util), and [oxidecomputer/pki-playground](https://github.com/oxidecomputer/pki-playground) — attestation vocabulary and certificate-chain references for bounded Evidence IR metadata; Valence does not inherit their attestation claims.
