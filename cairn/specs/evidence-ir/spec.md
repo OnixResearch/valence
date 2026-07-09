@@ -812,3 +812,534 @@ r[valence.evidence_ir.hegel_suite_lanes.docs]
 - GIVEN documentation or suite reports describe Hegel coverage
 - WHEN the supported claim is stated
 - THEN the output MUST say Hegel checks bounded generated inputs only and does not prove correctness, semantic equivalence, verifier soundness, requirement satisfaction, release eligibility, or whole-program safety.
+
+### Requirement: State-machine exhaustiveness receipt contract
+r[valence.evidence_ir.state_machine_evidence.contract] Valence MUST define a canonical receipt contract for Octet-produced state-machine exhaustiveness evidence.
+
+#### Scenario: Valid receipt names the checked transition domain
+r[valence.evidence_ir.state_machine_evidence.contract.domain]
+- GIVEN an Octet state-machine exhaustiveness receipt names a transition core, source span, state type identity, event type identity, variant inventory digest, coverage summary digest, status, diagnostics, artifact identity, evidence tier, and required non-claims
+- WHEN Valence validates the receipt
+- THEN validation MUST preserve those identities as bounded source-shape evidence.
+
+#### Scenario: Missing domain identity fails
+r[valence.evidence_ir.state_machine_evidence.contract.missing_domain]
+- GIVEN a receipt omits the transition core, state type, event type, source span, or coverage summary identity
+- WHEN Valence validates the receipt
+- THEN validation MUST fail with a deterministic missing-domain diagnostic.
+
+### Requirement: Positive state-machine evidence fixtures
+r[valence.evidence_ir.state_machine_evidence.fixtures.positive] Valence MUST include positive fixtures for valid Octet state-machine exhaustiveness receipts.
+
+#### Scenario: Valid Octet receipt passes
+r[valence.evidence_ir.state_machine_evidence.fixtures.positive.valid]
+- GIVEN a fixture contains a valid Octet-produced state-machine exhaustiveness receipt with source spans, domain identities, coverage summary digest, passing status, artifact BLAKE3 identity, parent export identity, and non-claims
+- WHEN the state-machine evidence fixture suite runs
+- THEN the fixture MUST pass and produce deterministic Evidence IR output.
+
+### Requirement: Negative state-machine evidence fixtures
+r[valence.evidence_ir.state_machine_evidence.fixtures.negative] Valence MUST reject malformed, stale, unsupported, or overclaiming state-machine exhaustiveness receipts.
+
+#### Scenario: Missing non-claims fail
+r[valence.evidence_ir.state_machine_evidence.fixtures.negative.non_claims]
+- GIVEN a state-machine receipt omits the bounded source-shape non-claim boundary
+- WHEN Valence validates the receipt
+- THEN validation MUST fail with a deterministic non-claim diagnostic.
+
+#### Scenario: Stale coverage summary fails
+r[valence.evidence_ir.state_machine_evidence.fixtures.negative.stale]
+- GIVEN a state-machine receipt carries a malformed or stale coverage summary digest or artifact BLAKE3 identity
+- WHEN Valence validates the receipt
+- THEN validation MUST fail with a deterministic digest diagnostic.
+
+#### Scenario: Overclaim fails
+r[valence.evidence_ir.state_machine_evidence.fixtures.negative.overclaim]
+- GIVEN a state-machine receipt claims behavioral correctness, semantic equivalence, verifier soundness, release eligibility, protocol completeness, liveness, or exhaustive Rust coverage
+- WHEN Valence validates the receipt
+- THEN validation MUST reject the receipt with a deterministic overclaim diagnostic.
+
+### Requirement: Pure receipt validation core
+r[valence.evidence_ir.state_machine_evidence.validation] Valence MUST validate state-machine exhaustiveness receipts through a pure core over parsed receipt values.
+
+#### Scenario: Core owns validation decisions
+r[valence.evidence_ir.state_machine_evidence.validation.core]
+- GIVEN parsed state-machine receipt values
+- WHEN validation runs
+- THEN the pure core MUST decide acceptance or rejection without filesystem, process, network, clock, environment, or stdout side effects.
+
+### Requirement: Formal proof links remain separate
+r[valence.evidence_ir.state_machine_evidence.proof_links] Valence MUST preserve optional formal proof links for state-machine invariants as separate evidence records and MUST NOT promote the state-machine exhaustiveness receipt tier.
+
+#### Scenario: Linked proof does not promote lint receipt
+r[valence.evidence_ir.state_machine_evidence.proof_links.no_promotion]
+- GIVEN a valid state-machine exhaustiveness receipt links to a separate Verus or Kani proof receipt
+- WHEN Valence builds or verifies the evidence graph
+- THEN the state-machine receipt MUST remain bounded source-shape evidence while the proof receipt retains its own verifier identity and tier.
+
+#### Scenario: Missing linked proof fails only the link
+r[valence.evidence_ir.state_machine_evidence.proof_links.missing]
+- GIVEN a state-machine receipt references a proof receipt identity that is absent from the evidence graph
+- WHEN Valence validates linked evidence
+- THEN validation MUST report a missing-link diagnostic without treating the state-machine receipt as formal proof.
+
+### Requirement: State-machine evidence documentation
+r[valence.evidence_ir.state_machine_evidence.docs] Valence documentation MUST describe Octet producer responsibilities, Evidence IR validation boundaries, and consumer interpretation rules for state-machine exhaustiveness receipts.
+
+#### Scenario: Consumer boundary is visible
+r[valence.evidence_ir.state_machine_evidence.docs.boundary]
+- GIVEN a consumer reads Valence documentation for state-machine evidence
+- WHEN the supported claim is stated
+- THEN the documentation MUST say Valence validates receipt shape, identity, linkage, and non-claims only, not Rust semantics or release readiness.
+
+### Requirement: Final validation
+r[valence.evidence_ir.state_machine_evidence.final_validation] The change MUST include focused core tests, positive and negative fixtures, formatting checks, and Cairn validation/gate evidence before archive.
+
+#### Scenario: Validation covers receipt health
+r[valence.evidence_ir.state_machine_evidence.final_validation.checks]
+- GIVEN the receipt contract, fixtures, validation core, proof-link handling, and documentation are complete
+- WHEN final validation runs
+- THEN focused tests, fixture checks, formatting, and Cairn gates MUST pass or record explicit pre-existing blockers.
+
+
+### Requirement: ChaosControl Evidence IR export contract
+r[valence.evidence_ir.chaoscontrol_export.contract] Valence MUST support an adapter contract for selected ChaosControl evidence families without taking ownership of VMM, replay, or determinism semantics.
+
+#### Scenario: Supported ChaosControl export passes
+r[valence.evidence_ir.chaoscontrol_export.fixtures.positive]
+- GIVEN an export row maps a ChaosControl replay verdict, dogfood receipt, assertion summary, or readiness report to a Valence Evidence IR artifact with schema, stable ID, canonical hash, verification role, payload digest, and required non-claims
+- WHEN adapter validation runs
+- THEN the row MUST pass and preserve the ChaosControl artifact identity.
+
+#### Scenario: Invalid ChaosControl export fails
+r[valence.evidence_ir.chaoscontrol_export.fixtures.negative]
+- GIVEN an export row has malformed hash, unsupported schema, missing non-claims, or attempts to promote recorded evidence to property evidence
+- WHEN adapter validation runs
+- THEN validation MUST fail with deterministic diagnostics.
+
+### Requirement: Adapter validation boundary
+r[valence.evidence_ir.chaoscontrol_export.validation] Valence MUST validate identity, role, schema, and non-claim boundaries for ChaosControl exports without claiming replay or VMM correctness.
+
+#### Scenario: Boundary is visible
+r[valence.evidence_ir.chaoscontrol_export.docs]
+- GIVEN a ChaosControl export validates
+- WHEN a report renders the supported claim
+- THEN it MUST state that Valence proves evidence identity/linkage only and does not prove universal determinism, hosted-product parity, replay completeness, or VMM correctness.
+
+### Requirement: Final validation
+r[valence.evidence_ir.chaoscontrol_export.final_validation] The change MUST include positive and negative fixtures plus focused validation evidence before archive.
+
+#### Scenario: Fixture suite covers export health
+r[valence.evidence_ir.chaoscontrol_export.final_validation.fixtures]
+- GIVEN valid and invalid ChaosControl export fixtures
+- WHEN focused validation runs
+- THEN valid fixtures MUST pass and invalid fixtures MUST fail closed.
+
+
+### Requirement: Cairn content-addressed compatibility manifest
+r[valence.evidence_ir.cairn_content_addressed_compat.manifest] Valence MUST define a compatibility manifest for supported Cairn content-addressed Rust evidence receipt families, including schema, hash field, hash-material exclusion profile, Valence artifact kind, verification role, and required non-claim boundary.
+
+#### Scenario: Manifest row admits a supported family
+r[valence.evidence_ir.cairn_content_addressed_compat.manifest.supported]
+- GIVEN a Cairn content-addressed receipt family is supported by Valence compatibility validation
+- WHEN the manifest row is inspected
+- THEN it MUST name the Cairn schema, the hash field, the hash-material profile, the Valence artifact kind, the verification role, and the bounded non-claim text.
+
+#### Scenario: Unsupported family fails closed
+r[valence.evidence_ir.cairn_content_addressed_compat.manifest.unsupported]
+- GIVEN a Cairn receipt family has no compatibility manifest row
+- WHEN Valence compatibility validation runs
+- THEN validation MUST fail closed with an unsupported-family diagnostic.
+
+### Requirement: Compatible receipts map to Evidence IR identity
+r[valence.evidence_ir.cairn_content_addressed_compat.validation] Valence MUST map compatible Cairn content-addressed receipts into Evidence IR artifact identity and linkage rows without changing Cairn's receipt ownership.
+
+#### Scenario: Function Object source-token receipt maps
+r[valence.evidence_ir.cairn_content_addressed_compat.fixtures.positive]
+- GIVEN a compatible Cairn source-token Function Object receipt has a valid BLAKE3 object hash, required caveats, and no correctness claim
+- WHEN Valence compatibility validation runs
+- THEN it MUST report a Valence Evidence IR identity/linkage row for that receipt.
+
+#### Scenario: Invalid receipt fails closed
+r[valence.evidence_ir.cairn_content_addressed_compat.fixtures.negative]
+- GIVEN a Cairn receipt has a stale hash, unsupported schema, missing required nested field, ambient entropy in hash material, unknown pointer target, or overbroad identity/correctness claim
+- WHEN Valence compatibility validation runs
+- THEN validation MUST fail with deterministic diagnostics naming the failed compatibility rule.
+
+### Requirement: Migration exceptions are explicit
+r[valence.evidence_ir.cairn_content_addressed_compat.migration_exceptions] Valence MUST report legacy or divergent Cairn receipt shapes through explicit migration exceptions rather than silently normalizing them as canonical Valence DTOs.
+
+#### Scenario: Divergent receipt is not silently upgraded
+r[valence.evidence_ir.cairn_content_addressed_compat.migration_exceptions.visible]
+- GIVEN a Cairn receipt uses a legacy shape that is useful as manual-review evidence but does not match Valence's current canonical DTO
+- WHEN compatibility validation runs
+- THEN the report MUST mark the row as a migration exception and MUST NOT claim byte-identical DTO compatibility.
+
+### Requirement: Compatibility boundary remains bounded
+r[valence.evidence_ir.cairn_content_addressed_compat.docs] The Cairn compatibility adapter MUST prove identity/linkage compatibility only.
+
+#### Scenario: Boundary is visible
+r[valence.evidence_ir.cairn_content_addressed_compat.final_validation]
+- GIVEN a Cairn compatibility report passes
+- WHEN an operator reads the supported claim
+- THEN the report MUST state that Valence does not prove Cairn lifecycle readiness, source-code correctness, verifier soundness, semantic equivalence, release eligibility, or whole-program safety.
+
+
+### Requirement: Normalized source identity index
+r[valence.evidence_ir.iddqd_evidence_source_index.source_index] Valence MUST index normalized evidence sources by locator ids derived from the source values rather than by duplicated temporary map keys.
+
+#### Scenario: Unique source provenance lookup passes
+r[valence.evidence_ir.iddqd_evidence_source_index.fixtures.positive]
+- GIVEN evidence artifacts normalize to unique source locators and provenance records reference supplied artifact bytes by locator and BLAKE3 digest
+- WHEN Valence builds the evidence-codebase index
+- THEN provenance lookup MUST compare against the indexed source identity and preserve stable public index output.
+
+#### Scenario: Duplicate locator conflict fails closed
+r[valence.evidence_ir.iddqd_evidence_source_index.fixtures.negative]
+- GIVEN evidence artifacts normalize to conflicting duplicate locators, stale provenance hashes, missing referenced artifacts, malformed JSON/JSONL, or overbroad correctness claims
+- WHEN Valence builds the evidence-codebase index
+- THEN duplicate locator conflicts MUST produce deterministic issues or caveats according to build mode and MUST NOT silently overwrite a prior source identity.
+
+### Requirement: Duplicate source policy
+r[valence.evidence_ir.iddqd_evidence_source_index.duplicate_policy] Valence MUST make duplicate normalized source locator behavior explicit for strict and advisory index builds.
+
+#### Scenario: Advisory exact duplicate remains bounded
+r[valence.evidence_ir.iddqd_evidence_source_index.schema_compatibility]
+- GIVEN advisory mode receives exact duplicate source artifacts with the same normalized locator and BLAKE3 digest
+- WHEN sources are normalized and indexed
+- THEN Valence MAY collapse the duplicate while keeping the public Evidence IR index, query report, and non-claim schemas stable.
+
+### Requirement: Final validation evidence
+r[valence.evidence_ir.iddqd_evidence_source_index.final_validation] The change MUST include positive and negative evidence-codebase-index coverage plus focused Valence validation evidence before archive.
+
+#### Scenario: Source-index fixtures cover conflict handling
+r[valence.evidence_ir.iddqd_evidence_source_index.final_validation.fixtures]
+- GIVEN valid and invalid evidence source fixtures
+- WHEN focused evidence-codebase-index tests and Cairn gates run
+- THEN unique source identities MUST pass and conflicting duplicate locators or stale provenance identities MUST fail closed.
+
+
+### Requirement: Oxide primitive reference inventory
+r[valence.evidence_ir.oxide_primitives.reference_inventory] Valence MUST maintain a reference-only inventory for each Oxide primitive or attestation repository used to shape Evidence IR primitives.
+
+#### Scenario: Reference intake records boundaries
+r[valence.evidence_ir.oxide_primitives.reference_inventory.boundaries]
+- GIVEN an Oxide repository is evaluated for Valence adoption
+- WHEN the intake record is written
+- THEN it MUST name the source repository, license posture, MSRV/no-std posture when relevant, intended adaptation, and explicit non-adoption boundaries.
+
+#### Scenario: Reference intake rejects hidden authority
+r[valence.evidence_ir.oxide_primitives.reference_inventory.reject_hidden_authority]
+- GIVEN an external repository has a useful implementation pattern
+- WHEN Valence records it as a reference
+- THEN the record MUST NOT treat that repository as proof of Evidence IR correctness, release readiness, or attestation truth.
+
+### Requirement: Typed evidence identifiers
+r[valence.evidence_ir.oxide_primitives.typed_ids] Valence MUST distinguish stack-owned BLAKE3 evidence identities from UUID-compatible external identifiers through typed wrappers or equivalent type-level roles.
+
+#### Scenario: BLAKE3 identity remains canonical
+r[valence.evidence_ir.oxide_primitives.typed_ids.blake3_canonical]
+- GIVEN a Valence artifact has both a stack-owned canonical identity and an external UUID-compatible identifier
+- WHEN identity validation runs
+- THEN the canonical evidence identity MUST remain the BLAKE3-bound value and the UUID-compatible identifier MUST remain external metadata.
+
+#### Scenario: Role mismatch fails closed
+r[valence.evidence_ir.oxide_primitives.typed_ids.role_mismatch]
+- GIVEN an identifier for one evidence role is supplied where another role is required
+- WHEN typed validation compares the identifiers
+- THEN validation MUST fail closed with deterministic diagnostics.
+
+### Requirement: Derived-key evidence collections
+r[valence.evidence_ir.oxide_primitives.identity_maps] Valence SHOULD support in-memory evidence collections whose lookup keys are derived from values while rejecting duplicate or inconsistent keys.
+
+#### Scenario: Duplicate derived key is rejected
+r[valence.evidence_ir.oxide_primitives.identity_maps.duplicate_rejection]
+- GIVEN two evidence records derive the same canonical key
+- WHEN the collection is constructed
+- THEN construction MUST reject the duplicate instead of silently overwriting either record.
+
+#### Scenario: Borrowed and owned lookup forms agree
+r[valence.evidence_ir.oxide_primitives.identity_maps.lookup_consistency]
+- GIVEN a collection supports borrowed and owned lookup forms for the same key profile
+- WHEN both lookup forms target the same evidence record
+- THEN both lookups SHOULD resolve to the same record or both fail with the same deterministic issue code.
+
+### Requirement: Semantic evidence diffs
+r[valence.evidence_ir.oxide_primitives.semantic_diffs] Valence SHOULD provide semantic diff reports for reviewable Evidence IR migrations without claiming semantic equivalence.
+
+#### Scenario: Structural diff is review evidence
+r[valence.evidence_ir.oxide_primitives.semantic_diffs.review_only]
+- GIVEN two Evidence IR values differ structurally
+- WHEN Valence emits a semantic diff report
+- THEN the report SHOULD identify added, removed, and changed typed fields and MUST state that it is review evidence only.
+
+#### Scenario: Stale baseline is rejected
+r[valence.evidence_ir.oxide_primitives.semantic_diffs.stale_baseline]
+- GIVEN a stored diff baseline no longer matches the current before-value identity
+- WHEN a diff refresh is requested
+- THEN Valence MUST reject the refresh until the caller supplies the current baseline identity.
+
+### Requirement: Attestation vocabulary mapping
+r[valence.evidence_ir.oxide_primitives.attestation_vocabulary] Valence MAY map attestation vocabulary from CoRIM, VM attestation, DICE, or certificate-chain references into bounded Evidence IR metadata.
+
+#### Scenario: Attestation metadata has explicit scope
+r[valence.evidence_ir.oxide_primitives.attestation_vocabulary.scope]
+- GIVEN an attestation-shaped artifact is imported
+- WHEN Valence normalizes its metadata
+- THEN the normalized record MUST include issuer, subject, scope, digest binding, and non-claim boundary fields.
+
+#### Scenario: Missing boundary fails closed
+r[valence.evidence_ir.oxide_primitives.attestation_vocabulary.missing_boundary]
+- GIVEN imported attestation metadata omits scope or non-claim fields
+- WHEN Valence validates the record
+- THEN validation MUST fail closed and MUST NOT infer trust from repository origin.
+
+### Requirement: Fixture-backed adoption
+r[valence.evidence_ir.oxide_primitives.validation] Valence MUST require positive and negative fixture coverage before adopting any Oxide-inspired primitive into maintained core behavior.
+
+#### Scenario: Positive fixtures cover accepted behavior
+r[valence.evidence_ir.oxide_primitives.validation.positive]
+- GIVEN typed IDs, derived-key collections, semantic diffs, and attestation metadata are accepted
+- WHEN the fixture matrix runs
+- THEN valid examples MUST pass with stable BLAKE3-bound identities and deterministic reports.
+
+#### Scenario: Negative fixtures cover failure behavior
+r[valence.evidence_ir.oxide_primitives.validation.negative]
+- GIVEN malformed IDs, duplicate keys, stale diffs, missing issuers, weakened non-claims, or overclaim text are supplied
+- WHEN the fixture matrix runs
+- THEN invalid examples MUST fail with deterministic diagnostics and no partial acceptance.
+
+
+### Requirement: Preserves evidence core contract
+r[valence.evidence_ir.preserves_evidence_core.contract] Valence MUST define pure Preserves evidence contracts for canonicalization profiles, envelope schema/version metadata, `preserves_content_hash`, self-hash exclusion profiles, and required non-claims.
+
+#### Scenario: Valid Preserves evidence validates
+r[valence.evidence_ir.preserves_evidence_core.fixtures.positive]
+- GIVEN a Preserves evidence envelope uses a supported schema, supported canonicalization profile, matching content hash, declared self-hash exclusion profile, and required non-claim boundary
+- WHEN Preserves evidence validation runs
+- THEN validation MUST accept the envelope and report the normalized content identity.
+
+#### Scenario: Invalid Preserves evidence fails closed
+r[valence.evidence_ir.preserves_evidence_core.fixtures.negative]
+- GIVEN a Preserves evidence envelope has malformed Preserves text, a stale content hash, an unknown schema, a wrong exclusion profile, missing non-claims, or overclaim text
+- WHEN Preserves evidence validation runs
+- THEN validation MUST fail with deterministic diagnostics naming the invalid field.
+
+### Requirement: Preserves self-hash exclusion profiles
+r[valence.evidence_ir.preserves_evidence_core.self_hash_exclusion] Valence MUST require named self-hash exclusion profiles for receipt-shaped Preserves evidence.
+
+#### Scenario: Self-reference is excluded only by profile
+r[valence.evidence_ir.preserves_evidence_core.self_hash_exclusion.profile]
+- GIVEN a receipt-shaped Preserves value includes fields that name its own content hash or receipt hash
+- WHEN the declared exclusion profile builds hash material
+- THEN only fields declared by that profile MUST be excluded and ordinary content fields MUST remain included.
+
+### Requirement: Preserves evidence validation is pure
+r[valence.evidence_ir.preserves_evidence_core.validation] Valence MUST implement Preserves evidence identity validation as pure deterministic logic over in-memory Preserves values, envelope metadata, canonical bytes, and hash profiles.
+
+#### Scenario: Shell owns Preserves loading
+r[valence.evidence_ir.preserves_evidence_core.validation.shell]
+- GIVEN a CLI or downstream crate loads Preserves text, generated contracts, or evidence files from disk
+- WHEN Preserves evidence validation is invoked
+- THEN file reads, Nickel evaluation, stdout/stderr, process execution, and receipt writing MUST remain outside the Preserves evidence core.
+
+### Requirement: Compatibility adapters preserve public fields
+r[valence.evidence_ir.preserves_evidence_core.adapters] Valence SHOULD expose compatibility adapters for existing Cairn, Mantle, Octet, and Valence Preserves evidence shapes.
+
+#### Scenario: Adapter keeps existing field names
+r[valence.evidence_ir.preserves_evidence_core.adapters.shape]
+- GIVEN a downstream Preserves evidence record uses current public field names
+- WHEN an adapter validates that record
+- THEN the adapter SHOULD preserve the public DTO shape while routing identity checks through the shared core.
+
+### Requirement: Preserves evidence core remains bounded
+r[valence.evidence_ir.preserves_evidence_core.docs] Passing Preserves evidence validation MUST NOT prove receipt truth, release eligibility, lifecycle readiness, semantic equivalence, behavioral correctness, verifier soundness, or whole-program safety.
+
+#### Scenario: Boundary is visible
+r[valence.evidence_ir.preserves_evidence_core.final_validation]
+- GIVEN a Preserves evidence validation report passes
+- WHEN an operator reads the supported claim
+- THEN the report MUST state that validation proves only canonical Preserves content identity and bounded envelope compatibility.
+
+
+### Requirement: Preserves bridge contract
+r[valence.evidence_ir.preserves_bridge.contract] Valence MUST support an adapter contract that maps canonical Preserves evidence envelopes to Valence Evidence IR artifact identity fields.
+
+#### Scenario: Canonical Preserves envelope maps to Valence artifact
+r[valence.evidence_ir.preserves_bridge.fixtures.positive]
+- GIVEN a Preserves envelope has a supported schema label, canonical byte digest, artifact role, verification role, and required non-claims
+- WHEN bridge validation runs
+- THEN validation MUST pass and preserve the canonical Preserves digest.
+
+#### Scenario: Invalid Preserves envelope fails
+r[valence.evidence_ir.preserves_bridge.fixtures.negative]
+- GIVEN a Preserves envelope has stale digest, unsupported role, malformed schema label, or missing non-claims
+- WHEN bridge validation runs
+- THEN validation MUST fail with deterministic diagnostics.
+
+### Requirement: Bridge validation boundary
+r[valence.evidence_ir.preserves_bridge.validation] The bridge MUST validate identity, schema, role, and non-claim mapping only.
+
+#### Scenario: Boundary is visible
+r[valence.evidence_ir.preserves_bridge.docs]
+- GIVEN a Preserves bridge report passes
+- WHEN the supported claim is rendered
+- THEN it MUST state that Valence does not prove Molten runtime authority, transport correctness, or Preserves application semantics.
+
+### Requirement: Final validation
+r[valence.evidence_ir.preserves_bridge.final_validation] The change MUST include positive and negative fixtures plus focused validation evidence before archive.
+
+#### Scenario: Fixture suite covers bridge health
+r[valence.evidence_ir.preserves_bridge.final_validation.fixtures]
+- GIVEN valid and invalid bridge fixtures
+- WHEN focused validation runs
+- THEN valid fixtures MUST pass and invalid fixtures MUST fail closed.
+
+
+### Requirement: Shared evidence identity contract
+r[valence.evidence_ir.shared_identity.contract] Valence MUST provide pure evidence-identity contracts for BLAKE3 digest spellings, digest roles, canonical hash profiles, self-referential hash-field exclusion, and reusable non-claim boundary checks.
+
+#### Scenario: Supported digest spellings normalize by profile
+r[valence.evidence_ir.shared_identity.digest_profiles]
+- GIVEN a raw BLAKE3 hex digest, a `b3:` digest, or a `blake3:` digest accepted by a compatibility profile
+- WHEN Valence parses the value for a declared role
+- THEN parsing MUST produce a normalized digest value or fail closed if the spelling is unsupported for that profile.
+
+#### Scenario: Digest roles are not interchangeable
+r[valence.evidence_ir.shared_identity.digest_roles]
+- GIVEN a binary digest, sidecar digest, artifact digest, receipt digest, and Preserves metadata digest have the same underlying bytes
+- WHEN typed validation compares evidence roles
+- THEN validation MUST preserve the declared role and MUST NOT silently treat one role as another.
+
+### Requirement: Canonical hash profiles
+r[valence.evidence_ir.shared_identity.canonical_hashes] Valence MUST compute content identities through explicit canonical hash profiles rather than ambient display serialization.
+
+#### Scenario: Canonical JSON hash is stable
+r[valence.evidence_ir.shared_identity.fixtures.positive]
+- GIVEN two equivalent typed JSON values with different map insertion order
+- WHEN the shared identity core hashes them through the declared canonical JSON profile
+- THEN the computed BLAKE3 identity MUST be stable for both values.
+
+#### Scenario: Unsupported canonical profile fails closed
+r[valence.evidence_ir.shared_identity.fixtures.negative]
+- GIVEN a caller requests an unknown canonicalization profile or supplies malformed digest text
+- WHEN the shared identity core validates the input
+- THEN validation MUST fail with deterministic diagnostics.
+
+### Requirement: Self-hash exclusion profiles
+r[valence.evidence_ir.shared_identity.self_hash_exclusion] Valence MUST support named self-hash exclusion profiles for receipt-shaped values whose own digest fields are excluded from their hash material.
+
+#### Scenario: Receipt hash excludes self-reference
+r[valence.evidence_ir.shared_identity.self_hash_exclusion.receipt]
+- GIVEN a receipt-shaped value has `receipt_hash` or `preserves_content_hash` fields
+- WHEN the declared receipt exclusion profile computes hash material
+- THEN those self-referential fields MUST be excluded and ordinary content fields MUST remain included.
+
+#### Scenario: Unknown exclusion is rejected
+r[valence.evidence_ir.shared_identity.self_hash_exclusion.unknown]
+- GIVEN a caller requests an unknown exclusion profile or tries to exclude undeclared fields
+- WHEN the shared identity core builds hash material
+- THEN validation MUST fail closed with a deterministic issue code.
+
+### Requirement: Compatibility adapters preserve existing contracts
+r[valence.evidence_ir.shared_identity.compatibility_adapters] Valence SHOULD expose compatibility adapters for existing stack surfaces while preserving public field names, digest spellings, and bounded claim text.
+
+#### Scenario: Downstream adapter preserves public shape
+r[valence.evidence_ir.shared_identity.compatibility_adapters.shape]
+- GIVEN an existing Cairn, Mantle, Basalt, Octet, or Molten/Aspen evidence surface uses a supported digest spelling and field name
+- WHEN a compatibility adapter validates that surface
+- THEN the adapter SHOULD preserve the public DTO shape while routing digest and non-claim validation through shared identity primitives.
+
+### Requirement: Shared identity remains bounded
+r[valence.evidence_ir.shared_identity.docs] Shared identity helpers MUST NOT claim evidence truth, behavioral correctness, semantic equivalence, verifier soundness, release eligibility, lifecycle readiness, or whole-program safety.
+
+#### Scenario: Boundary is visible
+r[valence.evidence_ir.shared_identity.final_validation]
+- GIVEN a shared identity validation report passes
+- WHEN an operator reads the supported claim
+- THEN the report MUST state that shared identity proves only syntax, canonical content identity, role separation, and non-claim boundary conformance for the selected profile.
+
+
+### Requirement: Stack role registry core contract
+r[valence.evidence_ir.stack_role_registry_core.contract] Valence MUST define pure stack role registry contracts for canonical stack roles, schema role bindings, verification role vocabulary, compatibility aliases, and bounded non-claim text.
+
+#### Scenario: Canonical role row validates
+r[valence.evidence_ir.stack_role_registry_core.fixtures.positive]
+- GIVEN a registry row names a canonical stack role, supported schema, verification role, compatibility class, and non-claim boundary
+- WHEN role registry validation runs
+- THEN validation MUST accept the row and preserve the public role encoding.
+
+#### Scenario: Invalid role row fails closed
+r[valence.evidence_ir.stack_role_registry_core.fixtures.negative]
+- GIVEN a registry row has an unknown role, duplicate required role, stale alias, schema/role mismatch, missing verification role, missing non-claim, or authority overclaim
+- WHEN role registry validation runs
+- THEN validation MUST fail with deterministic diagnostics naming the invalid role or schema field.
+
+### Requirement: Compatibility adapters preserve public role strings
+r[valence.evidence_ir.stack_role_registry_core.adapters] Valence SHOULD provide adapters for existing stack role strings without silently broadening their meaning.
+
+#### Scenario: Legacy role spelling maps through an alias row
+r[valence.evidence_ir.stack_role_registry_core.adapters.alias]
+- GIVEN a downstream evidence record uses an approved legacy role spelling
+- WHEN the adapter parses the record
+- THEN parsing MUST require a compatibility alias row that names the canonical replacement, owner, status, and non-claim boundary.
+
+### Requirement: Role registry validation is pure core
+r[valence.evidence_ir.stack_role_registry_core.validation] Stack role registry validation MUST be pure deterministic logic over in-memory registry rows and evidence rows.
+
+#### Scenario: Shell owns policy loading
+r[valence.evidence_ir.stack_role_registry_core.validation.shell_boundary]
+- GIVEN a CLI or downstream crate loads role policy from files or generated artifacts
+- WHEN registry validation is invoked
+- THEN file reads, environment access, process execution, stdout/stderr, and receipt writing MUST remain outside the role registry core.
+
+### Requirement: Role registry remains bounded
+r[valence.evidence_ir.stack_role_registry_core.docs] Passing stack role registry validation MUST NOT prove evidence truth, verifier soundness, source-code correctness, release eligibility, lifecycle readiness, runtime authority, or whole-system safety.
+
+#### Scenario: Boundary is visible
+r[valence.evidence_ir.stack_role_registry_core.final_validation]
+- GIVEN a role registry validation report passes
+- WHEN an operator reads the supported claim
+- THEN the report MUST state that validation proves role/schema/vocabulary compatibility only.
+
+
+### Requirement: Verification role vocabulary contract
+r[valence.evidence_ir.verification_role_vocabulary.contract] Valence MUST define the canonical vocabulary for Evidence IR verification roles, tier mappings, counting behavior, and non-claim boundaries.
+
+#### Scenario: Known roles pass
+r[valence.evidence_ir.verification_role_vocabulary.fixtures.positive]
+- GIVEN a role row declares a known role, allowed tier mapping, counting behavior, and non-claims
+- WHEN vocabulary validation runs
+- THEN validation MUST pass and preserve the role identity.
+
+#### Scenario: Unknown role fails
+r[valence.evidence_ir.verification_role_vocabulary.fixtures.negative]
+- GIVEN a consumer declares an unknown role, role-counting drift, tier promotion, or missing non-claims
+- WHEN vocabulary validation runs
+- THEN validation MUST fail with deterministic diagnostics.
+
+### Requirement: Vocabulary constants
+r[valence.evidence_ir.verification_role_vocabulary.constants] Valence SHOULD provide generated constants or drift validation so consumers do not copy role literals unchecked.
+
+#### Scenario: Consumer constants match
+r[valence.evidence_ir.verification_role_vocabulary.constants.match]
+- GIVEN a consumer validates local constants against the vocabulary digest
+- WHEN constants match
+- THEN validation SHOULD pass and record the vocabulary digest.
+
+### Requirement: Role docs
+r[valence.evidence_ir.verification_role_vocabulary.docs] Documentation MUST state which roles count as verified property evidence and which remain recorded-only, boundary, or manual-review context.
+
+#### Scenario: Counting boundary is visible
+r[valence.evidence_ir.verification_role_vocabulary.docs.counting]
+- GIVEN a report summarizes verification roles
+- WHEN the supported claim is rendered
+- THEN it MUST state that only configured property roles count as verified property evidence.
+
+### Requirement: Final validation
+r[valence.evidence_ir.verification_role_vocabulary.final_validation] The change MUST include positive and negative fixtures plus focused validation evidence before archive.
+
+#### Scenario: Fixture suite covers role health
+r[valence.evidence_ir.verification_role_vocabulary.final_validation.fixtures]
+- GIVEN valid and invalid role fixtures
+- WHEN focused validation runs
+- THEN valid fixtures MUST pass and invalid fixtures MUST fail closed.

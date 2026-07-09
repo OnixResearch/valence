@@ -3,9 +3,13 @@
 //! This is the imperative shell: argument parsing, file reads, stdout/stderr,
 //! and exit codes. All core logic lives in `valence_core`.
 
-use std::fs;
+use std::path::Component;
+use std::path::Path;
 use std::path::PathBuf;
 use std::process::ExitCode;
+
+use cap_std::ambient_authority;
+use cap_std::fs::Dir;
 
 const VERSION: &str = "0.1.0";
 const USAGE: &str = "\
@@ -63,7 +67,7 @@ fn run_check(args: &[String]) -> ExitCode {
     }
 
     let path = PathBuf::from(&args[0]);
-    let json = match fs::read_to_string(&path) {
+    let json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", path.display());
@@ -158,7 +162,7 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
         return ExitCode::from(2);
     };
 
-    let octet_export_json = match fs::read_to_string(&octet_export_path) {
+    let octet_export_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &octet_export_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", octet_export_path.display());
@@ -175,7 +179,7 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
             return ExitCode::from(1);
         }
     };
-    if let Err(error) = fs::write(&output_path, sidecar_json) {
+    if let Err(error) = cap_write(CapabilityRootKind::Output, &output_path, sidecar_json.as_bytes()) {
         eprintln!("error: cannot write {}: {error}", output_path.display());
         return ExitCode::from(2);
     }
@@ -223,14 +227,14 @@ fn run_stack_provenance_verify(args: &[String]) -> ExitCode {
         eprintln!("error: --sidecar is required");
         return ExitCode::from(2);
     };
-    let manifest_json = match fs::read_to_string(&manifest_path) {
+    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", manifest_path.display());
             return ExitCode::from(2);
         }
     };
-    let sidecar_json = match fs::read_to_string(&sidecar_path) {
+    let sidecar_json = match cap_read_to_string(CapabilityRootKind::Sidecar, &sidecar_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", sidecar_path.display());
@@ -283,7 +287,7 @@ fn run_stack_provenance_graph_report(args: &[String]) -> ExitCode {
         eprintln!("error: --chain is required");
         return ExitCode::from(2);
     };
-    let chain_json = match fs::read_to_string(&chain_path) {
+    let chain_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &chain_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", chain_path.display());
@@ -380,28 +384,28 @@ fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
         return ExitCode::from(2);
     };
 
-    let binary_bytes = match fs::read(&binary_path) {
+    let binary_bytes = match cap_read(CapabilityRootKind::Binary, &binary_path) {
         Ok(bytes) => bytes,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", binary_path.display());
             return ExitCode::from(2);
         }
     };
-    let octet_export_json = match fs::read_to_string(&octet_export_path) {
+    let octet_export_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &octet_export_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", octet_export_path.display());
             return ExitCode::from(2);
         }
     };
-    let sidecar_json = match fs::read_to_string(&sidecar_path) {
+    let sidecar_json = match cap_read_to_string(CapabilityRootKind::Sidecar, &sidecar_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", sidecar_path.display());
             return ExitCode::from(2);
         }
     };
-    let manifest_json = match fs::read_to_string(&manifest_path) {
+    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", manifest_path.display());
@@ -431,6 +435,115 @@ fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
     } else {
         ExitCode::from(1)
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum CapabilityRootKind {
+    InputArtifact,
+    Manifest,
+    Sidecar,
+    Binary,
+    Output,
+}
+
+impl CapabilityRootKind {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::InputArtifact => "input artifact",
+            Self::Manifest => "manifest",
+            Self::Sidecar => "sidecar",
+            Self::Binary => "binary",
+            Self::Output => "output",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct CapabilityPath {
+    root: PathBuf,
+    relative: PathBuf,
+}
+
+fn cap_read_to_string(kind: CapabilityRootKind, path: &Path) -> Result<String, String> {
+    let (root, relative) = open_capability_root(kind, path)?;
+    ensure_existing_path_confined(&root, &relative)?;
+    root.read_to_string(&relative).map_err(|error| format!("{} read failed: {error}", kind.as_str()))
+}
+
+fn cap_read(kind: CapabilityRootKind, path: &Path) -> Result<Vec<u8>, String> {
+    let (root, relative) = open_capability_root(kind, path)?;
+    ensure_existing_path_confined(&root, &relative)?;
+    root.read(&relative).map_err(|error| format!("{} read failed: {error}", kind.as_str()))
+}
+
+fn cap_write(kind: CapabilityRootKind, path: &Path, bytes: &[u8]) -> Result<(), String> {
+    let (root, relative) = open_capability_root(kind, path)?;
+    ensure_output_parent_confined(&root, &relative)?;
+    root.write(&relative, bytes).map_err(|error| format!("{} write failed: {error}", kind.as_str()))
+}
+
+fn open_capability_root(kind: CapabilityRootKind, path: &Path) -> Result<(Dir, PathBuf), String> {
+    let capability_path = split_operator_path(path)?;
+    let root = Dir::open_ambient_dir(&capability_path.root, ambient_authority()).map_err(|error| {
+        format!("{} root {} could not be opened: {error}", kind.as_str(), capability_path.root.display())
+    })?;
+    Ok((root, capability_path.relative))
+}
+
+fn split_operator_path(path: &Path) -> Result<CapabilityPath, String> {
+    if path.as_os_str().is_empty() {
+        return Err("empty path is not a valid capability locator".to_owned());
+    }
+    let file_name = path.file_name().ok_or_else(|| "path must name a file inside a capability root".to_owned())?;
+    let parent = path.parent().unwrap_or_else(|| Path::new("."));
+    let root = if parent.as_os_str().is_empty() {
+        PathBuf::from(".")
+    } else {
+        parent.to_path_buf()
+    };
+    let relative = PathBuf::from(file_name);
+    validate_capability_relative_path(&relative)?;
+    Ok(CapabilityPath { root, relative })
+}
+
+fn validate_capability_relative_path(path: &Path) -> Result<(), String> {
+    if path.as_os_str().is_empty() {
+        return Err("capability-relative path is empty".to_owned());
+    }
+    let mut saw_normal_component = false;
+    for component in path.components() {
+        match component {
+            Component::Normal(component) if !component.is_empty() => saw_normal_component = true,
+            Component::CurDir => {}
+            Component::ParentDir => return Err("capability-relative path must not contain parent traversal".to_owned()),
+            Component::RootDir | Component::Prefix(_) => {
+                return Err("capability-relative path must not be absolute".to_owned());
+            }
+            Component::Normal(_) => return Err("capability-relative path contains an empty component".to_owned()),
+        }
+    }
+    if !saw_normal_component {
+        return Err("capability-relative path must name a file".to_owned());
+    }
+    Ok(())
+}
+
+fn ensure_existing_path_confined(root: &Dir, relative: &Path) -> Result<(), String> {
+    validate_capability_relative_path(relative)?;
+    let canonical = root
+        .canonicalize(relative)
+        .map_err(|error| format!("capability path is unavailable or escapes root: {error}"))?;
+    validate_capability_relative_path(&canonical)
+}
+
+fn ensure_output_parent_confined(root: &Dir, relative: &Path) -> Result<(), String> {
+    validate_capability_relative_path(relative)?;
+    if let Some(parent) = relative.parent()
+        && !parent.as_os_str().is_empty()
+    {
+        ensure_existing_path_confined(root, parent)?;
+    }
+    Ok(())
 }
 
 fn print_non_claims(non_claims: &[String]) {
@@ -540,7 +653,7 @@ fn run_explain(args: &[String]) -> ExitCode {
         return ExitCode::from(2);
     };
 
-    let manifest_json = match fs::read_to_string(&manifest_path) {
+    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", manifest_path.display());
@@ -588,5 +701,66 @@ mod tests {
         assert!(USAGE.contains("stack-provenance verify-built-binary"));
         assert!(USAGE.contains("version"));
         assert!(USAGE.contains("EXIT CODES"));
+    }
+
+    #[test]
+    fn capability_roots_read_and_write_in_root() {
+        // r[verify valence.stack_provenance_adapter.cap_std_cli_boundary.tests.positive]
+        let root = temp_capability_dir("positive");
+        let input = root.join("input.json");
+        let output = root.join("output.json");
+        std::fs::write(&input, "{\"valid\":true}").expect("write input fixture");
+
+        let read = cap_read_to_string(CapabilityRootKind::InputArtifact, &input).expect("read through cap root");
+        cap_write(CapabilityRootKind::Output, &output, read.as_bytes()).expect("write through cap root");
+
+        assert_eq!(read, "{\"valid\":true}");
+        assert_eq!(std::fs::read_to_string(output).expect("read output fixture"), read);
+    }
+
+    #[test]
+    fn capability_relative_paths_reject_escape_attempts() {
+        // r[verify valence.stack_provenance_adapter.cap_std_cli_boundary.tests.negative]
+        assert!(validate_capability_relative_path(Path::new("artifact.json")).is_ok());
+        assert!(validate_capability_relative_path(Path::new("../artifact.json")).is_err());
+        assert!(validate_capability_relative_path(Path::new("nested/../artifact.json")).is_err());
+        assert!(validate_capability_relative_path(Path::new("/tmp/artifact.json")).is_err());
+        assert!(validate_capability_relative_path(Path::new("")).is_err());
+    }
+
+    #[test]
+    fn missing_capability_root_fails_before_read() {
+        // r[verify valence.stack_provenance_adapter.cap_std_cli_boundary.tests.negative]
+        let root = temp_capability_dir("missing-root");
+        let missing_root = root.join("absent").join("input.json");
+
+        let error =
+            cap_read_to_string(CapabilityRootKind::Manifest, &missing_root).expect_err("missing root should fail");
+
+        assert!(error.contains("root"));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn symlink_escape_is_rejected() {
+        // r[verify valence.stack_provenance_adapter.cap_std_cli_boundary.tests.negative]
+        let root = temp_capability_dir("symlink-root");
+        let outside = temp_capability_dir("symlink-outside");
+        let outside_file = outside.join("secret.txt");
+        let link = root.join("secret-link.txt");
+        std::fs::write(&outside_file, "secret").expect("write outside target");
+        std::os::unix::fs::symlink(&outside_file, &link).expect("create symlink escape fixture");
+
+        let error =
+            cap_read_to_string(CapabilityRootKind::InputArtifact, &link).expect_err("symlink escape should fail");
+
+        assert!(error.contains("escapes root") || error.contains("absolute"));
+    }
+
+    fn temp_capability_dir(label: &str) -> PathBuf {
+        let dir = std::env::temp_dir().join(format!("valence-cap-std-{label}-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).expect("create temp capability dir");
+        dir
     }
 }

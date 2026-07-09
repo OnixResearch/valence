@@ -1,5 +1,7 @@
 use std::collections::BTreeSet;
 
+use iddqd::IdOrdItem;
+use iddqd::id_upcast;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
@@ -215,6 +217,16 @@ pub(crate) struct NormalizedSource {
     pub(crate) locator: String,
     pub(crate) bytes: Vec<u8>,
     pub(crate) blake3: String,
+}
+
+impl IdOrdItem for NormalizedSource {
+    type Key<'a> = &'a str;
+
+    fn key(&self) -> Self::Key<'_> {
+        &self.locator
+    }
+
+    id_upcast!();
 }
 
 pub(crate) struct IndexBuilder {

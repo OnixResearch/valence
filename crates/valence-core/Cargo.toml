@@ -12,6 +12,7 @@ categories = ["development-tools"]
 
 [dependencies]
 blake3.workspace = true
+iddqd.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 

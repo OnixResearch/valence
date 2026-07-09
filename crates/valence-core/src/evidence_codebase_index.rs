@@ -127,10 +127,35 @@ mod tests {
             "{EVIDENCE_NEGATIVE_DUPLICATE_LAW} should report malformed duplicate input"
         );
         assert!(
+            first.issues.iter().any(|issue| issue.code == "source_locator.duplicate_conflict"),
+            "{EVIDENCE_NEGATIVE_DUPLICATE_LAW} should report duplicate source identity conflicts"
+        );
+        assert!(
             first.issues.iter().any(|issue| issue.severity == EvidenceIndexIssueSeverity::Error),
             "{EVIDENCE_NEGATIVE_DUPLICATE_LAW} should keep strict-mode errors"
         );
         assert_index_ordered(&first);
+    }
+
+    #[test]
+    fn iddqd_source_index_reports_advisory_conflicting_duplicate_locators() {
+        // r[verify valence.evidence_ir.iddqd_evidence_source_index.fixtures.negative]
+        let original = fixture_inputs()
+            .into_iter()
+            .find(|input| input.locator == FINDING_LOCATOR)
+            .expect("fixture should contain finding input");
+        let inputs = vec![original, EvidenceArtifactInput {
+            locator: FINDING_LOCATOR.to_owned(),
+            bytes: br#"{"version":2,"stable_id":"other","lint":"ambient_clock"}"#.to_vec(),
+        }];
+
+        let index = build_evidence_codebase_index(&inputs, EvidenceIndexBuildMode::Advisory);
+
+        assert!(
+            index.issues.iter().any(|issue| issue.code == "source_locator.duplicate_conflict"
+                && issue.severity == EvidenceIndexIssueSeverity::Caveat),
+            "{EVIDENCE_NEGATIVE_DUPLICATE_LAW} should surface advisory duplicate conflicts"
+        );
     }
 
     #[test]

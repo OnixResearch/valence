@@ -12,6 +12,7 @@ name = "valence"
 path = "src/main.rs"
 
 [dependencies]
+cap-std.workspace = true
 valence-core.workspace = true
 serde_json.workspace = true
 

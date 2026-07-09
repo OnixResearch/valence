@@ -50,6 +50,38 @@ does not prove artifact truth, behavioral correctness, semantic equivalence,
 verifier soundness, release eligibility, lifecycle readiness, runtime authority,
 or whole-program safety.
 
+### `shared_identity`, `stack_role_registry`, and `preserves_evidence` (v1)
+
+Shared pure identity primitives normalize stack-owned BLAKE3 digest spellings,
+keep digest roles distinct, compute explicit canonical JSON/Preserves hashes,
+apply named self-hash exclusion profiles, and enforce reusable non-claim
+boundaries. The stack role registry validates Valence-owned role/schema rows,
+verification-role counting vocabulary, compatibility aliases, and consumer
+constant drift without deciding runtime authority. Preserves evidence and bridge
+validators check canonical Preserves content identity and Preserves-to-Valence
+artifact mapping for already-loaded envelopes.
+
+These cores prove syntax, canonical content identity, role/schema/vocabulary
+alignment, and bounded non-claim conformance only. They do not prove evidence
+truth, producer semantics, Molten runtime authority, release eligibility,
+lifecycle readiness, behavioral correctness, verifier soundness, semantic
+equivalence, or whole-program safety.
+
+### `evidence_adapters`, `formal_proof_chain`, and `oxide_primitives` (v1)
+
+Adapter validators cover Cairn content-addressed Rust evidence compatibility,
+ChaosControl Evidence IR export rows, Octet state-machine exhaustiveness
+receipts, canonical Valence-core cutover manifests/drift rows, and frozen
+formal-proof stack-chain fixtures. Oxide primitive intake records `iddqd`,
+`newtype-uuid`, `daft`, `rats-corim`, `vm-attest`, `dice-util`, and
+`pki-playground` as reference-only inputs for typed IDs, derived-key evidence
+collections, semantic evidence diffs, and bounded attestation vocabulary.
+
+All adapter and reference validators operate on parsed in-memory values. They
+preserve identity/linkage and role-counting boundaries only; producers still own
+source analysis, VMM/replay semantics, proof execution, artifact measurement,
+attestation truth, lifecycle policy, and release readiness.
+
 ### `evidence_model` (v1)
 
 Unison-inspired Evidence IR support models:
@@ -109,7 +141,10 @@ identity for selected Rust functions.
 ### `evidence_codebase_index` (v1, extracted from octet)
 
 Builds, queries, renders, and boundary-checks evidence-codebase indexes from
-in-memory artifacts.
+in-memory artifacts. Normalized source identities are indexed with an
+`iddqd::IdOrdMap` so locator keys are derived from source values; exact advisory
+duplicates remain collapsible, while conflicting duplicate locators produce
+explicit deterministic diagnostics instead of silent map overwrite.
 
 Kani receipts use dedicated contract and stub Evidence IR kinds with required
 non-claim labels; see `docs/kani-evidence-boundaries.md`.
@@ -160,6 +195,13 @@ machine JSON or operator Markdown from the same report DTO. Success proves
 measured-byte identity, canonical IDs, typed linkage, role policy, and non-claim
 conformance only; it is not a correctness, semantic-equivalence, verifier
 soundness, requirement-satisfaction, or release-eligibility proof.
+
+`valence-cli` opens local input artifact, manifest, sidecar, binary, and output
+paths through typed `cap-std` capability roots before reading, measuring, or
+writing. This bounds the CLI shell's local filesystem authority and keeps
+`valence-core` pure; it does not prove evidence truth, behavioral correctness,
+release eligibility, verifier soundness, or sandbox completeness beyond the
+local root-confined file operation.
 
 Nickel contracts in `contracts/stack-provenance/` provide a preflight gate for
 static metadata shape and bounded-claim invariants. They check schema strings,

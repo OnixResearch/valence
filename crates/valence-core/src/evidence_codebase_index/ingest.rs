@@ -1,8 +1,9 @@
-use std::collections::BTreeMap;
-
+use iddqd::IdOrdMap;
 use serde_json::Value;
 
 use super::model::*;
+
+const DUPLICATE_SOURCE_LOCATOR_CODE: &str = "source_locator.duplicate_conflict";
 
 #[must_use]
 pub fn build_evidence_codebase_index(
@@ -10,11 +11,19 @@ pub fn build_evidence_codebase_index(
     mode: EvidenceIndexBuildMode,
 ) -> EvidenceCodebaseIndex {
     let sources = normalized_sources(inputs, mode);
-    let source_hashes = source_hashes(&sources);
+    let source_index = source_identity_index(&sources);
     let mut builder = IndexBuilder::new(mode);
 
+    for source in &source_index.duplicate_conflicts {
+        builder.issue(
+            source,
+            DUPLICATE_SOURCE_LOCATOR_CODE,
+            "duplicate normalized source locator has conflicting BLAKE3 identity",
+        );
+    }
+
     for source in &sources {
-        ingest_source(source, &source_hashes, &mut builder);
+        ingest_source(source, &source_index, &mut builder);
     }
 
     builder.records.sort_by(|left, right| {
@@ -64,17 +73,39 @@ fn normalized_sources(inputs: &[EvidenceArtifactInput], mode: EvidenceIndexBuild
     sources
 }
 
-fn source_hashes(sources: &[NormalizedSource]) -> BTreeMap<String, String> {
-    sources
-        .iter()
-        .map(|source| (source.locator.clone(), source.blake3.clone()))
-        .collect::<BTreeMap<_, _>>()
+struct SourceIdentityIndex {
+    by_locator: IdOrdMap<NormalizedSource>,
+    duplicate_conflicts: Vec<NormalizedSource>,
 }
 
-fn ingest_source(source: &NormalizedSource, source_hashes: &BTreeMap<String, String>, builder: &mut IndexBuilder) {
+impl SourceIdentityIndex {
+    fn get(&self, locator: &str) -> Option<&NormalizedSource> {
+        self.by_locator.get(locator)
+    }
+}
+
+fn source_identity_index(sources: &[NormalizedSource]) -> SourceIdentityIndex {
+    let mut by_locator = IdOrdMap::<NormalizedSource>::new();
+    let mut duplicate_conflicts = Vec::new();
+    for source in sources {
+        if let Some(existing) = by_locator.get(source.locator.as_str()) {
+            if existing.blake3 != source.blake3 {
+                duplicate_conflicts.push(source.clone());
+            }
+            continue;
+        }
+        by_locator.insert_unique(source.clone()).expect("source locator was checked before unique insert");
+    }
+    SourceIdentityIndex {
+        by_locator,
+        duplicate_conflicts,
+    }
+}
+
+fn ingest_source(source: &NormalizedSource, source_index: &SourceIdentityIndex, builder: &mut IndexBuilder) {
     if let Some(objects) = parse_jsonl_objects(source, builder) {
         if objects.iter().all(is_provenance_record) {
-            ingest_provenance_records(source, &objects, source_hashes, builder);
+            ingest_provenance_records(source, &objects, source_index, builder);
             return;
         }
         if objects.iter().all(is_finding_record) {
@@ -116,7 +147,7 @@ fn ingest_source(source: &NormalizedSource, source_hashes: &BTreeMap<String, Str
             return;
         }
         if is_provenance_record(&value) {
-            ingest_provenance_records(source, &[value], source_hashes, builder);
+            ingest_provenance_records(source, &[value], source_index, builder);
             return;
         }
         builder.issue(source, UNSUPPORTED_FAMILY_CODE, "JSON artifact has no supported Octet evidence family");
@@ -156,7 +187,7 @@ fn parse_jsonl_objects(source: &NormalizedSource, builder: &mut IndexBuilder) ->
 fn ingest_provenance_records(
     source: &NormalizedSource,
     objects: &[Value],
-    source_hashes: &BTreeMap<String, String>,
+    source_index: &SourceIdentityIndex,
     builder: &mut IndexBuilder,
 ) {
     for object in objects {
@@ -175,8 +206,8 @@ fn ingest_provenance_records(
         }
         if let (Some(locator), Some(record_hash)) = (&artifact_locator, &blake3) {
             let normalized_locator = normalize_locator(locator);
-            if let Some(expected_hash) = source_hashes.get(&normalized_locator) {
-                if expected_hash != record_hash {
+            if let Some(expected_source) = source_index.get(&normalized_locator) {
+                if expected_source.blake3 != *record_hash {
                     builder.issue(
                         source,
                         "provenance.blake3_mismatch",

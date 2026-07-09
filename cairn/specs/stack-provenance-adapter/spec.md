@@ -437,3 +437,97 @@ r[valence.stack_provenance_adapter.broken_chain_fixtures.negative]
 - GIVEN fixtures with missing parents, digest mismatches, stale policy, unsupported edge kinds, manual-review tier promotion, weakened non-claims, or span/source content drift
 - WHEN Valence verifies the chain
 - THEN each fixture MUST fail closed with deterministic diagnostics.
+
+### Requirement: Formal proof stack-chain fixture contract
+r[valence.stack_provenance.formal_proof_chain_fixture.contract] Valence MUST define a frozen formal-proof stack-chain fixture contract that links Octet formal-proof receipts, proof cards, provenance exports, Valence sidecars, graph reports, and Cairn readiness input summaries with typed identities, verification roles, and non-claims.
+
+#### Scenario: Fixture contract names every hop
+r[valence.stack_provenance.formal_proof_chain_fixture.contract.hops]
+- GIVEN a formal-proof stack-chain fixture is declared
+- WHEN Valence validates the fixture contract
+- THEN the fixture MUST name the Octet receipt, proof card, provenance record, Valence sidecar, graph report, Cairn readiness input summary, and required non-claim boundary.
+
+### Requirement: Positive formal-proof chain fixture
+r[valence.stack_provenance.formal_proof_chain_fixture.positive] Valence MUST accept a fixture where a scoped Octet-owned `formal_proof` receipt has matching proof-card, provenance, sidecar, graph, and Cairn readiness-input identities.
+
+#### Scenario: Scoped property survives the chain
+r[valence.stack_provenance.formal_proof_chain_fixture.positive.property]
+- GIVEN a fixture contains one scoped Octet-owned passed formal-proof receipt with matching proof card, provenance record, sidecar, graph node, and Cairn readiness input summary
+- WHEN Valence validates the stack-chain fixture
+- THEN validation MUST pass, preserve `verification_role = property` for that record, and report that only that property record counts as verified.
+
+### Requirement: Negative formal-proof chain fixtures
+r[valence.stack_provenance.formal_proof_chain_fixture.negative] Valence MUST reject fixtures with stale proof links, manual-review promotion, digest drift, unsupported edges, missing non-claims, or invalid verified counts.
+
+#### Scenario: Manual review cannot become property
+r[valence.stack_provenance.formal_proof_chain_fixture.negative.manual_review]
+- GIVEN an imported Trellis or manual-review record is marked as `property` without an Octet-owned rerun receipt
+- WHEN Valence validates the stack-chain fixture
+- THEN validation MUST fail with a deterministic tier-promotion diagnostic.
+
+#### Scenario: Recorded-only evidence cannot be counted as verified
+r[valence.stack_provenance.formal_proof_chain_fixture.negative.role_count]
+- GIVEN a Cairn readiness input summary counts `recorded_only` or `boundary` evidence as verified
+- WHEN Valence validates the stack-chain fixture
+- THEN validation MUST fail with a deterministic verification-role-count diagnostic.
+
+### Requirement: Stack-chain validation core
+r[valence.stack_provenance.formal_proof_chain_fixture.validation] Valence MUST validate formal-proof stack-chain fixtures through a pure deterministic core over parsed in-memory fixture values.
+
+#### Scenario: Core has no shell effects
+r[valence.stack_provenance.formal_proof_chain_fixture.validation.core]
+- GIVEN parsed fixture values and expected BLAKE3 identities
+- WHEN the formal-proof stack-chain validator runs
+- THEN it MUST return pass/fail diagnostics without reading files, invoking processes, inspecting environment, or contacting sibling repositories.
+
+### Requirement: Stack-chain ownership boundary
+r[valence.stack_provenance.formal_proof_chain_fixture.docs] Valence documentation MUST state that the fixture proves stack identity and role-preserving linkage only.
+
+#### Scenario: Fixture non-claims are visible
+r[valence.stack_provenance.formal_proof_chain_fixture.docs.non_claims]
+- GIVEN a formal-proof stack-chain fixture report passes
+- WHEN an operator reads the supported claim
+- THEN the report MUST state that the fixture does not prove whole-program correctness, verifier soundness, semantic equivalence, release eligibility, live sibling freshness, or requirement satisfaction outside the declared fixture scope.
+
+### Requirement: Formal-proof chain validation evidence
+r[valence.stack_provenance.formal_proof_chain_fixture.final_validation] The change MUST include positive and negative fixtures plus focused Valence and Cairn validation evidence before archive.
+
+#### Scenario: Focused validation covers stack-chain health
+r[valence.stack_provenance.formal_proof_chain_fixture.final_validation.fixtures]
+- GIVEN positive and negative formal-proof stack-chain fixtures
+- WHEN focused validation runs
+- THEN valid fixtures MUST pass, invalid fixtures MUST fail closed, and saved validation evidence MUST identify fixture and policy inputs.
+
+
+### Requirement: Valence CLI filesystem authority is capability-rooted
+r[valence.stack_provenance_adapter.cap_std_cli_boundary.root_wrappers] Valence MUST represent CLI input artifact, manifest, sidecar, binary, and output filesystem authority as typed capability roots opened by `valence-cli`.
+
+#### Scenario: Valid CLI artifact path stays under the declared root
+r[valence.stack_provenance_adapter.cap_std_cli_boundary.tests.positive]
+- GIVEN `valence-cli` has opened an operator-declared input or output root
+- WHEN stack-provenance or evidence-file commands read a valid relative artifact path, measure a binary, or write a sidecar/report through the typed root
+- THEN the operation MUST remain confined to that declared root while preserving existing valid-input behavior.
+
+#### Scenario: Invalid CLI artifact path cannot escape the root
+r[valence.stack_provenance_adapter.cap_std_cli_boundary.tests.negative]
+- GIVEN input names `../` traversal, an absolute path, a missing capability root, a symlink escape attempt, or an output escape attempt
+- WHEN `valence-cli` resolves the path through the typed root
+- THEN Valence MUST fail closed before reading, measuring, or writing outside the declared root.
+
+### Requirement: Capability dependency stays outside Valence core
+r[valence.stack_provenance_adapter.cap_std_cli_boundary.dependency] Valence MUST add `cap-std` only to `valence-cli` shell/adaptor code that owns filesystem effects.
+
+#### Scenario: Evidence core remains pure
+r[valence.stack_provenance_adapter.cap_std_cli_boundary.conversion]
+- GIVEN `valence-core` Evidence IR, provenance, role, hash, and non-claim validation logic is reviewed
+- WHEN cap-std adoption is complete
+- THEN `valence-core` MUST receive loaded bytes, parsed DTOs, or validated relative locators and MUST NOT depend on `cap-std` or open ambient filesystem paths directly.
+
+### Requirement: Capability boundary is documented without evidence overclaims
+r[valence.stack_provenance_adapter.cap_std_cli_boundary.docs] Valence MUST document that capability roots bound local CLI filesystem authority only and do not prove evidence truth, behavioral correctness, release eligibility, or verifier soundness.
+
+#### Scenario: Closeout evidence includes CLI boundary validation
+r[valence.stack_provenance_adapter.cap_std_cli_boundary.validation]
+- GIVEN the cap-std CLI-boundary change is ready to archive
+- WHEN focused CLI tests, core purity checks, Cairn validation, and gate checks run
+- THEN the evidence MUST include positive and negative filesystem-boundary coverage and visible non-claim documentation.
