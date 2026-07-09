@@ -37,6 +37,19 @@ The Evidence IR v1 spine:
   reject overclaims. Fails closed.
 - `explain_span`: resolve a stable source ID to its span from a JSON manifest.
 
+### `artifact_ref` (v1)
+
+Reusable artifact-reference core for stack evidence identity plumbing. It validates
+role-specific artifact refs for binaries, sidecars, receipts, source artifacts,
+release bundle members, and compatibility refs; profile-scoped BLAKE3 spellings
+(raw hex, `b3:`, and `blake3:`); confined already-loaded path/label metadata;
+declared hash/size metadata consistency; and public-field adapters that preserve
+existing JSON field names. Passing validation proves only artifact ref syntax,
+role separation, metadata confinement, and declared hash/size consistency. It
+does not prove artifact truth, behavioral correctness, semantic equivalence,
+verifier soundness, release eligibility, lifecycle readiness, runtime authority,
+or whole-program safety.
+
 ### `evidence_model` (v1)
 
 Unison-inspired Evidence IR support models:

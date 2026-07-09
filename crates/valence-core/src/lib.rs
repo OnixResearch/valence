@@ -2,6 +2,9 @@
 //!
 //! # Current public modules
 //!
+//! - `artifact_ref`: validates typed artifact references, digest spelling profiles, confined path
+//!   metadata, declared hash/size metadata, and public-field compatibility adapters over
+//!   already-loaded in-memory metadata.
 //! - `evidence_codebase_index`: builds, queries, renders, and boundary-checks Octet-owned
 //!   evidence-codebase indexes from in-memory artifacts. Octet retains CLI parsing, filesystem
 //!   traversal, artifact discovery, output writing, Nix gate ownership, release bundle ownership,
@@ -16,8 +19,9 @@
 //! # Boundary
 //!
 //! This crate intentionally contains deterministic core logic only. CLI I/O,
-//! filesystem reads, source scanning, object marker mutation, corpus orchestration,
-//! supplement orchestration, stdout/stderr, process exits, repository tags,
+//! filesystem reads, artifact byte measurement, path resolution, source scanning,
+//! object marker mutation, corpus orchestration, supplement orchestration,
+//! stdout/stderr, process exits, repository tags,
 //! package publication, standalone repository cutover, and release ownership
 //! remain in `cargo-octet` until a future reviewed cutover changes that boundary.
 //!
@@ -29,6 +33,7 @@
 //! determinism, cross-toolchain determinism, external consumer compatibility, or
 //! general HIR/THIR/MIR extraction.
 
+pub mod artifact_ref;
 pub mod evidence_codebase_index;
 pub mod evidence_harness;
 pub mod evidence_index;
