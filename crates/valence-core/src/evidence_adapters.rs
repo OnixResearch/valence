@@ -11,6 +11,8 @@
 //! r[impl valence.evidence_ir.chaoscontrol_export.validation]
 //! r[impl valence.evidence_ir.state_machine_evidence.contract]
 //! r[impl valence.evidence_ir.state_machine_evidence.validation]
+//! r[impl valence.evidence_ir.fsm_default_profile.contract]
+//! r[impl valence.evidence_ir.fsm_default_profile.validation]
 //! r[impl valence.provenance.canonical_core_manifest]
 //! r[impl valence.provenance.canonical_core_drift]
 
@@ -35,7 +37,11 @@ const FIELD_HASH_MATERIAL: &str = "hash_material";
 const FIELD_NON_CLAIMS: &str = "non_claims";
 const FIELD_POINTER_TARGET: &str = "pointer_target";
 const FIELD_PROOF_LINK: &str = "proof_link";
+const FIELD_PRODUCER_ROLE: &str = "producer_role";
+const FIELD_PROFILE: &str = "profile";
+const FIELD_PROFILE_VERSION: &str = "profile_version";
 const FIELD_SCHEMA: &str = "schema";
+const FIELD_SEMANTIC_CLAIMS: &str = "semantic_claims";
 const FIELD_SOURCE_SPAN: &str = "source_span";
 const FIELD_STATUS: &str = "status";
 const FIELD_VERIFICATION_ROLE: &str = "verification_role";
@@ -46,12 +52,16 @@ pub const CHAOSCONTROL_EXPORT_REQUIRED_NON_CLAIM: &str =
     "ChaosControl export validation proves evidence identity/linkage only";
 pub const STATE_MACHINE_REQUIRED_NON_CLAIM: &str =
     "state-machine evidence validation proves receipt shape, identity, linkage, and non-claims only";
+pub const FSM_DEFAULT_REQUIRED_NON_CLAIM: &str = "FSM default-exhaustive evidence validation proves identity, linkage, roles, digest shape, coverage-record shape, and non-claims only";
+pub const FSM_PROOF_LINK_REQUIRED_NON_CLAIM: &str =
+    "FSM proof links remain separate evidence and do not promote the default-exhaustive receipt tier";
 pub const CANONICAL_CORE_REQUIRED_NON_CLAIM: &str =
     "canonical core cutover proves ownership and identity compatibility only";
 
 const CAIRN_COMPAT_SUPPORTED_CLAIM: &str = "Cairn compatibility validation proves identity/linkage compatibility only and does not prove Cairn lifecycle readiness, source-code correctness, verifier soundness, semantic equivalence, release eligibility, or whole-program safety";
 const CHAOSCONTROL_SUPPORTED_CLAIM: &str = "ChaosControl export validation proves evidence identity/linkage only and does not prove universal determinism, hosted-product parity, replay completeness, or VMM correctness";
 const STATE_MACHINE_SUPPORTED_CLAIM: &str = "state-machine evidence validation proves receipt shape, identity, linkage, and non-claims only, not Rust semantics, protocol completeness, liveness, verifier soundness, exhaustive Rust coverage, or release readiness";
+const FSM_DEFAULT_SUPPORTED_CLAIM: &str = "FSM default-exhaustive evidence validation proves identity, linkage, roles, digest shape, coverage-record shape, and non-claims only, not Rust semantics, FSM semantics, behavioral correctness, protocol completeness, liveness, verifier soundness, exhaustive Rust coverage, release eligibility, or lifecycle readiness";
 const CANONICAL_CORE_SUPPORTED_CLAIM: &str = "canonical core cutover proves ownership and identity compatibility only, not behavioral correctness, semantic equivalence, release eligibility, verifier soundness, or requirement satisfaction";
 
 const COMPATIBLE_DISPOSITION: &str = "compatible";
@@ -71,6 +81,43 @@ const SUPPORTED_CHAOSCONTROL_FAMILIES: &[&str] = &[
 
 const ALLOWED_CHAOSCONTROL_ROLES: &[&str] = &["recorded_only", "boundary"];
 const ALLOWED_STATE_MACHINE_TIERS: &[&str] = &["source_shape", "bounded_source_shape"];
+const ALLOWED_FSM_EVIDENCE_TIERS: &[&str] = &["source-shape", "bounded-source-shape"];
+const ALLOWED_FSM_PRODUCER_ROLES: &[&str] = &[
+    "octet-source-shape-producer",
+    "kamacite-portable-fsm-producer",
+    "valence-linkage-verifier",
+];
+const ALLOWED_FSM_ARTIFACT_ROLES: &[&str] = &[
+    "octet-source-shape-receipt",
+    "kamacite-fsm-spec",
+    "kamacite-fsm-receipt",
+    "state-universe",
+    "event-universe",
+    "variant-inventory",
+    "transition-coverage",
+    "denial-coverage",
+    "parent-export",
+    "formal-proof-receipt",
+];
+const FSM_PROFILE_NAME: &str = "fsm-default-exhaustive";
+const FSM_PROFILE_VERSION: &str = "1";
+const FSM_DOMAIN_ARTIFACT: &str = "artifact";
+const FSM_DOMAIN_FSM_COVERAGE: &str = "fsm-coverage";
+const FSM_DOMAIN_FSM_SPEC: &str = "fsm-spec";
+const FSM_DOMAIN_FSM_UNIVERSE: &str = "fsm-universe";
+const FSM_DOMAIN_PROJECTION: &str = "projection";
+const FSM_DOMAIN_RECEIPT: &str = "receipt";
+const FSM_OCTET_PRODUCER_ROLE: &str = "octet-source-shape-producer";
+const FSM_KAMACITE_PRODUCER_ROLE: &str = "kamacite-portable-fsm-producer";
+const FSM_VALENCE_VERIFIER_ROLE: &str = "valence-linkage-verifier";
+const FSM_PROOF_TIER: &str = "formal-proof";
+const FSM_OVERCLAIM_MARKERS: &[&str] = &[
+    "proves protocol completeness",
+    "proves liveness",
+    "proves exhaustive rust coverage",
+    "proves rust semantics",
+    "proves fsm semantics",
+];
 const ALLOWED_STATUS_VALUES: &[&str] = &["pass", "fail", "skipped"];
 const ALLOWED_CORE_DISPOSITIONS: &[&str] = &[
     CANONICAL_DISPOSITION,
@@ -161,6 +208,55 @@ pub struct StateMachineEvidenceReceipt {
     pub evidence_tier: String,
     pub proof_links: Vec<String>,
     pub available_proof_receipts: Vec<String>,
+    pub non_claims: Vec<String>,
+}
+
+/// Identity reference used by the FSM default-exhaustive profile.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FsmEvidenceIdentity {
+    pub domain: String,
+    pub digest: String,
+}
+
+/// Role-scoped artifact identity preserved in an FSM default-exhaustive record.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FsmArtifactIdentity {
+    pub role: String,
+    pub identity: FsmEvidenceIdentity,
+}
+
+/// Optional formal proof linkage that remains separate from the FSM receipt tier.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FsmProofLink {
+    pub verifier: String,
+    pub proof_receipt_identity: FsmEvidenceIdentity,
+    pub evidence_tier: String,
+    pub non_claims: Vec<String>,
+}
+
+/// Valence-owned profile for default-exhaustive FSM evidence records.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FsmDefaultExhaustiveEvidence {
+    pub profile: String,
+    pub profile_version: String,
+    pub machine_id: String,
+    pub source_span_id: String,
+    pub source_span_ids: Vec<String>,
+    pub state_universe_identity: FsmEvidenceIdentity,
+    pub event_universe_identity: FsmEvidenceIdentity,
+    pub variant_inventory_identity: FsmEvidenceIdentity,
+    pub transition_coverage_identity: FsmEvidenceIdentity,
+    pub denial_coverage_identity: FsmEvidenceIdentity,
+    pub octet_receipt_identity: FsmEvidenceIdentity,
+    pub kamacite_spec_identity: Option<FsmEvidenceIdentity>,
+    pub kamacite_receipt_identity: Option<FsmEvidenceIdentity>,
+    pub artifact_identity: FsmEvidenceIdentity,
+    pub parent_export_identity: FsmEvidenceIdentity,
+    pub artifact_identities: Vec<FsmArtifactIdentity>,
+    pub producer_roles: Vec<String>,
+    pub evidence_tier: String,
+    pub proof_links: Vec<FsmProofLink>,
+    pub semantic_claims: Vec<String>,
     pub non_claims: Vec<String>,
 }
 
@@ -303,6 +399,230 @@ pub fn validate_state_machine_evidence(receipt: &StateMachineEvidenceReceipt) ->
     validate_non_claims(&receipt.non_claims, STATE_MACHINE_REQUIRED_NON_CLAIM, &mut issues);
 
     finish_report(issues, STATE_MACHINE_SUPPORTED_CLAIM, Some(receipt.transition_core_id.clone()), false)
+}
+
+/// Validate an FSM default-exhaustive evidence record without claiming FSM semantics.
+#[must_use]
+pub fn validate_fsm_default_exhaustive_evidence(record: &FsmDefaultExhaustiveEvidence) -> AdapterReport {
+    let mut issues = Vec::new();
+    if record.profile != FSM_PROFILE_NAME {
+        issues.push(AdapterIssue::new(FIELD_PROFILE, "unsupported_profile"));
+    }
+    if record.profile_version != FSM_PROFILE_VERSION {
+        issues.push(AdapterIssue::new(FIELD_PROFILE_VERSION, "unsupported_profile_version"));
+    }
+    validate_required_text(&record.machine_id, "machine_id", "machine_id_missing", &mut issues);
+    validate_required_text(&record.source_span_id, FIELD_SOURCE_SPAN, "source_span_missing", &mut issues);
+    if record.source_span_ids.is_empty() {
+        issues.push(AdapterIssue::new(FIELD_SOURCE_SPAN, "source_span_set_missing"));
+    }
+    validate_fsm_identity(
+        &record.state_universe_identity,
+        FSM_DOMAIN_FSM_UNIVERSE,
+        "state_universe_identity",
+        "state_universe_missing",
+        &mut issues,
+    );
+    validate_fsm_identity(
+        &record.event_universe_identity,
+        FSM_DOMAIN_FSM_UNIVERSE,
+        "event_universe_identity",
+        "event_universe_missing",
+        &mut issues,
+    );
+    validate_fsm_identity(
+        &record.variant_inventory_identity,
+        FSM_DOMAIN_ARTIFACT,
+        "variant_inventory_identity",
+        "variant_inventory_missing",
+        &mut issues,
+    );
+    validate_fsm_identity(
+        &record.transition_coverage_identity,
+        FSM_DOMAIN_FSM_COVERAGE,
+        "transition_coverage_identity",
+        "transition_coverage_missing",
+        &mut issues,
+    );
+    validate_fsm_identity(
+        &record.denial_coverage_identity,
+        FSM_DOMAIN_FSM_COVERAGE,
+        "denial_coverage_identity",
+        "denial_coverage_missing",
+        &mut issues,
+    );
+    validate_fsm_identity(
+        &record.octet_receipt_identity,
+        FSM_DOMAIN_RECEIPT,
+        "octet_receipt_identity",
+        "octet_receipt_missing",
+        &mut issues,
+    );
+    validate_optional_fsm_identity(
+        &record.kamacite_spec_identity,
+        FSM_DOMAIN_FSM_SPEC,
+        "kamacite_spec_identity",
+        &mut issues,
+    );
+    validate_optional_fsm_identity(
+        &record.kamacite_receipt_identity,
+        FSM_DOMAIN_RECEIPT,
+        "kamacite_receipt_identity",
+        &mut issues,
+    );
+    validate_fsm_identity(
+        &record.artifact_identity,
+        FSM_DOMAIN_ARTIFACT,
+        "artifact_identity",
+        "artifact_identity_missing",
+        &mut issues,
+    );
+    validate_fsm_identity(
+        &record.parent_export_identity,
+        FSM_DOMAIN_PROJECTION,
+        "parent_export_identity",
+        "parent_export_missing",
+        &mut issues,
+    );
+    validate_fsm_roles(record, &mut issues);
+    validate_fsm_artifact_identities(record, &mut issues);
+    validate_fsm_proof_links(record, &mut issues);
+    validate_non_claims(&record.non_claims, FSM_DEFAULT_REQUIRED_NON_CLAIM, &mut issues);
+    if record.non_claims.iter().any(|claim| contains_fsm_overclaim(claim)) {
+        issues.push(AdapterIssue::new(FIELD_NON_CLAIMS, "overclaim_detected"));
+    }
+    if record.semantic_claims.iter().any(|claim| contains_fsm_overclaim(claim)) {
+        issues.push(AdapterIssue::new(FIELD_SEMANTIC_CLAIMS, "overclaim_detected"));
+    }
+
+    finish_report(issues, FSM_DEFAULT_SUPPORTED_CLAIM, Some(record.machine_id.clone()), false)
+}
+
+fn contains_fsm_overclaim(text: &str) -> bool {
+    let normalized = text.to_ascii_lowercase();
+    contains_overclaim(text) || FSM_OVERCLAIM_MARKERS.iter().any(|marker| normalized.contains(marker))
+}
+
+fn validate_optional_fsm_identity(
+    identity: &Option<FsmEvidenceIdentity>,
+    expected_domain: &'static str,
+    field: &'static str,
+    issues: &mut Vec<AdapterIssue>,
+) {
+    if let Some(identity) = identity {
+        validate_fsm_identity(identity, expected_domain, field, "identity_missing", issues);
+    }
+}
+
+fn validate_fsm_identity(
+    identity: &FsmEvidenceIdentity,
+    expected_domain: &'static str,
+    field: &'static str,
+    missing_code: &'static str,
+    issues: &mut Vec<AdapterIssue>,
+) {
+    if identity.domain.trim().is_empty() || identity.digest.trim().is_empty() {
+        issues.push(AdapterIssue::new(field, missing_code));
+        return;
+    }
+    if identity.domain != expected_domain {
+        issues.push(AdapterIssue::new(field, "wrong_identity_domain"));
+    }
+    validate_digest_syntax(&identity.digest, digest_role_for_fsm_domain(expected_domain), issues);
+}
+
+fn digest_role_for_fsm_domain(domain: &str) -> DigestRole {
+    match domain {
+        FSM_DOMAIN_RECEIPT => DigestRole::ReceiptIdentity,
+        _ => DigestRole::ArtifactIdentity,
+    }
+}
+
+fn validate_fsm_roles(record: &FsmDefaultExhaustiveEvidence, issues: &mut Vec<AdapterIssue>) {
+    if !ALLOWED_FSM_EVIDENCE_TIERS.contains(&record.evidence_tier.as_str()) {
+        issues.push(AdapterIssue::new(FIELD_EVIDENCE_TIER, "unknown_or_promoted_tier"));
+    }
+    let roles = record.producer_roles.iter().collect::<BTreeSet<_>>();
+    if !roles.contains(&FSM_OCTET_PRODUCER_ROLE.to_owned()) {
+        issues.push(AdapterIssue::new(FIELD_PRODUCER_ROLE, "octet_role_missing"));
+    }
+    if !roles.contains(&FSM_VALENCE_VERIFIER_ROLE.to_owned()) {
+        issues.push(AdapterIssue::new(FIELD_PRODUCER_ROLE, "valence_role_missing"));
+    }
+    if (record.kamacite_spec_identity.is_some() || record.kamacite_receipt_identity.is_some())
+        && !roles.contains(&FSM_KAMACITE_PRODUCER_ROLE.to_owned())
+    {
+        issues.push(AdapterIssue::new(FIELD_PRODUCER_ROLE, "kamacite_role_missing"));
+    }
+    for role in &record.producer_roles {
+        if !ALLOWED_FSM_PRODUCER_ROLES.contains(&role.as_str()) {
+            issues.push(AdapterIssue::new(FIELD_PRODUCER_ROLE, "unknown_role"));
+        }
+    }
+}
+
+fn validate_fsm_artifact_identities(record: &FsmDefaultExhaustiveEvidence, issues: &mut Vec<AdapterIssue>) {
+    if record.artifact_identities.is_empty() {
+        issues.push(AdapterIssue::new("artifact_identities", "artifact_identities_missing"));
+        return;
+    }
+    let mut roles = BTreeSet::new();
+    for artifact in &record.artifact_identities {
+        if !ALLOWED_FSM_ARTIFACT_ROLES.contains(&artifact.role.as_str()) {
+            issues.push(AdapterIssue::new("artifact_identities", "unknown_role"));
+        }
+        if !roles.insert(artifact.role.clone()) {
+            issues.push(AdapterIssue::new("artifact_identities", "duplicate_role"));
+        }
+        validate_fsm_identity(
+            &artifact.identity,
+            expected_domain_for_fsm_artifact_role(&artifact.role),
+            "artifact_identities",
+            "identity_missing",
+            issues,
+        );
+    }
+    for required in [
+        "octet-source-shape-receipt",
+        "state-universe",
+        "event-universe",
+        "variant-inventory",
+        "transition-coverage",
+        "denial-coverage",
+        "parent-export",
+    ] {
+        if !roles.contains(required) {
+            issues.push(AdapterIssue::new("artifact_identities", "required_role_missing"));
+        }
+    }
+}
+
+fn expected_domain_for_fsm_artifact_role(role: &str) -> &'static str {
+    match role {
+        "octet-source-shape-receipt" | "kamacite-fsm-receipt" | "formal-proof-receipt" => FSM_DOMAIN_RECEIPT,
+        "kamacite-fsm-spec" => FSM_DOMAIN_FSM_SPEC,
+        "state-universe" | "event-universe" => FSM_DOMAIN_FSM_UNIVERSE,
+        "transition-coverage" | "denial-coverage" => FSM_DOMAIN_FSM_COVERAGE,
+        "parent-export" => FSM_DOMAIN_PROJECTION,
+        _ => FSM_DOMAIN_ARTIFACT,
+    }
+}
+
+fn validate_fsm_proof_links(record: &FsmDefaultExhaustiveEvidence, issues: &mut Vec<AdapterIssue>) {
+    for proof_link in &record.proof_links {
+        validate_required_text(&proof_link.verifier, FIELD_PROOF_LINK, "verifier_missing", issues);
+        validate_fsm_identity(
+            &proof_link.proof_receipt_identity,
+            FSM_DOMAIN_RECEIPT,
+            FIELD_PROOF_LINK,
+            "proof_receipt_missing",
+            issues,
+        );
+        if proof_link.evidence_tier != FSM_PROOF_TIER {
+            issues.push(AdapterIssue::new(FIELD_PROOF_LINK, "proof_tier_not_separate"));
+        }
+        validate_non_claims(&proof_link.non_claims, FSM_PROOF_LINK_REQUIRED_NON_CLAIM, issues);
+    }
 }
 
 /// Validate canonical Valence core manifest rows.
@@ -575,6 +895,132 @@ mod tests {
         assert!(report.issues.iter().any(|issue| issue.code == "unknown_or_promoted_tier"));
         assert!(report.issues.iter().any(|issue| issue.code == "missing_linked_proof"));
         assert!(report.issues.iter().any(|issue| issue.code == "overclaim_detected"));
+    }
+
+    fn fsm_identity(domain: &str, material: &[u8]) -> FsmEvidenceIdentity {
+        FsmEvidenceIdentity {
+            domain: domain.to_owned(),
+            digest: hash_for(material),
+        }
+    }
+
+    fn fsm_artifact(role: &str, identity: FsmEvidenceIdentity) -> FsmArtifactIdentity {
+        FsmArtifactIdentity {
+            role: role.to_owned(),
+            identity,
+        }
+    }
+
+    fn fsm_default_evidence() -> FsmDefaultExhaustiveEvidence {
+        let state_universe = fsm_identity(FSM_DOMAIN_FSM_UNIVERSE, b"state-universe");
+        let event_universe = fsm_identity(FSM_DOMAIN_FSM_UNIVERSE, b"event-universe");
+        let variant_inventory = fsm_identity(FSM_DOMAIN_ARTIFACT, b"variant-inventory");
+        let transition_coverage = fsm_identity(FSM_DOMAIN_FSM_COVERAGE, b"transition-coverage");
+        let denial_coverage = fsm_identity(FSM_DOMAIN_FSM_COVERAGE, b"denial-coverage");
+        let octet_receipt = fsm_identity(FSM_DOMAIN_RECEIPT, b"octet-receipt");
+        let parent_export = fsm_identity(FSM_DOMAIN_PROJECTION, b"parent-export");
+        FsmDefaultExhaustiveEvidence {
+            profile: FSM_PROFILE_NAME.to_owned(),
+            profile_version: FSM_PROFILE_VERSION.to_owned(),
+            machine_id: "fixture.lifecycle".to_owned(),
+            source_span_id: "span:transition.apply".to_owned(),
+            source_span_ids: vec!["span:transition.apply".to_owned()],
+            state_universe_identity: state_universe.clone(),
+            event_universe_identity: event_universe.clone(),
+            variant_inventory_identity: variant_inventory.clone(),
+            transition_coverage_identity: transition_coverage.clone(),
+            denial_coverage_identity: denial_coverage.clone(),
+            octet_receipt_identity: octet_receipt.clone(),
+            kamacite_spec_identity: None,
+            kamacite_receipt_identity: None,
+            artifact_identity: fsm_identity(FSM_DOMAIN_ARTIFACT, b"source-artifact"),
+            parent_export_identity: parent_export.clone(),
+            artifact_identities: vec![
+                fsm_artifact("octet-source-shape-receipt", octet_receipt),
+                fsm_artifact("state-universe", state_universe),
+                fsm_artifact("event-universe", event_universe),
+                fsm_artifact("variant-inventory", variant_inventory),
+                fsm_artifact("transition-coverage", transition_coverage),
+                fsm_artifact("denial-coverage", denial_coverage),
+                fsm_artifact("parent-export", parent_export),
+            ],
+            producer_roles: vec![FSM_OCTET_PRODUCER_ROLE.to_owned(), FSM_VALENCE_VERIFIER_ROLE.to_owned()],
+            evidence_tier: "source-shape".to_owned(),
+            proof_links: Vec::new(),
+            semantic_claims: Vec::new(),
+            non_claims: vec![FSM_DEFAULT_REQUIRED_NON_CLAIM.to_owned()],
+        }
+    }
+
+    #[test]
+    fn fsm_default_exhaustive_octet_only_fixture_passes() {
+        // r[verify valence.evidence_ir.fsm_default_profile.fixtures.positive.octet_only]
+        let report = validate_fsm_default_exhaustive_evidence(&fsm_default_evidence());
+
+        assert!(report.valid);
+        assert!(report.supported_claim.contains("not Rust semantics"));
+        assert_eq!(report.mapped_identity.as_deref(), Some("fixture.lifecycle"));
+    }
+
+    #[test]
+    fn fsm_default_exhaustive_kamacite_and_proof_link_preserve_boundaries() {
+        // r[verify valence.evidence_ir.fsm_default_profile.fixtures.positive.kamacite_link]
+        // r[verify valence.evidence_ir.fsm_default_profile.proof_links.no_promotion]
+        let mut record = fsm_default_evidence();
+        let kamacite_spec = fsm_identity(FSM_DOMAIN_FSM_SPEC, b"kamacite-spec");
+        let kamacite_receipt = fsm_identity(FSM_DOMAIN_RECEIPT, b"kamacite-receipt");
+        let proof_receipt = fsm_identity(FSM_DOMAIN_RECEIPT, b"trellis-proof");
+        record.kamacite_spec_identity = Some(kamacite_spec.clone());
+        record.kamacite_receipt_identity = Some(kamacite_receipt.clone());
+        record.producer_roles.push(FSM_KAMACITE_PRODUCER_ROLE.to_owned());
+        record.artifact_identities.push(fsm_artifact("kamacite-fsm-spec", kamacite_spec));
+        record.artifact_identities.push(fsm_artifact("kamacite-fsm-receipt", kamacite_receipt));
+        record.artifact_identities.push(fsm_artifact("formal-proof-receipt", proof_receipt.clone()));
+        record.proof_links.push(FsmProofLink {
+            verifier: "trellis".to_owned(),
+            proof_receipt_identity: proof_receipt,
+            evidence_tier: FSM_PROOF_TIER.to_owned(),
+            non_claims: vec![FSM_PROOF_LINK_REQUIRED_NON_CLAIM.to_owned()],
+        });
+
+        let report = validate_fsm_default_exhaustive_evidence(&record);
+
+        assert!(report.valid);
+        assert_eq!(record.evidence_tier, "source-shape");
+    }
+
+    #[test]
+    fn fsm_default_exhaustive_negative_fixture_fails_closed() {
+        // r[verify valence.evidence_ir.fsm_default_profile.fixtures.negative]
+        let mut record = fsm_default_evidence();
+        record.profile_version = "unsupported".to_owned();
+        record.denial_coverage_identity.digest.clear();
+        record.state_universe_identity.digest = "not-blake3".to_owned();
+        record.producer_roles.push("runtime-correctness-producer".to_owned());
+        record.evidence_tier = FSM_PROOF_TIER.to_owned();
+        record.semantic_claims = vec!["proves protocol completeness and liveness".to_owned()];
+        record.non_claims.clear();
+        record
+            .artifact_identities
+            .push(fsm_artifact("unknown-role", fsm_identity(FSM_DOMAIN_RECEIPT, b"wrong-domain")));
+        record.proof_links.push(FsmProofLink {
+            verifier: String::new(),
+            proof_receipt_identity: fsm_identity(FSM_DOMAIN_ARTIFACT, b"wrong-proof-domain"),
+            evidence_tier: "source-shape".to_owned(),
+            non_claims: vec!["proof promotes FSM receipt".to_owned()],
+        });
+
+        let report = validate_fsm_default_exhaustive_evidence(&record);
+
+        assert!(!report.valid);
+        assert!(report.issues.iter().any(|issue| issue.code == "unsupported_profile_version"));
+        assert!(report.issues.iter().any(|issue| issue.code == "denial_coverage_missing"));
+        assert!(report.issues.iter().any(|issue| issue.code == "malformed_blake3"));
+        assert!(report.issues.iter().any(|issue| issue.code == "unknown_role"));
+        assert!(report.issues.iter().any(|issue| issue.code == "unknown_or_promoted_tier"));
+        assert!(report.issues.iter().any(|issue| issue.code == "non_claims_missing"));
+        assert!(report.issues.iter().any(|issue| issue.code == "overclaim_detected"));
+        assert!(report.issues.iter().any(|issue| issue.code == "proof_tier_not_separate"));
     }
 
     #[test]

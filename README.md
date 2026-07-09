@@ -82,6 +82,10 @@ preserve identity/linkage and role-counting boundaries only; producers still own
 source analysis, VMM/replay semantics, proof execution, artifact measurement,
 attestation truth, lifecycle policy, and release readiness.
 
+The `fsm-default-exhaustive` adapter profile records Octet source-shape receipts
+and optional Kamacite FSM spec/receipt identities while preserving Valence's
+non-claim boundary; see `docs/fsm-default-exhaustive.md`.
+
 ### `evidence_model` (v1)
 
 Unison-inspired Evidence IR support models:
