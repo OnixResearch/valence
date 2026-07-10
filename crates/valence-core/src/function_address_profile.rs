@@ -14,8 +14,11 @@ use crate::evidence_ir::EvidenceIrError;
 use crate::evidence_ir::EvidenceSpan;
 use crate::evidence_ir::VerificationRole;
 use crate::evidence_ir::build_evidence_artifact;
+use crate::shared_identity::DigestProfile;
 use crate::shared_identity::DigestRole;
 use crate::shared_identity::MIXED_BLAKE3_PROFILE;
+use crate::shared_identity::RAW_BLAKE3_PROFILE;
+use crate::shared_identity::STRICT_B3_PROFILE;
 use crate::shared_identity::SharedIdentityIssue;
 use crate::shared_identity::parse_digest;
 
@@ -81,6 +84,30 @@ impl FunctionAddressDigestDomain {
 pub struct FunctionAddressDigest {
     pub domain: FunctionAddressDigestDomain,
     pub digest: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum FunctionAddressDigestBoundary {
+    OctetB3,
+    KamaciteBare,
+    MantleBare,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FunctionAddressDigestSpellingInput {
+    pub boundary: FunctionAddressDigestBoundary,
+    pub domain: FunctionAddressDigestDomain,
+    pub expected_domain: Option<FunctionAddressDigestDomain>,
+    pub digest: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct FunctionAddressDigestSpellingReport {
+    pub valid: bool,
+    pub normalized: Option<FunctionAddressDigest>,
+    pub canonical_spelling: Option<String>,
+    pub issues: Vec<FunctionAddressEvidenceIssue>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -171,6 +198,49 @@ struct FunctionAddressEvidencePayload<'a> {
     mantle_sidecar_digest: &'a Option<FunctionAddressDigest>,
     release_binary_identity: &'a Option<FunctionAddressDigest>,
     evidence_roles: Vec<&'static str>,
+}
+
+#[must_use]
+pub fn normalize_function_address_digest_spelling(
+    input: &FunctionAddressDigestSpellingInput,
+) -> FunctionAddressDigestSpellingReport {
+    let mut shared_issues = Vec::new();
+    let parsed = parse_digest(
+        &input.digest,
+        DigestRole::CompatibilityReference,
+        digest_boundary_profile(input.boundary),
+        "digest",
+        &mut shared_issues,
+    );
+    let mut issues = shared_issues
+        .into_iter()
+        .map(|issue| FunctionAddressEvidenceIssue::new(issue.field, issue.code))
+        .collect::<Vec<_>>();
+    if let Some(expected_domain) = input.expected_domain
+        && expected_domain != input.domain
+    {
+        issues.push(FunctionAddressEvidenceIssue::new("domain", "domain_substitution"));
+    }
+    issues.sort_by_key(|issue| (issue.field, issue.code));
+    issues.dedup();
+    let normalized = parsed.map(|digest| FunctionAddressDigest {
+        domain: input.domain,
+        digest: digest.normalized_hex,
+    });
+    let canonical_spelling = normalized.as_ref().map(|digest| format!("b3:{}", digest.digest));
+    FunctionAddressDigestSpellingReport {
+        valid: issues.is_empty() && normalized.is_some(),
+        normalized,
+        canonical_spelling,
+        issues,
+    }
+}
+
+fn digest_boundary_profile(boundary: FunctionAddressDigestBoundary) -> DigestProfile {
+    match boundary {
+        FunctionAddressDigestBoundary::OctetB3 => STRICT_B3_PROFILE,
+        FunctionAddressDigestBoundary::KamaciteBare | FunctionAddressDigestBoundary::MantleBare => RAW_BLAKE3_PROFILE,
+    }
 }
 
 #[must_use]
@@ -499,6 +569,10 @@ mod tests {
     const MANTLE_SIDECAR_DIGEST: &str = "b3:8888888888888888888888888888888888888888888888888888888888888888";
     const RELEASE_BINARY_DIGEST: &str = "b3:9999999999999999999999999999999999999999999999999999999999999999";
     const STALE_KAMACITE_DIGEST: &str = "b3:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const RAW_KAMACITE_DIGEST: &str = "5555555555555555555555555555555555555555555555555555555555555555";
+    const RAW_MANTLE_DIGEST: &str = "8888888888888888888888888888888888888888888888888888888888888888";
+    const MALFORMED_DIGEST: &str = "b3:abc";
+    const WRONG_PREFIX_DIGEST: &str = "sha256:1111111111111111111111111111111111111111111111111111111111111111";
     const STABLE_ID: &str = "function-address-profile-fixture";
     const FUNCTION_LOCATOR: &str = "src/lib.rs::f";
     const FUNCTION_TWO_LOCATOR: &str = "src/lib.rs::g";
@@ -589,6 +663,64 @@ mod tests {
             semantic_claims: Vec::new(),
             non_claims: REQUIRED_NON_CLAIMS.iter().map(|claim| (*claim).to_string()).collect(),
         }
+    }
+
+    #[test]
+    fn digest_spelling_adapters_normalize_octet_kamacite_and_mantle_boundaries() {
+        let octet = normalize_function_address_digest_spelling(&FunctionAddressDigestSpellingInput {
+            boundary: FunctionAddressDigestBoundary::OctetB3,
+            domain: FunctionAddressDigestDomain::FunctionAddress,
+            expected_domain: Some(FunctionAddressDigestDomain::FunctionAddress),
+            digest: FUNCTION_DIGEST.to_string(),
+        });
+        let kamacite = normalize_function_address_digest_spelling(&FunctionAddressDigestSpellingInput {
+            boundary: FunctionAddressDigestBoundary::KamaciteBare,
+            domain: FunctionAddressDigestDomain::KamaciteReceipt,
+            expected_domain: Some(FunctionAddressDigestDomain::KamaciteReceipt),
+            digest: RAW_KAMACITE_DIGEST.to_string(),
+        });
+        let mantle = normalize_function_address_digest_spelling(&FunctionAddressDigestSpellingInput {
+            boundary: FunctionAddressDigestBoundary::MantleBare,
+            domain: FunctionAddressDigestDomain::SidecarDigest,
+            expected_domain: Some(FunctionAddressDigestDomain::SidecarDigest),
+            digest: RAW_MANTLE_DIGEST.to_string(),
+        });
+
+        assert!(octet.valid, "unexpected issues: {:?}", octet.issues);
+        assert!(kamacite.valid, "unexpected issues: {:?}", kamacite.issues);
+        assert!(mantle.valid, "unexpected issues: {:?}", mantle.issues);
+        assert_eq!(octet.normalized.as_ref().expect("normalized").domain, FunctionAddressDigestDomain::FunctionAddress);
+        assert_eq!(kamacite.canonical_spelling.as_deref(), Some(KAMACITE_DIGEST));
+        assert_eq!(mantle.canonical_spelling.as_deref(), Some(MANTLE_SIDECAR_DIGEST));
+    }
+
+    #[test]
+    fn digest_spelling_adapters_reject_malformed_prefixes_and_cross_domain_substitution() {
+        let malformed = normalize_function_address_digest_spelling(&FunctionAddressDigestSpellingInput {
+            boundary: FunctionAddressDigestBoundary::OctetB3,
+            domain: FunctionAddressDigestDomain::FunctionAddress,
+            expected_domain: Some(FunctionAddressDigestDomain::FunctionAddress),
+            digest: MALFORMED_DIGEST.to_string(),
+        });
+        let wrong_prefix = normalize_function_address_digest_spelling(&FunctionAddressDigestSpellingInput {
+            boundary: FunctionAddressDigestBoundary::OctetB3,
+            domain: FunctionAddressDigestDomain::FunctionAddress,
+            expected_domain: Some(FunctionAddressDigestDomain::FunctionAddress),
+            digest: WRONG_PREFIX_DIGEST.to_string(),
+        });
+        let substituted = normalize_function_address_digest_spelling(&FunctionAddressDigestSpellingInput {
+            boundary: FunctionAddressDigestBoundary::KamaciteBare,
+            domain: FunctionAddressDigestDomain::SourceEnvelope,
+            expected_domain: Some(FunctionAddressDigestDomain::KamaciteReceipt),
+            digest: RAW_KAMACITE_DIGEST.to_string(),
+        });
+
+        assert!(!malformed.valid);
+        assert!(malformed.issues.iter().any(|issue| issue.code == "malformed_blake3"));
+        assert!(!wrong_prefix.valid);
+        assert!(wrong_prefix.issues.iter().any(|issue| issue.code == "unsupported_digest_spelling"));
+        assert!(!substituted.valid);
+        assert!(substituted.issues.iter().any(|issue| issue.code == "domain_substitution"));
     }
 
     #[test]

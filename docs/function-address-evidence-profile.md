@@ -12,6 +12,10 @@ Inputs may come directly from Octet function-address artifacts or from Kamacite 
 - Mantle: release artifact bundler for validated sidecars.
 - Cairn: lifecycle/readiness policy gate consumer.
 
+## Digest spellings
+
+Valence normalizes digest spellings only at explicit stack boundaries. Octet producer inputs use `b3:<hex>`; Kamacite receipt identities and Mantle sidecar digests may arrive as bare lowercase BLAKE3 hex with an explicit typed domain. Valence emits canonical report spellings as `b3:<hex>` and validates the digest domain separately so a syntactically valid hash cannot move between source, function, receipt, sidecar, or binary roles.
+
 ## Non-claims
 
 Function-address Evidence IR does not claim Rust semantic correctness, semantic equivalence, whole-program safety, verifier soundness, release eligibility, or runtime behavior.

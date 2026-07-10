@@ -78,6 +78,36 @@ r[valence.evidence_ir.non_claim_boundary.overclaim_non_claims]
 - WHEN checked
 - THEN the report is invalid with `overclaim_detected`
 
+### Requirement: Function-address digest spelling adapters are explicit
+
+r[valence.evidence_ir.function_address_digest_spelling.contract] Valence MUST define explicit function-address digest spelling adapters for supported boundary inputs such as Octet `b3:<hex>` and Kamacite bare BLAKE3 hex.
+
+#### Scenario: Supported spelling normalizes
+r[valence.evidence_ir.function_address_digest_spelling.positive]
+- GIVEN a function-address evidence input uses a supported spelling at a declared adapter boundary
+- WHEN Valence normalizes the digest
+- THEN the normalized digest MUST preserve the BLAKE3 value and typed function-address digest domain.
+
+### Requirement: Function-address spelling normalization does not replace domain validation
+
+r[valence.evidence_ir.function_address_digest_spelling.domain] Valence MUST validate digest domain separately from spelling normalization.
+
+#### Scenario: Cross-domain substitution fails
+r[valence.evidence_ir.function_address_digest_spelling.negative]
+- GIVEN a syntactically valid BLAKE3 digest is supplied under the wrong function-address digest domain
+- WHEN Valence validates the evidence input
+- THEN validation MUST fail with a domain-substitution diagnostic.
+
+### Requirement: Function-address canonical spelling is documented
+
+r[valence.evidence_ir.function_address_digest_spelling.docs] Valence MUST document the canonical digest spelling emitted in Valence function-address receipts and graph summaries.
+
+#### Scenario: Stack smoke uses normalized digests
+r[valence.evidence_ir.function_address_digest_spelling.validation]
+- GIVEN Octet, Kamacite, Mantle, and Cairn exchange function-address evidence
+- WHEN the stack smoke runs
+- THEN Valence MUST normalize allowed spellings deterministically and reject malformed or unsupported spelling variants.
+
 ### Requirement: Artifact reference core contract
 r[valence.evidence_ir.artifact_ref_core.contract] Valence MUST define typed artifact reference contracts for artifact roles, digest spelling profiles, path metadata confinement, hash/size metadata, and bounded non-claim text.
 
