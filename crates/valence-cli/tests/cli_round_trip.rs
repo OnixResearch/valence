@@ -19,6 +19,14 @@ use valence_core::evidence_ir::KaniContractFacet;
 use valence_core::evidence_ir::REQUIRED_NON_CLAIM;
 use valence_core::evidence_ir::VerificationRole;
 use valence_core::evidence_ir::build_evidence_artifact;
+use valence_core::function_address_profile::FUNCTION_ADDRESS_PROFILE_VERSION;
+use valence_core::function_address_profile::FunctionAddressDigest;
+use valence_core::function_address_profile::FunctionAddressDigestDomain;
+use valence_core::function_address_profile::FunctionAddressEvidenceEdge;
+use valence_core::function_address_profile::FunctionAddressEvidenceInput;
+use valence_core::function_address_profile::FunctionAddressEvidenceRecord;
+use valence_core::function_address_profile::FunctionAddressEvidenceRole;
+use valence_core::function_address_profile::function_address_policy_identity;
 use valence_core::stack_provenance_adapter::BUILT_BINARY_THREAD_NON_CLAIM;
 use valence_core::stack_provenance_adapter::MANTLE_STACK_PROVENANCE_ROLE;
 use valence_core::stack_provenance_adapter::OCTET_VALENCE_EXPORT_SCHEMA;
@@ -33,9 +41,91 @@ const RESULTS_HASH: &str = "3333333333333333333333333333333333333333333333333333
 const BUILT_BINARY_BYTES: &[u8] = b"valence-cli-built-binary-fixture";
 const TAMPERED_BINARY_BYTES: &[u8] = b"valence-cli-built-binary-fixture-tampered";
 const BLAKE3_HEX_LENGTH: usize = 64;
+const FUNCTION_SOURCE_DIGEST: &str = "b3:1111111111111111111111111111111111111111111111111111111111111111";
+const FUNCTION_ADDRESS_DIGEST: &str = "b3:2222222222222222222222222222222222222222222222222222222222222222";
+const FUNCTION_DEPENDENCY_DIGEST: &str = "b3:3333333333333333333333333333333333333333333333333333333333333333";
+const FUNCTION_RECEIPT_DIGEST: &str = "b3:4444444444444444444444444444444444444444444444444444444444444444";
+const FUNCTION_LOCATOR: &str = "src/lib.rs::f";
+const FUNCTION_SPAN_START: u64 = 0;
+const FUNCTION_SPAN_END: u64 = 12;
+const FUNCTION_SPAN_LINE: u32 = 1;
+const FUNCTION_SPAN_START_COLUMN: u32 = 1;
+const FUNCTION_SPAN_END_COLUMN: u32 = 13;
 
 fn valence_binary() -> String {
     env!("CARGO_BIN_EXE_valence").to_owned()
+}
+
+fn function_address_digest(domain: FunctionAddressDigestDomain, digest: &str) -> FunctionAddressDigest {
+    FunctionAddressDigest {
+        domain,
+        digest: digest.to_owned(),
+    }
+}
+
+fn function_address_non_claims() -> Vec<String> {
+    vec![
+        "function-address evidence records source-shape identity only".to_owned(),
+        "not Rust semantic correctness".to_owned(),
+        "not release eligibility".to_owned(),
+    ]
+}
+
+fn function_address_input() -> FunctionAddressEvidenceInput {
+    FunctionAddressEvidenceInput {
+        profile_version: FUNCTION_ADDRESS_PROFILE_VERSION.to_owned(),
+        stable_id: "function-address-cli".to_owned(),
+        verification_role: VerificationRole::RecordedOnly,
+        records: vec![FunctionAddressEvidenceRecord {
+            locator: FUNCTION_LOCATOR.to_owned(),
+            role: FunctionAddressEvidenceRole::OctetProducer,
+            function_address: function_address_digest(
+                FunctionAddressDigestDomain::FunctionAddress,
+                FUNCTION_ADDRESS_DIGEST,
+            ),
+            source_identity: function_address_digest(
+                FunctionAddressDigestDomain::SourceEnvelope,
+                FUNCTION_SOURCE_DIGEST,
+            ),
+            dependency_closure: Some(function_address_digest(
+                FunctionAddressDigestDomain::DependencyClosure,
+                FUNCTION_DEPENDENCY_DIGEST,
+            )),
+            source_span: Some(EvidenceSpan {
+                source_id: FUNCTION_SOURCE_DIGEST.to_owned(),
+                source_path: "src/lib.rs".to_owned(),
+                start_byte: FUNCTION_SPAN_START,
+                end_byte: FUNCTION_SPAN_END,
+                start_line: FUNCTION_SPAN_LINE,
+                start_column: FUNCTION_SPAN_START_COLUMN,
+                end_line: FUNCTION_SPAN_LINE,
+                end_column: FUNCTION_SPAN_END_COLUMN,
+                label: Some(FUNCTION_LOCATOR.to_owned()),
+            }),
+            caveats: Vec::new(),
+        }],
+        dependency_edges: vec![FunctionAddressEvidenceEdge {
+            from_locator: FUNCTION_LOCATOR.to_owned(),
+            to_locator: FUNCTION_LOCATOR.to_owned(),
+            edge_kind: "function-depends-on".to_owned(),
+        }],
+        declared_roles: vec![
+            "octet-rust-source-shape-producer".to_owned(),
+            "valence-evidence-linkage-adapter".to_owned(),
+        ],
+        octet_producer_receipt_identity: Some(function_address_digest(
+            FunctionAddressDigestDomain::OctetProducerReceipt,
+            FUNCTION_RECEIPT_DIGEST,
+        )),
+        kamacite_receipt_identity: None,
+        supplied_kamacite_receipt_identity: None,
+        valence_projection_identity: None,
+        mantle_sidecar_digest: None,
+        release_binary_identity: None,
+        policy_identity: Some(function_address_policy_identity()),
+        semantic_claims: Vec::new(),
+        non_claims: function_address_non_claims(),
+    }
 }
 
 fn kani_non_claims() -> Vec<String> {
@@ -50,6 +140,61 @@ fn kani_non_claims() -> Vec<String> {
         KANI_NON_CLAIM_RECURSIVE_TERMINATION.to_owned(),
         KANI_NON_CLAIM_BOUNDED_ONLY.to_owned(),
     ]
+}
+
+#[test]
+fn function_address_validate_emits_receipt_and_graph() {
+    let input_json = serde_json::to_string_pretty(&function_address_input()).expect("serialize input");
+    let input_path = "/tmp/valence-function-address-valid.json";
+    let receipt_path = "/tmp/valence-function-address-receipt.json";
+    let graph_path = "/tmp/valence-function-address-graph.json";
+    let mut tmp = fs::File::create(input_path).expect("create temp file");
+    tmp.write_all(input_json.as_bytes()).expect("write temp file");
+
+    let output = Command::new(valence_binary())
+        .arg("function-address")
+        .arg("validate")
+        .arg("--input")
+        .arg(input_path)
+        .arg("--receipt")
+        .arg(receipt_path)
+        .arg("--graph")
+        .arg(graph_path)
+        .output()
+        .expect("run valence function-address validate");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(output.status.success(), "function-address validation should succeed: {stdout}");
+    assert!(stdout.contains("\"valid\": true"), "stdout should report valid: {stdout}");
+    assert!(stdout.contains("\"graph_root\""), "stdout should include graph root: {stdout}");
+    let receipt = fs::read_to_string(receipt_path).expect("read receipt");
+    let graph = fs::read_to_string(graph_path).expect("read graph");
+    assert!(receipt.contains("function-address-evidence-v1"));
+    assert!(graph.contains("function-depends-on"));
+}
+
+#[test]
+fn function_address_validate_rejects_role_promotion_and_overclaim() {
+    let mut input = function_address_input();
+    input.verification_role = VerificationRole::Property;
+    input.semantic_claims = vec!["proves semantic correctness".to_owned()];
+    let input_json = serde_json::to_string_pretty(&input).expect("serialize input");
+    let input_path = "/tmp/valence-function-address-invalid.json";
+    let mut tmp = fs::File::create(input_path).expect("create temp file");
+    tmp.write_all(input_json.as_bytes()).expect("write temp file");
+
+    let output = Command::new(valence_binary())
+        .arg("function-address")
+        .arg("validate")
+        .arg("--input")
+        .arg(input_path)
+        .output()
+        .expect("run valence function-address validate");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(!output.status.success(), "function-address validation should fail: {stdout}");
+    assert!(stdout.contains("formal_proof_promotion_denied"));
+    assert!(stdout.contains("overclaim"));
 }
 
 #[test]

@@ -10,6 +10,7 @@ use std::process::ExitCode;
 
 use cap_std::ambient_authority;
 use cap_std::fs::Dir;
+use serde::Serialize;
 
 const VERSION: &str = "0.1.0";
 const USAGE: &str = "\
@@ -25,6 +26,7 @@ COMMANDS:
     stack-provenance verify --manifest <FILE> --sidecar <FILE>
     stack-provenance verify-built-binary --binary <PATH> --octet-export <FILE> --sidecar <FILE> --manifest <FILE> [--json]
     stack-provenance graph-report --chain <FILE> [--format json|markdown]
+    function-address validate --input <FILE> [--receipt <FILE>] [--graph <FILE>]
     version                             Print version
 
 EXIT CODES:
@@ -48,6 +50,7 @@ fn main() -> ExitCode {
         "check" => run_check(&args[2..]),
         "explain" => run_explain(&args[2..]),
         "stack-provenance" => run_stack_provenance(&args[2..]),
+        "function-address" => run_function_address(&args[2..]),
         "help" | "--help" | "-h" => {
             print!("{USAGE}");
             ExitCode::SUCCESS
@@ -88,6 +91,136 @@ fn run_check(args: &[String]) -> ExitCode {
             println!("issue={code}");
         }
         print_non_claims(&report.non_claims);
+        ExitCode::from(1)
+    }
+}
+
+#[derive(Serialize)]
+struct FunctionAddressCliOutput {
+    valid: bool,
+    issue_count: usize,
+    issues: Vec<valence_core::function_address_profile::FunctionAddressEvidenceIssue>,
+    policy_identity: valence_core::function_address_profile::FunctionAddressDigest,
+    artifact: Option<valence_core::evidence_ir::EvidenceArtifact>,
+    graph_rows: Vec<valence_core::function_address_profile::FunctionAddressGraphRow>,
+    graph_root: String,
+    non_claims: Vec<String>,
+}
+
+fn run_function_address(args: &[String]) -> ExitCode {
+    let Some(command) = args.first() else {
+        eprintln!("usage: valence function-address validate --input <FILE> [--receipt <FILE>] [--graph <FILE>]");
+        return ExitCode::from(2);
+    };
+    match command.as_str() {
+        "validate" => run_function_address_validate(&args[1..]),
+        other => {
+            eprintln!("unknown function-address command: {other}");
+            ExitCode::from(2)
+        }
+    }
+}
+
+fn run_function_address_validate(args: &[String]) -> ExitCode {
+    let mut input_path: Option<PathBuf> = None;
+    let mut receipt_path: Option<PathBuf> = None;
+    let mut graph_path: Option<PathBuf> = None;
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--input" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --input requires a value");
+                    return ExitCode::from(2);
+                }
+                input_path = Some(PathBuf::from(&args[i]));
+            }
+            "--receipt" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --receipt requires a value");
+                    return ExitCode::from(2);
+                }
+                receipt_path = Some(PathBuf::from(&args[i]));
+            }
+            "--graph" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --graph requires a value");
+                    return ExitCode::from(2);
+                }
+                graph_path = Some(PathBuf::from(&args[i]));
+            }
+            other => {
+                eprintln!("unknown function-address option: {other}");
+                return ExitCode::from(2);
+            }
+        }
+        i += 1;
+    }
+    let Some(input_path) = input_path else {
+        eprintln!("error: --input is required");
+        return ExitCode::from(2);
+    };
+    let input_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &input_path) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read {}: {error}", input_path.display());
+            return ExitCode::from(2);
+        }
+    };
+    let input: valence_core::function_address_profile::FunctionAddressEvidenceInput =
+        match serde_json::from_str(&input_json) {
+            Ok(input) => input,
+            Err(error) => {
+                eprintln!("error: cannot parse function-address input: {error}");
+                return ExitCode::from(2);
+            }
+        };
+    let report = valence_core::function_address_profile::validate_function_address_evidence(&input);
+    let graph_rows = valence_core::function_address_profile::function_address_graph_rows(&input);
+    let graph_bytes = match serde_json::to_vec(&graph_rows) {
+        Ok(bytes) => bytes,
+        Err(error) => {
+            eprintln!("error: cannot serialize function-address graph rows: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let graph_root = valence_core::shared_identity::blake3_hex(&graph_bytes);
+    let output = FunctionAddressCliOutput {
+        valid: report.valid,
+        issue_count: report.issues.len(),
+        issues: report.issues,
+        policy_identity: valence_core::function_address_profile::function_address_policy_identity(),
+        artifact: report.artifact,
+        graph_rows,
+        graph_root,
+        non_claims: input.non_claims,
+    };
+    let output_json = match serde_json::to_string_pretty(&output) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot serialize function-address report: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    if let Some(path) = receipt_path
+        && let Err(error) = cap_write(CapabilityRootKind::Output, &path, output_json.as_bytes())
+    {
+        eprintln!("error: cannot write {}: {error}", path.display());
+        return ExitCode::from(2);
+    }
+    if let Some(path) = graph_path
+        && let Err(error) = cap_write(CapabilityRootKind::Output, &path, &graph_bytes)
+    {
+        eprintln!("error: cannot write {}: {error}", path.display());
+        return ExitCode::from(2);
+    }
+    println!("{output_json}");
+    if output.valid {
+        ExitCode::SUCCESS
+    } else {
         ExitCode::from(1)
     }
 }
