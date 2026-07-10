@@ -108,6 +108,30 @@ r[valence.evidence_ir.function_address_digest_spelling.validation]
 - WHEN the stack smoke runs
 - THEN Valence MUST normalize allowed spellings deterministically and reject malformed or unsupported spelling variants.
 
+### Requirement: Function-address profile policy identity is deterministic
+
+r[valence.evidence_ir.function_address_policy_identity.material] Valence MUST define deterministic canonical material for the function-address Evidence IR profile covering profile name/version, accepted digest domains, accepted roles, required non-claims, graph row contract, and validation boundary text.
+
+r[valence.evidence_ir.function_address_policy_identity.digest] Valence MUST compute and expose a BLAKE3 policy/profile identity from that material.
+
+#### Scenario: Current policy identity propagates
+r[valence.evidence_ir.function_address_policy_identity.positive]
+- GIVEN function-address evidence validates under the current profile
+- WHEN Valence emits the evidence artifact, receipt, or graph summary
+- THEN the output MUST carry the current policy identity and preserve its typed policy-profile domain.
+
+#### Scenario: Stale policy identity fails closed
+r[valence.evidence_ir.function_address_policy_identity.negative]
+- GIVEN function-address evidence omits the policy identity, uses a placeholder, supplies malformed BLAKE3 text, or substitutes another digest domain
+- WHEN Valence validates the evidence input
+- THEN validation MUST fail with deterministic policy identity diagnostics.
+
+#### Scenario: Placeholder policy hashes are rejected
+r[valence.evidence_ir.function_address_policy_identity.replace_placeholder]
+- GIVEN a fixture or smoke artifact still contains a placeholder function-address policy hash
+- WHEN Valence validates it
+- THEN validation MUST reject the stale identity rather than binding Mantle or Cairn to placeholder policy material.
+
 ### Requirement: Artifact reference core contract
 r[valence.evidence_ir.artifact_ref_core.contract] Valence MUST define typed artifact reference contracts for artifact roles, digest spelling profiles, path metadata confinement, hash/size metadata, and bounded non-claim text.
 

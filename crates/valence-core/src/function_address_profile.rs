@@ -20,6 +20,7 @@ use crate::shared_identity::MIXED_BLAKE3_PROFILE;
 use crate::shared_identity::RAW_BLAKE3_PROFILE;
 use crate::shared_identity::STRICT_B3_PROFILE;
 use crate::shared_identity::SharedIdentityIssue;
+use crate::shared_identity::blake3_hex;
 use crate::shared_identity::parse_digest;
 
 pub const FUNCTION_ADDRESS_PROFILE_VERSION: &str = "valence.function-address-evidence.v1";
@@ -45,6 +46,7 @@ const EDGE_BACKED_BY_KAMACITE: &str = "backed-by-kamacite-receipt";
 const EDGE_PROJECTED_BY_VALENCE: &str = "projected-by-valence";
 const EDGE_BOUND_TO_MANTLE_SIDECAR: &str = "bound-to-mantle-sidecar";
 const EDGE_BUNDLE_LOCAL_RELEASE_CONTEXT: &str = "bundle-local-release-context";
+const POLICY_MATERIAL_KIND: &str = "valence-function-address-profile-policy-material-v1";
 const OCTET_ROLE: &str = "octet-rust-source-shape-producer";
 const KAMACITE_ROLE: &str = "kamacite-portable-receipt";
 const VALENCE_PROJECTION_NODE: &str = "valence-function-address-projection";
@@ -62,6 +64,7 @@ pub enum FunctionAddressDigestDomain {
     SidecarDigest,
     ReleaseBinary,
     OctetProducerReceipt,
+    PolicyProfile,
 }
 
 impl FunctionAddressDigestDomain {
@@ -76,6 +79,7 @@ impl FunctionAddressDigestDomain {
             Self::SidecarDigest => "sidecar-digest",
             Self::ReleaseBinary => "release-binary",
             Self::OctetProducerReceipt => "octet-producer-receipt",
+            Self::PolicyProfile => "policy-profile",
         }
     }
 }
@@ -108,6 +112,18 @@ pub struct FunctionAddressDigestSpellingReport {
     pub normalized: Option<FunctionAddressDigest>,
     pub canonical_spelling: Option<String>,
     pub issues: Vec<FunctionAddressEvidenceIssue>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct FunctionAddressPolicyMaterial {
+    pub material_kind: &'static str,
+    pub profile_version: &'static str,
+    pub artifact_kind: &'static str,
+    pub accepted_digest_domains: Vec<&'static str>,
+    pub accepted_roles: Vec<&'static str>,
+    pub required_non_claims: Vec<&'static str>,
+    pub graph_edge_kinds: Vec<&'static str>,
+    pub boundary: &'static str,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -161,6 +177,7 @@ pub struct FunctionAddressEvidenceInput {
     pub valence_projection_identity: Option<FunctionAddressDigest>,
     pub mantle_sidecar_digest: Option<FunctionAddressDigest>,
     pub release_binary_identity: Option<FunctionAddressDigest>,
+    pub policy_identity: Option<FunctionAddressDigest>,
     pub semantic_claims: Vec<String>,
     pub non_claims: Vec<String>,
 }
@@ -197,7 +214,58 @@ struct FunctionAddressEvidencePayload<'a> {
     valence_projection_identity: &'a Option<FunctionAddressDigest>,
     mantle_sidecar_digest: &'a Option<FunctionAddressDigest>,
     release_binary_identity: &'a Option<FunctionAddressDigest>,
+    policy_identity: &'a Option<FunctionAddressDigest>,
     evidence_roles: Vec<&'static str>,
+}
+
+#[must_use]
+pub fn function_address_policy_material() -> FunctionAddressPolicyMaterial {
+    let mut accepted_digest_domains = vec![
+        FunctionAddressDigestDomain::SourceEnvelope.as_str(),
+        FunctionAddressDigestDomain::FunctionAddress.as_str(),
+        FunctionAddressDigestDomain::DependencyClosure.as_str(),
+        FunctionAddressDigestDomain::KamaciteReceipt.as_str(),
+        FunctionAddressDigestDomain::ValenceProjection.as_str(),
+        FunctionAddressDigestDomain::SidecarDigest.as_str(),
+        FunctionAddressDigestDomain::ReleaseBinary.as_str(),
+        FunctionAddressDigestDomain::OctetProducerReceipt.as_str(),
+        FunctionAddressDigestDomain::PolicyProfile.as_str(),
+    ];
+    accepted_digest_domains.sort();
+    let mut accepted_roles = vec![
+        OCTET_ROLE,
+        KAMACITE_ROLE,
+        FunctionAddressEvidenceRole::ValenceAdapter.as_str(),
+    ];
+    accepted_roles.sort();
+    let mut graph_edge_kinds = vec![
+        EDGE_DEPENDS_ON,
+        EDGE_BACKED_BY_KAMACITE,
+        EDGE_PROJECTED_BY_VALENCE,
+        EDGE_BOUND_TO_MANTLE_SIDECAR,
+        EDGE_BUNDLE_LOCAL_RELEASE_CONTEXT,
+    ];
+    graph_edge_kinds.sort();
+    FunctionAddressPolicyMaterial {
+        material_kind: POLICY_MATERIAL_KIND,
+        profile_version: FUNCTION_ADDRESS_PROFILE_VERSION,
+        artifact_kind: FUNCTION_ADDRESS_ARTIFACT_KIND,
+        accepted_digest_domains,
+        accepted_roles,
+        required_non_claims: REQUIRED_NON_CLAIMS.to_vec(),
+        graph_edge_kinds,
+        boundary: "recorded-only source-shape function-address evidence; no Rust semantics, verifier soundness, release eligibility, or formal-proof promotion",
+    }
+}
+
+#[must_use]
+pub fn function_address_policy_identity() -> FunctionAddressDigest {
+    let material = function_address_policy_material();
+    let bytes = serde_json::to_vec(&material).expect("function-address policy material serializes");
+    FunctionAddressDigest {
+        domain: FunctionAddressDigestDomain::PolicyProfile,
+        digest: blake3_hex(&bytes),
+    }
 }
 
 #[must_use]
@@ -254,6 +322,7 @@ pub fn validate_function_address_evidence(input: &FunctionAddressEvidenceInput) 
     validate_records(input, &mut issues);
     validate_edges(input, &mut issues);
     validate_external_identities(input, &mut issues);
+    validate_policy_identity(input, &mut issues);
     issues.sort_by_key(|issue| (issue.field, issue.code));
     issues.dedup();
     if !issues.is_empty() {
@@ -294,6 +363,7 @@ pub fn build_function_address_artifact(
         valence_projection_identity: &input.valence_projection_identity,
         mantle_sidecar_digest: &input.mantle_sidecar_digest,
         release_binary_identity: &input.release_binary_identity,
+        policy_identity: &input.policy_identity,
         evidence_roles: evidence_roles(input),
     };
     let payload = serde_json::to_value(payload).map_err(|error| EvidenceIrError::CanonicalSerialization {
@@ -512,6 +582,33 @@ fn validate_external_identities(input: &FunctionAddressEvidenceInput, issues: &m
     }
 }
 
+fn validate_policy_identity(input: &FunctionAddressEvidenceInput, issues: &mut Vec<FunctionAddressEvidenceIssue>) {
+    let expected = function_address_policy_identity();
+    let Some(policy_identity) = &input.policy_identity else {
+        issues.push(FunctionAddressEvidenceIssue::new("policy_identity", "missing_policy_identity"));
+        return;
+    };
+    if policy_identity.domain != FunctionAddressDigestDomain::PolicyProfile {
+        issues.push(FunctionAddressEvidenceIssue::new("policy_identity", "identity_domain_substitution"));
+        return;
+    }
+    let mut parse_issues = Vec::<SharedIdentityIssue>::new();
+    let parsed = parse_digest(
+        &policy_identity.digest,
+        DigestRole::ArtifactIdentity,
+        MIXED_BLAKE3_PROFILE,
+        "digest",
+        &mut parse_issues,
+    );
+    if parsed.is_none() || !parse_issues.is_empty() {
+        issues.push(FunctionAddressEvidenceIssue::new("policy_identity", "malformed_policy_identity"));
+        return;
+    }
+    if policy_identity.digest != expected.digest {
+        issues.push(FunctionAddressEvidenceIssue::new("policy_identity", "stale_policy_identity"));
+    }
+}
+
 fn validate_optional_digest_field(
     identity: &Option<FunctionAddressDigest>,
     expected: FunctionAddressDigestDomain,
@@ -660,9 +757,49 @@ mod tests {
                 .then(|| digest(FunctionAddressDigestDomain::SidecarDigest, MANTLE_SIDECAR_DIGEST)),
             release_binary_identity: with_kamacite
                 .then(|| digest(FunctionAddressDigestDomain::ReleaseBinary, RELEASE_BINARY_DIGEST)),
+            policy_identity: Some(function_address_policy_identity()),
             semantic_claims: Vec::new(),
             non_claims: REQUIRED_NON_CLAIMS.iter().map(|claim| (*claim).to_string()).collect(),
         }
+    }
+
+    #[test]
+    fn policy_identity_is_deterministic_and_embedded_in_valid_artifacts() {
+        let material = function_address_policy_material();
+        let identity = function_address_policy_identity();
+        let input = valid_input(true);
+        let report = validate_function_address_evidence(&input);
+
+        assert_eq!(material.profile_version, FUNCTION_ADDRESS_PROFILE_VERSION);
+        assert_eq!(identity.domain, FunctionAddressDigestDomain::PolicyProfile);
+        assert!(report.valid, "unexpected issues: {:?}", report.issues);
+        assert_eq!(input.policy_identity.as_ref(), Some(&identity));
+    }
+
+    #[test]
+    fn policy_identity_rejects_missing_malformed_stale_and_substituted_values() {
+        let mut missing = valid_input(false);
+        missing.policy_identity = None;
+        let mut malformed = valid_input(false);
+        malformed.policy_identity = Some(digest(FunctionAddressDigestDomain::PolicyProfile, "b3:abc"));
+        let mut stale = valid_input(false);
+        stale.policy_identity = Some(digest(
+            FunctionAddressDigestDomain::PolicyProfile,
+            "b3:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        ));
+        let mut substituted = valid_input(false);
+        substituted.policy_identity =
+            Some(digest(FunctionAddressDigestDomain::ValenceProjection, &function_address_policy_identity().digest));
+
+        let missing_report = validate_function_address_evidence(&missing);
+        let malformed_report = validate_function_address_evidence(&malformed);
+        let stale_report = validate_function_address_evidence(&stale);
+        let substituted_report = validate_function_address_evidence(&substituted);
+
+        assert!(missing_report.issues.iter().any(|issue| issue.code == "missing_policy_identity"));
+        assert!(malformed_report.issues.iter().any(|issue| issue.code == "malformed_policy_identity"));
+        assert!(stale_report.issues.iter().any(|issue| issue.code == "stale_policy_identity"));
+        assert!(substituted_report.issues.iter().any(|issue| issue.code == "identity_domain_substitution"));
     }
 
     #[test]

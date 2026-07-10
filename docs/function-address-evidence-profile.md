@@ -12,6 +12,10 @@ Inputs may come directly from Octet function-address artifacts or from Kamacite 
 - Mantle: release artifact bundler for validated sidecars.
 - Cairn: lifecycle/readiness policy gate consumer.
 
+## Policy identity
+
+The function-address Evidence IR profile has deterministic policy material covering its profile version, accepted digest domains, accepted roles, required non-claims, graph edge kinds, and boundary text. Valence computes a BLAKE3 `policy-profile` identity from that material and requires function-address evidence to carry the current identity, so Mantle and Cairn can bind receipts to the reviewed Valence validation contract instead of placeholder hashes.
+
 ## Digest spellings
 
 Valence normalizes digest spellings only at explicit stack boundaries. Octet producer inputs use `b3:<hex>`; Kamacite receipt identities and Mantle sidecar digests may arrive as bare lowercase BLAKE3 hex with an explicit typed domain. Valence emits canonical report spellings as `b3:<hex>` and validates the digest domain separately so a syntactically valid hash cannot move between source, function, receipt, sidecar, or binary roles.
