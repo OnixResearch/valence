@@ -1,0 +1,19 @@
+# Function-address Evidence IR profile
+
+Valence validates function-address evidence as recorded-only identity/linkage evidence.
+
+Inputs may come directly from Octet function-address artifacts or from Kamacite portable function-address receipts. Valence checks profile version, declared roles, digest domains, dependency graph rows, source spans, optional Octet producer receipt identity, optional Kamacite supplied-receipt identity, optional Valence projection identity, optional Mantle sidecar/release-binary context, and non-claim boundaries. It does not parse Rust and does not promote function-address evidence to a formal proof.
+
+## Roles
+
+- Octet: Rust source-shape producer.
+- Kamacite: portable receipt/interchange owner.
+- Valence: Evidence IR identity/linkage and graph-row validator.
+- Mantle: release artifact bundler for validated sidecars.
+- Cairn: lifecycle/readiness policy gate consumer.
+
+## Non-claims
+
+Function-address Evidence IR does not claim Rust semantic correctness, semantic equivalence, whole-program safety, verifier soundness, release eligibility, or runtime behavior.
+
+Valid graph rows are linkage/context only: function dependency edges, Kamacite receipt backing edges, Valence projection edges, and Mantle bundle-local sidecar/release context edges. Cairn remains responsible for lifecycle/readiness policy.

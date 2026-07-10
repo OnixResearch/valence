@@ -14,6 +14,8 @@
 //!   publication decisions.
 //! - `formal_proof_chain`: validates frozen formal-proof stack-chain fixtures for role-preserving
 //!   linkage and Cairn readiness-input counts.
+//! - `function_address_profile`: validates Octet/Kamacite function-address evidence profiles as
+//!   recorded-only Evidence IR with typed digest domains, graph rows, and non-claim boundaries.
 //! - `function_object`: constructs Function Object v1 DTOs, canonical hash payloads, caveat
 //!   summaries, and pure-cache eligibility from source facts. Octet retains scanning, source-marker
 //!   mutation, corpus orchestration, and CLI/status reporting.
@@ -52,6 +54,7 @@ pub mod evidence_index;
 pub mod evidence_ir;
 pub mod evidence_model;
 pub mod formal_proof_chain;
+pub mod function_address_profile;
 pub mod function_object;
 pub mod hegel_property;
 pub mod oxide_primitives;
