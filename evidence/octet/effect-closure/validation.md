@@ -64,6 +64,9 @@ These BLAKE3 checks establish stored identity/linkage consistency only. They pro
 
 - `nix run path:../octet#cairn -- validate --root .`: PASS with 21 accepted specs, 13 active changes, and no issues.
 - Compatible proposal, design, and tasks gates for `admit-octet-effect-closure`: PASS with no issues.
+- Compatible sync dry-run and execute: PASS. Sync did not merge the full-spec-shaped delta into the existing accepted capability, so all 11 `valence.strict_rust_admission.effect_closure*` requirement/scenario IDs were explicitly promoted into `cairn/specs/strict-rust-admission/spec.md` and revalidated.
+- Compatible archive dry-run and `CAIRN_ARCHIVE_DATE=2026-07-11 ... archive --execute`: PASS; archived at `cairn/archive/2026-07-11-admit-octet-effect-closure/`.
+- Post-archive compatible validation: PASS with 20 accepted specs, 12 active changes, and no issues.
 - Canonical `nix run path:../cairn#cairn -- validate --root .`: existing blocker, `failed to parse policy cairn-policy/generated/cairn-policy.json: policy missing field function_address_gate`.
 - Compatible `tracey coverage`: existing repository-wide failure with 505 requirements, 224 referenced IDs, three dangling IDs (`valence.evidence_ir.shared_identity.validation`, `valence.example`, `valence.unknown`), and `valid: false`. New closure IDs remain among the broader missing set; no Tracey success is claimed.
 
