@@ -100,3 +100,16 @@ The command exited with the expected lint exit code one. `status.json` reported 
 ## Boundary
 
 This pilot establishes direct selected source/HIR policy, source-token function identity, local replay for named artifacts, and artifact-integrity validation only. It does not admit all of `valence-core` or any dependency closure and does not prove transitive effect absence, panic freedom in dependencies, semantic equivalence, behavioral correctness, compiler correctness, verifier soundness, whole-program correctness, cross-toolchain reproducibility, cross-machine reproducibility, or release eligibility.
+
+## Tracey baseline
+
+`nix run path:/home/brittonr/git/OnixResearch/octet#cairn -- tracey coverage --root . --json` remains blocked by the repository-wide Tracey baseline: 505 requirements, 224 references, three dangling references, and `valid: false`. Valence has no `.config/tracey/config.styx`; the report lists all 13 newly accepted `valence.strict_rust_admission.*` IDs among the broader missing set. Establishing Tracey configuration and closing repository-wide coverage remain separate work and are not hidden by this pilot.
+
+## Lifecycle completion
+
+- Proposal, design, and tasks gates passed with no issues using the compatible pinned Cairn CLI from Octet.
+- Sync dry-run was unblocked and execute completed. That CLI created the accepted capability wrapper but did not promote the full-spec-shaped delta requirements, so the requirement sections were manually merged into `cairn/specs/strict-rust-admission/spec.md`; a targeted search confirmed the accepted IDs and Cairn validation passed.
+- Archive dry-run was unblocked.
+- `CAIRN_ARCHIVE_DATE=2026-07-11 ... archive --execute` moved the package to `cairn/archive/2026-07-11-pilot-octet-deterministic-core/`.
+- Post-archive compatible Cairn validation passed with 20 accepted specs, 12 remaining active changes, and no issues.
+- The canonical Cairn checkout compatibility blocker described in the baseline section remains unchanged and belongs to the preserved `restore-cairn-policy-compatibility` change.
