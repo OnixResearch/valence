@@ -8,7 +8,7 @@ Represent WebAssembly component package, interface, build, composition, virtuali
 
 ### Requirement: Wasm component evidence uses typed profiles
 
-r[valence.wasm_component.profile] Valence MUST define typed Evidence IR roles and schemas for WIT source/interface, package reference, portable component, composition plan/output, virtualization plan/output, transform, target-specific precompiled artifact, producer receipt, and component configuration cohort.
+r[valence.wasm_component.profile] Valence MUST define typed Evidence IR roles and schemas for WIT source/interface, package reference, portable component, composition plan/output, virtualization plan/output, transform, target-specific precompiled artifact, Mantle materialization bundle, producer receipt, and component configuration cohort.
 
 #### Scenario: Known role is validated
 - GIVEN a producer submits a component artifact under a supported schema and role
@@ -22,7 +22,7 @@ r[valence.wasm_component.profile] Valence MUST define typed Evidence IR roles an
 
 ### Requirement: Exact artifact identity remains BLAKE3
 
-r[valence.wasm_component.byte_identity] Valence MUST use BLAKE3 over exact artifact bytes or canonical Valence DTO bytes for every Valence-owned component evidence identity and MUST preserve digest-role separation across WIT, portable component, plan, derived component, precompiled native artifact, and receipt roles.
+r[valence.wasm_component.byte_identity] Valence MUST use BLAKE3 over exact artifact bytes or canonical Valence DTO bytes for every Valence-owned component evidence identity and MUST preserve digest-role separation across WIT, portable component, plan, derived component, precompiled native artifact, Mantle materialization bundle, and receipt roles.
 
 #### Scenario: Derived output is linked
 - GIVEN a composition, virtualization, transform, or precompile stage produces exact output bytes
@@ -33,6 +33,20 @@ r[valence.wasm_component.byte_identity] Valence MUST use BLAKE3 over exact artif
 - GIVEN a WIT, interface, package, receipt, or source-component digest is supplied as a derived output's exact-byte digest
 - WHEN validation runs
 - THEN Valence MUST reject the role substitution unless an explicit same-bytes relation is valid for those exact measured bytes.
+
+### Requirement: Mantle materialization bundles preserve child identities
+
+r[valence.wasm_component.materialization_bundle] Valence MUST represent each Mantle materialization bundle as its own canonical artifact with typed `materialized-in` edges to every required exact child artifact and producer receipt; the bundle hash, signature, store path, or package name MUST NOT substitute for any child identity.
+
+#### Scenario: Complete materialization envelope is linked
+- GIVEN a Mantle bundle names exact WIT, component, validation, transform, precompile, profile/cohort, and receipt objects whose measured BLAKE3 values match
+- WHEN Valence validates the envelope
+- THEN it MUST retain the bundle identity and every independently typed child node and edge.
+
+#### Scenario: Bundle path or hash replaces a child
+- GIVEN a producer supplies only a store path or bundle digest for a portable component, Octet report, Wizer output, or `.cwasm`, or a child BLAKE3 differs
+- WHEN envelope validation runs
+- THEN Valence MUST reject the incomplete or mismatched graph.
 
 ### Requirement: WIT interface identity is shape-only
 
@@ -78,7 +92,7 @@ r[valence.wasm_component.configuration] Component stage evidence MUST bind the a
 
 ### Requirement: Component stage graphs use typed edges
 
-r[valence.wasm_component.graph] Valence MUST validate typed edges for package resolution, world implementation, composition, virtualization, validation, transformation, configuration, precompilation, and execution, including allowed source/target roles, required parents, and cycle constraints.
+r[valence.wasm_component.graph] Valence MUST validate typed edges for package resolution, world implementation, composition, virtualization, validation, transformation, configuration, precompilation, Mantle materialization, and execution, including allowed source/target roles, required parents, and cycle constraints.
 
 #### Scenario: Complete pipeline graph is accepted
 - GIVEN a graph links exact package/WIT inputs through build, composition, virtualization, validation, optional transform/precompile, and execution receipts with allowed edges
@@ -110,7 +124,7 @@ r[valence.wasm_component.nonclaims] Component evidence MUST preserve non-claims 
 
 ### Requirement: Wasm component evidence has a functional core
 
-r[valence.wasm_component.functional_core] DTO validation, canonicalization, BLAKE3 material construction, external-digest role checks, interface normalization, edge validation, graph queries, verification-role admission, and non-claim enforcement MUST be pure deterministic logic.
+r[valence.wasm_component.functional_core] DTO and Mantle-bundle validation, canonicalization, BLAKE3 material construction, external-digest role checks, interface normalization, edge validation, graph queries, verification-role admission, and non-claim enforcement MUST be pure deterministic logic.
 
 #### Scenario: Identical evidence facts produce identical graph
 - GIVEN identical component DTOs, byte measurements, profiles, and edges
@@ -119,7 +133,7 @@ r[valence.wasm_component.functional_core] DTO validation, canonicalization, BLAK
 
 ### Requirement: Positive and negative fixtures cover component evidence
 
-r[valence.wasm_component.fixtures] Valence MUST include positive pipeline graphs and negative digest-role, interface-equivalence, missing-parent, wrong-edge, cycle, property-role, cross-target, external-digest, and non-claim fixtures.
+r[valence.wasm_component.fixtures] Valence MUST include positive pipeline/materialization graphs and negative bundle-path substitution, bundle-child mismatch, digest-role, interface-equivalence, missing-parent, wrong-edge, cycle, property-role, cross-target, external-digest, and non-claim fixtures.
 
 #### Scenario: Fixture suite runs
 - GIVEN component evidence fixtures are evaluated

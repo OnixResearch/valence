@@ -6,12 +6,12 @@ Without a shared profile, consumers can confuse matching WIT worlds with matchin
 
 ## What Changes
 
-- Define a WebAssembly component Evidence IR profile and typed artifact/edge vocabulary.
-- Keep exact portable component, WIT source, composition/virtualization plan, precompiled artifact, and receipt identities BLAKE3-based and role-separated.
+- Define a WebAssembly component Evidence IR profile and typed artifact/edge vocabulary, including a distinct Mantle materialization-bundle role.
+- Keep exact portable component, WIT source, composition/virtualization plan, precompiled artifact, materialization bundle, and receipt identities BLAKE3-based and role-separated.
 - Record OCI/wkg SHA-256 only as external interoperability metadata linked to exact BLAKE3-identified bytes.
 - Model normalized WIT package/world/import/export identity independently from component byte identity and reject semantic-equivalence claims.
 - Bind component tooling cohort, runtime configuration, target, CPU features, policy/resource refs, and producer evidence without interpreting producer behavior.
-- Add graph edges for package resolution, world implementation, composition, virtualization, validation, transformation, precompilation, and execution.
+- Add graph edges for package resolution, world implementation, composition, virtualization, validation, transformation, precompilation, Mantle materialization, and execution; reject bundle paths or manifests as substitutes for exact child identities.
 - Enforce recorded-only/boundary roles and explicit non-claims with positive and negative fixtures.
 
 ## Impact

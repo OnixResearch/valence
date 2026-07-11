@@ -8,7 +8,7 @@ Valence must make those identities and edges queryable without re-running tools 
 
 ### 1. Add a bounded Wasm component profile
 
-**Choice:** Define typed component evidence DTOs for WIT source/interface, package reference, portable component, composition plan/output, virtualization plan/output, transform, precompiled native artifact, static/build/runtime receipt, and configuration cohort.
+**Choice:** Define typed component evidence DTOs for WIT source/interface, package reference, portable component, composition plan/output, virtualization plan/output, transform, precompiled native artifact, Mantle materialization bundle, static/build/runtime receipt, and configuration cohort.
 
 **Rationale:** Generic artifact strings do not prevent role confusion between portable inputs, derived outputs, native code, and evidence.
 
@@ -38,7 +38,7 @@ Valence must make those identities and edges queryable without re-running tools 
 
 ### 6. The graph uses explicit stage edges
 
-**Choice:** Add bounded edges such as `resolved-package-by`, `implements-world`, `composed-from`, `composed-by`, `virtualized-by`, `validated-by`, `transformed-from`, `precompiled-from`, `configured-by`, and `executed-as`. Edge validation enforces allowed source/target roles and prevents cycles or missing parents where the stage contract requires them.
+**Choice:** Add bounded edges such as `resolved-package-by`, `implements-world`, `composed-from`, `composed-by`, `virtualized-by`, `validated-by`, `transformed-from`, `precompiled-from`, `materialized-in`, `configured-by`, and `executed-as`. Edge validation enforces allowed source/target roles and prevents cycles or missing parents where the stage contract requires them.
 
 **Rationale:** A flat list cannot explain which exact component was validated, transformed, precompiled, or executed.
 
@@ -52,9 +52,15 @@ Valence must make those identities and edges queryable without re-running tools 
 
 **Choice:** Require explicit non-claims for behavioral correctness, semantic equivalence, package trust, sandbox effectiveness, authority, compiler/runtime correctness, cross-target portability of precompiled bytes, and release eligibility. Reject weakened or missing boundaries.
 
+### 9. Mantle bundles are producer envelopes, not identity shortcuts
+
+**Choice:** Model a Mantle materialization bundle as its own canonical DTO/byte artifact with `materialized-in` edges to every required exact child object and producer receipt. Validate that measured child BLAKE3 values, profile/cohort refs, artifact roles, and parent stages agree. A store path, package name, bundle signature, or bundle hash cannot substitute for a portable component, WIT, Octet report, Wizer output, or `.cwasm` identity.
+
+**Rationale:** Consumers need one handoff envelope, but collapsing its contents into the envelope identity would recreate the role confusion Valence exists to prevent.
+
 ## Functional core / imperative shell split
 
-- **Pure core**: DTO validation, canonicalization, BLAKE3 identity material, external-digest role checks, interface normalization, edge validation, role admission, graph queries, non-claim enforcement, and deterministic diagnostics.
+- **Pure core**: DTO and Mantle-bundle validation, canonicalization, BLAKE3 identity material, external-digest role checks, interface normalization, edge validation, role admission, graph queries, non-claim enforcement, and deterministic diagnostics.
 - **Imperative shell**: read producer artifacts, measure raw bytes, load contracts/fixtures, write Evidence IR/graph reports, and render explanations.
 
 ## Risks / Trade-offs
@@ -66,7 +72,7 @@ Valence must make those identities and edges queryable without re-running tools 
 
 ## Non-Goals
 
-- No Wasm parsing, WIT conformance checking, component execution, package fetching, composition, virtualization, or precompilation in Valence.
+- No Wasm parsing, WIT conformance checking, component execution, package fetching, composition, virtualization, precompilation, or Mantle bundle materialization in Valence.
 - No decision that producer evidence is true, sufficient, current, or release-eligible.
 - No SHA-256 canonical Valence identity.
 - No semantic-equivalence edge from matching WIT, outputs, replay traces, or benchmark results.
