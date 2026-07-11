@@ -8,7 +8,7 @@ Defines Valence's bounded downstream adoption of Octet strict-profile evidence f
 
 ### Requirement: Canonical Octet consumer scope
 
-r[valence.strict_rust_admission.consumer_scope] Valence MUST provide canonical consumer configuration that selects the production `valence-core` library and declares the reviewed shared-identity source scope for Octet deterministic-core admission.
+r[valence.strict_rust_admission.consumer_scope] Valence MUST provide canonical consumer configuration and a non-publishable focused Cargo target that compiles the exact production shared-identity source for Octet deterministic-core admission.
 
 #### Scenario: Production core scope is explicit
 
@@ -16,8 +16,9 @@ r[valence.strict_rust_admission.consumer_scope.production]
 
 - GIVEN an operator runs Octet from the Valence workspace root
 - WHEN workspace and lint configuration are resolved
-- THEN Cargo scope MUST select `valence-core` production library code.
-- AND `core_source_scopes` MUST name `crates/valence-core/src/shared_identity.rs` as a workspace-relative path.
+- THEN Cargo scope MUST select the `valence-shared-identity-pilot` production library target.
+- AND that target MUST compile the canonical `valence-core` shared-identity source rather than a copied implementation.
+- AND `core_source_scopes` MUST name `crates/valence-core/src/shared_identity.rs` and `crates/valence-core/src/shared_identity/canonical_hash_profile.rs` as workspace-relative paths.
 
 #### Scenario: Ordinary Rust remains compatible
 
@@ -80,7 +81,7 @@ r[valence.strict_rust_admission.boundaries.non_claims]
 
 - GIVEN an operator reads the pilot documentation, baseline, artifact bundle, or validation report
 - WHEN the admitted scope is described
-- THEN the text MUST distinguish crate-level Cargo compilation from the selected shared-identity function-address scope.
+- THEN the text MUST distinguish the focused harness target, selected production source files, and the broader unadmitted `valence-core` crate.
 - AND it MUST NOT claim transitive effect absence, dependency closure, compiler correctness, verifier soundness, whole-program correctness, semantic equivalence, or release eligibility.
 
 ### Requirement: Positive and negative pilot verification

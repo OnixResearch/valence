@@ -237,8 +237,7 @@ fn validate_readiness(
 }
 
 fn validate_digest(digest: &str, role: DigestRole, field: &'static str, issues: &mut Vec<FormalProofChainIssue>) {
-    let mut shared_issues = Vec::new();
-    if parse_digest(digest, role, MIXED_BLAKE3_PROFILE, field, &mut shared_issues).is_none() {
+    if parse_digest(digest, role, MIXED_BLAKE3_PROFILE, field).is_err() {
         issues.push(FormalProofChainIssue::new(field, "malformed_blake3"));
     }
 }

@@ -1,6 +1,11 @@
 [workspace]
-members = ["crates/valence-core", "crates/valence-cli"]
+members = ["crates/valence-core", "crates/valence-cli", "pilots/shared-identity"]
 resolver = "2"
+
+# r[impl valence.strict_rust_admission.consumer_scope.production]
+[workspace.metadata.octet]
+default_scope = ["-p", "valence-shared-identity-pilot"]
+cargo_check_args = ["--lib"]
 
 [workspace.package]
 edition = "2024"

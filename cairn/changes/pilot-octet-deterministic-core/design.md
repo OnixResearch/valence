@@ -1,45 +1,52 @@
 ## Context
 
-Octet strict profiles are an admission layer over ordinary Rust. `deterministic-core` raises selected source/HIR lints to deny, requires an explicit core source scope, and requires deny-mode function-address evidence. It does not yet infer transitive MIR effects or dependency closure.
+Octet strict profiles are an admission layer over ordinary Rust. `deterministic-core` raises selected source/HIR lints to deny, requires explicit core source scopes, and requires deny-mode function-address evidence. It does not yet infer transitive MIR effects or dependency closure.
 
-Valence's `crates/valence-core/src/shared_identity.rs` is a narrow functional core over already-loaded values and bytes. Octet still invokes Cargo at crate granularity, so general profile lints inspect the production `valence-core` library while core-specific lint/path and function-address policy use the narrower source scope.
+A first run against the complete production `valence-core` library produced 134 deny findings across unrelated modules because Cargo and general lint floors operate at target granularity. The pilot therefore needs a target that compiles the exact production identity source without claiming whole-crate admission.
 
 ## Decisions
 
-### 1. Pilot one identity module
+### 1. Compile exact production source through a focused harness
 
-**Choice:** Declare only `crates/valence-core/src/shared_identity.rs` in `core_source_scopes`.
+**Choice:** Add the non-publishable `valence-shared-identity-pilot` workspace package. Its library path points directly at `crates/valence-core/src/shared_identity.rs`, which loads the same canonical-profile child module used by `valence-core`.
 
-**Rationale:** This module owns deterministic BLAKE3 normalization, canonical JSON hashing, digest-role separation, and non-claim checks without shell I/O. A single reviewed file keeps the first baseline understandable and makes source-address drift easy to audit.
+**Rationale:** The harness gives Cargo a narrow target without copying or forking product logic. General profile lint floors evaluate only that target, while ordinary `valence-core` continues compiling the same source in its existing module position.
 
-### 2. Keep Cargo scope explicit and production-only
+### 2. Address two production source files
 
-**Choice:** Add workspace Octet metadata selecting package `valence-core` with `cargo_check_args = ["--lib"]`.
+**Choice:** Declare `crates/valence-core/src/shared_identity.rs` and `crates/valence-core/src/shared_identity/canonical_hash_profile.rs` in `core_source_scopes`.
 
-**Rationale:** Tests intentionally contain fixture I/O and panic-based assertions. The admission target is production core code, not test harness behavior. General required lints still evaluate the compiled `valence-core` library; the receipt must not imply that only one file was compiled.
+**Rationale:** Splitting the canonical hash profile preserves the public `as_str` API while avoiding ambiguous v1 function locators for same-named methods in one file. Test bodies live in `shared_identity/tests.rs`, remain covered by ordinary tests, and are outside production `--lib` plus function-address admission.
 
-### 3. Check in the reviewed address baseline, not ambient operator state
+### 3. Make deterministic core APIs return outcomes
 
-**Choice:** Store the observe-mode `function-addresses.json` under `evidence/octet/deterministic-core/` and use it as the deny-mode baseline.
+**Choice:** Replace mutable issue accumulator inputs in shared digest parsing/non-claim validation with returned `Result`/`Vec` values, and return a typed issue from canonical JSON serialization instead of panicking.
 
-**Rationale:** The baseline becomes a reviewable source artifact. Source changes invalidate recorded function addresses and require an explicit baseline refresh rather than silent acceptance.
+**Rationale:** These changes remove genuine `mutating_input_in_pure` and `no_unwrap` findings while strengthening the functional-core boundary. Downstream Valence modules explicitly translate shared identity results into their own issue vocabularies.
 
-### 4. Preserve profile evidence and replay observations
+### 4. Check in the reviewed baseline and admitted bundle
 
-**Choice:** Keep the final profile-bound bundle and a concise validation report under `evidence/octet/deterministic-core/`, then verify the bundle with Octet.
+**Choice:** Store the observe bundle under `evidence/octet/deterministic-core/baseline/`, use its `function-addresses.json` as the deny baseline, and retain the admitted profile bundle plus verification report beside it.
 
-**Rationale:** A checked-in bundle makes the pilot's exact tool/profile/config identities reviewable. A second run compares profile/config identities and function-address records rather than claiming byte-identical logs or cross-machine reproducibility.
+**Rationale:** Baseline refresh becomes an explicit source review. The admitted bundle makes exact toolchain, profile/config BLAKE3 identities, selected source envelopes, function records, warning debt, and non-claims reviewable.
 
-### 5. Treat stale source as the negative case
+### 5. Require exact replay and stale-source rejection
 
-**Choice:** Replay the profile against a temporary workspace copy whose selected module has a semantic source change while retaining the reviewed baseline.
+**Choice:** Rerun the identical admitted command and byte-compare `status.json` plus `function-addresses.json`. Separately, run a temporary workspace with a changed `blake3_hex` body against the unchanged baseline.
 
-**Rationale:** The expected failure directly tests the admission property: changed function content cannot silently inherit prior function-address evidence. The temporary mutation is not committed.
+**Rationale:** Exact replay checks the identities this pilot claims. The negative case proves changed selected source cannot silently inherit prior function-address admission.
+
+### 6. Preserve downstream findings rather than hide them
+
+**Choice:** Record that the pilot exposed and required Octet fixes for standalone linker closure and local/duplicate `concrete_construction_in_core` findings.
+
+**Rationale:** Dogfooding should improve the producer. Valence does not carry broad lint suppressions to compensate for checker defects. Eight remaining findings are non-required advisory style debt and remain visible in the admitted summary.
 
 ## Risks / Trade-offs
 
-- A passing profile covers configured direct source/HIR checks only; calls into dependencies and other modules are not transitive effect proof.
-- General profile lints compile the whole production library even though function-address scope is one file.
-- The artifact records the local pinned Rust toolchain and Octet build used for this pilot; it is not a cross-toolchain reproducibility claim.
+- A passing profile covers configured direct source/HIR checks only; calls into dependencies and other Valence modules are not transitive effect proof.
+- The focused package is an admission harness, not a separately published product crate or proof that all `valence-core` code passed.
+- Function addresses are source-token identities and do not establish HIR/MIR equivalence or semantic call-graph closure.
+- The artifact records the local pinned Rust toolchain and Octet build used for this pilot; it is not a cross-toolchain or cross-machine reproducibility claim.
 - Checking in a baseline creates intentional review work whenever selected function content changes.
 - Valence's canonical Cairn checkout currently rejects the repository's older generated policy; lifecycle validation uses Octet's compatible flake-provided Cairn CLI and records the canonical-CLI blocker without changing the unrelated compatibility change.

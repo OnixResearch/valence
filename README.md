@@ -262,6 +262,15 @@ nix build .#checks.x86_64-linux.stack-provenance-nickel-contracts --no-link
 ./target/debug/valence version
 ```
 
+## Strict Rust admission pilot
+
+Valence's first Octet `deterministic-core` downstream pilot compiles the exact
+production shared-identity source through a non-publishable focused target,
+checks a reviewed function-address baseline in deny mode, and retains the
+profile-bound artifact bundle. Replay commands, advisory debt, evidence paths,
+and explicit non-claims are documented in
+[`docs/octet-deterministic-core.md`](docs/octet-deterministic-core.md).
+
 ## License
 
 AGPL-3.0-or-later

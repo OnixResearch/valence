@@ -183,17 +183,18 @@ fn validate_declared_hash(
     role: DigestRole,
     issues: &mut Vec<PreservesEvidenceIssue>,
 ) {
-    let mut shared_issues = Vec::new();
-    let parsed = parse_digest(declared, role, MIXED_BLAKE3_PROFILE, FIELD_CONTENT_HASH, &mut shared_issues);
-    if parsed.is_none() {
-        issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "malformed_blake3"));
-        return;
-    }
+    let parsed = match parse_digest(declared, role, MIXED_BLAKE3_PROFILE, FIELD_CONTENT_HASH) {
+        Ok(parsed) => parsed,
+        Err(_) => {
+            issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "malformed_blake3"));
+            return;
+        }
+    };
     let Some(expected) = expected else {
         issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "hash_material_unavailable"));
         return;
     };
-    if parsed.expect("checked parsed digest").normalized_hex != expected {
+    if parsed.normalized_hex != expected {
         issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "stale_content_hash"));
     }
 }

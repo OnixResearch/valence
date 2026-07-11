@@ -1,0 +1,372 @@
+{
+  "schema": "octet.function-address.v1",
+  "schema_version": 1,
+  "receipt_class": "function-address-receipt",
+  "mode": "deny",
+  "domain": "octet.function-address.v1",
+  "canonicalizer": "octet-source-token-function-address-v1",
+  "producer": {
+    "name": "octet",
+    "role": "rust-source-shape-producer"
+  },
+  "tool": "0.1.0",
+  "source_envelopes": [
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "language": "rust",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c"
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity/canonical_hash_profile.rs",
+      "language": "rust",
+      "source_identity": "b3:30eccae8d51718cf0219d6001c93fe089e2f72b32a0f7760becb6e27785e4233"
+    }
+  ],
+  "records": [
+    {
+      "path": "crates/valence-core/src/shared_identity/canonical_hash_profile.rs",
+      "name": "as_str",
+      "line": 10,
+      "column": 1,
+      "start_byte": 294,
+      "end_byte": 486,
+      "function_address": "b3:9cac5250129c87798fdb4a79ce76a0e958f5b43e76368e6cd8cbecaa48a44d86",
+      "normalized_body_hash": "b3:1cea36566a11486a27133d9ecc1132093970b5171d2f7186403a7545b5e43c16",
+      "dependency_set_hash": "b3:c3085d84a977adcfc0078ea550deabfc0896bbcd4c2705fd5f86fa170d0214a0",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:30eccae8d51718cf0219d6001c93fe089e2f72b32a0f7760becb6e27785e4233",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "as_str",
+      "line": 61,
+      "column": 1,
+      "start_byte": 2477,
+      "end_byte": 2919,
+      "function_address": "b3:b0346aad262cfba85fb74920540cc7fd10a83b08439ee6e07385d964b76d3b1c",
+      "normalized_body_hash": "b3:7bdf4ebad3e60e0faa73757f6455a2ee8649d8a906be318745a4ed019ba4d879",
+      "dependency_set_hash": "b3:bd0368564926fcba2cb56f0205dc47e0b38f38b916b9f326c78b9f0824731483",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "new",
+      "line": 159,
+      "column": 1,
+      "start_byte": 5626,
+      "end_byte": 5748,
+      "function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+      "normalized_body_hash": "b3:40d4e4a377d03d0d1f030d64debc1fb760a84ca7b6538b3b9138201f1d072a7e",
+      "dependency_set_hash": "b3:7b758866f0714f98fd2b71a3c5641b81f350687c1caa09307ba4d79d021579b1",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "validate_shared_digest",
+      "line": 186,
+      "column": 1,
+      "start_byte": 6432,
+      "end_byte": 7125,
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77",
+      "normalized_body_hash": "b3:81268bda2403e1a4165d588502deca7c1514f76677fdb53acc5a3f821b131d38",
+      "dependency_set_hash": "b3:e0ba150d9c09526e9802f781448854d0589a499bcccfa9a282f4259ec6e794a7",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "parse_digest",
+      "line": 206,
+      "column": 1,
+      "start_byte": 7204,
+      "end_byte": 8356,
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "normalized_body_hash": "b3:866c7f01b05956c730c61a2c9a1d5b1eb42bedeb18302b192e61df92cf51b089",
+      "dependency_set_hash": "b3:2cd99a4210860a80822e079b136b97128b4f2765d2a99eb6a9090103e59a47a9",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "canonical_json_hash",
+      "line": 242,
+      "column": 1,
+      "start_byte": 8427,
+      "end_byte": 8729,
+      "function_address": "b3:263fc2f1d453e8323db107a709c3c8c063c9f8735d40b6ba7024d3391d899865",
+      "normalized_body_hash": "b3:c0bd999a34a10dea39c2318b9a67f20b473fe559b9dae89a0782e76a5ade01b1",
+      "dependency_set_hash": "b3:67aba8d41e368e7ccf4622886622f1fb7bff92172cd1a502285aad473a323e80",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "canonical_bytes_hash",
+      "line": 250,
+      "column": 1,
+      "start_byte": 8817,
+      "end_byte": 9041,
+      "function_address": "b3:fbd68ced0a2727133e03dcde51e5bb00fc7d95e69f69638eb1eb0a19e46536ee",
+      "normalized_body_hash": "b3:fb6b66e3248f39ef3dcf738055239b60d361a87e51fd8dc398e15ba7ea82942d",
+      "dependency_set_hash": "b3:bb9e5ee80226183e669fe744a594a73e6ab8278bbe49d44827a13abbd53d12c7",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "canonical_json_hash_with_exclusion",
+      "line": 258,
+      "column": 1,
+      "start_byte": 9126,
+      "end_byte": 9708,
+      "function_address": "b3:e4e0ec2e427d8857fcc91a41a979742a98e856ba0ac8b6fad9c1b29e2f86d3fc",
+      "normalized_body_hash": "b3:6bf8e127fc8c8cfad59e568f9ff3cb3b13b81d85e6065a905653d574284b531f",
+      "dependency_set_hash": "b3:3746ff641e05dee013977ab269a91074b63c0c901f78facec03f79ee2bd38180",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "validate_non_claims",
+      "line": 273,
+      "column": 1,
+      "start_byte": 9757,
+      "end_byte": 10386,
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "normalized_body_hash": "b3:65c79327249844792394ecad3eb3e616d506b4efd82e164d00d8ac95877fefd0",
+      "dependency_set_hash": "b3:c506ea8cfa747b551df7a4de83aa5f30ef74c7a61a9b641368c40527436a80fb",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "shared_identity_supported_claim",
+      "line": 290,
+      "column": 1,
+      "start_byte": 10449,
+      "end_byte": 10557,
+      "function_address": "b3:5c4147f9eb14af797ba47d1586d304884fc52d5ff32bbc37df042c1e47bd7cfd",
+      "normalized_body_hash": "b3:0f9119c9d282e8c51b97603023c879e3da3940a7c8a78bba9adf52fa51786e79",
+      "dependency_set_hash": "b3:877e12ae1bdc1c2228221750fbf7828ddcb45ee75d1b06d556fef2aa4e90dcf4",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "blake3_hex",
+      "line": 296,
+      "column": 1,
+      "start_byte": 10604,
+      "end_byte": 10706,
+      "function_address": "b3:1c6fae3e0d7017ea297908bc4d017f65f4b8fa02af94b8b937e107d80f9a0906",
+      "normalized_body_hash": "b3:7e1fff08237ab31c6a6bc6bb32f5c2227ff9fc2a21cb91dc6141748259ddbd70",
+      "dependency_set_hash": "b3:dd01c2c12f9c40b8c4ea44f9152bbfd1d08021c12359aa34dadaa835b30fa332",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "contains_overclaim",
+      "line": 302,
+      "column": 1,
+      "start_byte": 10766,
+      "end_byte": 10936,
+      "function_address": "b3:b540ec1c73683faeb82400a2e5241a679be9078ce738cd5e8d24279ea329a82e",
+      "normalized_body_hash": "b3:dc05dafd9f10a939b58718b90f9d9a800bd3ad51eb4921c31b0ab7ef6674b784",
+      "dependency_set_hash": "b3:456fad7d475152594db98c967c8ee6a76b4216702415fe316704b329d424c2e0",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "finish_report",
+      "line": 308,
+      "column": 1,
+      "start_byte": 10938,
+      "end_byte": 11317,
+      "function_address": "b3:0e8d84b43f8275cb228522921da0c3e7568151edf87f5814ef81f1e113fd498f",
+      "normalized_body_hash": "b3:2f488a4516acc96ab5555e18740531c42faf4f21fb34a74571f3f71eaf4abadb",
+      "dependency_set_hash": "b3:588eb92c0f8a48e75d6eb3c27e6197c729de7c81e49c82ef7720571cecddd844",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "canonical_json_value",
+      "line": 324,
+      "column": 1,
+      "start_byte": 11319,
+      "end_byte": 11914,
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "normalized_body_hash": "b3:b26868443a3d6ac7e4f43b91bb7a8a0f27c479dafce6534e86d4c7a5c1ee5435",
+      "dependency_set_hash": "b3:36a084fb5b8f0d8d3ad0c4da71b4c2f57fb789f8004004a2b755b7e2e8aebecf",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "strip_excluded_fields",
+      "line": 340,
+      "column": 1,
+      "start_byte": 11916,
+      "end_byte": 12812,
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "normalized_body_hash": "b3:ace43b9adbf751ed009b7abe0d9bfa15f167d089347a380a4df6f85f60352674",
+      "dependency_set_hash": "b3:213e44ba27adb345497e3866c0eef567c57100c58ed8452da03e41e5571fd935",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "is_lower_hex",
+      "line": 364,
+      "column": 1,
+      "start_byte": 12814,
+      "end_byte": 12925,
+      "function_address": "b3:76d37d5c9373f92266f104c72f35712462697f5185c7bdc26cb072e33e67fcb8",
+      "normalized_body_hash": "b3:400b9a696147d6adb876eed9ab21c4f5dcb50c959c6c258dcbe48918353ed146",
+      "dependency_set_hash": "b3:b664d42bdd6471cce49c6c99cc6f85d3be60aae588639e4d1ad134e0e4316cc6",
+      "dependency_identity_kind": "source-token-set",
+      "dependency_identity_status": "source-scanner-token-set",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c",
+      "review": null,
+      "evidence": null,
+      "caveats": []
+    }
+  ],
+  "diagnostic_count": 0,
+  "kamacite_projection": {
+    "artifact_class": "function-address-receipt",
+    "compatibility_projection": "kamacite.function-address-receipt.v1.compat-json",
+    "canonical_identity_owner": "kamacite-preserves-bytes",
+    "identity_algorithm": "blake3"
+  },
+  "preserves_handoff": {
+    "contract": "octet-to-kamacite-function-address-v1",
+    "canonical_identity_owner": "kamacite-preserves-bytes",
+    "json_projection_role": "operator-debug-compatibility-projection",
+    "rust_reparse_required": "not-required",
+    "span_recomputation_required": "not-required",
+    "required_record_fields": [
+      "path",
+      "name",
+      "start_byte",
+      "end_byte",
+      "function_address",
+      "dependency_set_hash",
+      "dependency_identity_kind",
+      "source_identity"
+    ]
+  },
+  "evidence_chain_handoff": {
+    "schema": "octet.evidence-chain.producer-handoff.v1",
+    "evidence_kind": "function-address",
+    "producer": {
+      "name": "octet",
+      "role": "rust-source-shape-producer",
+      "tool_version": "0.1.0"
+    },
+    "run_identity": "b3:7f690ed3dd18e0a3ec25f2c3b39a67dddfb24d384d59d7b1e8287eb27ca47900",
+    "policy_hash": "b3:c26d00917e4feb3e9a7f8307222758fc925b98cda6bc7e088781815bcad4c646",
+    "profile_hash": "b3:04b1a115354ddcb906d1754b86d11d51f76c65b75d4cbce637b05a49e62d020a",
+    "canonical_authority": "kamacite-preserves-bytes",
+    "canonical_roots": [
+      {
+        "kind": "function-address-record-root",
+        "digest": "b3:68ef940eef5a36448ec6292468e50807e7dd7ada1b6769d4ca21d8dbbd10a869"
+      }
+    ],
+    "parent_links": [
+      {
+        "kind": "source-envelope",
+        "digest": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c"
+      },
+      {
+        "kind": "source-envelope",
+        "digest": "b3:30eccae8d51718cf0219d6001c93fe089e2f72b32a0f7760becb6e27785e4233"
+      }
+    ],
+    "projections": [
+      {
+        "kind": "compatibility-json",
+        "artifact": "function-addresses.json",
+        "digest": "b3:68ef940eef5a36448ec6292468e50807e7dd7ada1b6769d4ca21d8dbbd10a869",
+        "authority": "non-authoritative-projection"
+      }
+    ],
+    "non_claims": [
+      "not Rust semantic correctness",
+      "not compiler correctness",
+      "not whole-program safety",
+      "not release eligibility"
+    ]
+  },
+  "non_claims": [
+    "not Rust semantic correctness",
+    "not compiler correctness",
+    "not whole-program safety",
+    "not release eligibility"
+  ]
+}

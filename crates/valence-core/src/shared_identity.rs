@@ -20,6 +20,7 @@ const BLAKE3_HEX_LENGTH: usize = 64;
 const B3_PREFIX: &str = "b3:";
 const BLAKE3_PREFIX: &str = "blake3:";
 
+const FIELD_CANONICAL_JSON: &str = "canonical_json";
 const FIELD_DIGEST: &str = "digest";
 const FIELD_EXPECTED_ROLE: &str = "expected_role";
 const FIELD_NON_CLAIMS: &str = "non_claims";
@@ -112,23 +113,9 @@ pub const MIXED_BLAKE3_PROFILE: DigestProfile = DigestProfile {
     allow_blake3_prefix: true,
 };
 
-/// Named canonicalization profile. Callers must choose a profile explicitly.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum CanonicalHashProfile {
-    JsonValue,
-    PreservesText,
-}
-
-impl CanonicalHashProfile {
-    #[must_use]
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::JsonValue => "json_value",
-            Self::PreservesText => "preserves_text",
-        }
-    }
-}
+#[path = "shared_identity/canonical_hash_profile.rs"]
+mod canonical_hash_profile;
+pub use canonical_hash_profile::CanonicalHashProfile;
 
 /// Named field-exclusion profile for receipt-shaped self-referential hashes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -204,8 +191,14 @@ pub fn validate_shared_digest(candidate: &SharedDigestCandidate) -> SharedIdenti
     {
         issues.push(SharedIdentityIssue::new(FIELD_EXPECTED_ROLE, "role_mismatch"));
     }
-    let digest = parse_digest(&candidate.digest, candidate.role, candidate.profile, FIELD_DIGEST, &mut issues);
-    validate_non_claims(&candidate.non_claims, &mut issues);
+    let digest = match parse_digest(&candidate.digest, candidate.role, candidate.profile, FIELD_DIGEST) {
+        Ok(digest) => Some(digest),
+        Err(issue) => {
+            issues.push(issue);
+            None
+        }
+    };
+    issues.extend(validate_non_claims(&candidate.non_claims));
     finish_report(digest, candidate.non_claims.clone(), issues)
 }
 
@@ -215,34 +208,29 @@ pub fn parse_digest(
     role: DigestRole,
     profile: DigestProfile,
     field: &'static str,
-    issues: &mut Vec<SharedIdentityIssue>,
-) -> Option<SharedDigest> {
+) -> Result<SharedDigest, SharedIdentityIssue> {
     let (spelling, hex) = if let Some(hex) = value.strip_prefix(B3_PREFIX) {
         if !profile.allow_b3_prefix {
-            issues.push(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
-            return None;
+            return Err(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
         }
         (DigestSpelling::B3Prefix, hex)
     } else if let Some(hex) = value.strip_prefix(BLAKE3_PREFIX) {
         if !profile.allow_blake3_prefix {
-            issues.push(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
-            return None;
+            return Err(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
         }
         (DigestSpelling::Blake3Prefix, hex)
     } else {
         if !profile.allow_raw_hex {
-            issues.push(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
-            return None;
+            return Err(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
         }
         (DigestSpelling::RawHex, value)
     };
 
     if hex.len() != BLAKE3_HEX_LENGTH || !hex.chars().all(is_lower_hex) {
-        issues.push(SharedIdentityIssue::new(field, "malformed_blake3"));
-        return None;
+        return Err(SharedIdentityIssue::new(field, "malformed_blake3"));
     }
 
-    Some(SharedDigest {
+    Ok(SharedDigest {
         role,
         original: value.to_owned(),
         normalized_hex: hex.to_owned(),
@@ -251,11 +239,11 @@ pub fn parse_digest(
 }
 
 /// Compute a BLAKE3 identity over explicit canonical JSON material.
-#[must_use]
-pub fn canonical_json_hash(value: &Value) -> String {
+pub fn canonical_json_hash(value: &Value) -> Result<String, SharedIdentityIssue> {
     let canonical = canonical_json_value(value);
-    let bytes = serde_json::to_vec(&canonical).expect("canonical JSON value serialization should not fail");
-    blake3_hex(&bytes)
+    let bytes = serde_json::to_vec(&canonical)
+        .map_err(|_| SharedIdentityIssue::new(FIELD_CANONICAL_JSON, "serialization_failed"))?;
+    Ok(blake3_hex(&bytes))
 }
 
 /// Compute a BLAKE3 identity over explicit canonical bytes for the selected profile.
@@ -278,14 +266,16 @@ pub fn canonical_json_hash_with_exclusion(
         return Err(SharedIdentityIssue::new(FIELD_SELF_HASH_EXCLUSION, "unknown_self_hash_exclusion_profile"));
     }
     let stripped = strip_excluded_fields(value, profile.excluded_fields);
-    Ok(canonical_json_hash(&stripped))
+    canonical_json_hash(&stripped)
 }
 
 /// Validate reusable non-claim boundary text.
-pub fn validate_non_claims(non_claims: &[String], issues: &mut Vec<SharedIdentityIssue>) {
+#[must_use]
+pub fn validate_non_claims(non_claims: &[String]) -> Vec<SharedIdentityIssue> {
+    let mut issues = Vec::new();
     if non_claims.is_empty() {
         issues.push(SharedIdentityIssue::new(FIELD_NON_CLAIMS, "non_claims_missing"));
-        return;
+        return issues;
     }
     if !non_claims.iter().any(|claim| claim.contains(SHARED_IDENTITY_REQUIRED_NON_CLAIM)) {
         issues.push(SharedIdentityIssue::new(FIELD_NON_CLAIMS, "non_claims_weakened"));
@@ -293,6 +283,7 @@ pub fn validate_non_claims(non_claims: &[String], issues: &mut Vec<SharedIdentit
     if non_claims.iter().any(|claim| contains_overclaim(claim)) {
         issues.push(SharedIdentityIssue::new(FIELD_NON_CLAIMS, "overclaim_detected"));
     }
+    issues
 }
 
 /// Render the bounded supported claim for docs and reports.
@@ -336,10 +327,10 @@ fn canonical_json_value(value: &Value) -> Value {
         Value::Object(entries) => {
             let mut sorted = entries.iter().collect::<Vec<_>>();
             sorted.sort_by(|left, right| left.0.cmp(right.0));
-            let mut map = Map::new();
-            for (key, item) in sorted {
-                map.insert(key.clone(), canonical_json_value(item));
-            }
+            let map = sorted
+                .into_iter()
+                .map(|(key, item)| (key.clone(), canonical_json_value(item)))
+                .collect::<Map<String, Value>>();
             Value::Object(map)
         }
         scalar => scalar.clone(),
@@ -354,13 +345,16 @@ fn strip_excluded_fields(value: &Value, excluded_fields: &[&str]) -> Value {
         Value::Object(entries) => {
             let mut sorted = entries.iter().collect::<Vec<_>>();
             sorted.sort_by(|left, right| left.0.cmp(right.0));
-            let mut map = Map::new();
-            for (key, item) in sorted {
-                if excluded_fields.contains(&key.as_str()) {
-                    continue;
-                }
-                map.insert(key.clone(), strip_excluded_fields(item, excluded_fields));
-            }
+            let map = sorted
+                .into_iter()
+                .filter_map(|(key, item)| {
+                    if excluded_fields.contains(&key.as_str()) {
+                        None
+                    } else {
+                        Some((key.clone(), strip_excluded_fields(item, excluded_fields)))
+                    }
+                })
+                .collect::<Map<String, Value>>();
             Value::Object(map)
         }
         scalar => scalar.clone(),
@@ -368,134 +362,9 @@ fn strip_excluded_fields(value: &Value, excluded_fields: &[&str]) -> Value {
 }
 
 fn is_lower_hex(character: char) -> bool {
-    character.is_ascii_digit() || matches!(character, 'a'..='f')
+    character.is_ascii_digit() || ('a'..='f').contains(&character)
 }
 
 #[cfg(test)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-
-    const DIGEST_HEX: &str = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
-    const OTHER_DIGEST_HEX: &str = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-
-    fn required_non_claims() -> Vec<String> {
-        vec![SHARED_IDENTITY_REQUIRED_NON_CLAIM.to_owned()]
-    }
-
-    #[test]
-    fn supported_digest_spellings_normalize_by_profile() {
-        // r[verify valence.evidence_ir.shared_identity.fixtures.positive]
-        let candidate = SharedDigestCandidate {
-            role: DigestRole::ArtifactIdentity,
-            expected_role: Some(DigestRole::ArtifactIdentity),
-            digest: format!("{B3_PREFIX}{DIGEST_HEX}"),
-            profile: STRICT_B3_PROFILE,
-            non_claims: required_non_claims(),
-        };
-
-        let report = validate_shared_digest(&candidate);
-
-        assert!(report.valid);
-        let digest = report.digest.expect("valid digest should be present");
-        assert_eq!(digest.normalized_hex, DIGEST_HEX);
-        assert_eq!(digest.role, DigestRole::ArtifactIdentity);
-        assert!(report.supported_claim.contains("canonical content identity"));
-    }
-
-    #[test]
-    fn malformed_or_unsupported_digest_fails_closed() {
-        // r[verify valence.evidence_ir.shared_identity.fixtures.negative]
-        let candidate = SharedDigestCandidate {
-            role: DigestRole::ArtifactIdentity,
-            expected_role: None,
-            digest: OTHER_DIGEST_HEX.to_owned(),
-            profile: STRICT_B3_PROFILE,
-            non_claims: required_non_claims(),
-        };
-
-        let report = validate_shared_digest(&candidate);
-
-        assert!(!report.valid);
-        assert!(report.issues.iter().any(|issue| issue.code == "unsupported_digest_spelling"));
-    }
-
-    #[test]
-    fn digest_roles_are_not_interchangeable() {
-        // r[verify valence.evidence_ir.shared_identity.digest_roles]
-        let candidate = SharedDigestCandidate {
-            role: DigestRole::BinaryBytes,
-            expected_role: Some(DigestRole::SidecarBytes),
-            digest: format!("{B3_PREFIX}{DIGEST_HEX}"),
-            profile: STRICT_B3_PROFILE,
-            non_claims: required_non_claims(),
-        };
-
-        let report = validate_shared_digest(&candidate);
-
-        assert!(!report.valid);
-        assert!(report.issues.iter().any(|issue| issue.code == "role_mismatch"));
-    }
-
-    #[test]
-    fn canonical_json_hash_is_order_stable() {
-        // r[verify valence.evidence_ir.shared_identity.fixtures.positive]
-        let left = json!({"b": [2, 1], "a": {"z": true, "m": false}});
-        let right = json!({"a": {"m": false, "z": true}, "b": [2, 1]});
-
-        assert_eq!(canonical_json_hash(&left), canonical_json_hash(&right));
-    }
-
-    #[test]
-    fn receipt_hash_exclusion_removes_self_reference_only() {
-        // r[verify valence.evidence_ir.shared_identity.self_hash_exclusion.receipt]
-        let with_self_hash = json!({
-            "receipt_hash": "stale",
-            "preserves_content_hash": "stale",
-            "payload": {"stable": true}
-        });
-        let without_self_hash = json!({"payload": {"stable": true}});
-
-        let actual = canonical_json_hash_with_exclusion(&with_self_hash, Some(RECEIPT_SELF_HASH_EXCLUSION))
-            .expect("known exclusion profile should hash");
-        let expected = canonical_json_hash(&without_self_hash);
-
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn missing_exclusion_profile_fails_closed() {
-        // r[verify valence.evidence_ir.shared_identity.self_hash_exclusion.unknown]
-        let value = json!({"receipt_hash": "stale"});
-
-        let issue = canonical_json_hash_with_exclusion(&value, None).expect_err("missing profile should fail");
-
-        assert_eq!(issue.field, FIELD_SELF_HASH_EXCLUSION);
-        assert_eq!(issue.code, "missing_self_hash_exclusion_profile");
-    }
-
-    #[test]
-    fn non_claim_boundary_rejects_overclaim() {
-        // r[verify valence.evidence_ir.shared_identity.final_validation]
-        let candidate = SharedDigestCandidate {
-            role: DigestRole::ReceiptIdentity,
-            expected_role: None,
-            digest: DIGEST_HEX.to_owned(),
-            profile: RAW_BLAKE3_PROFILE,
-            non_claims: vec!["proves behavioral correctness".to_owned()],
-        };
-
-        let report = validate_shared_digest(&candidate);
-
-        assert!(!report.valid);
-        assert!(report.issues.iter().any(|issue| issue.code == "non_claims_weakened"));
-        assert!(report.issues.iter().any(|issue| issue.code == "overclaim_detected"));
-    }
-
-    #[test]
-    fn canonical_profile_names_are_visible() {
-        assert_eq!(CanonicalHashProfile::JsonValue.as_str(), "json_value");
-        assert_eq!(CanonicalHashProfile::PreservesText.as_str(), "preserves_text");
-    }
-}
+#[path = "shared_identity/tests.rs"]
+mod tests;

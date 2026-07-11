@@ -1,0 +1,54 @@
+--- octet summary ---
+Status: warning-only
+Findings: 24
+Warnings: 24
+Errors: 0
+Autofixable: 0
+Tool: cargo-octet 0.1.0
+Toolchain: nightly-2026-03-21-x86_64-unknown-linux-gnu
+Profile: workspace-metadata
+Config hash: b3:356a6c322f659013d3ce1238258e915a0cac72be61455a3b1f7b1dc3052c3c9d
+Profile hash: b3:3bf738d16c2ce5af6bae2f1d1d4c55ec9c3ed768d99dfd88909a3cf5e328f5ca
+
+By crate:
+  function-address                     16
+  valence_shared_identity_pilot        8
+
+By effect:
+  source-identity        16
+  unknown                7
+  resource               1
+
+By lint:
+  function_address_missing             16
+  non_trait_imports                    4
+  underscore_in_module_filename        2
+  excessive_file_length                1
+  path_segment_repetition              1
+
+Index:
+  F1   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:61
+  F2   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:159
+  F3   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:186
+  F4   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:206
+  F5   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:242
+  F6   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:250
+  F7   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:258
+  F8   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:273
+  F9   function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:290
+  F10  function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:296
+  F11  function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:302
+  F12  function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:308
+  F13  function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:324
+  F14  function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:340
+  F15  function_address_missing      function-address               crates/valence-core/src/shared_identity.rs:364
+  F16  function_address_missing      function-address               crates/valence-core/src/shared_identity/canonical_hash_profile.rs:10
+  F17  excessive_file_length         valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:1
+  F18  underscore_in_module_filename valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:1
+  F19  non_trait_imports             valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:12
+  F20  non_trait_imports             valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:13
+  F21  non_trait_imports             valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:14
+  F22  non_trait_imports             valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:15
+  F23  underscore_in_module_filename valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity/canonical_hash_profile.rs:1
+  F24  path_segment_repetition       valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity/canonical_hash_profile.rs:4
+---

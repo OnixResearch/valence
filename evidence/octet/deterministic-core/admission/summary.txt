@@ -1,0 +1,35 @@
+--- octet summary ---
+Status: warning-only
+Findings: 8
+Warnings: 8
+Errors: 0
+Autofixable: 0
+Tool: cargo-octet 0.1.0
+Toolchain: nightly-2026-03-21-x86_64-unknown-linux-gnu
+Profile: deterministic-core
+Config hash: b3:c26d00917e4feb3e9a7f8307222758fc925b98cda6bc7e088781815bcad4c646
+Profile hash: b3:5ef5d578922af5664cdfaa792b0a4db164dbdbdf573d2b40bb647f5088f87657
+
+By crate:
+  valence_shared_identity_pilot        8
+
+By effect:
+  unknown         7
+  resource        1
+
+By lint:
+  non_trait_imports                    4
+  underscore_in_module_filename        2
+  excessive_file_length                1
+  path_segment_repetition              1
+
+Index:
+  F1  excessive_file_length         valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:1
+  F2  underscore_in_module_filename valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:1
+  F3  non_trait_imports             valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:12
+  F4  non_trait_imports             valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:13
+  F5  non_trait_imports             valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:14
+  F6  non_trait_imports             valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity.rs:15
+  F7  underscore_in_module_filename valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity/canonical_hash_profile.rs:1
+  F8  path_segment_repetition       valence_shared_identity_pilot  pilots/shared-identity/../../crates/valence-core/src/shared_identity/canonical_hash_profile.rs:4
+---

@@ -682,16 +682,15 @@ fn validate_required_text(value: &str, field: &'static str, code: &'static str, 
 fn validate_hash(declared: &str, material: &[u8], role: DigestRole, issues: &mut Vec<AdapterIssue>) {
     validate_digest_syntax(declared, role, issues);
     let expected = blake3_hex(material);
-    let mut shared_issues = Vec::new();
-    let parsed = parse_digest(declared, role, MIXED_BLAKE3_PROFILE, FIELD_HASH, &mut shared_issues);
-    if parsed.is_some_and(|digest| digest.normalized_hex != expected) {
+    if parse_digest(declared, role, MIXED_BLAKE3_PROFILE, FIELD_HASH)
+        .is_ok_and(|digest| digest.normalized_hex != expected)
+    {
         issues.push(AdapterIssue::new(FIELD_HASH, "stale_hash"));
     }
 }
 
 fn validate_digest_syntax(declared: &str, role: DigestRole, issues: &mut Vec<AdapterIssue>) {
-    let mut shared_issues = Vec::new();
-    if parse_digest(declared, role, MIXED_BLAKE3_PROFILE, FIELD_HASH, &mut shared_issues).is_none() {
+    if parse_digest(declared, role, MIXED_BLAKE3_PROFILE, FIELD_HASH).is_err() {
         issues.push(AdapterIssue::new(FIELD_HASH, "malformed_blake3"));
     }
 }

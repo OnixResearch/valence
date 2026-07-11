@@ -1,0 +1,1 @@
+/nix/store/xmx6gq47p57w7iaw8r3ipnwl1kmwci8y-cargo-octet-0.1.0/bin/cargo-octet check --function-addresses observe --function-address-path crates/valence-core/src/shared_identity.rs --function-address-path crates/valence-core/src/shared_identity/canonical_hash_profile.rs --artifact-dir evidence/octet/deterministic-core/baseline

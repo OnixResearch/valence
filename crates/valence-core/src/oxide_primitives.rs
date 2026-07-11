@@ -211,8 +211,7 @@ pub fn validate_attestation_vocabulary(record: &AttestationVocabularyRecord) -> 
 }
 
 fn validate_digest(value: &str, role: DigestRole, issues: &mut Vec<OxidePrimitiveIssue>) {
-    let mut shared_issues = Vec::new();
-    if parse_digest(value, role, MIXED_BLAKE3_PROFILE, FIELD_DIGEST, &mut shared_issues).is_none() {
+    if parse_digest(value, role, MIXED_BLAKE3_PROFILE, FIELD_DIGEST).is_err() {
         issues.push(OxidePrimitiveIssue::new(FIELD_DIGEST, "malformed_blake3"));
     }
 }

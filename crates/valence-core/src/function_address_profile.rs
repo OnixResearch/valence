@@ -19,7 +19,6 @@ use crate::shared_identity::DigestRole;
 use crate::shared_identity::MIXED_BLAKE3_PROFILE;
 use crate::shared_identity::RAW_BLAKE3_PROFILE;
 use crate::shared_identity::STRICT_B3_PROFILE;
-use crate::shared_identity::SharedIdentityIssue;
 use crate::shared_identity::blake3_hex;
 use crate::shared_identity::parse_digest;
 
@@ -272,17 +271,17 @@ pub fn function_address_policy_identity() -> FunctionAddressDigest {
 pub fn normalize_function_address_digest_spelling(
     input: &FunctionAddressDigestSpellingInput,
 ) -> FunctionAddressDigestSpellingReport {
-    let mut shared_issues = Vec::new();
     let parsed = parse_digest(
         &input.digest,
         DigestRole::CompatibilityReference,
         digest_boundary_profile(input.boundary),
         "digest",
-        &mut shared_issues,
     );
-    let mut issues = shared_issues
-        .into_iter()
+    let mut issues = parsed
+        .as_ref()
+        .err()
         .map(|issue| FunctionAddressEvidenceIssue::new(issue.field, issue.code))
+        .into_iter()
         .collect::<Vec<_>>();
     if let Some(expected_domain) = input.expected_domain
         && expected_domain != input.domain
@@ -291,7 +290,7 @@ pub fn normalize_function_address_digest_spelling(
     }
     issues.sort_by_key(|issue| (issue.field, issue.code));
     issues.dedup();
-    let normalized = parsed.map(|digest| FunctionAddressDigest {
+    let normalized = parsed.ok().map(|digest| FunctionAddressDigest {
         domain: input.domain,
         digest: digest.normalized_hex,
     });
@@ -592,15 +591,7 @@ fn validate_policy_identity(input: &FunctionAddressEvidenceInput, issues: &mut V
         issues.push(FunctionAddressEvidenceIssue::new("policy_identity", "identity_domain_substitution"));
         return;
     }
-    let mut parse_issues = Vec::<SharedIdentityIssue>::new();
-    let parsed = parse_digest(
-        &policy_identity.digest,
-        DigestRole::ArtifactIdentity,
-        MIXED_BLAKE3_PROFILE,
-        "digest",
-        &mut parse_issues,
-    );
-    if parsed.is_none() || !parse_issues.is_empty() {
+    if parse_digest(&policy_identity.digest, DigestRole::ArtifactIdentity, MIXED_BLAKE3_PROFILE, "digest").is_err() {
         issues.push(FunctionAddressEvidenceIssue::new("policy_identity", "malformed_policy_identity"));
         return;
     }
@@ -630,10 +621,7 @@ fn validate_digest_field(
         issues.push(FunctionAddressEvidenceIssue::new(field, "identity_domain_substitution"));
         return;
     }
-    let mut parse_issues = Vec::<SharedIdentityIssue>::new();
-    let parsed =
-        parse_digest(&identity.digest, DigestRole::ArtifactIdentity, MIXED_BLAKE3_PROFILE, "digest", &mut parse_issues);
-    if parsed.is_none() || !parse_issues.is_empty() {
+    if parse_digest(&identity.digest, DigestRole::ArtifactIdentity, MIXED_BLAKE3_PROFILE, "digest").is_err() {
         issues.push(FunctionAddressEvidenceIssue::new(field, "malformed_digest"));
     }
 }
