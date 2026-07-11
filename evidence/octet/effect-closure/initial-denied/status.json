@@ -4,7 +4,7 @@
   "exit_code": 1,
   "phase": "effect-closure",
   "profile_id": "deterministic-core",
-  "receipt_identity": "b3:5a8f90f5963368ca25b4d3b44a68fbe4b338d3d4a420ece302dc55bc41da5e7f",
+  "receipt_identity": "b3:aea12687550918254723cea648ca2b33e3ec21bf2beef214e107e0b8a2f331ed",
   "diagnostics": [
     "call_edge_unknown: call `call:Err` has no selected local or exact reviewed summary",
     "call_edge_unknown: call `call:Err` has no selected local or exact reviewed summary",

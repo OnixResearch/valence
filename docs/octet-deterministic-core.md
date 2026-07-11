@@ -111,7 +111,7 @@ nix run "path:$OCTET_ROOT#cargo-octet" -- admit verify \
   --output-format json
 ```
 
-The final checked-in bundle admits 16 function-addressed nodes, records 78 reviewed call sites across five provider identities, permits only the inferred `alloc` effect, and has zero closure diagnostics. Its receipt identity is `b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7`. Repeating the identical command produced byte-identical `effect-closure.json` and `status.json`.
+The final checked-in bundle admits 16 function-addressed nodes, records 78 reviewed call sites across five provider identities, permits only the inferred `alloc` effect, and has zero closure diagnostics. Its receipt identity is `b3:82109fdac487d19a941ccc4a3b9e34746daed013f5d7a3bcf0befa63dbdd8300`. Repeating the identical command produced byte-identical `effect-closure.json` and `status.json`.
 
 ### Fail-closed and tamper evidence
 

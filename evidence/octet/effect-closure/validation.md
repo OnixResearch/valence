@@ -4,7 +4,7 @@ Validation date: 2026-07-11
 
 ## Scope and tool
 
-The retained runs used `/nix/store/2hfqxksl89f8a872vgci4mricwdzhh04-cargo-octet-0.1.0/bin/cargo-octet` from the reviewed Octet implementation. Both runs selected only:
+The retained runs used `/nix/store/8ny5smh17x2g5njainiszzyp4sw4r3rx-cargo-octet-0.1.0/bin/cargo-octet` built from reviewed exact Octet commit `15965f21e4e535a35c757561f789020b70414a80`. Both runs selected only:
 
 - `crates/valence-core/src/shared_identity.rs`;
 - `crates/valence-core/src/shared_identity/canonical_hash_profile.rs`.
@@ -19,7 +19,7 @@ The exact command is retained in `initial-denied/command.txt`. The direct determ
 - two source envelopes and 16 function nodes;
 - zero reviewed providers;
 - 90 deterministic diagnostics, including 78 `call_edge_unknown` findings plus propagated denied-`unknown` findings;
-- receipt identity `b3:5a8f90f5963368ca25b4d3b44a68fbe4b338d3d4a420ece302dc55bc41da5e7f`.
+- receipt identity `b3:aea12687550918254723cea648ca2b33e3ec21bf2beef214e107e0b8a2f331ed`.
 
 The 78 unknown edges include apparent `Ok`, `Err`, `Some`, and `Vec::new` calls. Octet intentionally grants no name-based intrinsic exemption because source tokens cannot prove those names were not shadowed.
 
@@ -34,7 +34,7 @@ The exact command is retained in `admission/command.txt`. It exited 0 and retain
 - five used provider identities;
 - only the allowed `alloc` closure effect;
 - zero closure diagnostics;
-- receipt identity `b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7`.
+- receipt identity `b3:82109fdac487d19a941ccc4a3b9e34746daed013f5d7a3bcf0befa63dbdd8300`.
 
 `admission-verification.json` reports `status: valid`, the same receipt identity, and no diagnostics. Verification reran the ordinary artifact verifier over the complete strict-profile parent before checking closure receipt, policy, graph, status, summary, and provenance linkage.
 

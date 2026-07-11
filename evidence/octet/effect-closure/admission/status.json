@@ -4,7 +4,7 @@
   "exit_code": 0,
   "phase": "effect-closure",
   "profile_id": "deterministic-core",
-  "receipt_identity": "b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7",
+  "receipt_identity": "b3:82109fdac487d19a941ccc4a3b9e34746daed013f5d7a3bcf0befa63dbdd8300",
   "diagnostics": [],
   "non_claims": [
     "Reviewed call summaries do not verify dependency implementations, complete Rust name resolution, MIR closure, runtime reachability, semantic determinism, whole-program correctness, or release eligibility.",

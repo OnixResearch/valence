@@ -4,7 +4,7 @@ Claim scope: selected-source-token-effect-closure
 Profile: deterministic-core
 Profile hash: b3:217467f897307ee25135762e38bde9d321e5c3cca5ac7b4322adea7b37f95539
 Config hash: b3:47531b6882b7e11f0091faf7321a2ebf42219f93567a21bec33fa1deb5d1e7c3
-Receipt identity: b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7
+Receipt identity: b3:82109fdac487d19a941ccc4a3b9e34746daed013f5d7a3bcf0befa63dbdd8300
 Selected sources: 2
 Functions: 16
 Reviewed providers: 5

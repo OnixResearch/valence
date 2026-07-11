@@ -6,9 +6,9 @@ The complete replay record is retained at `evidence/octet/effect-closure/validat
 
 ## Outcome
 
-- The initial no-summary run passed its direct parent and denied closure with exit 1, 78 unknown call edges, 90 total diagnostics, and receipt `b3:5a8f90f5963368ca25b4d3b44a68fbe4b338d3d4a420ece302dc55bc41da5e7f`.
+- The initial no-summary run passed its direct parent and denied closure with exit 1, 78 unknown call edges, 90 total diagnostics, and receipt `b3:aea12687550918254723cea648ca2b33e3ec21bf2beef214e107e0b8a2f331ed`.
 - The final policy contains 78 exact summaries over `core`, `alloc`, `std`, `blake3`, and `serde_json`; no name-based intrinsic exemption is used.
-- The final explicit-target run admitted two production files and 16 functions with only `alloc`, zero diagnostics, and receipt `b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7`.
+- The final explicit-target run admitted two production files and 16 functions with only `alloc`, zero diagnostics, and receipt `b3:82109fdac487d19a941ccc4a3b9e34746daed013f5d7a3bcf0befa63dbdd8300`.
 - Stored verification was valid with no diagnostics; identical replay produced byte-identical receipt/status artifacts.
 - Separate closure-summary and strict-profile-parent-summary tamper copies both exited 1 with deterministic integrity diagnostics.
 
