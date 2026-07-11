@@ -1,0 +1,6 @@
+{
+  "depends_on": [
+    "enforce-declared-cli-capability-roots",
+    "restore-cairn-policy-compatibility"
+  ]
+}

@@ -90,6 +90,38 @@ let StackProvenanceGateMode = std.contract.from_predicate (fun value =>
   std.is_string value && (value == "disabled" || value == "optional" || value == "required")
 ) in
 
+let ValenceFunctionAddressMode = std.contract.from_predicate (fun value =>
+  std.is_string value && value == "optional"
+) in
+
+let ValenceFunctionAddressClaimScopes = std.contract.from_predicate (fun value =>
+  value == ["function_address.v1.lifecycle_policy_conformance"]
+) in
+
+let ValenceFunctionAddressPolicyHashes = std.contract.from_predicate (fun value =>
+  value == ["e5f4f35b3b339fdefcf7a195910c4eb04388dc66de8452891bbceabb60b557a3"]
+) in
+
+let ValenceFunctionAddressRoles = std.contract.from_predicate (fun value =>
+  value == [
+    "function-address-evidence-sidecar",
+    "valence-function-address-evidence-profile",
+    "kamacite-function-address-receipt",
+  ]
+) in
+
+let ValenceFunctionAddressSchemas = std.contract.from_predicate (fun value =>
+  value == [
+    "valence.function-address-evidence.v1",
+    "function-address-evidence-v1",
+    "kamacite.function-address-receipt.v1",
+  ]
+) in
+
+let ValenceFunctionAddressBoundary = std.contract.from_predicate (fun value =>
+  std.is_string value && value == "Valence function-address lifecycle policy accepts recorded-only source-shape identity and linkage evidence only; it does not prove Rust semantic correctness, compiler correctness, whole-program safety, verifier soundness, requirement satisfaction, or release eligibility"
+) in
+
 let RuntimeCaptureOrigin = std.contract.from_predicate (fun value =>
   std.is_string value && (value == "boundary_captured" || value == "ingested_telemetry" || value == "wrapper_asserted" || value == "unknown")
 ) in
@@ -201,6 +233,21 @@ let PositiveNumber = std.contract.from_predicate (fun value =>
     mode | StackProvenanceGateMode,
     allowed_claim_scopes | NonEmptyArray | Array NonEmptyString,
     accepted_valence_policy_hashes | Array Blake3HexContract | default = [],
+    required_boundary | NonEmptyString,
+  },
+
+  FunctionAddressPolicy = {
+    mode | ValenceFunctionAddressMode,
+    allowed_claim_scopes | ValenceFunctionAddressClaimScopes,
+    accepted_valence_policy_hashes | ValenceFunctionAddressPolicyHashes,
+    required_roles | ValenceFunctionAddressRoles,
+    required_schemas | ValenceFunctionAddressSchemas,
+    required_boundary | ValenceFunctionAddressBoundary,
+  },
+
+  WorkspaceContractMatrixGate = {
+    mode | StackProvenanceGateMode,
+    accepted_matrix_hashes | Array Blake3HexContract | default = [],
     required_boundary | NonEmptyString,
   },
 
@@ -371,6 +418,12 @@ let PositiveNumber = std.contract.from_predicate (fun value =>
     steel_orchestration_policy | SteelOrchestrationPolicy,
     traceability_policy | TraceabilityPolicy,
     stack_provenance_gate | StackProvenancePolicy,
+    function_address_gate | FunctionAddressPolicy,
+    workspace_contract_matrix_gate | WorkspaceContractMatrixGate | default = {
+      mode = "disabled",
+      accepted_matrix_hashes = [],
+      required_boundary = "workspace contract matrix validation proves declared edge health only; it does not prove provider correctness, consumer behavioral correctness, verifier soundness, or release eligibility",
+    },
     runtime_evidence_policy | RuntimeEvidencePolicy,
     structured_lifecycle | StructuredLifecycle | default = {},
     probe_policy | ProbePolicy,

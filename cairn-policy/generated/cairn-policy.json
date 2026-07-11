@@ -898,6 +898,26 @@
     "scope": "tasks",
     "severity": "high"
   },
+  "function_address_gate": {
+    "accepted_valence_policy_hashes": [
+      "e5f4f35b3b339fdefcf7a195910c4eb04388dc66de8452891bbceabb60b557a3"
+    ],
+    "allowed_claim_scopes": [
+      "function_address.v1.lifecycle_policy_conformance"
+    ],
+    "mode": "optional",
+    "required_boundary": "Valence function-address lifecycle policy accepts recorded-only source-shape identity and linkage evidence only; it does not prove Rust semantic correctness, compiler correctness, whole-program safety, verifier soundness, requirement satisfaction, or release eligibility",
+    "required_roles": [
+      "function-address-evidence-sidecar",
+      "valence-function-address-evidence-profile",
+      "kamacite-function-address-receipt"
+    ],
+    "required_schemas": [
+      "valence.function-address-evidence.v1",
+      "function-address-evidence-v1",
+      "kamacite.function-address-receipt.v1"
+    ]
+  },
   "gate_policy": {
     "finding": {
       "class": "omission",
@@ -2490,5 +2510,10 @@
       }
     ]
   },
-  "version": 1
+  "version": 1,
+  "workspace_contract_matrix_gate": {
+    "accepted_matrix_hashes": [],
+    "mode": "disabled",
+    "required_boundary": "workspace contract matrix validation proves declared edge health only; it does not prove provider correctness, consumer behavioral correctness, verifier soundness, or release eligibility"
+  }
 }

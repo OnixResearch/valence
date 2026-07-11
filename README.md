@@ -235,6 +235,10 @@ evidence tiers are parsed into narrow enums. This is internal hardening only: th
 public JSON contracts and CLI output remain string-compatible, and typed values
 do not broaden the measured-byte identity-and-linkage-only claim.
 
+## Cairn policy compatibility
+
+Valence's Cairn lifecycle policy remains Nickel-authored and carries an explicit optional function-address gate bound to the current canonical Valence profile identity. The compatibility runner exercises positive and negative Nickel fixtures, generated-policy freshness, the supported Cairn parser, and default-path lifecycle validation. See [`docs/cairn-policy-compatibility.md`](docs/cairn-policy-compatibility.md) for the refresh workflow and bounded claim.
+
 ## Boundary
 
 Valence supports bounded local evidence replay for selected evidence surfaces.

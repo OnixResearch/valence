@@ -132,6 +132,29 @@ let PolicyFieldSetDigest = "c5b71f15de4175d9ff01f7cb4b82eed898a71e55f6d1fa5e24a9
     required_boundary = "Valence stack provenance verifies identity, linkage, role, digest, and non-claim policy only; it does not prove behavioral correctness, verifier soundness, release eligibility, or requirement satisfaction",
   },
 
+  function_address_gate = {
+    mode = "optional",
+    allowed_claim_scopes = ["function_address.v1.lifecycle_policy_conformance"],
+    accepted_valence_policy_hashes = ["e5f4f35b3b339fdefcf7a195910c4eb04388dc66de8452891bbceabb60b557a3"],
+    required_roles = [
+      "function-address-evidence-sidecar",
+      "valence-function-address-evidence-profile",
+      "kamacite-function-address-receipt",
+    ],
+    required_schemas = [
+      "valence.function-address-evidence.v1",
+      "function-address-evidence-v1",
+      "kamacite.function-address-receipt.v1",
+    ],
+    required_boundary = "Valence function-address lifecycle policy accepts recorded-only source-shape identity and linkage evidence only; it does not prove Rust semantic correctness, compiler correctness, whole-program safety, verifier soundness, requirement satisfaction, or release eligibility",
+  },
+
+  workspace_contract_matrix_gate = {
+    mode = "disabled",
+    accepted_matrix_hashes = [],
+    required_boundary = "workspace contract matrix validation proves declared edge health only; it does not prove provider correctness, consumer behavioral correctness, verifier soundness, or release eligibility",
+  },
+
   runtime_evidence_policy = {
     allowed_capture_origins = ["boundary_captured", "ingested_telemetry", "wrapper_asserted", "unknown"],
     allowed_hash_algorithms = ["BLAKE3"],
