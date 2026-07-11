@@ -1,0 +1,1768 @@
+{
+  "schema_version": "octet-effect-closure-receipt/v1",
+  "status": "denied",
+  "claim_scope": "selected-source-token-effect-closure",
+  "resolver": "octet-selected-source-token-call-resolver-v1",
+  "canonicalizer": "octet-effect-closure-canonicalizer-v1",
+  "inputs": {
+    "profile_id": "deterministic-core",
+    "profile_hash": "b3:217467f897307ee25135762e38bde9d321e5c3cca5ac7b4322adea7b37f95539",
+    "config_hash": "b3:47531b6882b7e11f0091faf7321a2ebf42219f93567a21bec33fa1deb5d1e7c3",
+    "command_blake3": "d64a19083fa2e7e493564a818ac269501c9281f6f8e52602d87fa6595495eab8",
+    "check_status_blake3": "9cdeb572232dcc076ece1df81eb46d1147d0bff07819e1baba46fc26885fd9ef",
+    "function_address_artifact_blake3": "d6a9cbf06bec48e75bc341f11288e351a50e3ef960acd20e70f6eabf9ab51705",
+    "function_address_record_root": "b3:68ef940eef5a36448ec6292468e50807e7dd7ada1b6769d4ca21d8dbbd10a869",
+    "workspace_policy_blake3": "9e03ed201a2d17a86893b759107e9700628e2d22e7df0e82428b92d35d2a0783",
+    "cargo_graph_blake3": "b227083b2a0c27d0d05ffb59ff9460114cd284190f4e5c6d2b9ed26d7fed496f",
+    "cargo_lock_blake3": "aafafd2246196eed185a9dee2176f972a9fb1d401fc391203914773af4dcac46",
+    "target": "x86_64-unknown-linux-gnu",
+    "toolchain": "nightly-2026-03-21-x86_64-unknown-linux-gnu"
+  },
+  "sources": [
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "source_identity": "b3:df76f89f38787aff5db135429a3e5ac87b2c4366d354470ca93f3be566474d0c"
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity/canonical_hash_profile.rs",
+      "source_identity": "b3:30eccae8d51718cf0219d6001c93fe089e2f72b32a0f7760becb6e27785e4233"
+    }
+  ],
+  "providers": [],
+  "nodes": [
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "as_str",
+      "function_address": "b3:b0346aad262cfba85fb74920540cc7fd10a83b08439ee6e07385d964b76d3b1c",
+      "role": "core",
+      "direct_effects": [],
+      "closure_effects": [],
+      "calls": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "blake3_hex",
+      "function_address": "b3:1c6fae3e0d7017ea297908bc4d017f65f4b8fa02af94b8b937e107d80f9a0906",
+      "role": "core",
+      "direct_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:17ecc31240b57aa5f5e7876c4ccf5b58d61e048a90f3802b1590c38bbc96d700",
+          "occurrence": 2,
+          "shape": "call:blake3::hash",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:66bbf8f3724f1d39d200fe8facc492be22491b2cb661e6f75a5e8b68d6e53cb0",
+          "occurrence": 1,
+          "shape": "method:value:to_hex",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:b8394e9741e5d9c9b5e1d201d00ffeb2411a7bc3247e9f2f09edd20e80598907",
+          "occurrence": 0,
+          "shape": "method:value:to_string",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "canonical_bytes_hash",
+      "function_address": "b3:fbd68ced0a2727133e03dcde51e5bb00fc7d95e69f69638eb1eb0a19e46536ee",
+      "role": "core",
+      "direct_effects": [],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:fe9a4ea9b89d67db2fd0c23edd6fe805033b634c063da2182aba1f37ebbc724c",
+          "occurrence": 0,
+          "shape": "call:blake3_hex",
+          "resolution": "local",
+          "callee_function_address": "b3:1c6fae3e0d7017ea297908bc4d017f65f4b8fa02af94b8b937e107d80f9a0906",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "canonical_json_hash",
+      "function_address": "b3:263fc2f1d453e8323db107a709c3c8c063c9f8735d40b6ba7024d3391d899865",
+      "role": "core",
+      "direct_effects": [
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:063acfbddc821c84990ec89bfcb9782ceefc45da53788c7868f6e20933a3560d",
+          "occurrence": 0,
+          "shape": "call:canonical_json_value",
+          "resolution": "local",
+          "callee_function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:0928d20fc612f971ebc74965d9980893b6cd6db10658795f6166eb805865d5ea",
+          "occurrence": 5,
+          "shape": "call:blake3_hex",
+          "resolution": "local",
+          "callee_function_address": "b3:1c6fae3e0d7017ea297908bc4d017f65f4b8fa02af94b8b937e107d80f9a0906",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:2681a4dff5a39c68a119c4fb24ca5e049c955523bd79936ac3590707fad96436",
+          "occurrence": 4,
+          "shape": "call:Ok",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:2fcdbccb92b29363938276072b6a3f4ddbbe7e0c0e7cc5f1dabede02863bc626",
+          "occurrence": 1,
+          "shape": "method:value:map_err",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:3c75d17d17168b59a9935ef38a255d266fd821a853a83cb62fef824783283584",
+          "occurrence": 3,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:61653081501c44952f4142ca15b93970167ef64c768246b06398af6f9a5f6eb8",
+          "occurrence": 2,
+          "shape": "call:serde_json::to_vec",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "canonical_json_hash_with_exclusion",
+      "function_address": "b3:e4e0ec2e427d8857fcc91a41a979742a98e856ba0ac8b6fad9c1b29e2f86d3fc",
+      "role": "core",
+      "direct_effects": [
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:232cdcdf7c6a04c9afacafea3db7ab76eb52c5dfc86eaaa593ea920b13d9aa9c",
+          "occurrence": 4,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:43f939a879c89f4557ef8921c4dac68195c727f4f4b8d37543c26f084c4c61dd",
+          "occurrence": 5,
+          "shape": "call:strip_excluded_fields",
+          "resolution": "local",
+          "callee_function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:513d7dbc095e53a8e9b0fb190a4dd1c41da217db0e209b1a4939593d554841c1",
+          "occurrence": 1,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:a2ab30cab19022a480a91d3697798082f682ec7384616b95994418d419cad84a",
+          "occurrence": 0,
+          "shape": "call:Err",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:a6264c8eb96516a2e297faecacb9404629c46fe73ef003d59c4b4a6f7979262d",
+          "occurrence": 3,
+          "shape": "call:Err",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:d17005feae5a801bc04bbedfb46fccde6e5a88a19dd8cfdfa8aa2e8f262dbaa7",
+          "occurrence": 6,
+          "shape": "call:canonical_json_hash",
+          "resolution": "local",
+          "callee_function_address": "b3:263fc2f1d453e8323db107a709c3c8c063c9f8735d40b6ba7024d3391d899865",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:e390eac8ec29a0b941e37b62ff47c76d69b3925fd692a2db03a449bea9a5c98e",
+          "occurrence": 2,
+          "shape": "method:value:is_empty",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "canonical_json_value",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "role": "core",
+      "direct_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:1a80885d95f0713e34de82b4f5fff41d9300f757ac28526c3aaac721f4458c96",
+          "occurrence": 11,
+          "shape": "method:value:clone",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:2dbcb68fa4b9ce9a5df9d1cda218e40a8189bee3f5547e93d2f0399400193ad2",
+          "occurrence": 9,
+          "shape": "method:value:map",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:33236371eea87651cc5b23d227ea6c62f2cfb2e621b7292a8f06acbf14c12e4b",
+          "occurrence": 4,
+          "shape": "method:value:collect",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:3d5469bebe8ec781adfbc27910e078826b35eaf14ef825ce970c788b550c5f81",
+          "occurrence": 14,
+          "shape": "method:value:clone",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:3faf7abf67bf6b6806ba545643b44d7fc32c5eb7e4cc9d1bfb2c222c366d1eab",
+          "occurrence": 3,
+          "shape": "method:value:iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:4dd1b0d6aaca2b9e1c7b22800583e0abca49481f5245477be600bb07153ff5f8",
+          "occurrence": 6,
+          "shape": "method:value:sort_by",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:6bfe5bccd80816dc3028506911d1d27f70ac70b41d77287cfbe34dcb1d93655d",
+          "occurrence": 5,
+          "shape": "method:value:iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:ad6a834080f838c725b2392f8bd052dc22a26e8cfe86e8591f95b59453a6cf18",
+          "occurrence": 1,
+          "shape": "method:value:collect",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:b013abe32b6761e82eb630aa035b976c35607803fc4e28ea36b2c78d5f2826da",
+          "occurrence": 13,
+          "shape": "call:Value::Object",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:c5c28d7acf6dfe9fa9ac4385d7a8eb686bbb90eb290599704afed80d9e9b0bad",
+          "occurrence": 12,
+          "shape": "call:canonical_json_value",
+          "resolution": "local",
+          "callee_function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:cc40e13e4b0248dee70e60db4f737ed0ea69ce103d8a775bdf2a7b6bf5cb961f",
+          "occurrence": 0,
+          "shape": "call:Value::Array",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:ced693c17c2120640b6d353a328e0e5f762e23b3f29cdad9af27a469a9da9cab",
+          "occurrence": 7,
+          "shape": "method:value:cmp",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:dc0375ee75537efa261b075b8b1676d98dded28729ca61c4001cdcd3fe235b75",
+          "occurrence": 8,
+          "shape": "method:value:collect",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:e2a2658bfb695799071f612790884387e79c0cb9b97a9bb750a48e42a787f440",
+          "occurrence": 10,
+          "shape": "method:value:into_iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:effdde427bca3fccf1e1c7f726de148ef8aa26563fba2fcce462ea374fc8b8f8",
+          "occurrence": 2,
+          "shape": "method:value:map",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "contains_overclaim",
+      "function_address": "b3:b540ec1c73683faeb82400a2e5241a679be9078ce738cd5e8d24279ea329a82e",
+      "role": "core",
+      "direct_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:67460bbc7803f8dc80b4a689bcf3412c60f7b82f2cc6b06840ab4d1549e85b76",
+          "occurrence": 2,
+          "shape": "method:value:iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:8449debdf66f9d31ab1975517a46a3fab49a53652657719b28e7063be002287d",
+          "occurrence": 3,
+          "shape": "method:value:contains",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:c44ad93f05a8a3be0267e40f6150f64bc045e68e3eb3b8eb3039bf076aa2b213",
+          "occurrence": 0,
+          "shape": "method:value:to_ascii_lowercase",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:d24c593fee0ff93eef712dc1d8b0ece1990cd62a3a56a3383972f31d4b93e2c0",
+          "occurrence": 1,
+          "shape": "method:value:any",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "finish_report",
+      "function_address": "b3:0e8d84b43f8275cb228522921da0c3e7568151edf87f5814ef81f1e113fd498f",
+      "role": "core",
+      "direct_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:1add44a7151a29987873ed9ecb3fe43da274bdebf20e49e2aaa2e5f4370779b8",
+          "occurrence": 1,
+          "shape": "method:value:dedup",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:5446504462e00e2712762d5fa97661e2507395855fee39b3200c33d2597a69af",
+          "occurrence": 0,
+          "shape": "method:value:sort",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:8175a7d49fb8702014bff94efb60d498fdd7a7844ef0329622af6f716f78e8c0",
+          "occurrence": 2,
+          "shape": "method:value:is_empty",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:829ff0df9f1090af8c6023b2fc661087fdc5b1f2b3139fc638bd55c0b795485c",
+          "occurrence": 3,
+          "shape": "method:value:to_owned",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "is_lower_hex",
+      "function_address": "b3:76d37d5c9373f92266f104c72f35712462697f5185c7bdc26cb072e33e67fcb8",
+      "role": "core",
+      "direct_effects": [
+        "unknown"
+      ],
+      "closure_effects": [
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:5c1ba22eecaf757ae3bc360acaef7f9b71a4e5c043400fa4b97e6c08bb21cc70",
+          "occurrence": 1,
+          "shape": "method:value:contains",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:e5c076ab19db414619c532974cade8e10cff45b30ce0e426b77ef8693a60281a",
+          "occurrence": 0,
+          "shape": "method:value:is_ascii_digit",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "new",
+      "function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+      "role": "core",
+      "direct_effects": [],
+      "closure_effects": [],
+      "calls": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "parse_digest",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "role": "core",
+      "direct_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:44d64d26d8d6557ad034f9f817dca1e257fba874538269fabd2993db411ee940",
+          "occurrence": 11,
+          "shape": "call:Err",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:453a9ab72c1b11174465c3d37f932f8cf46777294947865c79f937da5ea5f5af",
+          "occurrence": 13,
+          "shape": "call:Ok",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:4d81b2a15a0c709628d289fbb62d379dccdcecec45a033adcc2abe99fd399333",
+          "occurrence": 2,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:5546439c6c52e49f6741a1833bda65d2a8f2771f41e2d4ebd42c7f073a39c409",
+          "occurrence": 8,
+          "shape": "method:value:len",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:5b09c6cc7211ed68a0c357d946076e8cc36994c2a5a45cbae041836019cbe823",
+          "occurrence": 5,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:60c17823df7fe3c277a94968c23473c78bbd178cd79bf3943f8eaaeb4a658641",
+          "occurrence": 6,
+          "shape": "call:Err",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:7738fdc6a786331f02ded4b91086a38412537e5975b63863517ba75a714d771f",
+          "occurrence": 15,
+          "shape": "method:value:to_owned",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:8bb42424336b7a4b0beda4a3754ec1285f02453171c8e18d14bda1d19fe73d1a",
+          "occurrence": 4,
+          "shape": "call:Err",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:9e3dab7a2f6ce9f94f5c6c576ec73126a515a6e493577ef13dc5f362d7333498",
+          "occurrence": 0,
+          "shape": "method:value:strip_prefix",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:a8f6bfbcfbdc4bdb2d9c6a056a0ff1705d9f9c2de34df3aae029b6fca12e1c3a",
+          "occurrence": 10,
+          "shape": "method:value:chars",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:a9c5f012bddc703f9b491845c5f1e88d71f60135b692bb5218b6d7e34eb02564",
+          "occurrence": 7,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:d00b866580f1ca8aff7ee08f3a6c3b173051ed0ff9232900bfb68ec1d4465984",
+          "occurrence": 1,
+          "shape": "call:Err",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:da345fbc0d17c0fb1e654decf723aee8416685d954d7b34f79be7111a5ad29ef",
+          "occurrence": 12,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:e9f7bfe385349a066bfe611856245aaf04c033c752298229c943d4050f39d736",
+          "occurrence": 3,
+          "shape": "method:value:strip_prefix",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:effe3eb2f10fd558e1a5a09ad7ba6aa6a0a5e61e1a017256db7c34ea7b690016",
+          "occurrence": 14,
+          "shape": "method:value:to_owned",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:fc82c1c3c707ef4c4f7b059ed5721eec17288b7da532b40542354ff0f2b104b8",
+          "occurrence": 9,
+          "shape": "method:value:all",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "shared_identity_supported_claim",
+      "function_address": "b3:5c4147f9eb14af797ba47d1586d304884fc52d5ff32bbc37df042c1e47bd7cfd",
+      "role": "core",
+      "direct_effects": [],
+      "closure_effects": [],
+      "calls": []
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "strip_excluded_fields",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "role": "core",
+      "direct_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:0ebe0effb62fd095a88155e57f0b16af358464a3488ab0c31483cd56e45ff1a0",
+          "occurrence": 18,
+          "shape": "method:value:clone",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:14a0172418bf9000c22a2c38c9b4a266299667f1939f44403d4f8f3325c9d162",
+          "occurrence": 5,
+          "shape": "method:value:collect",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:19d30897a0a0fe2c3fd70ab69ddaa3c0b3d8ab37954aa684eeda57c87bcc2375",
+          "occurrence": 17,
+          "shape": "call:Value::Object",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:1d6770fec5301da831bf69b76bfbfd26ccfe3eeaf6eed93ed629ad6ffdd4ecc1",
+          "occurrence": 3,
+          "shape": "method:value:iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:30fe318edd005657cd802d0967579a4e3dca9572922ab1e2cdee63588c377992",
+          "occurrence": 1,
+          "shape": "method:value:collect",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:36b708e209adc5e36f57c377c4355d64e517ce2cfa40196105934772d52b5f0d",
+          "occurrence": 10,
+          "shape": "method:value:filter_map",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:4c59fd3fb79cde4cda50761f64784b92d5d545e79ebbeb7dfd6fb441ab77e021",
+          "occurrence": 16,
+          "shape": "call:strip_excluded_fields",
+          "resolution": "local",
+          "callee_function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:6323082fc27e1d734fbbe68c23e62f1abcc371f798263323df28cbacaf094bbc",
+          "occurrence": 0,
+          "shape": "call:Value::Array",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:6f6302f3ed3fc120f70fdf0ef7f701ef78a43c84b7a08e821cb6add16206542f",
+          "occurrence": 15,
+          "shape": "method:value:clone",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:71814e92dcb9840423b511f8c1fee6588d924f5cf8123fb44b2070a40fb70a8b",
+          "occurrence": 12,
+          "shape": "method:value:contains",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:7246d7195838e8524d64d86cdfb99fd7d909ea3a11a5d65f34d6b864ab603f09",
+          "occurrence": 6,
+          "shape": "method:value:iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:932f2f8b306c3a29ff444af335be678eaa30a8786838ad4b550a5b83d98c8609",
+          "occurrence": 13,
+          "shape": "method:value:as_str",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:c0e2402542c9c2f919988de6686cca819cb58160ae2228f3fc329fc9b9acda53",
+          "occurrence": 14,
+          "shape": "call:Some",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:d57d18907a4f4736c1bc342d7ecccdb0abe0a4fe510b6de9f208a46146ff2ede",
+          "occurrence": 9,
+          "shape": "method:value:collect",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:e0c4301d954fa135f62f7422f4d0e4578e01ff8fdf6c106b83e69bf09e9bcd41",
+          "occurrence": 4,
+          "shape": "call:strip_excluded_fields",
+          "resolution": "local",
+          "callee_function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:e823e3c117c83ce77d007505043cacba5ece91f0be660435b62335eea7632559",
+          "occurrence": 2,
+          "shape": "method:value:map",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:f2cc99caf5816d40aea663fa683cfe5dcfe485cb901d9649195d510d07e820d4",
+          "occurrence": 8,
+          "shape": "method:value:cmp",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:f6631a92e15c3045d918965c53d0295a141c4fe00edb83c32c68b6abd233f4f4",
+          "occurrence": 7,
+          "shape": "method:value:sort_by",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:fb3fec2f877644024cda212a613aee77790bbf9dc20a4e729d58b904c3bfb249",
+          "occurrence": 11,
+          "shape": "method:value:into_iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "validate_non_claims",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "role": "core",
+      "direct_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:02081bf718116eb0a32cc38a91c8dffeb81802a86f0743b773e4058d423de084",
+          "occurrence": 10,
+          "shape": "method:value:iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:21d0e8f7daa6efe7e53ac482baf93cf94526c7db1aad90ef7e52fbcad608523d",
+          "occurrence": 5,
+          "shape": "method:value:iter",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:25307c3ee738a048a1f9fbed4d8254aadb8a4b3beb31d8a0db07a3c0e01f885f",
+          "occurrence": 13,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:2ebb8781b05b88e07d1e00a6236589ac98a43194a2cec405904db5918db30765",
+          "occurrence": 6,
+          "shape": "method:value:contains",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:3003ddd4a7262fc6ef389c4242c5ee3372b655eb7ab869f11680916ce1931fc9",
+          "occurrence": 8,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:55f79d85d222a6c9879e2409372288fad09dd82db7b55883990d5e9e6532b536",
+          "occurrence": 12,
+          "shape": "method:value:push",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:66f788697e7379e501e8b77c5135e8b9e9924869662e5090c38750f078a8f7a0",
+          "occurrence": 4,
+          "shape": "method:value:any",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:694b991b32ceb29cbaf9ce664e6bfcbd2ca3d84e6832ed125fb0749c139ab7b2",
+          "occurrence": 7,
+          "shape": "method:value:push",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:73808e867aca71c45d6829e57357e851db1ff0320816c5ae8970cd441943ffd6",
+          "occurrence": 0,
+          "shape": "call:Vec::new",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:74f7bcc5a08da0bf298301c26b4d3d1cca3d5f44533d421b1df9dc737fe596f2",
+          "occurrence": 3,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:ac02f6aa54fc43e96dcb8a3078b9688a05ac03b9f753d63f13bcdf8937ef4686",
+          "occurrence": 9,
+          "shape": "method:value:any",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:bd0d98d851978465b8727858476e262df6a4f8948be14f50ce72e4f8e5194c43",
+          "occurrence": 1,
+          "shape": "method:value:is_empty",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:d240d071b365ec5769a728cf57df64daabfc06066816abb5bb139a848f3589d5",
+          "occurrence": 2,
+          "shape": "method:value:push",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:f99028cb0917bf2195125632f39d1da2b6442792a75184b188e5e2f0164a9a85",
+          "occurrence": 11,
+          "shape": "call:contains_overclaim",
+          "resolution": "local",
+          "callee_function_address": "b3:b540ec1c73683faeb82400a2e5241a679be9078ce738cd5e8d24279ea329a82e",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "name": "validate_shared_digest",
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77",
+      "role": "core",
+      "direct_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "closure_effects": [
+        "alloc",
+        "unknown"
+      ],
+      "calls": [
+        {
+          "call_site_id": "b3:0d35cae4f9b23ebf5c8e9bec951c6890e0af29b7085ee7bc34bffa9c81f63edf",
+          "occurrence": 1,
+          "shape": "method:value:push",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:627e0f5334f1084ac366129b11a4de8e77cf646afb1d15eb1f256a877e6afe6f",
+          "occurrence": 9,
+          "shape": "method:value:clone",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:6db67e5961724dd2c33d43a74ffcce942c839b1d8def9aa694ea36f5ddb375e4",
+          "occurrence": 6,
+          "shape": "method:value:extend",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:8ac8778d06621610b9ef174117b6577be735fd51dd1136b0c180c5dab8a80905",
+          "occurrence": 3,
+          "shape": "call:parse_digest",
+          "resolution": "local",
+          "callee_function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:94d37ebbbd47014a250c8b6999053a8266913cf68bb3eeab0b7b8f3cd5ecebc8",
+          "occurrence": 0,
+          "shape": "call:Vec::new",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:a27134160d1707c0cfa313e2264d784040d4b1bfa5dec54305fd0f5026cc5f4d",
+          "occurrence": 2,
+          "shape": "call:SharedIdentityIssue::new",
+          "resolution": "local",
+          "callee_function_address": "b3:b49f328300880f0e24d9236ce42dae147b0eaa2e6c728c9f6eb61e97e832b2e4",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:ba49011bf99d7d9c798a7174238f5b8ceb5360313e29c28aeadf21100c1b6e82",
+          "occurrence": 4,
+          "shape": "call:Some",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:cb907a85fb2d90588ff4210c9bc40aa015b19c052887f6964451b171acbd41a7",
+          "occurrence": 5,
+          "shape": "method:value:push",
+          "resolution": "unknown",
+          "effects": [
+            "unknown"
+          ]
+        },
+        {
+          "call_site_id": "b3:f9a2ca0d19498ff3d096b9642198ad4ac4821e819c18bef9ff2676a669c9d355",
+          "occurrence": 7,
+          "shape": "call:validate_non_claims",
+          "resolution": "local",
+          "callee_function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+          "effects": []
+        },
+        {
+          "call_site_id": "b3:fc587a8ea67c014f6d99946f5158b481ed9c281264ab9f9e3ba845f0c7b7fee2",
+          "occurrence": 8,
+          "shape": "call:finish_report",
+          "resolution": "local",
+          "callee_function_address": "b3:0e8d84b43f8275cb228522921da0c3e7568151edf87f5814ef81f1e113fd498f",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity/canonical_hash_profile.rs",
+      "name": "as_str",
+      "function_address": "b3:9cac5250129c87798fdb4a79ce76a0e958f5b43e76368e6cd8cbecaa48a44d86",
+      "role": "core",
+      "direct_effects": [],
+      "closure_effects": [],
+      "calls": []
+    }
+  ],
+  "diagnostics": [
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Err` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:44d64d26d8d6557ad034f9f817dca1e257fba874538269fabd2993db411ee940"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Err` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:60c17823df7fe3c277a94968c23473c78bbd178cd79bf3943f8eaaeb4a658641"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Err` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:8bb42424336b7a4b0beda4a3754ec1285f02453171c8e18d14bda1d19fe73d1a"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Err` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:d00b866580f1ca8aff7ee08f3a6c3b173051ed0ff9232900bfb68ec1d4465984"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Err` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:e4e0ec2e427d8857fcc91a41a979742a98e856ba0ac8b6fad9c1b29e2f86d3fc",
+      "call_site_id": "b3:a2ab30cab19022a480a91d3697798082f682ec7384616b95994418d419cad84a"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Err` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:e4e0ec2e427d8857fcc91a41a979742a98e856ba0ac8b6fad9c1b29e2f86d3fc",
+      "call_site_id": "b3:a6264c8eb96516a2e297faecacb9404629c46fe73ef003d59c4b4a6f7979262d"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Ok` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:263fc2f1d453e8323db107a709c3c8c063c9f8735d40b6ba7024d3391d899865",
+      "call_site_id": "b3:2681a4dff5a39c68a119c4fb24ca5e049c955523bd79936ac3590707fad96436"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Ok` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:453a9ab72c1b11174465c3d37f932f8cf46777294947865c79f937da5ea5f5af"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Some` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77",
+      "call_site_id": "b3:ba49011bf99d7d9c798a7174238f5b8ceb5360313e29c28aeadf21100c1b6e82"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Some` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:c0e2402542c9c2f919988de6686cca819cb58160ae2228f3fc329fc9b9acda53"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Value::Array` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:6323082fc27e1d734fbbe68c23e62f1abcc371f798263323df28cbacaf094bbc"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Value::Array` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:cc40e13e4b0248dee70e60db4f737ed0ea69ce103d8a775bdf2a7b6bf5cb961f"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Value::Object` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:19d30897a0a0fe2c3fd70ab69ddaa3c0b3d8ab37954aa684eeda57c87bcc2375"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Value::Object` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:b013abe32b6761e82eb630aa035b976c35607803fc4e28ea36b2c78d5f2826da"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Vec::new` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77",
+      "call_site_id": "b3:94d37ebbbd47014a250c8b6999053a8266913cf68bb3eeab0b7b8f3cd5ecebc8"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:Vec::new` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:73808e867aca71c45d6829e57357e851db1ff0320816c5ae8970cd441943ffd6"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:blake3::hash` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:1c6fae3e0d7017ea297908bc4d017f65f4b8fa02af94b8b937e107d80f9a0906",
+      "call_site_id": "b3:17ecc31240b57aa5f5e7876c4ccf5b58d61e048a90f3802b1590c38bbc96d700"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `call:serde_json::to_vec` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:263fc2f1d453e8323db107a709c3c8c063c9f8735d40b6ba7024d3391d899865",
+      "call_site_id": "b3:61653081501c44952f4142ca15b93970167ef64c768246b06398af6f9a5f6eb8"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:all` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:fc82c1c3c707ef4c4f7b059ed5721eec17288b7da532b40542354ff0f2b104b8"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:any` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:b540ec1c73683faeb82400a2e5241a679be9078ce738cd5e8d24279ea329a82e",
+      "call_site_id": "b3:d24c593fee0ff93eef712dc1d8b0ece1990cd62a3a56a3383972f31d4b93e2c0"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:any` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:66f788697e7379e501e8b77c5135e8b9e9924869662e5090c38750f078a8f7a0"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:any` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:ac02f6aa54fc43e96dcb8a3078b9688a05ac03b9f753d63f13bcdf8937ef4686"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:as_str` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:932f2f8b306c3a29ff444af335be678eaa30a8786838ad4b550a5b83d98c8609"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:chars` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:a8f6bfbcfbdc4bdb2d9c6a056a0ff1705d9f9c2de34df3aae029b6fca12e1c3a"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:clone` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77",
+      "call_site_id": "b3:627e0f5334f1084ac366129b11a4de8e77cf646afb1d15eb1f256a877e6afe6f"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:clone` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:0ebe0effb62fd095a88155e57f0b16af358464a3488ab0c31483cd56e45ff1a0"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:clone` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:6f6302f3ed3fc120f70fdf0ef7f701ef78a43c84b7a08e821cb6add16206542f"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:clone` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:1a80885d95f0713e34de82b4f5fff41d9300f757ac28526c3aaac721f4458c96"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:clone` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:3d5469bebe8ec781adfbc27910e078826b35eaf14ef825ce970c788b550c5f81"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:cmp` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:f2cc99caf5816d40aea663fa683cfe5dcfe485cb901d9649195d510d07e820d4"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:cmp` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:ced693c17c2120640b6d353a328e0e5f762e23b3f29cdad9af27a469a9da9cab"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:collect` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:14a0172418bf9000c22a2c38c9b4a266299667f1939f44403d4f8f3325c9d162"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:collect` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:30fe318edd005657cd802d0967579a4e3dca9572922ab1e2cdee63588c377992"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:collect` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:d57d18907a4f4736c1bc342d7ecccdb0abe0a4fe510b6de9f208a46146ff2ede"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:collect` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:33236371eea87651cc5b23d227ea6c62f2cfb2e621b7292a8f06acbf14c12e4b"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:collect` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:ad6a834080f838c725b2392f8bd052dc22a26e8cfe86e8591f95b59453a6cf18"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:collect` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:dc0375ee75537efa261b075b8b1676d98dded28729ca61c4001cdcd3fe235b75"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:contains` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:71814e92dcb9840423b511f8c1fee6588d924f5cf8123fb44b2070a40fb70a8b"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:contains` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:76d37d5c9373f92266f104c72f35712462697f5185c7bdc26cb072e33e67fcb8",
+      "call_site_id": "b3:5c1ba22eecaf757ae3bc360acaef7f9b71a4e5c043400fa4b97e6c08bb21cc70"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:contains` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:b540ec1c73683faeb82400a2e5241a679be9078ce738cd5e8d24279ea329a82e",
+      "call_site_id": "b3:8449debdf66f9d31ab1975517a46a3fab49a53652657719b28e7063be002287d"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:contains` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:2ebb8781b05b88e07d1e00a6236589ac98a43194a2cec405904db5918db30765"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:dedup` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:0e8d84b43f8275cb228522921da0c3e7568151edf87f5814ef81f1e113fd498f",
+      "call_site_id": "b3:1add44a7151a29987873ed9ecb3fe43da274bdebf20e49e2aaa2e5f4370779b8"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:extend` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77",
+      "call_site_id": "b3:6db67e5961724dd2c33d43a74ffcce942c839b1d8def9aa694ea36f5ddb375e4"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:filter_map` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:36b708e209adc5e36f57c377c4355d64e517ce2cfa40196105934772d52b5f0d"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:into_iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:fb3fec2f877644024cda212a613aee77790bbf9dc20a4e729d58b904c3bfb249"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:into_iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:e2a2658bfb695799071f612790884387e79c0cb9b97a9bb750a48e42a787f440"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:is_ascii_digit` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:76d37d5c9373f92266f104c72f35712462697f5185c7bdc26cb072e33e67fcb8",
+      "call_site_id": "b3:e5c076ab19db414619c532974cade8e10cff45b30ce0e426b77ef8693a60281a"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:is_empty` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:0e8d84b43f8275cb228522921da0c3e7568151edf87f5814ef81f1e113fd498f",
+      "call_site_id": "b3:8175a7d49fb8702014bff94efb60d498fdd7a7844ef0329622af6f716f78e8c0"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:is_empty` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:e4e0ec2e427d8857fcc91a41a979742a98e856ba0ac8b6fad9c1b29e2f86d3fc",
+      "call_site_id": "b3:e390eac8ec29a0b941e37b62ff47c76d69b3925fd692a2db03a449bea9a5c98e"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:is_empty` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:bd0d98d851978465b8727858476e262df6a4f8948be14f50ce72e4f8e5194c43"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:1d6770fec5301da831bf69b76bfbfd26ccfe3eeaf6eed93ed629ad6ffdd4ecc1"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:7246d7195838e8524d64d86cdfb99fd7d909ea3a11a5d65f34d6b864ab603f09"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:b540ec1c73683faeb82400a2e5241a679be9078ce738cd5e8d24279ea329a82e",
+      "call_site_id": "b3:67460bbc7803f8dc80b4a689bcf3412c60f7b82f2cc6b06840ab4d1549e85b76"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:3faf7abf67bf6b6806ba545643b44d7fc32c5eb7e4cc9d1bfb2c222c366d1eab"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:6bfe5bccd80816dc3028506911d1d27f70ac70b41d77287cfbe34dcb1d93655d"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:02081bf718116eb0a32cc38a91c8dffeb81802a86f0743b773e4058d423de084"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:iter` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:21d0e8f7daa6efe7e53ac482baf93cf94526c7db1aad90ef7e52fbcad608523d"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:len` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:5546439c6c52e49f6741a1833bda65d2a8f2771f41e2d4ebd42c7f073a39c409"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:map_err` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:263fc2f1d453e8323db107a709c3c8c063c9f8735d40b6ba7024d3391d899865",
+      "call_site_id": "b3:2fcdbccb92b29363938276072b6a3f4ddbbe7e0c0e7cc5f1dabede02863bc626"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:map` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:e823e3c117c83ce77d007505043cacba5ece91f0be660435b62335eea7632559"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:map` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:2dbcb68fa4b9ce9a5df9d1cda218e40a8189bee3f5547e93d2f0399400193ad2"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:map` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:effdde427bca3fccf1e1c7f726de148ef8aa26563fba2fcce462ea374fc8b8f8"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:push` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77",
+      "call_site_id": "b3:0d35cae4f9b23ebf5c8e9bec951c6890e0af29b7085ee7bc34bffa9c81f63edf"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:push` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77",
+      "call_site_id": "b3:cb907a85fb2d90588ff4210c9bc40aa015b19c052887f6964451b171acbd41a7"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:push` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:55f79d85d222a6c9879e2409372288fad09dd82db7b55883990d5e9e6532b536"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:push` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:694b991b32ceb29cbaf9ce664e6bfcbd2ca3d84e6832ed125fb0749c139ab7b2"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:push` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771",
+      "call_site_id": "b3:d240d071b365ec5769a728cf57df64daabfc06066816abb5bb139a848f3589d5"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:sort_by` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf",
+      "call_site_id": "b3:f6631a92e15c3045d918965c53d0295a141c4fe00edb83c32c68b6abd233f4f4"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:sort_by` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84",
+      "call_site_id": "b3:4dd1b0d6aaca2b9e1c7b22800583e0abca49481f5245477be600bb07153ff5f8"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:sort` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:0e8d84b43f8275cb228522921da0c3e7568151edf87f5814ef81f1e113fd498f",
+      "call_site_id": "b3:5446504462e00e2712762d5fa97661e2507395855fee39b3200c33d2597a69af"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:strip_prefix` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:9e3dab7a2f6ce9f94f5c6c576ec73126a515a6e493577ef13dc5f362d7333498"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:strip_prefix` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:e9f7bfe385349a066bfe611856245aaf04c033c752298229c943d4050f39d736"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:to_ascii_lowercase` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:b540ec1c73683faeb82400a2e5241a679be9078ce738cd5e8d24279ea329a82e",
+      "call_site_id": "b3:c44ad93f05a8a3be0267e40f6150f64bc045e68e3eb3b8eb3039bf076aa2b213"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:to_hex` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:1c6fae3e0d7017ea297908bc4d017f65f4b8fa02af94b8b937e107d80f9a0906",
+      "call_site_id": "b3:66bbf8f3724f1d39d200fe8facc492be22491b2cb661e6f75a5e8b68d6e53cb0"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:to_owned` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:0e8d84b43f8275cb228522921da0c3e7568151edf87f5814ef81f1e113fd498f",
+      "call_site_id": "b3:829ff0df9f1090af8c6023b2fc661087fdc5b1f2b3139fc638bd55c0b795485c"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:to_owned` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:7738fdc6a786331f02ded4b91086a38412537e5975b63863517ba75a714d771f"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:to_owned` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748",
+      "call_site_id": "b3:effe3eb2f10fd558e1a5a09ad7ba6aa6a0a5e61e1a017256db7c34ea7b690016"
+    },
+    {
+      "code": "call_edge_unknown",
+      "message": "call `method:value:to_string` has no selected local or exact reviewed summary",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:1c6fae3e0d7017ea297908bc4d017f65f4b8fa02af94b8b937e107d80f9a0906",
+      "call_site_id": "b3:b8394e9741e5d9c9b5e1d201d00ffeb2411a7bc3247e9f2f09edd20e80598907"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::blake3_hex` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:1c6fae3e0d7017ea297908bc4d017f65f4b8fa02af94b8b937e107d80f9a0906"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::canonical_bytes_hash` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fbd68ced0a2727133e03dcde51e5bb00fc7d95e69f69638eb1eb0a19e46536ee"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::canonical_json_hash_with_exclusion` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:e4e0ec2e427d8857fcc91a41a979742a98e856ba0ac8b6fad9c1b29e2f86d3fc"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::canonical_json_hash` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:263fc2f1d453e8323db107a709c3c8c063c9f8735d40b6ba7024d3391d899865"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::canonical_json_value` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:d6b3347926b01988b09eedfe0d8f085c7b7c6aeb28dd004bc013c3b086517e84"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::contains_overclaim` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:b540ec1c73683faeb82400a2e5241a679be9078ce738cd5e8d24279ea329a82e"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::finish_report` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:0e8d84b43f8275cb228522921da0c3e7568151edf87f5814ef81f1e113fd498f"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::is_lower_hex` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:76d37d5c9373f92266f104c72f35712462697f5185c7bdc26cb072e33e67fcb8"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::parse_digest` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:c048ca4581c121923ef4944b8a875cd314b221ea13c3530ae6b646f669768748"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::strip_excluded_fields` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:5819d4c342ef91b2d4bf1bba5f7c3acd7c97bf74e1a24c3a3656d768e38030bf"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::validate_non_claims` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:fa1d990b819018ca4829028cd271500737d9063461d7199b975a20ba6af3f771"
+    },
+    {
+      "code": "closure_effect_denied",
+      "message": "function `crates/valence-core/src/shared_identity.rs::validate_shared_digest` closure contains denied effect `unknown`",
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "function_address": "b3:421a7315d8d157af8fc6d2c071214538ecd30e3f0a64bfd34c798b5b1de31d77"
+    }
+  ],
+  "non_claims": [
+    "Reviewed call summaries do not verify dependency implementations, complete Rust name resolution, MIR closure, runtime reachability, semantic determinism, whole-program correctness, or release eligibility.",
+    "Reviewed dependency summaries bind exact provider identity but do not verify dependency implementations, panic freedom, semantic determinism, compiler correctness, whole-program correctness, verifier soundness, or release eligibility.",
+    "The receipt covers conservative selected Rust source-token inference and reviewed call summaries, not complete Rust name resolution, macro expansion, trait dispatch, MIR call-graph semantics, runtime reachability, or runtime ordering.",
+    "This policy supports conservative source-token closure over two selected Valence production files only; broader valence-core remains unadmitted."
+  ],
+  "receipt_identity": "b3:5a8f90f5963368ca25b4d3b44a68fbe4b338d3d4a420ece302dc55bc41da5e7f"
+}

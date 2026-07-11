@@ -1,0 +1,20 @@
+{
+  "call_summaries": [],
+  "function_address_baseline": "evidence/octet/deterministic-core/baseline/function-addresses.json",
+  "module_roles": [
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "role": "core"
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity/canonical_hash_profile.rs",
+      "role": "core"
+    }
+  ],
+  "non_claims": [
+    "This policy supports conservative source-token closure over two selected Valence production files only; broader valence-core remains unadmitted.",
+    "Reviewed call summaries do not verify dependency implementations, complete Rust name resolution, MIR closure, runtime reachability, semantic determinism, whole-program correctness, or release eligibility."
+  ],
+  "profile_id": "deterministic-core",
+  "schema_version": "octet-effect-closure-workspace-policy/v1"
+}

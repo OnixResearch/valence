@@ -1,0 +1,15 @@
+{
+  "schema_version": "octet-effect-closure-status/v1",
+  "status": "admitted",
+  "exit_code": 0,
+  "phase": "effect-closure",
+  "profile_id": "deterministic-core",
+  "receipt_identity": "b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7",
+  "diagnostics": [],
+  "non_claims": [
+    "Reviewed call summaries do not verify dependency implementations, complete Rust name resolution, MIR closure, runtime reachability, semantic determinism, whole-program correctness, or release eligibility.",
+    "Reviewed dependency summaries bind exact provider identity but do not verify dependency implementations, panic freedom, semantic determinism, compiler correctness, whole-program correctness, verifier soundness, or release eligibility.",
+    "The receipt covers conservative selected Rust source-token inference and reviewed call summaries, not complete Rust name resolution, macro expansion, trait dispatch, MIR call-graph semantics, runtime reachability, or runtime ordering.",
+    "This policy supports conservative source-token closure over two selected Valence production files only; broader valence-core remains unadmitted."
+  ]
+}

@@ -1,0 +1,1 @@
+/nix/store/2hfqxksl89f8a872vgci4mricwdzhh04-cargo-octet-0.1.0/bin/cargo-octet admit --profile deterministic-core --closure --artifact-dir evidence/octet/effect-closure/admission -- --target x86_64-unknown-linux-gnu

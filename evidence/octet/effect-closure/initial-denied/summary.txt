@@ -1,0 +1,106 @@
+Octet effect closure admission
+Status: denied
+Claim scope: selected-source-token-effect-closure
+Profile: deterministic-core
+Profile hash: b3:217467f897307ee25135762e38bde9d321e5c3cca5ac7b4322adea7b37f95539
+Config hash: b3:47531b6882b7e11f0091faf7321a2ebf42219f93567a21bec33fa1deb5d1e7c3
+Receipt identity: b3:5a8f90f5963368ca25b4d3b44a68fbe4b338d3d4a420ece302dc55bc41da5e7f
+Selected sources: 2
+Functions: 16
+Reviewed providers: 0
+Diagnostics: 90
+- call_edge_unknown [b3:44d64d26d8d6557ad034f9f817dca1e257fba874538269fabd2993db411ee940] call `call:Err` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:60c17823df7fe3c277a94968c23473c78bbd178cd79bf3943f8eaaeb4a658641] call `call:Err` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:8bb42424336b7a4b0beda4a3754ec1285f02453171c8e18d14bda1d19fe73d1a] call `call:Err` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:d00b866580f1ca8aff7ee08f3a6c3b173051ed0ff9232900bfb68ec1d4465984] call `call:Err` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:a2ab30cab19022a480a91d3697798082f682ec7384616b95994418d419cad84a] call `call:Err` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:a6264c8eb96516a2e297faecacb9404629c46fe73ef003d59c4b4a6f7979262d] call `call:Err` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:2681a4dff5a39c68a119c4fb24ca5e049c955523bd79936ac3590707fad96436] call `call:Ok` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:453a9ab72c1b11174465c3d37f932f8cf46777294947865c79f937da5ea5f5af] call `call:Ok` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:ba49011bf99d7d9c798a7174238f5b8ceb5360313e29c28aeadf21100c1b6e82] call `call:Some` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:c0e2402542c9c2f919988de6686cca819cb58160ae2228f3fc329fc9b9acda53] call `call:Some` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:6323082fc27e1d734fbbe68c23e62f1abcc371f798263323df28cbacaf094bbc] call `call:Value::Array` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:cc40e13e4b0248dee70e60db4f737ed0ea69ce103d8a775bdf2a7b6bf5cb961f] call `call:Value::Array` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:19d30897a0a0fe2c3fd70ab69ddaa3c0b3d8ab37954aa684eeda57c87bcc2375] call `call:Value::Object` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:b013abe32b6761e82eb630aa035b976c35607803fc4e28ea36b2c78d5f2826da] call `call:Value::Object` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:94d37ebbbd47014a250c8b6999053a8266913cf68bb3eeab0b7b8f3cd5ecebc8] call `call:Vec::new` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:73808e867aca71c45d6829e57357e851db1ff0320816c5ae8970cd441943ffd6] call `call:Vec::new` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:17ecc31240b57aa5f5e7876c4ccf5b58d61e048a90f3802b1590c38bbc96d700] call `call:blake3::hash` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:61653081501c44952f4142ca15b93970167ef64c768246b06398af6f9a5f6eb8] call `call:serde_json::to_vec` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:fc82c1c3c707ef4c4f7b059ed5721eec17288b7da532b40542354ff0f2b104b8] call `method:value:all` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:d24c593fee0ff93eef712dc1d8b0ece1990cd62a3a56a3383972f31d4b93e2c0] call `method:value:any` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:66f788697e7379e501e8b77c5135e8b9e9924869662e5090c38750f078a8f7a0] call `method:value:any` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:ac02f6aa54fc43e96dcb8a3078b9688a05ac03b9f753d63f13bcdf8937ef4686] call `method:value:any` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:932f2f8b306c3a29ff444af335be678eaa30a8786838ad4b550a5b83d98c8609] call `method:value:as_str` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:a8f6bfbcfbdc4bdb2d9c6a056a0ff1705d9f9c2de34df3aae029b6fca12e1c3a] call `method:value:chars` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:627e0f5334f1084ac366129b11a4de8e77cf646afb1d15eb1f256a877e6afe6f] call `method:value:clone` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:0ebe0effb62fd095a88155e57f0b16af358464a3488ab0c31483cd56e45ff1a0] call `method:value:clone` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:6f6302f3ed3fc120f70fdf0ef7f701ef78a43c84b7a08e821cb6add16206542f] call `method:value:clone` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:1a80885d95f0713e34de82b4f5fff41d9300f757ac28526c3aaac721f4458c96] call `method:value:clone` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:3d5469bebe8ec781adfbc27910e078826b35eaf14ef825ce970c788b550c5f81] call `method:value:clone` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:f2cc99caf5816d40aea663fa683cfe5dcfe485cb901d9649195d510d07e820d4] call `method:value:cmp` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:ced693c17c2120640b6d353a328e0e5f762e23b3f29cdad9af27a469a9da9cab] call `method:value:cmp` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:14a0172418bf9000c22a2c38c9b4a266299667f1939f44403d4f8f3325c9d162] call `method:value:collect` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:30fe318edd005657cd802d0967579a4e3dca9572922ab1e2cdee63588c377992] call `method:value:collect` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:d57d18907a4f4736c1bc342d7ecccdb0abe0a4fe510b6de9f208a46146ff2ede] call `method:value:collect` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:33236371eea87651cc5b23d227ea6c62f2cfb2e621b7292a8f06acbf14c12e4b] call `method:value:collect` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:ad6a834080f838c725b2392f8bd052dc22a26e8cfe86e8591f95b59453a6cf18] call `method:value:collect` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:dc0375ee75537efa261b075b8b1676d98dded28729ca61c4001cdcd3fe235b75] call `method:value:collect` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:71814e92dcb9840423b511f8c1fee6588d924f5cf8123fb44b2070a40fb70a8b] call `method:value:contains` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:5c1ba22eecaf757ae3bc360acaef7f9b71a4e5c043400fa4b97e6c08bb21cc70] call `method:value:contains` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:8449debdf66f9d31ab1975517a46a3fab49a53652657719b28e7063be002287d] call `method:value:contains` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:2ebb8781b05b88e07d1e00a6236589ac98a43194a2cec405904db5918db30765] call `method:value:contains` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:1add44a7151a29987873ed9ecb3fe43da274bdebf20e49e2aaa2e5f4370779b8] call `method:value:dedup` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:6db67e5961724dd2c33d43a74ffcce942c839b1d8def9aa694ea36f5ddb375e4] call `method:value:extend` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:36b708e209adc5e36f57c377c4355d64e517ce2cfa40196105934772d52b5f0d] call `method:value:filter_map` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:fb3fec2f877644024cda212a613aee77790bbf9dc20a4e729d58b904c3bfb249] call `method:value:into_iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:e2a2658bfb695799071f612790884387e79c0cb9b97a9bb750a48e42a787f440] call `method:value:into_iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:e5c076ab19db414619c532974cade8e10cff45b30ce0e426b77ef8693a60281a] call `method:value:is_ascii_digit` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:8175a7d49fb8702014bff94efb60d498fdd7a7844ef0329622af6f716f78e8c0] call `method:value:is_empty` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:e390eac8ec29a0b941e37b62ff47c76d69b3925fd692a2db03a449bea9a5c98e] call `method:value:is_empty` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:bd0d98d851978465b8727858476e262df6a4f8948be14f50ce72e4f8e5194c43] call `method:value:is_empty` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:1d6770fec5301da831bf69b76bfbfd26ccfe3eeaf6eed93ed629ad6ffdd4ecc1] call `method:value:iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:7246d7195838e8524d64d86cdfb99fd7d909ea3a11a5d65f34d6b864ab603f09] call `method:value:iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:67460bbc7803f8dc80b4a689bcf3412c60f7b82f2cc6b06840ab4d1549e85b76] call `method:value:iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:3faf7abf67bf6b6806ba545643b44d7fc32c5eb7e4cc9d1bfb2c222c366d1eab] call `method:value:iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:6bfe5bccd80816dc3028506911d1d27f70ac70b41d77287cfbe34dcb1d93655d] call `method:value:iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:02081bf718116eb0a32cc38a91c8dffeb81802a86f0743b773e4058d423de084] call `method:value:iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:21d0e8f7daa6efe7e53ac482baf93cf94526c7db1aad90ef7e52fbcad608523d] call `method:value:iter` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:5546439c6c52e49f6741a1833bda65d2a8f2771f41e2d4ebd42c7f073a39c409] call `method:value:len` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:2fcdbccb92b29363938276072b6a3f4ddbbe7e0c0e7cc5f1dabede02863bc626] call `method:value:map_err` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:e823e3c117c83ce77d007505043cacba5ece91f0be660435b62335eea7632559] call `method:value:map` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:2dbcb68fa4b9ce9a5df9d1cda218e40a8189bee3f5547e93d2f0399400193ad2] call `method:value:map` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:effdde427bca3fccf1e1c7f726de148ef8aa26563fba2fcce462ea374fc8b8f8] call `method:value:map` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:0d35cae4f9b23ebf5c8e9bec951c6890e0af29b7085ee7bc34bffa9c81f63edf] call `method:value:push` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:cb907a85fb2d90588ff4210c9bc40aa015b19c052887f6964451b171acbd41a7] call `method:value:push` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:55f79d85d222a6c9879e2409372288fad09dd82db7b55883990d5e9e6532b536] call `method:value:push` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:694b991b32ceb29cbaf9ce664e6bfcbd2ca3d84e6832ed125fb0749c139ab7b2] call `method:value:push` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:d240d071b365ec5769a728cf57df64daabfc06066816abb5bb139a848f3589d5] call `method:value:push` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:f6631a92e15c3045d918965c53d0295a141c4fe00edb83c32c68b6abd233f4f4] call `method:value:sort_by` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:4dd1b0d6aaca2b9e1c7b22800583e0abca49481f5245477be600bb07153ff5f8] call `method:value:sort_by` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:5446504462e00e2712762d5fa97661e2507395855fee39b3200c33d2597a69af] call `method:value:sort` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:9e3dab7a2f6ce9f94f5c6c576ec73126a515a6e493577ef13dc5f362d7333498] call `method:value:strip_prefix` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:e9f7bfe385349a066bfe611856245aaf04c033c752298229c943d4050f39d736] call `method:value:strip_prefix` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:c44ad93f05a8a3be0267e40f6150f64bc045e68e3eb3b8eb3039bf076aa2b213] call `method:value:to_ascii_lowercase` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:66bbf8f3724f1d39d200fe8facc492be22491b2cb661e6f75a5e8b68d6e53cb0] call `method:value:to_hex` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:829ff0df9f1090af8c6023b2fc661087fdc5b1f2b3139fc638bd55c0b795485c] call `method:value:to_owned` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:7738fdc6a786331f02ded4b91086a38412537e5975b63863517ba75a714d771f] call `method:value:to_owned` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:effe3eb2f10fd558e1a5a09ad7ba6aa6a0a5e61e1a017256db7c34ea7b690016] call `method:value:to_owned` has no selected local or exact reviewed summary
+- call_edge_unknown [b3:b8394e9741e5d9c9b5e1d201d00ffeb2411a7bc3247e9f2f09edd20e80598907] call `method:value:to_string` has no selected local or exact reviewed summary
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::blake3_hex` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::canonical_bytes_hash` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::canonical_json_hash_with_exclusion` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::canonical_json_hash` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::canonical_json_value` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::contains_overclaim` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::finish_report` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::is_lower_hex` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::parse_digest` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::strip_excluded_fields` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::validate_non_claims` closure contains denied effect `unknown`
+- closure_effect_denied [-] function `crates/valence-core/src/shared_identity.rs::validate_shared_digest` closure contains denied effect `unknown`
+Non-claims:
+- Reviewed call summaries do not verify dependency implementations, complete Rust name resolution, MIR closure, runtime reachability, semantic determinism, whole-program correctness, or release eligibility.
+- Reviewed dependency summaries bind exact provider identity but do not verify dependency implementations, panic freedom, semantic determinism, compiler correctness, whole-program correctness, verifier soundness, or release eligibility.
+- The receipt covers conservative selected Rust source-token inference and reviewed call summaries, not complete Rust name resolution, macro expansion, trait dispatch, MIR call-graph semantics, runtime reachability, or runtime ordering.
+- This policy supports conservative source-token closure over two selected Valence production files only; broader valence-core remains unadmitted.

@@ -1,0 +1,22 @@
+{
+  "schema_version": "octet-effect-closure-verification/v1",
+  "artifact_dir": "target/octet-effect-closure-parent-tamper",
+  "status": "invalid",
+  "receipt_identity": "b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7",
+  "checked_artifacts": [
+    "command.txt",
+    "status.json",
+    "summary.txt",
+    "effect-closure.json",
+    "workspace-policy.json",
+    "dependency-graph.json",
+    "check/status.json",
+    "check/function-addresses.json"
+  ],
+  "diagnostics": [
+    "strict-profile parent artifact verification failed:\n- hash mismatch for artifact locator `summary.txt`; expected blake3 cc94d7a4eaf05c8c226e78202a8a1dd5aeeec5e11e48e18d3f05e426dc79b760, got 3b23569233c731c413768e2544555c9a6a73e4ca76af6cb923b03769546d8717"
+  ],
+  "non_claims": [
+    "Admission verification checks stored BLAKE3 identity and linkage only; it does not rerun Cargo, source inference, dependency review, or compiler analysis, and it provides no signer authenticity, authorization, or defense against coherent replacement of every trust root."
+  ]
+}

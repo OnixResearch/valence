@@ -264,12 +264,16 @@ nix build .#checks.x86_64-linux.stack-provenance-nickel-contracts --no-link
 
 ## Strict Rust admission pilot
 
-Valence's first Octet `deterministic-core` downstream pilot compiles the exact
+Valence's Octet `deterministic-core` downstream pilot compiles the exact
 production shared-identity source through a non-publishable focused target,
 checks a reviewed function-address baseline in deny mode, and retains the
-profile-bound artifact bundle. Replay commands, advisory debt, evidence paths,
-and explicit non-claims are documented in
-[`docs/octet-deterministic-core.md`](docs/octet-deterministic-core.md).
+profile-bound artifact bundle. A separate effect-closure rail now propagates
+conservative source-token effects across 16 selected function nodes and binds
+78 exact reviewed call sites to the recorded toolchain/Cargo provider identities.
+The final bundle is admitted with zero closure diagnostics; the initial denied
+bundle and a tamper-negative report remain visible. Replay commands, policy
+sources, advisory debt, evidence paths, and explicit non-claims are documented
+in [`docs/octet-deterministic-core.md`](docs/octet-deterministic-core.md).
 
 ## License
 

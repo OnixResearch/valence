@@ -73,3 +73,51 @@ No broad lint suppression was added to make the profile pass.
 - `evidence/octet/deterministic-core/validation.md` records exact positive, repeat, and stale-source outcomes.
 
 A passing pilot does not prove transitive effect absence, dependency closure, panic freedom in dependencies, semantic equivalence, compiler correctness, verifier soundness, whole-program correctness, cross-toolchain reproducibility, cross-machine reproducibility, or release eligibility.
+
+## Conservative effect closure
+
+<!-- r[verify valence.strict_rust_admission.effect_closure_policy.roles] -->
+<!-- r[verify valence.strict_rust_admission.effect_closure_policy.calls] -->
+
+The separate closure rail preserves the same two-file source universe and adds conservative source-token call/effect propagation. Human-authored policy lives in:
+
+- `policy/octet-effect-closure-contracts.ncl` — copied typed workspace-policy contract;
+- `policy/octet-effect-closure.ncl` — selected paths, baseline, and non-claims;
+- `policy/octet-effect-closure-call-summaries.ncl` — 78 exact reviewed call-site summaries;
+- `octet-effect-closure.json` — generated runtime input.
+
+Both selected source files have the explicit `core` role. Each non-local call summary is keyed by a BLAKE3 call-site ID derived from its caller function address, normalized call shape, and within-function occurrence. The checked-in policy binds reviewed calls to the recorded `core`, `alloc`, or `std` toolchain identity, `blake3 1.8.5`, or `serde_json 1.0.150` provider identity for `x86_64-unknown-linux-gnu`. Toolchain API evidence binds the exact provider identity; Cargo-package summaries bind the reviewed `Cargo.lock` BLAKE3 identity. These are reviewed assertions, not verification of provider implementations.
+
+Refresh generated JSON only after reviewing the Nickel diff:
+
+```bash
+nickel typecheck policy/octet-effect-closure.ncl
+nickel export --format json policy/octet-effect-closure.ncl > octet-effect-closure.json
+```
+
+### Run and verify closure admission
+
+<!-- r[verify valence.strict_rust_admission.effect_closure_final.admitted] -->
+
+```bash
+nix run "path:$OCTET_ROOT#cargo-octet" -- admit \
+  --profile deterministic-core \
+  --closure \
+  --artifact-dir evidence/octet/effect-closure/admission \
+  -- --target x86_64-unknown-linux-gnu
+
+nix run "path:$OCTET_ROOT#cargo-octet" -- admit verify \
+  --artifact-dir evidence/octet/effect-closure/admission \
+  --output-format json
+```
+
+The final checked-in bundle admits 16 function-addressed nodes, records 78 reviewed call sites across five provider identities, permits only the inferred `alloc` effect, and has zero closure diagnostics. Its receipt identity is `b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7`. Repeating the identical command produced byte-identical `effect-closure.json` and `status.json`.
+
+### Fail-closed and tamper evidence
+
+<!-- r[verify valence.strict_rust_admission.effect_closure_initial.denied] -->
+<!-- r[verify valence.strict_rust_admission.effect_closure_final.negative] -->
+
+`evidence/octet/effect-closure/initial-denied/` preserves the no-summary run. The direct deterministic-core check passed, then closure denied 78 unknown call edges and exposed each stable call-site identity for review. `evidence/octet/effect-closure/tamper-verification.json` records that changing a copied closure `summary.txt` produced nonzero verification with both stale-summary and provenance-hash diagnostics. `evidence/octet/effect-closure/parent-tamper-verification.json` separately records that changing the strict-profile parent's `check/summary.txt` is rejected by nested parent verification.
+
+Closure v1 does not provide complete Rust name resolution, macro expansion, trait or dynamic-dispatch completeness, MIR call-graph completeness, dependency implementation verification, runtime reachability or ordering, panic freedom, semantic determinism, compiler correctness, verifier soundness, whole-program correctness, cross-target portability, signer authenticity, authorization, or release eligibility. BLAKE3 receipts do not defend against coherent replacement of every artifact and trust root. A target, toolchain, feature, package, lockfile, policy, function-address, or source change requires a fresh denied review queue and new exact admission evidence.

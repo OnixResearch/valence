@@ -23,7 +23,7 @@ r[valence.strict_rust_admission.effect_closure_policy.roles]
 
 r[valence.strict_rust_admission.effect_closure_policy.calls]
 
-- GIVEN a selected call is not resolved as a local selected function or tool-owned intrinsic
+- GIVEN a selected non-macro call is not resolved as one selected local function, including apparent `core` or `alloc` constructors whose names could be shadowed
 - WHEN Valence admits that call
 - THEN its policy entry MUST bind the exact call-site ID, review label, callee label, provider kind/name/version/source/target/features, effect set, and evidence BLAKE3.
 - AND it MUST NOT declare `unknown`, erase a direct forbidden effect, or claim dependency implementation verification.
@@ -37,7 +37,7 @@ r[valence.strict_rust_admission.effect_closure_initial] Valence MUST retain an i
 r[valence.strict_rust_admission.effect_closure_initial.denied]
 
 - GIVEN the existing direct deterministic-core check passes but the closure policy contains no call summaries
-- WHEN `cargo octet admit --profile deterministic-core --closure` runs
+- WHEN `cargo octet admit --profile deterministic-core --closure -- --target x86_64-unknown-linux-gnu` runs
 - THEN the command MUST deny closure for unknown or unadmitted edges.
 - AND the retained receipt MUST expose stable call-site identities suitable for review.
 
@@ -49,7 +49,7 @@ r[valence.strict_rust_admission.effect_closure_final] Valence MUST retain an adm
 
 r[valence.strict_rust_admission.effect_closure_final.admitted]
 
-- GIVEN the direct check passes, addresses match, module roles are valid, exact summaries match the resolved providers, and propagated effects satisfy `deterministic-core`
+- GIVEN the direct check passes under an explicit `x86_64-unknown-linux-gnu` target, addresses match, module roles are valid, exact summaries match the resolved providers, and propagated effects satisfy `deterministic-core`
 - WHEN closure admission runs
 - THEN status MUST be `admitted` with no closure diagnostics.
 - AND `cargo octet admit verify --artifact-dir PATH` MUST report the final bundle valid.
@@ -81,4 +81,4 @@ r[valence.strict_rust_admission.effect_closure_boundaries.non_claims]
 - GIVEN an operator reads the policy, guide, receipt, status, summary, provenance, or lifecycle evidence
 - WHEN the admitted result is described
 - THEN it MUST distinguish the two selected files, broader unadmitted `valence-core`, and unverified dependency implementations.
-- AND it MUST NOT claim complete name resolution, macro or trait-dispatch completeness, MIR closure, runtime reachability or ordering, panic freedom, semantic determinism, compiler correctness, whole-program correctness, verifier soundness, or release eligibility.
+- AND it MUST NOT claim complete name resolution, macro or trait-dispatch completeness, MIR closure, runtime reachability or ordering, panic freedom, semantic determinism, compiler correctness, whole-program correctness, verifier soundness, signer authenticity, authorization, coherent trust-root replacement resistance, or release eligibility.

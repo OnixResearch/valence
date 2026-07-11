@@ -1,0 +1,23 @@
+{
+  "schema_version": "octet-effect-closure-verification/v1",
+  "artifact_dir": "target/octet-effect-closure-tamper",
+  "status": "invalid",
+  "receipt_identity": "b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7",
+  "checked_artifacts": [
+    "command.txt",
+    "status.json",
+    "summary.txt",
+    "effect-closure.json",
+    "workspace-policy.json",
+    "dependency-graph.json",
+    "check/status.json",
+    "check/function-addresses.json"
+  ],
+  "diagnostics": [
+    "provenance.jsonl is stale or contains an artifact hash mismatch",
+    "summary.txt is stale or does not match effect-closure.json"
+  ],
+  "non_claims": [
+    "Admission verification checks stored BLAKE3 identity and linkage only; it does not rerun Cargo, source inference, dependency review, or compiler analysis, and it provides no signer authenticity, authorization, or defense against coherent replacement of every trust root."
+  ]
+}

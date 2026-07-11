@@ -76,6 +76,22 @@
 
               touch "$out"
             '';
+
+        effect-closure-policy =
+          pkgs.runCommand "valence-effect-closure-policy"
+            {
+              nativeBuildInputs = [ pkgs.nickel ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+              generated_policy=$(mktemp)
+              nickel typecheck policy/octet-effect-closure.ncl
+              nickel export --format json policy/octet-effect-closure.ncl > "$generated_policy"
+              cmp "$generated_policy" octet-effect-closure.json
+              touch "$out"
+            '';
       });
     };
 }

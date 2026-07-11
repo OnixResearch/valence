@@ -26,19 +26,19 @@ Octet effect-closure v1 source-parses that same selected universe, anchors nodes
 
 ### 4. Call summaries are identity-bound assertions, not waivers or proof
 
-**Choice:** Each summary records the exact call-site ID, callee review label, provider kind/name/version/source/target/features, inferred effect set, and evidence BLAKE3 required by Octet. No summary may declare `unknown`, hide a direct forbidden effect, use a wildcard, or apply to an unused site.
+**Choice:** Each summary records the exact call-site ID, callee review label, provider kind/name/version/source/target/features, inferred effect set, and evidence BLAKE3 required by Octet. Apparent `Ok`, `Err`, `Some`, and `Vec::new` calls receive exact `core` or `alloc` toolchain summaries rather than a name-based intrinsic exemption. No summary may declare `unknown`, hide a direct forbidden effect, use a wildcard, or apply to an unused site.
 
 **Rationale:** Review assertions become stale with source, provider, feature, target, or lockfile drift while retaining their bounded epistemic status.
 
 ### 5. Preserve ordinary Rust and direct-check behavior
 
-**Choice:** The Nickel policy and generated JSON affect only explicit `cargo octet admit --profile deterministic-core --closure`. Ordinary Cargo and existing `cargo octet check` remain unchanged.
+**Choice:** The Nickel policy and generated JSON affect only explicit `cargo octet admit --profile deterministic-core --closure -- --target x86_64-unknown-linux-gnu`. Ordinary Cargo and existing `cargo octet check` remain unchanged.
 
 **Rationale:** Closure is an additional evidence rail, not a language fork or ambient compilation mode.
 
 ### 6. Retain and verify both outcomes
 
-**Choice:** Store initial denied and final admitted bundles, run `cargo octet admit verify` on the final bundle, replay unchanged inputs for byte-identical receipt/status evidence, and run a tamper or stale-policy negative.
+**Choice:** Store initial denied and final admitted bundles, run `cargo octet admit verify` on the final bundle, replay unchanged inputs for byte-identical receipt/status evidence, and retain separate closure-summary and strict-profile-parent tamper negatives. Integrity evidence is not signer authenticity, authorization, or resistance to coherent replacement of every trust root.
 
 **Rationale:** Positive evidence alone would not demonstrate that the new boundary fails correctly.
 

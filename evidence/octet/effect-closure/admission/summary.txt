@@ -1,0 +1,16 @@
+Octet effect closure admission
+Status: admitted
+Claim scope: selected-source-token-effect-closure
+Profile: deterministic-core
+Profile hash: b3:217467f897307ee25135762e38bde9d321e5c3cca5ac7b4322adea7b37f95539
+Config hash: b3:47531b6882b7e11f0091faf7321a2ebf42219f93567a21bec33fa1deb5d1e7c3
+Receipt identity: b3:7787045860bfd88d8c82bf8c30f6253f989d673cc7c11003fe11b4e838705ff7
+Selected sources: 2
+Functions: 16
+Reviewed providers: 5
+Diagnostics: 0
+Non-claims:
+- Reviewed call summaries do not verify dependency implementations, complete Rust name resolution, MIR closure, runtime reachability, semantic determinism, whole-program correctness, or release eligibility.
+- Reviewed dependency summaries bind exact provider identity but do not verify dependency implementations, panic freedom, semantic determinism, compiler correctness, whole-program correctness, verifier soundness, or release eligibility.
+- The receipt covers conservative selected Rust source-token inference and reviewed call summaries, not complete Rust name resolution, macro expansion, trait dispatch, MIR call-graph semantics, runtime reachability, or runtime ordering.
+- This policy supports conservative source-token closure over two selected Valence production files only; broader valence-core remains unadmitted.
