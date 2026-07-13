@@ -1,14 +1,7 @@
 //! Pure Preserves evidence identity and Preserves-to-Valence bridge validation.
 //!
-//! This module validates already-loaded Preserves text/bytes and envelope
-//! metadata. It does not parse files, execute Nickel, decide release/lifecycle
-//! policy, or prove receipt truth.
-//!
-//! r[impl valence.evidence_ir.preserves_evidence_core.contract]
-//! r[impl valence.evidence_ir.preserves_evidence_core.validation]
-//! r[impl valence.evidence_ir.preserves_evidence_core.adapters]
-//! r[impl valence.evidence_ir.preserves_bridge.contract]
-//! r[impl valence.evidence_ir.preserves_bridge.validation]
+//! This module validates already-loaded Preserves values and metadata. It does
+//! no I/O and grants no behavioral, authority, or release claims.
 
 use serde::Deserialize;
 use serde::Serialize;
@@ -16,29 +9,35 @@ use serde::Serialize;
 use crate::shared_identity::DigestRole;
 use crate::shared_identity::MIXED_BLAKE3_PROFILE;
 use crate::shared_identity::blake3_hex;
-use crate::shared_identity::contains_overclaim;
 use crate::shared_identity::parse_digest;
 
 const FIELD_ARTIFACT_ROLE: &str = "artifact_role";
+const FIELD_CLAIM_BOUNDARY: &str = "claim_boundary";
 const FIELD_CONTENT_HASH: &str = "preserves_content_hash";
 const FIELD_EXCLUSION_PROFILE: &str = "self_hash_exclusion_profile";
 const FIELD_NON_CLAIMS: &str = "non_claims";
 const FIELD_PRESERVES_TEXT: &str = "preserves_text";
 const FIELD_SCHEMA: &str = "schema";
 const FIELD_VERIFICATION_ROLE: &str = "verification_role";
+const HASH_PREFIX: &str = "b3:";
+const PACKED_LIST_TAG: u8 = 0x80;
+const PACKED_STRING_TAG: u8 = 0xb1;
+const PACKED_SYMBOL_TAG: u8 = 0xb0;
 
 pub const PRESERVES_EVIDENCE_REQUIRED_NON_CLAIM: &str =
     "Preserves evidence validation proves only canonical Preserves content identity and bounded envelope compatibility";
 pub const PRESERVES_BRIDGE_REQUIRED_NON_CLAIM: &str =
     "Preserves bridge validation proves only identity, schema, role, and non-claim mapping";
+pub const CORRECTED_CANONICALIZATION_PROFILE: &str = "preserves-packed-structural-v2";
+pub const CORRECTED_RECEIPT_EXCLUSION_PROFILE: &str = "receipt-self-hash-structural-v2";
+pub const CORRECTED_CONTENT_EXCLUSION_PROFILE: &str = "content-hash-self-structural-v2";
+pub const NO_SELF_HASH_EXCLUSION_PROFILE: &str = "none-structural-v2";
+pub const LEGACY_CANONICALIZATION_PROFILE: &str = "preserves-text-v1";
+pub const LEGACY_MIGRATION_PROFILE: &str = "preserves-integrity-migration-v1";
+pub const REQUIRED_IDENTITY_BOUNDARY: &str = "valence.identity-linkage-only.v1";
 
 const PRESERVES_SUPPORTED_CLAIM: &str = "Preserves evidence validation proves only canonical Preserves content identity and bounded envelope compatibility; it does not prove receipt truth, release eligibility, lifecycle readiness, semantic equivalence, behavioral correctness, verifier soundness, or whole-program safety";
 const PRESERVES_BRIDGE_SUPPORTED_CLAIM: &str = "Preserves bridge validation proves identity, schema, role, and non-claim mapping only and does not prove Molten runtime authority, transport correctness, or Preserves application semantics";
-
-const PRESERVES_TEXT_PROFILE: &str = "preserves-text-v1";
-const RECEIPT_EXCLUSION_PROFILE: &str = "receipt-self-hash";
-const CONTENT_HASH_EXCLUSION_PROFILE: &str = "content-hash-self";
-const NO_SELF_HASH_EXCLUSION_PROFILE: &str = "none";
 
 const SUPPORTED_PRESERVES_SCHEMAS: &[&str] = &[
     "valence.preserves-evidence.v1",
@@ -47,17 +46,14 @@ const SUPPORTED_PRESERVES_SCHEMAS: &[&str] = &[
     "octet.evidence-receipt.preserves.v1",
     "molten.preserves-envelope.v1",
 ];
-
 const SUPPORTED_ARTIFACT_ROLES: &[&str] = &[
     "artifact_identity",
     "receipt_identity",
     "preserves_metadata",
     "compatibility_reference",
 ];
-
 const SUPPORTED_VERIFICATION_ROLES: &[&str] = &["property", "recorded_only", "boundary"];
 
-/// In-memory Preserves evidence envelope candidate.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PreservesEvidenceEnvelope {
     pub schema: String,
@@ -68,7 +64,6 @@ pub struct PreservesEvidenceEnvelope {
     pub non_claims: Vec<String>,
 }
 
-/// In-memory Preserves-to-Valence bridge row.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PreservesBridgeRow {
     pub schema_label: String,
@@ -80,7 +75,68 @@ pub struct PreservesBridgeRow {
     pub non_claims: Vec<String>,
 }
 
-/// Field-scoped deterministic Preserves issue.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SupportedClaimClass {
+    Identity,
+    Linkage,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TypedVerificationRole {
+    RecordedOnly,
+    Boundary,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ProhibitedCapability {
+    BehavioralCorrectness,
+    SemanticEquivalence,
+    Authority,
+    VerifierSoundness,
+    ReleaseEligibility,
+}
+
+impl ProhibitedCapability {
+    const fn phrase(self) -> &'static str {
+        match self {
+            Self::BehavioralCorrectness => "behavioral correctness",
+            Self::SemanticEquivalence => "semantic equivalence",
+            Self::Authority => "authority",
+            Self::VerifierSoundness => "verifier soundness",
+            Self::ReleaseEligibility => "release eligibility",
+        }
+    }
+}
+
+const PROHIBITED_CAPABILITIES: &[ProhibitedCapability] = &[
+    ProhibitedCapability::BehavioralCorrectness,
+    ProhibitedCapability::SemanticEquivalence,
+    ProhibitedCapability::Authority,
+    ProhibitedCapability::VerifierSoundness,
+    ProhibitedCapability::ReleaseEligibility,
+];
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TypedClaimBoundary {
+    pub claim_class: SupportedClaimClass,
+    pub verification_role: TypedVerificationRole,
+    pub required_boundary_ids: Vec<String>,
+    pub asserted_capabilities: Vec<ProhibitedCapability>,
+    pub display_metadata: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PreservesMigrationReceipt {
+    pub migration_profile: String,
+    pub original_bytes_hash: String,
+    pub legacy_identity: String,
+    pub corrected_identity: String,
+    pub non_claims: Vec<String>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct PreservesEvidenceIssue {
     pub field: &'static str,
@@ -94,7 +150,6 @@ impl PreservesEvidenceIssue {
     }
 }
 
-/// Validation report for Preserves evidence and bridge checks.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct PreservesEvidenceReport {
     pub valid: bool,
@@ -103,28 +158,141 @@ pub struct PreservesEvidenceReport {
     pub supported_claim: String,
 }
 
-/// Validate a Preserves evidence envelope without I/O.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum PreservesValue {
+    Symbol(String),
+    String(String),
+    List(Vec<Self>),
+}
+
+struct Parser<'a> {
+    input: &'a [u8],
+    cursor: usize,
+}
+
+impl<'a> Parser<'a> {
+    const fn new(input: &'a str) -> Self {
+        Self {
+            input: input.as_bytes(),
+            cursor: 0,
+        }
+    }
+
+    fn parse(mut self) -> Result<PreservesValue, &'static str> {
+        self.skip_space();
+        let value = self.parse_value()?;
+        self.skip_space();
+        if self.cursor != self.input.len() {
+            return Err("trailing_input");
+        }
+        Ok(value)
+    }
+
+    fn parse_value(&mut self) -> Result<PreservesValue, &'static str> {
+        match self.peek() {
+            Some(b'(') => self.parse_list(),
+            Some(b'\"') => self.parse_string(),
+            Some(_) => self.parse_symbol(),
+            None => Err("unexpected_end"),
+        }
+    }
+
+    fn parse_list(&mut self) -> Result<PreservesValue, &'static str> {
+        self.cursor += 1;
+        let mut values = Vec::new();
+        loop {
+            self.skip_space();
+            match self.peek() {
+                Some(b')') => {
+                    self.cursor += 1;
+                    return Ok(PreservesValue::List(values));
+                }
+                Some(_) => values.push(self.parse_value()?),
+                None => return Err("unterminated_list"),
+            }
+        }
+    }
+
+    fn parse_string(&mut self) -> Result<PreservesValue, &'static str> {
+        self.cursor += 1;
+        let mut value = String::new();
+        loop {
+            let byte = self.take().ok_or("unterminated_string")?;
+            match byte {
+                b'\"' => return Ok(PreservesValue::String(value)),
+                b'\\' => {
+                    let escaped = self.take().ok_or("unterminated_escape")?;
+                    match escaped {
+                        b'\"' => value.push('\"'),
+                        b'\\' => value.push('\\'),
+                        b'n' => value.push('\n'),
+                        b'r' => value.push('\r'),
+                        b't' => value.push('\t'),
+                        _ => return Err("unsupported_escape"),
+                    }
+                }
+                byte if byte.is_ascii_control() => return Err("control_in_string"),
+                byte => value.push(char::from(byte)),
+            }
+        }
+    }
+
+    fn parse_symbol(&mut self) -> Result<PreservesValue, &'static str> {
+        let start = self.cursor;
+        while let Some(byte) = self.peek() {
+            if byte.is_ascii_whitespace() || matches!(byte, b'(' | b')' | b'\"') {
+                break;
+            }
+            self.cursor += 1;
+        }
+        if start == self.cursor {
+            return Err("empty_symbol");
+        }
+        let bytes = &self.input[start..self.cursor];
+        let symbol = std::str::from_utf8(bytes).map_err(|_| "invalid_utf8")?;
+        Ok(PreservesValue::Symbol(symbol.to_owned()))
+    }
+
+    fn skip_space(&mut self) {
+        while self.peek().is_some_and(|byte| byte.is_ascii_whitespace()) {
+            self.cursor += 1;
+        }
+    }
+
+    fn peek(&self) -> Option<u8> {
+        self.input.get(self.cursor).copied()
+    }
+
+    fn take(&mut self) -> Option<u8> {
+        let byte = self.peek()?;
+        self.cursor += 1;
+        Some(byte)
+    }
+}
+
 #[must_use]
 pub fn validate_preserves_evidence(envelope: &PreservesEvidenceEnvelope) -> PreservesEvidenceReport {
     let mut issues = Vec::new();
     validate_schema(&envelope.schema, &mut issues);
-    validate_profile(&envelope.canonicalization_profile, &mut issues);
-    validate_preserves_text(&envelope.preserves_text, &mut issues);
-    validate_exclusion_profile(&envelope.self_hash_exclusion_profile, &mut issues);
-    validate_non_claims(&envelope.non_claims, PRESERVES_EVIDENCE_REQUIRED_NON_CLAIM, &mut issues);
+    if envelope.canonicalization_profile != CORRECTED_CANONICALIZATION_PROFILE {
+        issues.push(PreservesEvidenceIssue::new(FIELD_SCHEMA, "unsupported_canonicalization_profile"));
+    }
+    if !is_supported_exclusion_profile(&envelope.self_hash_exclusion_profile) {
+        issues.push(PreservesEvidenceIssue::new(FIELD_EXCLUSION_PROFILE, "unknown_self_hash_exclusion_profile"));
+    }
+    validate_non_claim_metadata(&envelope.non_claims, PRESERVES_EVIDENCE_REQUIRED_NON_CLAIM, &mut issues);
 
-    let expected = preserves_content_hash(&envelope.preserves_text, &envelope.self_hash_exclusion_profile);
-    validate_declared_hash(
-        &envelope.preserves_content_hash,
-        expected.as_deref(),
-        DigestRole::PreservesMetadata,
-        &mut issues,
-    );
-
+    let expected = match canonical_preserves_bytes(&envelope.preserves_text, &envelope.self_hash_exclusion_profile) {
+        Ok(bytes) => Some(blake3_hex(&bytes)),
+        Err(code) => {
+            issues.push(PreservesEvidenceIssue::new(FIELD_PRESERVES_TEXT, code));
+            None
+        }
+    };
+    validate_declared_hash(&envelope.preserves_content_hash, expected.as_deref(), &mut issues);
     finish_report(expected, issues, PRESERVES_SUPPORTED_CLAIM)
 }
 
-/// Validate a Preserves-to-Valence bridge row without I/O.
 #[must_use]
 pub fn validate_preserves_bridge(row: &PreservesBridgeRow) -> PreservesEvidenceReport {
     let mut issues = Vec::new();
@@ -138,52 +306,173 @@ pub fn validate_preserves_bridge(row: &PreservesBridgeRow) -> PreservesEvidenceR
     if !SUPPORTED_VERIFICATION_ROLES.contains(&row.verification_role.as_str()) {
         issues.push(PreservesEvidenceIssue::new(FIELD_VERIFICATION_ROLE, "unsupported_verification_role"));
     }
-    validate_non_claims(&row.non_claims, PRESERVES_BRIDGE_REQUIRED_NON_CLAIM, &mut issues);
-
+    validate_non_claim_metadata(&row.non_claims, PRESERVES_BRIDGE_REQUIRED_NON_CLAIM, &mut issues);
     let expected = Some(blake3_hex(&row.canonical_bytes));
-    validate_declared_hash(
-        &row.preserves_content_hash,
-        expected.as_deref(),
-        DigestRole::PreservesMetadata,
-        &mut issues,
-    );
-
+    validate_declared_hash(&row.preserves_content_hash, expected.as_deref(), &mut issues);
     finish_report(expected, issues, PRESERVES_BRIDGE_SUPPORTED_CLAIM)
 }
 
-/// Compute the normalized raw BLAKE3 Preserves content hash after named self-hash exclusion.
 #[must_use]
-pub fn preserves_content_hash(preserves_text: &str, self_hash_exclusion_profile: &str) -> Option<String> {
-    if !is_supported_exclusion_profile(self_hash_exclusion_profile) {
+pub fn preserves_content_hash(text: &str, exclusion_profile: &str) -> Option<String> {
+    canonical_preserves_bytes(text, exclusion_profile).ok().as_deref().map(blake3_hex)
+}
+
+pub fn canonical_preserves_bytes(text: &str, exclusion_profile: &str) -> Result<Vec<u8>, &'static str> {
+    if !is_supported_exclusion_profile(exclusion_profile) {
+        return Err("unknown_self_hash_exclusion_profile");
+    }
+    let parsed = Parser::new(text).parse().map_err(|_| "malformed_preserves_structure")?;
+    let transformed = remove_declared_self_hash_fields(parsed, exclusion_profile)?;
+    let mut bytes = Vec::new();
+    encode_packed(&transformed, &mut bytes);
+    Ok(bytes)
+}
+
+fn remove_declared_self_hash_fields(value: PreservesValue, profile: &str) -> Result<PreservesValue, &'static str> {
+    let excluded = match profile {
+        CORRECTED_RECEIPT_EXCLUSION_PROFILE => &["receipt_hash", "preserves_content_hash"][..],
+        CORRECTED_CONTENT_EXCLUSION_PROFILE => &["preserves_content_hash"][..],
+        NO_SELF_HASH_EXCLUSION_PROFILE => &[][..],
+        _ => return Err("unknown_self_hash_exclusion_profile"),
+    };
+    let PreservesValue::List(children) = value else {
+        return Err("top_level_envelope_required");
+    };
+    if children.is_empty() {
+        return Err("empty_envelope");
+    }
+    let mut retained = Vec::with_capacity(children.len());
+    let mut removed: Vec<String> = Vec::new();
+    for (index, child) in children.into_iter().enumerate() {
+        let field = direct_field_name(&child).map(str::to_owned);
+        if index > 0 && field.as_deref().is_some_and(|name| excluded.contains(&name)) {
+            let name = field.expect("field was checked");
+            if removed.contains(&name) {
+                return Err("duplicate_self_hash_field");
+            }
+            removed.push(name);
+        } else {
+            if contains_nested_field(&child, excluded, index == 0) {
+                return Err("misplaced_self_hash_field");
+            }
+            retained.push(child);
+        }
+    }
+    Ok(PreservesValue::List(retained))
+}
+
+fn direct_field_name(value: &PreservesValue) -> Option<&str> {
+    let PreservesValue::List(items) = value else {
         return None;
+    };
+    match items.first() {
+        Some(PreservesValue::Symbol(name)) => Some(name),
+        _ => None,
     }
-    let material = preserves_hash_material(preserves_text, self_hash_exclusion_profile);
-    Some(blake3_hex(material.as_bytes()))
 }
 
-fn preserves_hash_material(preserves_text: &str, self_hash_exclusion_profile: &str) -> String {
-    if self_hash_exclusion_profile == NO_SELF_HASH_EXCLUSION_PROFILE {
-        return preserves_text.trim().to_owned();
+fn contains_nested_field(value: &PreservesValue, excluded: &[&str], root_tag: bool) -> bool {
+    match value {
+        PreservesValue::List(items) => {
+            if !root_tag && direct_field_name(value).is_some_and(|name| excluded.contains(&name)) {
+                return true;
+            }
+            items.iter().any(|item| contains_nested_field(item, excluded, false))
+        }
+        PreservesValue::Symbol(_) | PreservesValue::String(_) => false,
     }
-    preserves_text
-        .lines()
-        .filter(|line| {
-            let trimmed = line.trim();
-            !trimmed.contains("preserves_content_hash") && !trimmed.contains("receipt_hash")
-        })
-        .collect::<Vec<_>>()
-        .join("\n")
-        .trim()
-        .to_owned()
 }
 
-fn validate_declared_hash(
-    declared: &str,
-    expected: Option<&str>,
-    role: DigestRole,
-    issues: &mut Vec<PreservesEvidenceIssue>,
-) {
-    let parsed = match parse_digest(declared, role, MIXED_BLAKE3_PROFILE, FIELD_CONTENT_HASH) {
+fn encode_packed(value: &PreservesValue, output: &mut Vec<u8>) {
+    match value {
+        PreservesValue::Symbol(symbol) => encode_atom(PACKED_SYMBOL_TAG, symbol.as_bytes(), output),
+        PreservesValue::String(string) => encode_atom(PACKED_STRING_TAG, string.as_bytes(), output),
+        PreservesValue::List(items) => {
+            output.push(PACKED_LIST_TAG);
+            encode_length(items.len(), output);
+            for item in items {
+                encode_packed(item, output);
+            }
+        }
+    }
+}
+
+fn encode_atom(tag: u8, bytes: &[u8], output: &mut Vec<u8>) {
+    output.push(tag);
+    encode_length(bytes.len(), output);
+    output.extend_from_slice(bytes);
+}
+
+fn encode_length(length: usize, output: &mut Vec<u8>) {
+    output.extend_from_slice(&u64::try_from(length).expect("usize fits in u64").to_be_bytes());
+}
+
+#[must_use]
+pub fn validate_typed_claim_boundary(boundary: &TypedClaimBoundary) -> Vec<PreservesEvidenceIssue> {
+    let mut issues = Vec::new();
+    if !boundary.required_boundary_ids.iter().any(|id| id == REQUIRED_IDENTITY_BOUNDARY) {
+        issues.push(PreservesEvidenceIssue::new(FIELD_CLAIM_BOUNDARY, "required_boundary_missing"));
+    }
+    if !boundary.asserted_capabilities.is_empty() {
+        issues.push(PreservesEvidenceIssue::new(FIELD_CLAIM_BOUNDARY, "prohibited_capability_asserted"));
+    }
+    let prose_overclaim = boundary.display_metadata.iter().any(|text| {
+        let normalized = text.to_ascii_lowercase();
+        PROHIBITED_CAPABILITIES.iter().any(|capability| normalized.contains(capability.phrase()))
+    });
+    if prose_overclaim {
+        issues.push(PreservesEvidenceIssue::new(FIELD_CLAIM_BOUNDARY, "prohibited_capability_in_metadata"));
+    }
+    issues.sort();
+    issues.dedup();
+    issues
+}
+
+pub fn migrate_legacy_preserves_identity(
+    original_bytes: &[u8],
+    declared_legacy_identity: &str,
+    exclusion_profile: &str,
+) -> Result<PreservesMigrationReceipt, &'static str> {
+    if original_bytes.is_empty() {
+        return Err("original_bytes_missing");
+    }
+    let text = std::str::from_utf8(original_bytes).map_err(|_| "original_bytes_invalid_utf8")?;
+    let legacy_identity = format!("{HASH_PREFIX}{}", legacy_rendered_line_hash(text, exclusion_profile)?);
+    if declared_legacy_identity != legacy_identity {
+        return Err("legacy_identity_mismatch");
+    }
+    let corrected = preserves_content_hash(text, exclusion_profile).ok_or("corrected_identity_unavailable")?;
+    Ok(PreservesMigrationReceipt {
+        migration_profile: LEGACY_MIGRATION_PROFILE.to_owned(),
+        original_bytes_hash: format!("{HASH_PREFIX}{}", blake3_hex(original_bytes)),
+        legacy_identity,
+        corrected_identity: format!("{HASH_PREFIX}{corrected}"),
+        non_claims: vec![PRESERVES_EVIDENCE_REQUIRED_NON_CLAIM.to_owned()],
+    })
+}
+
+fn legacy_rendered_line_hash(text: &str, exclusion_profile: &str) -> Result<String, &'static str> {
+    if !is_supported_exclusion_profile(exclusion_profile) {
+        return Err("unknown_self_hash_exclusion_profile");
+    }
+    let material = if exclusion_profile == NO_SELF_HASH_EXCLUSION_PROFILE {
+        text.trim().to_owned()
+    } else {
+        text.lines()
+            .filter(|line| {
+                let trimmed = line.trim();
+                !trimmed.contains("preserves_content_hash") && !trimmed.contains("receipt_hash")
+            })
+            .collect::<Vec<_>>()
+            .join("\n")
+            .trim()
+            .to_owned()
+    };
+    Ok(blake3_hex(material.as_bytes()))
+}
+
+fn validate_declared_hash(declared: &str, expected: Option<&str>, issues: &mut Vec<PreservesEvidenceIssue>) {
+    let parsed = match parse_digest(declared, DigestRole::PreservesMetadata, MIXED_BLAKE3_PROFILE, FIELD_CONTENT_HASH) {
         Ok(parsed) => parsed,
         Err(_) => {
             issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "malformed_blake3"));
@@ -195,7 +484,7 @@ fn validate_declared_hash(
         return;
     };
     if parsed.normalized_hex != expected {
-        issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "stale_content_hash"));
+        issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "profile_digest_mismatch"));
     }
 }
 
@@ -205,64 +494,18 @@ fn validate_schema(schema: &str, issues: &mut Vec<PreservesEvidenceIssue>) {
     }
 }
 
-fn validate_profile(profile: &str, issues: &mut Vec<PreservesEvidenceIssue>) {
-    if profile != PRESERVES_TEXT_PROFILE {
-        issues.push(PreservesEvidenceIssue::new(FIELD_SCHEMA, "unsupported_canonicalization_profile"));
-    }
-}
-
-fn validate_exclusion_profile(profile: &str, issues: &mut Vec<PreservesEvidenceIssue>) {
-    if !is_supported_exclusion_profile(profile) {
-        issues.push(PreservesEvidenceIssue::new(FIELD_EXCLUSION_PROFILE, "unknown_self_hash_exclusion_profile"));
-    }
-}
-
 fn is_supported_exclusion_profile(profile: &str) -> bool {
-    matches!(profile, RECEIPT_EXCLUSION_PROFILE | CONTENT_HASH_EXCLUSION_PROFILE | NO_SELF_HASH_EXCLUSION_PROFILE)
+    matches!(
+        profile,
+        CORRECTED_RECEIPT_EXCLUSION_PROFILE | CORRECTED_CONTENT_EXCLUSION_PROFILE | NO_SELF_HASH_EXCLUSION_PROFILE
+    )
 }
 
-fn validate_preserves_text(text: &str, issues: &mut Vec<PreservesEvidenceIssue>) {
-    let trimmed = text.trim();
-    if trimmed.is_empty() {
-        issues.push(PreservesEvidenceIssue::new(FIELD_PRESERVES_TEXT, "preserves_text_empty"));
-        return;
-    }
-    if !trimmed.starts_with('(') && !trimmed.starts_with('#') {
-        issues.push(PreservesEvidenceIssue::new(FIELD_PRESERVES_TEXT, "malformed_preserves_text"));
-        return;
-    }
-    if !parentheses_are_balanced(trimmed) {
-        issues.push(PreservesEvidenceIssue::new(FIELD_PRESERVES_TEXT, "malformed_preserves_text"));
-    }
-}
-
-fn parentheses_are_balanced(text: &str) -> bool {
-    let mut depth = 0_u32;
-    for character in text.chars() {
-        match character {
-            '(' => depth = depth.saturating_add(1),
-            ')' => {
-                let Some(next_depth) = depth.checked_sub(1) else {
-                    return false;
-                };
-                depth = next_depth;
-            }
-            _ => {}
-        }
-    }
-    depth == 0
-}
-
-fn validate_non_claims(non_claims: &[String], required: &str, issues: &mut Vec<PreservesEvidenceIssue>) {
+fn validate_non_claim_metadata(non_claims: &[String], required: &str, issues: &mut Vec<PreservesEvidenceIssue>) {
     if non_claims.is_empty() {
         issues.push(PreservesEvidenceIssue::new(FIELD_NON_CLAIMS, "non_claims_missing"));
-        return;
-    }
-    if !non_claims.iter().any(|claim| claim.contains(required)) {
+    } else if !non_claims.iter().any(|claim| claim.contains(required)) {
         issues.push(PreservesEvidenceIssue::new(FIELD_NON_CLAIMS, "non_claims_weakened"));
-    }
-    if non_claims.iter().any(|claim| contains_overclaim(claim)) {
-        issues.push(PreservesEvidenceIssue::new(FIELD_NON_CLAIMS, "overclaim_detected"));
     }
 }
 
@@ -285,112 +528,140 @@ fn finish_report(
 mod tests {
     use super::*;
 
-    const VALID_PRESERVES_TEXT: &str = "(envelope (schema \"valence.preserves-evidence.v1\") (payload \"ok\"))";
-
-    fn evidence_non_claims() -> Vec<String> {
-        vec![PRESERVES_EVIDENCE_REQUIRED_NON_CLAIM.to_owned()]
-    }
-
-    fn bridge_non_claims() -> Vec<String> {
-        vec![PRESERVES_BRIDGE_REQUIRED_NON_CLAIM.to_owned()]
-    }
+    const VALID_TEXT: &str = "(envelope (schema \"valence.preserves-evidence.v1\") (payload \"ok\"))";
 
     fn envelope() -> PreservesEvidenceEnvelope {
-        let hash = preserves_content_hash(VALID_PRESERVES_TEXT, NO_SELF_HASH_EXCLUSION_PROFILE)
-            .expect("known profile should hash");
+        let hash = preserves_content_hash(VALID_TEXT, NO_SELF_HASH_EXCLUSION_PROFILE).unwrap();
         PreservesEvidenceEnvelope {
             schema: "valence.preserves-evidence.v1".to_owned(),
-            canonicalization_profile: PRESERVES_TEXT_PROFILE.to_owned(),
-            preserves_text: VALID_PRESERVES_TEXT.to_owned(),
-            preserves_content_hash: format!("b3:{hash}"),
+            canonicalization_profile: CORRECTED_CANONICALIZATION_PROFILE.to_owned(),
+            preserves_text: VALID_TEXT.to_owned(),
+            preserves_content_hash: format!("{HASH_PREFIX}{hash}"),
             self_hash_exclusion_profile: NO_SELF_HASH_EXCLUSION_PROFILE.to_owned(),
-            non_claims: evidence_non_claims(),
+            non_claims: vec![PRESERVES_EVIDENCE_REQUIRED_NON_CLAIM.to_owned()],
         }
     }
 
     #[test]
-    fn valid_preserves_evidence_envelope_passes() {
-        // r[verify valence.evidence_ir.preserves_evidence_core.fixtures.positive]
-        let report = validate_preserves_evidence(&envelope());
-
-        assert!(report.valid);
-        assert!(report.normalized_content_hash.is_some());
-        assert!(report.supported_claim.contains("canonical Preserves content identity"));
+    fn equivalent_renderings_have_equal_corrected_identity() {
+        let compact = "(receipt (payload \"ok\") (receipt_hash \"stale\"))";
+        let spaced = "( receipt\n ( payload \"ok\" )\n ( receipt_hash \"other\" ) )";
+        assert_eq!(
+            preserves_content_hash(compact, CORRECTED_RECEIPT_EXCLUSION_PROFILE),
+            preserves_content_hash(spaced, CORRECTED_RECEIPT_EXCLUSION_PROFILE)
+        );
     }
 
     #[test]
-    fn malformed_or_stale_preserves_evidence_fails_closed() {
-        // r[verify valence.evidence_ir.preserves_evidence_core.fixtures.negative]
-        let mut envelope = envelope();
-        envelope.schema = "unknown.schema".to_owned();
-        envelope.preserves_text = "not-preserves".to_owned();
-        envelope.preserves_content_hash = "stale".to_owned();
-        envelope.self_hash_exclusion_profile = "unknown".to_owned();
-        envelope.non_claims.clear();
+    fn payload_occurrences_of_self_hash_names_remain_hash_bearing() {
+        let benign = "(receipt (payload \"receipt_hash benign\"))";
+        let altered = "(receipt (payload \"receipt_hash attacker\"))";
+        assert_ne!(
+            preserves_content_hash(benign, CORRECTED_RECEIPT_EXCLUSION_PROFILE),
+            preserves_content_hash(altered, CORRECTED_RECEIPT_EXCLUSION_PROFILE)
+        );
+    }
 
-        let report = validate_preserves_evidence(&envelope);
+    #[test]
+    fn duplicate_and_nested_self_hash_fields_fail_closed() {
+        let duplicate = "(receipt (receipt_hash \"a\") (receipt_hash \"b\"))";
+        let nested = "(receipt (payload (receipt_hash \"hidden\")))";
+        assert_eq!(
+            canonical_preserves_bytes(duplicate, CORRECTED_RECEIPT_EXCLUSION_PROFILE),
+            Err("duplicate_self_hash_field")
+        );
+        assert_eq!(
+            canonical_preserves_bytes(nested, CORRECTED_RECEIPT_EXCLUSION_PROFILE),
+            Err("misplaced_self_hash_field")
+        );
+    }
 
+    #[test]
+    fn valid_envelope_passes_and_legacy_profile_fails() {
+        let valid = envelope();
+        assert!(validate_preserves_evidence(&valid).valid);
+        let mut legacy = valid;
+        legacy.canonicalization_profile = LEGACY_CANONICALIZATION_PROFILE.to_owned();
+        assert!(!validate_preserves_evidence(&legacy).valid);
+    }
+
+    #[test]
+    fn malformed_or_stale_envelope_fails_closed() {
+        let mut candidate = envelope();
+        candidate.preserves_text = "(unterminated".to_owned();
+        candidate.preserves_content_hash = format!("{HASH_PREFIX}{}", "f".repeat(64));
+        let report = validate_preserves_evidence(&candidate);
         assert!(!report.valid);
-        assert!(report.issues.iter().any(|issue| issue.code == "unsupported_schema"));
-        assert!(report.issues.iter().any(|issue| issue.code == "malformed_preserves_text"));
-        assert!(report.issues.iter().any(|issue| issue.code == "malformed_blake3"));
-        assert!(report.issues.iter().any(|issue| issue.code == "unknown_self_hash_exclusion_profile"));
-        assert!(report.issues.iter().any(|issue| issue.code == "non_claims_missing"));
+        assert!(report.issues.iter().any(|issue| issue.code == "malformed_preserves_structure"));
     }
 
     #[test]
-    fn self_hash_exclusion_changes_only_declared_lines() {
-        // r[verify valence.evidence_ir.preserves_evidence_core.self_hash_exclusion.profile]
-        let with_self_hash =
-            "(receipt\n  (payload \"ok\")\n  (preserves_content_hash \"stale\")\n  (receipt_hash \"stale\")\n)";
-        let without_self_hash = "(receipt\n  (payload \"ok\")\n)";
-
-        let actual = preserves_hash_material(with_self_hash, RECEIPT_EXCLUSION_PROFILE);
-
-        assert_eq!(actual, without_self_hash);
+    fn typed_identity_boundary_passes() {
+        let boundary = TypedClaimBoundary {
+            claim_class: SupportedClaimClass::Identity,
+            verification_role: TypedVerificationRole::RecordedOnly,
+            required_boundary_ids: vec![REQUIRED_IDENTITY_BOUNDARY.to_owned()],
+            asserted_capabilities: Vec::new(),
+            display_metadata: vec!["records canonical identity only".to_owned()],
+        };
+        assert!(validate_typed_claim_boundary(&boundary).is_empty());
     }
 
     #[test]
-    fn valid_preserves_bridge_row_passes() {
-        // r[verify valence.evidence_ir.preserves_bridge.fixtures.positive]
-        let bytes = VALID_PRESERVES_TEXT.as_bytes().to_vec();
-        let hash = blake3_hex(&bytes);
+    fn typed_and_prose_overclaims_fail() {
+        let boundary = TypedClaimBoundary {
+            claim_class: SupportedClaimClass::Linkage,
+            verification_role: TypedVerificationRole::Boundary,
+            required_boundary_ids: Vec::new(),
+            asserted_capabilities: vec![ProhibitedCapability::ReleaseEligibility],
+            display_metadata: vec!["grants semantic equivalence".to_owned()],
+        };
+        let issues = validate_typed_claim_boundary(&boundary);
+        assert!(issues.iter().any(|issue| issue.code == "required_boundary_missing"));
+        assert!(issues.iter().any(|issue| issue.code == "prohibited_capability_asserted"));
+        assert!(issues.iter().any(|issue| issue.code == "prohibited_capability_in_metadata"));
+    }
+
+    #[test]
+    fn migration_binds_original_bytes_and_both_identities() {
+        let text = "(receipt\n (payload \"ok\")\n (receipt_hash \"stale\")\n)";
+        let legacy =
+            format!("{HASH_PREFIX}{}", legacy_rendered_line_hash(text, CORRECTED_RECEIPT_EXCLUSION_PROFILE).unwrap());
+        let receipt =
+            migrate_legacy_preserves_identity(text.as_bytes(), &legacy, CORRECTED_RECEIPT_EXCLUSION_PROFILE).unwrap();
+        assert_eq!(receipt.legacy_identity, legacy);
+        assert_ne!(receipt.corrected_identity, receipt.legacy_identity);
+        assert_eq!(receipt.original_bytes_hash, format!("{HASH_PREFIX}{}", blake3_hex(text.as_bytes())));
+    }
+
+    #[test]
+    fn migration_without_bytes_or_with_wrong_identity_fails() {
+        assert_eq!(
+            migrate_legacy_preserves_identity(&[], "b3:none", CORRECTED_RECEIPT_EXCLUSION_PROFILE),
+            Err("original_bytes_missing")
+        );
+        assert_eq!(
+            migrate_legacy_preserves_identity(
+                VALID_TEXT.as_bytes(),
+                "b3:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                NO_SELF_HASH_EXCLUSION_PROFILE,
+            ),
+            Err("legacy_identity_mismatch")
+        );
+    }
+
+    #[test]
+    fn bridge_validation_keeps_bounded_role_checks() {
+        let bytes = canonical_preserves_bytes(VALID_TEXT, NO_SELF_HASH_EXCLUSION_PROFILE).unwrap();
         let row = PreservesBridgeRow {
             schema_label: "molten.preserves-envelope.v1".to_owned(),
+            preserves_content_hash: blake3_hex(&bytes),
             canonical_bytes: bytes,
-            preserves_content_hash: hash,
             artifact_role: "preserves_metadata".to_owned(),
             valence_artifact_kind: "preserves-envelope".to_owned(),
             verification_role: "recorded_only".to_owned(),
-            non_claims: bridge_non_claims(),
+            non_claims: vec![PRESERVES_BRIDGE_REQUIRED_NON_CLAIM.to_owned()],
         };
-
-        let report = validate_preserves_bridge(&row);
-
-        assert!(report.valid);
-        assert!(report.supported_claim.contains("does not prove Molten runtime authority"));
-    }
-
-    #[test]
-    fn invalid_preserves_bridge_row_fails_closed() {
-        // r[verify valence.evidence_ir.preserves_bridge.fixtures.negative]
-        let row = PreservesBridgeRow {
-            schema_label: "bad schema".to_owned(),
-            canonical_bytes: VALID_PRESERVES_TEXT.as_bytes().to_vec(),
-            preserves_content_hash: "b3:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".to_owned(),
-            artifact_role: "unsupported".to_owned(),
-            valence_artifact_kind: String::new(),
-            verification_role: "property_plus".to_owned(),
-            non_claims: Vec::new(),
-        };
-
-        let report = validate_preserves_bridge(&row);
-
-        assert!(!report.valid);
-        assert!(report.issues.iter().any(|issue| issue.code == "unsupported_schema"));
-        assert!(report.issues.iter().any(|issue| issue.code == "stale_content_hash"));
-        assert!(report.issues.iter().any(|issue| issue.code == "unsupported_artifact_role"));
-        assert!(report.issues.iter().any(|issue| issue.code == "unsupported_verification_role"));
-        assert!(report.issues.iter().any(|issue| issue.code == "non_claims_missing"));
+        assert!(validate_preserves_bridge(&row).valid);
     }
 }

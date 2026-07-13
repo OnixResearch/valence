@@ -61,6 +61,8 @@ constant drift without deciding runtime authority. Preserves evidence and bridge
 validators check canonical Preserves content identity and Preserves-to-Valence
 artifact mapping for already-loaded envelopes.
 
+The corrected Preserves integrity profile structurally removes only declared top-level self-hash fields, hashes deterministic packed bytes, and uses typed claim boundaries. Legacy identities require an explicit byte-bound migration receipt; see [`docs/preserves-integrity-migration.md`](docs/preserves-integrity-migration.md).
+
 These cores prove syntax, canonical content identity, role/schema/vocabulary
 alignment, and bounded non-claim conformance only. They do not prove evidence
 truth, producer semantics, Molten runtime authority, release eligibility,
