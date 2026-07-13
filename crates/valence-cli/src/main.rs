@@ -3,7 +3,6 @@
 //! This is the imperative shell: argument parsing, file reads, stdout/stderr,
 //! and exit codes. All core logic lives in `valence_core`.
 
-use std::path::Component;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::ExitCode;
@@ -20,13 +19,13 @@ USAGE:
     valence <COMMAND> [OPTIONS]
 
 COMMANDS:
-    check <FILE>                        Validate a canonical Evidence IR artifact
-    explain --id <ID> --manifest <FILE> Resolve a stable source ID to its span
-    stack-provenance build --octet-export <FILE> --binary-hash <B3> --output <FILE>
-    stack-provenance verify --manifest <FILE> --sidecar <FILE>
-    stack-provenance verify-built-binary --binary <PATH> --octet-export <FILE> --sidecar <FILE> --manifest <FILE> [--json]
-    stack-provenance graph-report --chain <FILE> [--format json|markdown]
-    function-address validate --input <FILE> [--receipt <FILE>] [--graph <FILE>]
+    check --artifact-root <ROOT> <FILE>  Validate a root-relative Evidence IR artifact
+    explain --manifest-root <ROOT> --id <ID> --manifest <FILE>
+    stack-provenance build --artifact-root <ROOT> --octet-export <FILE> --binary-hash <B3> --output-root <ROOT> --output <FILE>
+    stack-provenance verify --manifest-root <ROOT> --manifest <FILE> --sidecar-root <ROOT> --sidecar <FILE>
+    stack-provenance verify-built-binary --binary-root <ROOT> --binary <FILE> --artifact-root <ROOT> --octet-export <FILE> --sidecar-root <ROOT> --sidecar <FILE> --manifest-root <ROOT> --manifest <FILE> [--json]
+    stack-provenance graph-report --artifact-root <ROOT> --chain <FILE> [--format json|markdown]
+    function-address validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --receipt <FILE>] [--graph <FILE>]
     version                             Print version
 
 EXIT CODES:
@@ -64,13 +63,15 @@ fn main() -> ExitCode {
 }
 
 fn run_check(args: &[String]) -> ExitCode {
-    if args.len() != 1 {
-        eprintln!("usage: valence check <FILE>");
+    const CHECK_ARGUMENT_COUNT: usize = 3;
+    if args.len() != CHECK_ARGUMENT_COUNT || args[0] != "--artifact-root" {
+        eprintln!("usage: valence check --artifact-root <ROOT> <FILE>");
         return ExitCode::from(2);
     }
 
-    let path = PathBuf::from(&args[0]);
-    let json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &path) {
+    let root = PathBuf::from(&args[1]);
+    let path = PathBuf::from(&args[2]);
+    let json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &root, &path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", path.display());
@@ -122,12 +123,30 @@ fn run_function_address(args: &[String]) -> ExitCode {
 }
 
 fn run_function_address_validate(args: &[String]) -> ExitCode {
+    let mut artifact_root: Option<PathBuf> = None;
+    let mut output_root: Option<PathBuf> = None;
     let mut input_path: Option<PathBuf> = None;
     let mut receipt_path: Option<PathBuf> = None;
     let mut graph_path: Option<PathBuf> = None;
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
+            "--artifact-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --artifact-root requires a value");
+                    return ExitCode::from(2);
+                }
+                artifact_root = Some(PathBuf::from(&args[i]));
+            }
+            "--output-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --output-root requires a value");
+                    return ExitCode::from(2);
+                }
+                output_root = Some(PathBuf::from(&args[i]));
+            }
             "--input" => {
                 i += 1;
                 if i >= args.len() {
@@ -159,11 +178,19 @@ fn run_function_address_validate(args: &[String]) -> ExitCode {
         }
         i += 1;
     }
+    let Some(artifact_root) = artifact_root else {
+        eprintln!("error: --artifact-root is required");
+        return ExitCode::from(2);
+    };
     let Some(input_path) = input_path else {
         eprintln!("error: --input is required");
         return ExitCode::from(2);
     };
-    let input_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &input_path) {
+    if (receipt_path.is_some() || graph_path.is_some()) && output_root.is_none() {
+        eprintln!("error: --output-root is required for publication outputs");
+        return ExitCode::from(2);
+    }
+    let input_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &artifact_root, &input_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", input_path.display());
@@ -206,13 +233,23 @@ fn run_function_address_validate(args: &[String]) -> ExitCode {
         }
     };
     if let Some(path) = receipt_path
-        && let Err(error) = cap_write(CapabilityRootKind::Output, &path, output_json.as_bytes())
+        && let Err(error) = cap_write(
+            CapabilityRootKind::Output,
+            output_root.as_deref().expect("output root checked"),
+            &path,
+            output_json.as_bytes(),
+        )
     {
         eprintln!("error: cannot write {}: {error}", path.display());
         return ExitCode::from(2);
     }
     if let Some(path) = graph_path
-        && let Err(error) = cap_write(CapabilityRootKind::Output, &path, &graph_bytes)
+        && let Err(error) = cap_write(
+            CapabilityRootKind::Output,
+            output_root.as_deref().expect("output root checked"),
+            &path,
+            &graph_bytes,
+        )
     {
         eprintln!("error: cannot write {}: {error}", path.display());
         return ExitCode::from(2);
@@ -243,6 +280,8 @@ fn run_stack_provenance(args: &[String]) -> ExitCode {
 }
 
 fn run_stack_provenance_build(args: &[String]) -> ExitCode {
+    let mut artifact_root: Option<PathBuf> = None;
+    let mut output_root: Option<PathBuf> = None;
     let mut octet_export_path: Option<PathBuf> = None;
     let mut binary_hash: Option<String> = None;
     let mut output_path: Option<PathBuf> = None;
@@ -250,6 +289,22 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
+            "--artifact-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --artifact-root requires a value");
+                    return ExitCode::from(2);
+                }
+                artifact_root = Some(PathBuf::from(&args[i]));
+            }
+            "--output-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --output-root requires a value");
+                    return ExitCode::from(2);
+                }
+                output_root = Some(PathBuf::from(&args[i]));
+            }
             "--octet-export" => {
                 i += 1;
                 if i >= args.len() {
@@ -282,6 +337,14 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
         i += 1;
     }
 
+    let Some(artifact_root) = artifact_root else {
+        eprintln!("error: --artifact-root is required");
+        return ExitCode::from(2);
+    };
+    let Some(output_root) = output_root else {
+        eprintln!("error: --output-root is required");
+        return ExitCode::from(2);
+    };
     let Some(octet_export_path) = octet_export_path else {
         eprintln!("error: --octet-export is required");
         return ExitCode::from(2);
@@ -295,13 +358,14 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
         return ExitCode::from(2);
     };
 
-    let octet_export_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &octet_export_path) {
-        Ok(json) => json,
-        Err(error) => {
-            eprintln!("error: cannot read {}: {error}", octet_export_path.display());
-            return ExitCode::from(2);
-        }
-    };
+    let octet_export_json =
+        match cap_read_to_string(CapabilityRootKind::InputArtifact, &artifact_root, &octet_export_path) {
+            Ok(json) => json,
+            Err(error) => {
+                eprintln!("error: cannot read {}: {error}", octet_export_path.display());
+                return ExitCode::from(2);
+            }
+        };
     let sidecar_json = match valence_core::stack_provenance_adapter::build_sidecar_json_from_octet_export_json(
         &octet_export_json,
         &binary_hash,
@@ -312,7 +376,7 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
             return ExitCode::from(1);
         }
     };
-    if let Err(error) = cap_write(CapabilityRootKind::Output, &output_path, sidecar_json.as_bytes()) {
+    if let Err(error) = cap_write(CapabilityRootKind::Output, &output_root, &output_path, sidecar_json.as_bytes()) {
         eprintln!("error: cannot write {}: {error}", output_path.display());
         return ExitCode::from(2);
     }
@@ -322,12 +386,30 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
 }
 
 fn run_stack_provenance_verify(args: &[String]) -> ExitCode {
+    let mut manifest_root: Option<PathBuf> = None;
+    let mut sidecar_root: Option<PathBuf> = None;
     let mut manifest_path: Option<PathBuf> = None;
     let mut sidecar_path: Option<PathBuf> = None;
 
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
+            "--manifest-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --manifest-root requires a value");
+                    return ExitCode::from(2);
+                }
+                manifest_root = Some(PathBuf::from(&args[i]));
+            }
+            "--sidecar-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --sidecar-root requires a value");
+                    return ExitCode::from(2);
+                }
+                sidecar_root = Some(PathBuf::from(&args[i]));
+            }
             "--manifest" => {
                 i += 1;
                 if i >= args.len() {
@@ -352,6 +434,14 @@ fn run_stack_provenance_verify(args: &[String]) -> ExitCode {
         i += 1;
     }
 
+    let Some(manifest_root) = manifest_root else {
+        eprintln!("error: --manifest-root is required");
+        return ExitCode::from(2);
+    };
+    let Some(sidecar_root) = sidecar_root else {
+        eprintln!("error: --sidecar-root is required");
+        return ExitCode::from(2);
+    };
     let Some(manifest_path) = manifest_path else {
         eprintln!("error: --manifest is required");
         return ExitCode::from(2);
@@ -360,14 +450,14 @@ fn run_stack_provenance_verify(args: &[String]) -> ExitCode {
         eprintln!("error: --sidecar is required");
         return ExitCode::from(2);
     };
-    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_path) {
+    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_root, &manifest_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", manifest_path.display());
             return ExitCode::from(2);
         }
     };
-    let sidecar_json = match cap_read_to_string(CapabilityRootKind::Sidecar, &sidecar_path) {
+    let sidecar_json = match cap_read_to_string(CapabilityRootKind::Sidecar, &sidecar_root, &sidecar_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", sidecar_path.display());
@@ -386,12 +476,21 @@ fn run_stack_provenance_verify(args: &[String]) -> ExitCode {
 
 fn run_stack_provenance_graph_report(args: &[String]) -> ExitCode {
     // r[impl valence.stack_provenance_adapter.graph_report]
+    let mut artifact_root: Option<PathBuf> = None;
     let mut chain_path: Option<PathBuf> = None;
     let mut format = "json".to_owned();
 
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
+            "--artifact-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --artifact-root requires a value");
+                    return ExitCode::from(2);
+                }
+                artifact_root = Some(PathBuf::from(&args[i]));
+            }
             "--chain" => {
                 i += 1;
                 if i >= args.len() {
@@ -416,11 +515,15 @@ fn run_stack_provenance_graph_report(args: &[String]) -> ExitCode {
         i += 1;
     }
 
+    let Some(artifact_root) = artifact_root else {
+        eprintln!("error: --artifact-root is required");
+        return ExitCode::from(2);
+    };
     let Some(chain_path) = chain_path else {
         eprintln!("error: --chain is required");
         return ExitCode::from(2);
     };
-    let chain_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &chain_path) {
+    let chain_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &artifact_root, &chain_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", chain_path.display());
@@ -450,6 +553,10 @@ fn run_stack_provenance_graph_report(args: &[String]) -> ExitCode {
 }
 
 fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
+    let mut binary_root: Option<PathBuf> = None;
+    let mut artifact_root: Option<PathBuf> = None;
+    let mut sidecar_root: Option<PathBuf> = None;
+    let mut manifest_root: Option<PathBuf> = None;
     let mut binary_path: Option<PathBuf> = None;
     let mut octet_export_path: Option<PathBuf> = None;
     let mut sidecar_path: Option<PathBuf> = None;
@@ -459,6 +566,38 @@ fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
+            "--binary-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --binary-root requires a value");
+                    return ExitCode::from(2);
+                }
+                binary_root = Some(PathBuf::from(&args[i]));
+            }
+            "--artifact-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --artifact-root requires a value");
+                    return ExitCode::from(2);
+                }
+                artifact_root = Some(PathBuf::from(&args[i]));
+            }
+            "--sidecar-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --sidecar-root requires a value");
+                    return ExitCode::from(2);
+                }
+                sidecar_root = Some(PathBuf::from(&args[i]));
+            }
+            "--manifest-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --manifest-root requires a value");
+                    return ExitCode::from(2);
+                }
+                manifest_root = Some(PathBuf::from(&args[i]));
+            }
             "--binary" => {
                 i += 1;
                 if i >= args.len() {
@@ -500,6 +639,22 @@ fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
         i += 1;
     }
 
+    let Some(binary_root) = binary_root else {
+        eprintln!("error: --binary-root is required");
+        return ExitCode::from(2);
+    };
+    let Some(artifact_root) = artifact_root else {
+        eprintln!("error: --artifact-root is required");
+        return ExitCode::from(2);
+    };
+    let Some(sidecar_root) = sidecar_root else {
+        eprintln!("error: --sidecar-root is required");
+        return ExitCode::from(2);
+    };
+    let Some(manifest_root) = manifest_root else {
+        eprintln!("error: --manifest-root is required");
+        return ExitCode::from(2);
+    };
     let Some(binary_path) = binary_path else {
         eprintln!("error: --binary is required");
         return ExitCode::from(2);
@@ -517,28 +672,29 @@ fn run_stack_provenance_verify_built_binary(args: &[String]) -> ExitCode {
         return ExitCode::from(2);
     };
 
-    let binary_bytes = match cap_read(CapabilityRootKind::Binary, &binary_path) {
+    let binary_bytes = match cap_read(CapabilityRootKind::Binary, &binary_root, &binary_path) {
         Ok(bytes) => bytes,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", binary_path.display());
             return ExitCode::from(2);
         }
     };
-    let octet_export_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, &octet_export_path) {
-        Ok(json) => json,
-        Err(error) => {
-            eprintln!("error: cannot read {}: {error}", octet_export_path.display());
-            return ExitCode::from(2);
-        }
-    };
-    let sidecar_json = match cap_read_to_string(CapabilityRootKind::Sidecar, &sidecar_path) {
+    let octet_export_json =
+        match cap_read_to_string(CapabilityRootKind::InputArtifact, &artifact_root, &octet_export_path) {
+            Ok(json) => json,
+            Err(error) => {
+                eprintln!("error: cannot read {}: {error}", octet_export_path.display());
+                return ExitCode::from(2);
+            }
+        };
+    let sidecar_json = match cap_read_to_string(CapabilityRootKind::Sidecar, &sidecar_root, &sidecar_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", sidecar_path.display());
             return ExitCode::from(2);
         }
     };
-    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_path) {
+    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_root, &manifest_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", manifest_path.display());
@@ -589,88 +745,78 @@ impl CapabilityRootKind {
             Self::Output => "output",
         }
     }
+
+    fn core_role(self) -> valence_core::capability_plan::CapabilityRole {
+        use valence_core::capability_plan::CapabilityRole;
+        match self {
+            Self::InputArtifact => CapabilityRole::Artifact,
+            Self::Manifest => CapabilityRole::Manifest,
+            Self::Sidecar => CapabilityRole::Sidecar,
+            Self::Binary => CapabilityRole::Binary,
+            Self::Output => CapabilityRole::Output,
+        }
+    }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct CapabilityPath {
-    root: PathBuf,
-    relative: PathBuf,
-}
-
-fn cap_read_to_string(kind: CapabilityRootKind, path: &Path) -> Result<String, String> {
-    let (root, relative) = open_capability_root(kind, path)?;
+fn cap_read_to_string(kind: CapabilityRootKind, root_path: &Path, locator: &Path) -> Result<String, String> {
+    let (root, relative) = open_capability_root(kind, root_path, locator, false)?;
     ensure_existing_path_confined(&root, &relative)?;
     root.read_to_string(&relative).map_err(|error| format!("{} read failed: {error}", kind.as_str()))
 }
 
-fn cap_read(kind: CapabilityRootKind, path: &Path) -> Result<Vec<u8>, String> {
-    let (root, relative) = open_capability_root(kind, path)?;
+fn cap_read(kind: CapabilityRootKind, root_path: &Path, locator: &Path) -> Result<Vec<u8>, String> {
+    let (root, relative) = open_capability_root(kind, root_path, locator, false)?;
     ensure_existing_path_confined(&root, &relative)?;
     root.read(&relative).map_err(|error| format!("{} read failed: {error}", kind.as_str()))
 }
 
-fn cap_write(kind: CapabilityRootKind, path: &Path, bytes: &[u8]) -> Result<(), String> {
-    let (root, relative) = open_capability_root(kind, path)?;
+fn cap_write(kind: CapabilityRootKind, root_path: &Path, locator: &Path, bytes: &[u8]) -> Result<(), String> {
+    let (root, relative) = open_capability_root(kind, root_path, locator, true)?;
     ensure_output_parent_confined(&root, &relative)?;
     root.write(&relative, bytes).map_err(|error| format!("{} write failed: {error}", kind.as_str()))
 }
 
-fn open_capability_root(kind: CapabilityRootKind, path: &Path) -> Result<(Dir, PathBuf), String> {
-    let capability_path = split_operator_path(path)?;
-    let root = Dir::open_ambient_dir(&capability_path.root, ambient_authority()).map_err(|error| {
-        format!("{} root {} could not be opened: {error}", kind.as_str(), capability_path.root.display())
-    })?;
-    Ok((root, capability_path.relative))
-}
+fn open_capability_root(
+    kind: CapabilityRootKind,
+    root_path: &Path,
+    locator: &Path,
+    write: bool,
+) -> Result<(Dir, PathBuf), String> {
+    use valence_core::capability_plan::CapabilityAccessPlan;
+    use valence_core::capability_plan::CapabilityOperation;
 
-fn split_operator_path(path: &Path) -> Result<CapabilityPath, String> {
-    if path.as_os_str().is_empty() {
-        return Err("empty path is not a valid capability locator".to_owned());
-    }
-    let file_name = path.file_name().ok_or_else(|| "path must name a file inside a capability root".to_owned())?;
-    let parent = path.parent().unwrap_or_else(|| Path::new("."));
-    let root = if parent.as_os_str().is_empty() {
-        PathBuf::from(".")
-    } else {
-        parent.to_path_buf()
+    let plan = CapabilityAccessPlan {
+        role: kind.core_role(),
+        operation: if write {
+            CapabilityOperation::Write
+        } else {
+            CapabilityOperation::Read
+        },
+        root_declaration: root_path.to_string_lossy().into_owned(),
+        locator: locator.to_string_lossy().into_owned(),
     };
-    let relative = PathBuf::from(file_name);
-    validate_capability_relative_path(&relative)?;
-    Ok(CapabilityPath { root, relative })
+    let issues = valence_core::capability_plan::validate_capability_access_plan(&plan);
+    if let Some(issue) = issues.first() {
+        return Err(format!("{}:{}", issue.field, issue.code));
+    }
+    let root = Dir::open_ambient_dir(root_path, ambient_authority())
+        .map_err(|error| format!("{} root {} could not be opened: {error}", kind.as_str(), root_path.display()))?;
+    Ok((root, locator.to_path_buf()))
 }
 
-fn validate_capability_relative_path(path: &Path) -> Result<(), String> {
-    if path.as_os_str().is_empty() {
-        return Err("capability-relative path is empty".to_owned());
-    }
-    let mut saw_normal_component = false;
-    for component in path.components() {
-        match component {
-            Component::Normal(component) if !component.is_empty() => saw_normal_component = true,
-            Component::CurDir => {}
-            Component::ParentDir => return Err("capability-relative path must not contain parent traversal".to_owned()),
-            Component::RootDir | Component::Prefix(_) => {
-                return Err("capability-relative path must not be absolute".to_owned());
-            }
-            Component::Normal(_) => return Err("capability-relative path contains an empty component".to_owned()),
-        }
-    }
-    if !saw_normal_component {
-        return Err("capability-relative path must name a file".to_owned());
+fn ensure_existing_path_confined(root: &Dir, relative: &Path) -> Result<(), String> {
+    let canonical = root
+        .canonicalize(relative)
+        .map_err(|error| format!("capability path is unavailable or escapes root: {error}"))?;
+    if canonical.is_absolute()
+        || canonical.components().any(|component| matches!(component, std::path::Component::ParentDir))
+    {
+        return Err("capability path escapes declared root".to_owned());
     }
     Ok(())
 }
 
-fn ensure_existing_path_confined(root: &Dir, relative: &Path) -> Result<(), String> {
-    validate_capability_relative_path(relative)?;
-    let canonical = root
-        .canonicalize(relative)
-        .map_err(|error| format!("capability path is unavailable or escapes root: {error}"))?;
-    validate_capability_relative_path(&canonical)
-}
-
 fn ensure_output_parent_confined(root: &Dir, relative: &Path) -> Result<(), String> {
-    validate_capability_relative_path(relative)?;
     if let Some(parent) = relative.parent()
         && !parent.as_os_str().is_empty()
     {
@@ -748,11 +894,20 @@ fn print_built_binary_thread_report(report: &valence_core::stack_provenance_adap
 
 fn run_explain(args: &[String]) -> ExitCode {
     let mut source_id: Option<String> = None;
+    let mut manifest_root: Option<PathBuf> = None;
     let mut manifest_path: Option<PathBuf> = None;
 
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
+            "--manifest-root" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --manifest-root requires a value");
+                    return ExitCode::from(2);
+                }
+                manifest_root = Some(PathBuf::from(&args[i]));
+            }
             "--id" => {
                 i += 1;
                 if i >= args.len() {
@@ -781,12 +936,16 @@ fn run_explain(args: &[String]) -> ExitCode {
         eprintln!("error: --id is required");
         return ExitCode::from(2);
     };
+    let Some(manifest_root) = manifest_root else {
+        eprintln!("error: --manifest-root is required");
+        return ExitCode::from(2);
+    };
     let Some(manifest_path) = manifest_path else {
         eprintln!("error: --manifest is required");
         return ExitCode::from(2);
     };
 
-    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_path) {
+    let manifest_json = match cap_read_to_string(CapabilityRootKind::Manifest, &manifest_root, &manifest_path) {
         Ok(json) => json,
         Err(error) => {
             eprintln!("error: cannot read {}: {error}", manifest_path.display());
@@ -833,8 +992,8 @@ mod tests {
 
     #[test]
     fn usage_documentation_is_stable() {
-        assert!(USAGE.contains("check <FILE>"));
-        assert!(USAGE.contains("explain --id <ID> --manifest <FILE>"));
+        assert!(USAGE.contains("check --artifact-root <ROOT> <FILE>"));
+        assert!(USAGE.contains("explain --manifest-root <ROOT>"));
         assert!(USAGE.contains("stack-provenance build"));
         assert!(USAGE.contains("stack-provenance verify"));
         assert!(USAGE.contains("stack-provenance verify-built-binary"));
@@ -846,35 +1005,25 @@ mod tests {
     fn capability_roots_read_and_write_in_root() {
         // r[verify valence.stack_provenance_adapter.cap_std_cli_boundary.tests.positive]
         let root = temp_capability_dir("positive");
-        let input = root.join("input.json");
-        let output = root.join("output.json");
-        std::fs::write(&input, "{\"valid\":true}").expect("write input fixture");
+        let input = Path::new("input.json");
+        let output = Path::new("output.json");
+        std::fs::write(root.join(input), "{\"valid\":true}").expect("write input fixture");
 
-        let read = cap_read_to_string(CapabilityRootKind::InputArtifact, &input).expect("read through cap root");
-        cap_write(CapabilityRootKind::Output, &output, read.as_bytes()).expect("write through cap root");
+        let read = cap_read_to_string(CapabilityRootKind::InputArtifact, &root, input).expect("read through cap root");
+        cap_write(CapabilityRootKind::Output, &root, output, read.as_bytes()).expect("write through cap root");
 
         assert_eq!(read, "{\"valid\":true}");
-        assert_eq!(std::fs::read_to_string(output).expect("read output fixture"), read);
-    }
-
-    #[test]
-    fn capability_relative_paths_reject_escape_attempts() {
-        // r[verify valence.stack_provenance_adapter.cap_std_cli_boundary.tests.negative]
-        assert!(validate_capability_relative_path(Path::new("artifact.json")).is_ok());
-        assert!(validate_capability_relative_path(Path::new("../artifact.json")).is_err());
-        assert!(validate_capability_relative_path(Path::new("nested/../artifact.json")).is_err());
-        assert!(validate_capability_relative_path(Path::new("/tmp/artifact.json")).is_err());
-        assert!(validate_capability_relative_path(Path::new("")).is_err());
+        assert_eq!(std::fs::read_to_string(root.join(output)).expect("read output fixture"), read);
     }
 
     #[test]
     fn missing_capability_root_fails_before_read() {
         // r[verify valence.stack_provenance_adapter.cap_std_cli_boundary.tests.negative]
         let root = temp_capability_dir("missing-root");
-        let missing_root = root.join("absent").join("input.json");
+        let missing_root = root.join("absent");
 
-        let error =
-            cap_read_to_string(CapabilityRootKind::Manifest, &missing_root).expect_err("missing root should fail");
+        let error = cap_read_to_string(CapabilityRootKind::Manifest, &missing_root, Path::new("input.json"))
+            .expect_err("missing root should fail");
 
         assert!(error.contains("root"));
     }
@@ -890,8 +1039,8 @@ mod tests {
         std::fs::write(&outside_file, "secret").expect("write outside target");
         std::os::unix::fs::symlink(&outside_file, &link).expect("create symlink escape fixture");
 
-        let error =
-            cap_read_to_string(CapabilityRootKind::InputArtifact, &link).expect_err("symlink escape should fail");
+        let error = cap_read_to_string(CapabilityRootKind::InputArtifact, &root, Path::new("secret-link.txt"))
+            .expect_err("symlink escape should fail");
 
         assert!(error.contains("escapes root") || error.contains("absolute"));
     }

@@ -4,6 +4,7 @@
 
 use std::fs;
 use std::io::Write;
+use std::path::Path;
 use std::process::Command;
 
 use valence_core::evidence_ir::EvidenceSpan;
@@ -154,12 +155,16 @@ fn function_address_validate_emits_receipt_and_graph() {
     let output = Command::new(valence_binary())
         .arg("function-address")
         .arg("validate")
+        .arg("--artifact-root")
+        .arg("/tmp")
         .arg("--input")
-        .arg(input_path)
+        .arg("valence-function-address-valid.json")
+        .arg("--output-root")
+        .arg("/tmp")
         .arg("--receipt")
-        .arg(receipt_path)
+        .arg("valence-function-address-receipt.json")
         .arg("--graph")
-        .arg(graph_path)
+        .arg("valence-function-address-graph.json")
         .output()
         .expect("run valence function-address validate");
 
@@ -186,8 +191,10 @@ fn function_address_validate_rejects_role_promotion_and_overclaim() {
     let output = Command::new(valence_binary())
         .arg("function-address")
         .arg("validate")
+        .arg("--artifact-root")
+        .arg("/tmp")
         .arg("--input")
-        .arg(input_path)
+        .arg("valence-function-address-invalid.json")
         .output()
         .expect("run valence function-address validate");
 
@@ -195,6 +202,58 @@ fn function_address_validate_rejects_role_promotion_and_overclaim() {
     assert!(!output.status.success(), "function-address validation should fail: {stdout}");
     assert!(stdout.contains("formal_proof_promotion_denied"));
     assert!(stdout.contains("overclaim"));
+}
+
+#[test]
+fn declared_roots_fail_closed_for_omission_absolute_locators_and_traversal() {
+    // r[verify valence.stack_provenance_adapter.declared_capability_roots.fixtures.negative]
+    let omitted_check = Command::new(valence_binary())
+        .arg("check")
+        .arg("artifact.json")
+        .output()
+        .expect("run check without root");
+    assert!(!omitted_check.status.success());
+
+    for locator in [
+        "/tmp/valence-cli-valid-artifact.json",
+        "../valence-cli-valid-artifact.json",
+    ] {
+        let output = Command::new(valence_binary())
+            .arg("check")
+            .arg("--artifact-root")
+            .arg("/tmp")
+            .arg(locator)
+            .output()
+            .expect("run check escape fixture");
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(!output.status.success());
+        assert!(stderr.contains("capability_locator_"), "missing locator diagnostic: {stderr}");
+    }
+
+    let omitted_explain = Command::new(valence_binary())
+        .args(["explain", "--id", "id", "--manifest", "manifest.json"])
+        .output()
+        .expect("run explain without root");
+    assert!(!omitted_explain.status.success());
+    let omitted_stack = Command::new(valence_binary())
+        .args([
+            "stack-provenance",
+            "build",
+            "--octet-export",
+            "export.json",
+            "--binary-hash",
+            BINARY_HASH,
+            "--output",
+            "sidecar.json",
+        ])
+        .output()
+        .expect("run stack build without roots");
+    assert!(!omitted_stack.status.success());
+    let omitted_function = Command::new(valence_binary())
+        .args(["function-address", "validate", "--input", "input.json"])
+        .output()
+        .expect("run function-address without root");
+    assert!(!omitted_function.status.success());
 }
 
 #[test]
@@ -229,7 +288,9 @@ fn check_accepts_library_emitted_artifact() {
 
     let output = Command::new(valence_binary())
         .arg("check")
-        .arg("/tmp/valence-cli-valid-artifact.json")
+        .arg("--artifact-root")
+        .arg("/tmp")
+        .arg("valence-cli-valid-artifact.json")
         .output()
         .expect("run valence check");
 
@@ -280,7 +341,9 @@ fn check_prints_kani_non_claim_boundaries() {
 
     let output = Command::new(valence_binary())
         .arg("check")
-        .arg("/tmp/valence-cli-kani-artifact.json")
+        .arg("--artifact-root")
+        .arg("/tmp")
+        .arg("valence-cli-kani-artifact.json")
         .output()
         .expect("run valence check");
 
@@ -313,7 +376,9 @@ fn check_rejects_overclaim_artifact() {
 
     let output = Command::new(valence_binary())
         .arg("check")
-        .arg("/tmp/valence-cli-overclaim-artifact.json")
+        .arg("--artifact-root")
+        .arg("/tmp")
+        .arg("valence-cli-overclaim-artifact.json")
         .output()
         .expect("run valence check");
 
@@ -343,10 +408,12 @@ fn explain_resolves_known_id_from_manifest() {
 
     let output = Command::new(valence_binary())
         .arg("explain")
+        .arg("--manifest-root")
+        .arg("/tmp")
         .arg("--id")
         .arg("eq:bs_001")
         .arg("--manifest")
-        .arg("/tmp/valence-cli-spans.json")
+        .arg("valence-cli-spans.json")
         .output()
         .expect("run valence explain");
 
@@ -377,10 +444,12 @@ fn explain_reports_not_found_for_unknown_id() {
 
     let output = Command::new(valence_binary())
         .arg("explain")
+        .arg("--manifest-root")
+        .arg("/tmp")
         .arg("--id")
         .arg("nonexistent")
         .arg("--manifest")
-        .arg("/tmp/valence-cli-spans-notfound.json")
+        .arg("valence-cli-spans-notfound.json")
         .output()
         .expect("run valence explain");
 
@@ -408,10 +477,12 @@ fn explain_rejects_duplicate_and_invalid_manifest_without_selecting_span() {
 
     let output = Command::new(valence_binary())
         .arg("explain")
+        .arg("--manifest-root")
+        .arg("/tmp")
         .arg("--id")
         .arg("eq:duplicate")
         .arg("--manifest")
-        .arg(manifest_path)
+        .arg("valence-cli-spans-invalid.json")
         .output()
         .expect("run valence explain");
 
@@ -434,12 +505,16 @@ fn stack_provenance_builds_and_verifies_mantle_sidecar() {
     let build_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("build")
+        .arg("--artifact-root")
+        .arg("/tmp")
         .arg("--octet-export")
-        .arg(export_path)
+        .arg("valence-cli-octet-export.json")
         .arg("--binary-hash")
         .arg(BINARY_HASH)
+        .arg("--output-root")
+        .arg("/tmp")
         .arg("--output")
-        .arg(sidecar_path)
+        .arg("valence-cli-stack-sidecar.json")
         .output()
         .expect("run stack provenance build");
     let build_stdout = String::from_utf8_lossy(&build_output.stdout);
@@ -453,10 +528,14 @@ fn stack_provenance_builds_and_verifies_mantle_sidecar() {
     let verify_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("verify")
+        .arg("--manifest-root")
+        .arg("/tmp")
         .arg("--manifest")
-        .arg(manifest_path)
+        .arg("valence-cli-mantle-manifest.json")
+        .arg("--sidecar-root")
+        .arg("/tmp")
         .arg("--sidecar")
-        .arg(sidecar_path)
+        .arg("valence-cli-stack-sidecar.json")
         .output()
         .expect("run stack provenance verify");
     let verify_stdout = String::from_utf8_lossy(&verify_output.stdout);
@@ -467,19 +546,22 @@ fn stack_provenance_builds_and_verifies_mantle_sidecar() {
 #[test]
 fn stack_provenance_verify_rejects_tampered_sidecar_digest() {
     let export_path = "/tmp/valence-cli-octet-export-tamper.json";
-    let sidecar_path = "/tmp/valence-cli-stack-sidecar-tamper.json";
     let manifest_path = "/tmp/valence-cli-mantle-manifest-tamper.json";
     write_text(export_path, &sample_octet_export_json());
 
     let build_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("build")
+        .arg("--artifact-root")
+        .arg("/tmp")
         .arg("--octet-export")
-        .arg(export_path)
+        .arg("valence-cli-octet-export-tamper.json")
         .arg("--binary-hash")
         .arg(BINARY_HASH)
+        .arg("--output-root")
+        .arg("/tmp")
         .arg("--output")
-        .arg(sidecar_path)
+        .arg("valence-cli-stack-sidecar-tamper.json")
         .output()
         .expect("run stack provenance build");
     assert!(build_output.status.success(), "build should succeed before tamper");
@@ -488,10 +570,14 @@ fn stack_provenance_verify_rejects_tampered_sidecar_digest() {
     let verify_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("verify")
+        .arg("--manifest-root")
+        .arg("/tmp")
         .arg("--manifest")
-        .arg(manifest_path)
+        .arg("valence-cli-mantle-manifest-tamper.json")
+        .arg("--sidecar-root")
+        .arg("/tmp")
         .arg("--sidecar")
-        .arg(sidecar_path)
+        .arg("valence-cli-stack-sidecar-tamper.json")
         .output()
         .expect("run stack provenance verify");
     let verify_stdout = String::from_utf8_lossy(&verify_output.stdout);
@@ -515,12 +601,16 @@ fn stack_provenance_verify_built_binary_accepts_measured_thread() {
     let build_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("build")
+        .arg("--artifact-root")
+        .arg("/tmp")
         .arg("--octet-export")
-        .arg(export_path)
+        .arg("valence-cli-built-binary-octet-export.json")
         .arg("--binary-hash")
         .arg(&binary_hash)
+        .arg("--output-root")
+        .arg("/tmp")
         .arg("--output")
-        .arg(sidecar_path)
+        .arg("valence-cli-built-binary-sidecar.json")
         .output()
         .expect("run stack provenance build");
     assert!(build_output.status.success(), "build should succeed");
@@ -532,14 +622,22 @@ fn stack_provenance_verify_built_binary_accepts_measured_thread() {
     let verify_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("verify-built-binary")
+        .arg("--binary-root")
+        .arg("/tmp")
         .arg("--binary")
-        .arg(binary_path)
+        .arg("valence-cli-built-binary")
+        .arg("--artifact-root")
+        .arg("/tmp")
         .arg("--octet-export")
-        .arg(export_path)
+        .arg("valence-cli-built-binary-octet-export.json")
+        .arg("--sidecar-root")
+        .arg("/tmp")
         .arg("--sidecar")
-        .arg(sidecar_path)
+        .arg("valence-cli-built-binary-sidecar.json")
+        .arg("--manifest-root")
+        .arg("/tmp")
         .arg("--manifest")
-        .arg(manifest_path)
+        .arg("valence-cli-built-binary-mantle-manifest.json")
         .arg("--json")
         .output()
         .expect("run built binary verify");
@@ -571,12 +669,16 @@ fn stack_provenance_verify_built_binary_rejects_tampered_bytes() {
     let build_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("build")
+        .arg("--artifact-root")
+        .arg("/tmp")
         .arg("--octet-export")
-        .arg(export_path)
+        .arg("valence-cli-built-binary-octet-export-tampered.json")
         .arg("--binary-hash")
         .arg(&binary_hash)
+        .arg("--output-root")
+        .arg("/tmp")
         .arg("--output")
-        .arg(sidecar_path)
+        .arg("valence-cli-built-binary-sidecar-tampered.json")
         .output()
         .expect("run stack provenance build");
     assert!(build_output.status.success(), "build should succeed before tamper");
@@ -588,14 +690,22 @@ fn stack_provenance_verify_built_binary_rejects_tampered_bytes() {
     let verify_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("verify-built-binary")
+        .arg("--binary-root")
+        .arg("/tmp")
         .arg("--binary")
-        .arg(binary_path)
+        .arg("valence-cli-built-binary-tampered")
+        .arg("--artifact-root")
+        .arg("/tmp")
         .arg("--octet-export")
-        .arg(export_path)
+        .arg("valence-cli-built-binary-octet-export-tampered.json")
+        .arg("--sidecar-root")
+        .arg("/tmp")
         .arg("--sidecar")
-        .arg(sidecar_path)
+        .arg("valence-cli-built-binary-sidecar-tampered.json")
+        .arg("--manifest-root")
+        .arg("/tmp")
         .arg("--manifest")
-        .arg(manifest_path)
+        .arg("valence-cli-built-binary-mantle-manifest-tampered.json")
         .output()
         .expect("run built binary verify");
     let stdout = String::from_utf8_lossy(&verify_output.stdout);
@@ -610,11 +720,15 @@ fn stack_provenance_verify_built_binary_rejects_tampered_bytes() {
 #[test]
 fn stack_provenance_graph_report_outputs_json_and_markdown() {
     let fixture = graph_fixture_path("positive/complete.json");
+    let fixture_root = Path::new(&fixture).parent().expect("fixture root");
+    let fixture_locator = Path::new(&fixture).file_name().expect("fixture locator");
     let json_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("graph-report")
+        .arg("--artifact-root")
+        .arg(fixture_root)
         .arg("--chain")
-        .arg(&fixture)
+        .arg(fixture_locator)
         .arg("--format")
         .arg("json")
         .output()
@@ -636,8 +750,10 @@ fn stack_provenance_graph_report_outputs_json_and_markdown() {
     let markdown_output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("graph-report")
+        .arg("--artifact-root")
+        .arg(fixture_root)
         .arg("--chain")
-        .arg(&fixture)
+        .arg(fixture_locator)
         .arg("--format")
         .arg("markdown")
         .output()
@@ -651,11 +767,15 @@ fn stack_provenance_graph_report_outputs_json_and_markdown() {
 #[test]
 fn stack_provenance_graph_report_rejects_unsupported_edge_fixture() {
     let fixture = graph_fixture_path("negative/unsupported-edge.json");
+    let fixture_root = Path::new(&fixture).parent().expect("fixture root");
+    let fixture_locator = Path::new(&fixture).file_name().expect("fixture locator");
     let output = Command::new(valence_binary())
         .arg("stack-provenance")
         .arg("graph-report")
+        .arg("--artifact-root")
+        .arg(fixture_root)
         .arg("--chain")
-        .arg(&fixture)
+        .arg(fixture_locator)
         .arg("--format")
         .arg("json")
         .output()

@@ -212,12 +212,14 @@ measured-byte identity, canonical IDs, typed linkage, role policy, and non-claim
 conformance only; it is not a correctness, semantic-equivalence, verifier
 soundness, requirement-satisfaction, or release-eligibility proof.
 
-`valence-cli` opens local input artifact, manifest, sidecar, binary, and output
-paths through typed `cap-std` capability roots before reading, measuring, or
-writing. This bounds the CLI shell's local filesystem authority and keeps
-`valence-core` pure; it does not prove evidence truth, behavioral correctness,
-release eligibility, verifier soundness, or sandbox completeness beyond the
-local root-confined file operation.
+`valence-cli` requires independently declared role roots and relative locators
+for local input artifact, manifest, sidecar, binary, and output paths, then opens
+them through typed `cap-std` capability handles. Parent-derived ambient
+authority is not supported; see [`docs/cli-capability-roots.md`](docs/cli-capability-roots.md)
+for migration examples. This bounds the CLI shell's local filesystem authority
+and keeps `valence-core` pure; it does not prove evidence truth, behavioral
+correctness, release eligibility, verifier soundness, root trust, or sandbox
+completeness beyond the local root-confined file operation.
 
 Nickel contracts in `contracts/stack-provenance/` provide a preflight gate for
 static metadata shape and bounded-claim invariants. They check schema strings,
