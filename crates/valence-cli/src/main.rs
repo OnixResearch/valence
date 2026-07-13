@@ -795,7 +795,7 @@ fn run_explain(args: &[String]) -> ExitCode {
     };
 
     match valence_core::evidence_ir::explain_span(&manifest_json, &source_id) {
-        Some(span) => {
+        valence_core::evidence_ir::ExplainSpanResult::Found(span) => {
             println!("source_id: {}", span.source_id);
             println!("source_path: {}", span.source_path);
             println!("start_byte: {}", span.start_byte);
@@ -809,9 +809,15 @@ fn run_explain(args: &[String]) -> ExitCode {
             }
             ExitCode::SUCCESS
         }
-        None => {
+        valence_core::evidence_ir::ExplainSpanResult::NotFound => {
             println!("not_found: {source_id}");
             ExitCode::from(1)
+        }
+        valence_core::evidence_ir::ExplainSpanResult::InvalidManifest(issues) => {
+            for issue in issues {
+                eprintln!("invalid_manifest: {}:{}", issue.field, issue.code);
+            }
+            ExitCode::from(2)
         }
     }
 }

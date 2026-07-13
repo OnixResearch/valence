@@ -390,6 +390,41 @@ fn explain_reports_not_found_for_unknown_id() {
 }
 
 #[test]
+fn explain_rejects_duplicate_and_invalid_manifest_without_selecting_span() {
+    let span = EvidenceSpan {
+        source_id: "eq:duplicate".to_owned(),
+        source_path: "src/pricing.rs".to_owned(),
+        start_byte: 10,
+        end_byte: 5,
+        start_line: 0,
+        start_column: 1,
+        end_line: 1,
+        end_column: 1,
+        label: None,
+    };
+    let manifest = serde_json::to_string(&[span.clone(), span]).expect("serialize manifest");
+    let manifest_path = "/tmp/valence-cli-spans-invalid.json";
+    write_text(manifest_path, &manifest);
+
+    let output = Command::new(valence_binary())
+        .arg("explain")
+        .arg("--id")
+        .arg("eq:duplicate")
+        .arg("--manifest")
+        .arg(manifest_path)
+        .output()
+        .expect("run valence explain");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(!output.status.success(), "invalid manifest must fail");
+    assert!(stdout.is_empty(), "invalid manifest must not print a selected span: {stdout}");
+    assert!(!stderr.contains("not_found"), "invalid manifest is distinct from not found: {stderr}");
+    assert!(stderr.contains("manifest_duplicate_source_id"), "duplicate diagnostic missing: {stderr}");
+    assert!(stderr.contains("span_bytes_reversed"), "coordinate diagnostic missing: {stderr}");
+}
+
+#[test]
 fn stack_provenance_builds_and_verifies_mantle_sidecar() {
     let export_path = "/tmp/valence-cli-octet-export.json";
     let sidecar_path = "/tmp/valence-cli-stack-sidecar.json";

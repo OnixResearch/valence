@@ -210,6 +210,68 @@ pub struct EvidenceSpan {
     pub label: Option<String>,
 }
 
+/// Field-scoped structural issue for an evidence span.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+pub struct SpanIssue {
+    pub field: &'static str,
+    pub code: &'static str,
+}
+
+impl SpanIssue {
+    const fn new(field: &'static str, code: &'static str) -> Self {
+        Self { field, code }
+    }
+}
+
+/// Typed result of validating and searching a complete span manifest.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ExplainSpanResult {
+    Found(EvidenceSpan),
+    NotFound,
+    InvalidManifest(Vec<SpanIssue>),
+}
+
+/// Validate one span without reading its source file.
+#[must_use]
+pub fn validate_evidence_span(span: &EvidenceSpan) -> Vec<SpanIssue> {
+    let mut issues = Vec::new();
+    validate_span_text(&span.source_id, "source_id", &mut issues);
+    validate_span_text(&span.source_path, "source_path", &mut issues);
+    if let Some(label) = &span.label {
+        validate_span_text(label, "label", &mut issues);
+    }
+    if span.start_byte > span.end_byte {
+        issues.push(SpanIssue::new("byte_range", "span_bytes_reversed"));
+    }
+    for (field, value) in [
+        ("start_line", span.start_line),
+        ("start_column", span.start_column),
+        ("end_line", span.end_line),
+        ("end_column", span.end_column),
+    ] {
+        if value == 0 {
+            issues.push(SpanIssue::new(field, "span_coordinate_zero"));
+        }
+    }
+    if (span.end_line, span.end_column) < (span.start_line, span.start_column) {
+        issues.push(SpanIssue::new("position_range", "span_position_reversed"));
+    }
+    issues.sort();
+    issues.dedup();
+    issues
+}
+
+fn validate_span_text(value: &str, field: &'static str, issues: &mut Vec<SpanIssue>) {
+    if value.is_empty() {
+        issues.push(SpanIssue::new(field, "span_text_empty"));
+    } else if value.trim() != value {
+        issues.push(SpanIssue::new(field, "span_text_padded"));
+    }
+    if value.chars().any(char::is_control) {
+        issues.push(SpanIssue::new(field, "span_text_control_character"));
+    }
+}
+
 /// A canonical Evidence IR artifact: the unified form for Function Objects,
 /// evidence index records, and receipts.
 ///
@@ -273,6 +335,12 @@ pub fn build_evidence_artifact(
     payload: serde_json::Value,
     non_claims: Vec<String>,
 ) -> Result<EvidenceArtifact, EvidenceIrError> {
+    if let Some(span) = &source_span {
+        let issues = validate_evidence_span(span);
+        if !issues.is_empty() {
+            return Err(EvidenceIrError::InvalidSourceSpan { issues });
+        }
+    }
     let mut artifact = EvidenceArtifact {
         schema: EVIDENCE_IR_SCHEMA.to_owned(),
         artifact_kind: artifact_kind.to_owned(),
@@ -340,6 +408,9 @@ pub fn check_evidence_artifact(json: &str) -> EvidenceCheckReport {
     }
     if artifact.stable_id.trim().is_empty() {
         issue_codes.push("stable_id_empty");
+    }
+    if let Some(span) = &artifact.source_span {
+        issue_codes.extend(validate_evidence_span(span).into_iter().map(|issue| issue.code));
     }
 
     let expected_hash = match canonical_hash(&artifact) {
@@ -577,20 +648,38 @@ fn object_array_strings<'a>(value: &'a serde_json::Value, key: &str) -> Vec<&'a 
         .collect()
 }
 
-/// Resolves a stable source ID to its span from a JSON manifest.
-///
-/// The manifest is a JSON array of [`EvidenceSpan`] objects.
-/// Returns `None` if the ID is not found or the manifest is malformed.
+/// Validate every manifest row and resolve a unique stable source ID.
 #[must_use]
-pub fn explain_span(manifest_json: &str, source_id: &str) -> Option<EvidenceSpan> {
-    let spans: Vec<EvidenceSpan> = serde_json::from_str(manifest_json).ok()?;
-    spans.into_iter().find(|span| span.source_id == source_id)
+pub fn explain_span(manifest_json: &str, source_id: &str) -> ExplainSpanResult {
+    let spans: Vec<EvidenceSpan> = match serde_json::from_str(manifest_json) {
+        Ok(spans) => spans,
+        Err(_) => {
+            return ExplainSpanResult::InvalidManifest(vec![SpanIssue::new("manifest", "manifest_malformed_json")]);
+        }
+    };
+    let mut issues = spans.iter().flat_map(validate_evidence_span).collect::<Vec<_>>();
+    let mut ids = std::collections::BTreeSet::new();
+    for span in &spans {
+        if !ids.insert(span.source_id.as_str()) {
+            issues.push(SpanIssue::new("source_id", "manifest_duplicate_source_id"));
+        }
+    }
+    issues.sort();
+    issues.dedup();
+    if !issues.is_empty() {
+        return ExplainSpanResult::InvalidManifest(issues);
+    }
+    match spans.into_iter().find(|span| span.source_id == source_id) {
+        Some(span) => ExplainSpanResult::Found(span),
+        None => ExplainSpanResult::NotFound,
+    }
 }
 
 /// Construction and validation errors for Evidence IR artifacts.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum EvidenceIrError {
     CanonicalSerialization { detail: String },
+    InvalidSourceSpan { issues: Vec<SpanIssue> },
 }
 
 impl std::fmt::Display for EvidenceIrError {
@@ -598,6 +687,9 @@ impl std::fmt::Display for EvidenceIrError {
         match self {
             Self::CanonicalSerialization { detail } => {
                 write!(f, "canonicalize evidence artifact: {detail}")
+            }
+            Self::InvalidSourceSpan { issues } => {
+                write!(f, "invalid evidence source span: {issues:?}")
             }
         }
     }
@@ -1059,20 +1151,80 @@ mod tests {
     fn explain_resolves_known_id() {
         let manifest = serde_json::to_string(&[sample_span()]).unwrap();
         let resolved = explain_span(&manifest, "eq:bs_001");
-        assert!(resolved.is_some());
-        assert_eq!(resolved.unwrap().source_path, "src/pricing.rs");
+        let ExplainSpanResult::Found(span) = resolved else {
+            panic!("expected found")
+        };
+        assert_eq!(span.source_path, "src/pricing.rs");
     }
 
     #[test]
-    fn explain_returns_none_for_unknown_id() {
+    fn zero_width_span_is_valid() {
+        let mut span = sample_span();
+        span.end_byte = span.start_byte;
+        span.end_line = span.start_line;
+        span.end_column = span.start_column;
+        assert!(validate_evidence_span(&span).is_empty());
+    }
+
+    #[test]
+    fn impossible_span_coordinates_fail_closed() {
+        let mut span = sample_span();
+        span.source_id = " padded ".to_owned();
+        span.source_path = "src/\0bad.rs".to_owned();
+        span.start_byte = span.end_byte + 1;
+        span.start_line = 0;
+        span.label = Some(String::new());
+        let issues = validate_evidence_span(&span);
+        assert!(issues.iter().any(|issue| issue.code == "span_bytes_reversed"));
+        assert!(issues.iter().any(|issue| issue.code == "span_coordinate_zero"));
+        assert!(issues.iter().any(|issue| issue.code == "span_text_padded"));
+        assert!(issues.iter().any(|issue| issue.code == "span_text_control_character"));
+        assert!(issues.iter().any(|issue| issue.code == "span_text_empty"));
+    }
+
+    #[test]
+    fn explain_distinguishes_not_found_from_invalid_manifest() {
         let manifest = serde_json::to_string(&[sample_span()]).unwrap();
-        let resolved = explain_span(&manifest, "nonexistent");
-        assert!(resolved.is_none());
+        assert_eq!(explain_span(&manifest, "nonexistent"), ExplainSpanResult::NotFound);
+        assert!(matches!(explain_span("{ not json", "eq:bs_001"), ExplainSpanResult::InvalidManifest(_)));
     }
 
     #[test]
-    fn explain_returns_none_for_malformed_manifest() {
-        let resolved = explain_span("{ not json", "eq:bs_001");
-        assert!(resolved.is_none());
+    fn duplicate_manifest_id_never_selects_first_row() {
+        let span = sample_span();
+        let manifest = serde_json::to_string(&[span.clone(), span]).unwrap();
+        let ExplainSpanResult::InvalidManifest(issues) = explain_span(&manifest, "eq:bs_001") else {
+            panic!("duplicate manifest must be invalid")
+        };
+        assert!(issues.iter().any(|issue| issue.code == "manifest_duplicate_source_id"));
+    }
+
+    #[test]
+    fn artifact_builder_and_checker_reject_invalid_span() {
+        let mut span = sample_span();
+        span.start_line = 0;
+        let built = build_evidence_artifact(
+            "receipt",
+            "id",
+            Some(span.clone()),
+            VerificationRole::RecordedOnly,
+            serde_json::json!({}),
+            vec![REQUIRED_NON_CLAIM.to_owned()],
+        );
+        assert!(matches!(built, Err(EvidenceIrError::InvalidSourceSpan { .. })));
+
+        let mut artifact = build_evidence_artifact(
+            "receipt",
+            "id",
+            None,
+            VerificationRole::RecordedOnly,
+            serde_json::json!({}),
+            vec![REQUIRED_NON_CLAIM.to_owned()],
+        )
+        .unwrap();
+        artifact.source_span = Some(span);
+        let report = check_evidence_artifact(&serde_json::to_string(&artifact).unwrap());
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"span_coordinate_zero"));
     }
 }
