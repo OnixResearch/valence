@@ -25,6 +25,11 @@ use crate::shared_identity::parse_digest;
 
 pub const FUNCTION_ADDRESS_PROFILE_VERSION: &str = "valence.function-address-evidence.v1";
 pub const FUNCTION_ADDRESS_ARTIFACT_KIND: &str = "function-address-evidence-v1";
+pub const FUNCTION_ADDRESS_GRAPH_SCHEMA: &str = "valence.function-address-graph.v1";
+pub const FUNCTION_ADDRESS_BUNDLE_SCHEMA: &str = "valence.function-address-publication.v1";
+pub const FUNCTION_ADDRESS_COMPATIBILITY_RECEIPT_SCHEMA: &str = "valence.function-address-compatibility-receipt.v1";
+pub const FUNCTION_ADDRESS_COMPATIBILITY_GRAPH_SCHEMA: &str = "valence.function-address-compatibility-graph.v1";
+pub const FUNCTION_ADDRESS_PUBLICATION_NON_CLAIM: &str = "function-address publication proves validated identity and linkage coherence only, not Rust semantics, correctness, proof status, or release eligibility";
 const REQUIRED_NON_CLAIM_SOURCE_SHAPE: &str = "function-address evidence records source-shape identity only";
 const REQUIRED_NON_CLAIM_NO_SEMANTICS: &str = "not Rust semantic correctness";
 const REQUIRED_NON_CLAIM_NO_RELEASE: &str = "not release eligibility";
@@ -195,11 +200,92 @@ pub struct FunctionAddressEvidenceReport {
     pub artifact: Option<EvidenceArtifact>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FunctionAddressGraphRow {
     pub from: String,
     pub to: String,
     pub edge_kind: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct FunctionAddressGraphReport {
+    pub schema: &'static str,
+    pub policy_identity: FunctionAddressDigest,
+    pub artifact_identity: String,
+    pub valid: bool,
+    pub row_count: usize,
+    pub dependency_edge_count: usize,
+    pub rows: Vec<FunctionAddressGraphRow>,
+    pub non_claims: Vec<String>,
+    pub graph_identity: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct FunctionAddressPublicationBundle {
+    pub schema: &'static str,
+    pub publication_identity: String,
+    pub valid: bool,
+    pub receipt: EvidenceArtifact,
+    pub graph: FunctionAddressGraphReport,
+    pub non_claims: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct FunctionAddressCompatibilityReceipt {
+    pub schema: &'static str,
+    pub publication_identity: String,
+    pub policy_identity: FunctionAddressDigest,
+    pub artifact_identity: String,
+    pub valid: bool,
+    pub receipt: EvidenceArtifact,
+    pub non_claims: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct FunctionAddressCompatibilityGraph {
+    pub schema: &'static str,
+    pub publication_identity: String,
+    pub policy_identity: FunctionAddressDigest,
+    pub artifact_identity: String,
+    pub valid: bool,
+    pub graph: FunctionAddressGraphReport,
+    pub non_claims: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct FunctionAddressPublication {
+    pub bundle: FunctionAddressPublicationBundle,
+    pub compatibility_receipt: FunctionAddressCompatibilityReceipt,
+    pub compatibility_graph: FunctionAddressCompatibilityGraph,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct FunctionAddressPublicationDecision {
+    pub valid: bool,
+    pub issues: Vec<FunctionAddressEvidenceIssue>,
+    pub publication: Option<FunctionAddressPublication>,
+}
+
+#[derive(Serialize)]
+struct FunctionAddressGraphHashMaterial<'a> {
+    schema: &'static str,
+    policy_identity: &'a FunctionAddressDigest,
+    artifact_identity: &'a str,
+    valid: bool,
+    row_count: usize,
+    dependency_edge_count: usize,
+    rows: &'a [FunctionAddressGraphRow],
+    non_claims: &'a [String],
+}
+
+#[derive(Serialize)]
+struct FunctionAddressPublicationHashMaterial<'a> {
+    schema: &'static str,
+    policy_identity: &'a FunctionAddressDigest,
+    artifact_identity: &'a str,
+    graph_identity: &'a str,
+    valid: bool,
+    non_claims: &'a [String],
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -426,8 +512,119 @@ pub fn function_address_graph_rows(input: &FunctionAddressEvidenceInput) -> Vec<
             edge_kind: EDGE_BUNDLE_LOCAL_RELEASE_CONTEXT.to_string(),
         });
     }
-    rows.sort_by(|left, right| left.from.cmp(&right.from).then(left.to.cmp(&right.to)));
+    rows.sort_by(|left, right| {
+        left.from.cmp(&right.from).then(left.to.cmp(&right.to)).then(left.edge_kind.cmp(&right.edge_kind))
+    });
     rows
+}
+
+/// Plan publishable output only from a passing typed validation report.
+///
+/// r[impl valence.evidence_ir.function_address_publication.validity_gate]
+/// r[impl valence.evidence_ir.function_address_publication.canonical_graph]
+#[must_use]
+pub fn plan_function_address_publication(input: &FunctionAddressEvidenceInput) -> FunctionAddressPublicationDecision {
+    let validation = validate_function_address_evidence(input);
+    if !validation.valid {
+        return FunctionAddressPublicationDecision {
+            valid: false,
+            issues: validation.issues,
+            publication: None,
+        };
+    }
+    let Some(artifact) = validation.artifact else {
+        return publication_failure("artifact", "validated_artifact_missing");
+    };
+    let policy_identity = function_address_policy_identity();
+    let rows = function_address_graph_rows(input);
+    let dependency_edge_count = rows.iter().filter(|row| row.edge_kind == EDGE_DEPENDS_ON).count();
+    let mut non_claims = input.non_claims.clone();
+    non_claims.push(FUNCTION_ADDRESS_PUBLICATION_NON_CLAIM.to_owned());
+    non_claims.sort();
+    non_claims.dedup();
+    let graph_material = FunctionAddressGraphHashMaterial {
+        schema: FUNCTION_ADDRESS_GRAPH_SCHEMA,
+        policy_identity: &policy_identity,
+        artifact_identity: &artifact.canonical_hash,
+        valid: true,
+        row_count: rows.len(),
+        dependency_edge_count,
+        rows: &rows,
+        non_claims: &non_claims,
+    };
+    let Some(graph_identity) = hash_serializable(&graph_material) else {
+        return publication_failure("graph", "canonical_serialization_failed");
+    };
+    let graph = FunctionAddressGraphReport {
+        schema: FUNCTION_ADDRESS_GRAPH_SCHEMA,
+        policy_identity: policy_identity.clone(),
+        artifact_identity: artifact.canonical_hash.clone(),
+        valid: true,
+        row_count: rows.len(),
+        dependency_edge_count,
+        rows,
+        non_claims: non_claims.clone(),
+        graph_identity,
+    };
+    let publication_material = FunctionAddressPublicationHashMaterial {
+        schema: FUNCTION_ADDRESS_BUNDLE_SCHEMA,
+        policy_identity: &policy_identity,
+        artifact_identity: &artifact.canonical_hash,
+        graph_identity: &graph.graph_identity,
+        valid: true,
+        non_claims: &non_claims,
+    };
+    let Some(publication_identity) = hash_serializable(&publication_material) else {
+        return publication_failure("publication", "canonical_serialization_failed");
+    };
+    let bundle = FunctionAddressPublicationBundle {
+        schema: FUNCTION_ADDRESS_BUNDLE_SCHEMA,
+        publication_identity: publication_identity.clone(),
+        valid: true,
+        receipt: artifact.clone(),
+        graph: graph.clone(),
+        non_claims: non_claims.clone(),
+    };
+    let compatibility_receipt = FunctionAddressCompatibilityReceipt {
+        schema: FUNCTION_ADDRESS_COMPATIBILITY_RECEIPT_SCHEMA,
+        publication_identity: publication_identity.clone(),
+        policy_identity: policy_identity.clone(),
+        artifact_identity: artifact.canonical_hash.clone(),
+        valid: true,
+        receipt: artifact,
+        non_claims: non_claims.clone(),
+    };
+    let compatibility_graph = FunctionAddressCompatibilityGraph {
+        schema: FUNCTION_ADDRESS_COMPATIBILITY_GRAPH_SCHEMA,
+        publication_identity,
+        policy_identity,
+        artifact_identity: graph.artifact_identity.clone(),
+        valid: true,
+        graph,
+        non_claims,
+    };
+    FunctionAddressPublicationDecision {
+        valid: true,
+        issues: Vec::new(),
+        publication: Some(FunctionAddressPublication {
+            bundle,
+            compatibility_receipt,
+            compatibility_graph,
+        }),
+    }
+}
+
+fn publication_failure(field: &'static str, code: &'static str) -> FunctionAddressPublicationDecision {
+    FunctionAddressPublicationDecision {
+        valid: false,
+        issues: vec![FunctionAddressEvidenceIssue::new(field, code)],
+        publication: None,
+    }
+}
+
+fn hash_serializable<T: Serialize>(value: &T) -> Option<String> {
+    let value = serde_json::to_value(value).ok()?;
+    canonical_json_bytes(&value).ok().map(|bytes| blake3_hex(&bytes))
 }
 
 impl FunctionAddressEvidenceIssue {
@@ -525,7 +722,14 @@ fn validate_records(input: &FunctionAddressEvidenceInput, issues: &mut Vec<Funct
 
 fn validate_edges(input: &FunctionAddressEvidenceInput, issues: &mut Vec<FunctionAddressEvidenceIssue>) {
     let locators = input.records.iter().map(|record| record.locator.as_str()).collect::<BTreeSet<_>>();
+    let mut edges = BTreeSet::new();
     for edge in &input.dependency_edges {
+        if edge.from_locator.trim().is_empty() || edge.to_locator.trim().is_empty() {
+            issues.push(FunctionAddressEvidenceIssue::new("dependency_edges.locator", "empty_locator"));
+        }
+        if !edges.insert((&edge.from_locator, &edge.to_locator, &edge.edge_kind)) {
+            issues.push(FunctionAddressEvidenceIssue::new("dependency_edges", "duplicate_edge"));
+        }
         if edge.edge_kind != EDGE_DEPENDS_ON {
             issues.push(FunctionAddressEvidenceIssue::new("dependency_edges.edge_kind", "unknown_edge_kind"));
         }
@@ -924,6 +1128,51 @@ mod tests {
 
         assert!(!report.valid);
         assert!(report.issues.iter().any(|issue| issue.code == "malformed_digest"));
+    }
+
+    #[test]
+    fn publication_is_validated_order_stable_and_identity_bound() {
+        // r[verify valence.evidence_ir.function_address_publication.fixtures.positive]
+        let input = valid_input(true);
+        let mut reordered = input.clone();
+        reordered.dependency_edges.reverse();
+
+        let first = plan_function_address_publication(&input);
+        let second = plan_function_address_publication(&reordered);
+        let first_publication = first.publication.expect("valid publication");
+        let second_publication = second.publication.expect("valid publication");
+
+        assert!(first.valid);
+        assert_eq!(first_publication.bundle.publication_identity, second_publication.bundle.publication_identity,);
+        assert_eq!(first_publication.bundle.graph.graph_identity, second_publication.bundle.graph.graph_identity);
+        assert_eq!(
+            first_publication.compatibility_receipt.publication_identity,
+            first_publication.compatibility_graph.publication_identity,
+        );
+        assert!(first_publication.bundle.valid);
+        assert!(first_publication.bundle.graph.valid);
+    }
+
+    #[test]
+    fn invalid_duplicate_and_empty_edges_never_produce_publication() {
+        // r[verify valence.evidence_ir.function_address_publication.fixtures.negative]
+        let mut promoted = valid_input(true);
+        promoted.verification_role = VerificationRole::Property;
+        let promoted_decision = plan_function_address_publication(&promoted);
+        assert!(!promoted_decision.valid);
+        assert!(promoted_decision.publication.is_none());
+
+        let mut duplicate = valid_input(false);
+        duplicate.dependency_edges.push(duplicate.dependency_edges[0].clone());
+        let duplicate_decision = plan_function_address_publication(&duplicate);
+        assert!(duplicate_decision.issues.iter().any(|issue| issue.code == "duplicate_edge"));
+        assert!(duplicate_decision.publication.is_none());
+
+        let mut empty = valid_input(false);
+        empty.dependency_edges[0].from_locator.clear();
+        let empty_decision = plan_function_address_publication(&empty);
+        assert!(empty_decision.issues.iter().any(|issue| issue.code == "empty_locator"));
+        assert!(empty_decision.publication.is_none());
     }
 
     #[test]

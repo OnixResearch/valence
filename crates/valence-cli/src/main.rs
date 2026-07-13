@@ -3,13 +3,13 @@
 //! This is the imperative shell: argument parsing, file reads, stdout/stderr,
 //! and exit codes. All core logic lives in `valence_core`.
 
+use std::io::Write;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
 use cap_std::ambient_authority;
 use cap_std::fs::Dir;
-use serde::Serialize;
 
 const VERSION: &str = "0.1.0";
 const USAGE: &str = "\
@@ -96,18 +96,6 @@ fn run_check(args: &[String]) -> ExitCode {
     }
 }
 
-#[derive(Serialize)]
-struct FunctionAddressCliOutput {
-    valid: bool,
-    issue_count: usize,
-    issues: Vec<valence_core::function_address_profile::FunctionAddressEvidenceIssue>,
-    policy_identity: valence_core::function_address_profile::FunctionAddressDigest,
-    artifact: Option<valence_core::evidence_ir::EvidenceArtifact>,
-    graph_rows: Vec<valence_core::function_address_profile::FunctionAddressGraphRow>,
-    graph_root: String,
-    non_claims: Vec<String>,
-}
-
 fn run_function_address(args: &[String]) -> ExitCode {
     let Some(command) = args.first() else {
         eprintln!("usage: valence function-address validate --input <FILE> [--receipt <FILE>] [--graph <FILE>]");
@@ -126,6 +114,7 @@ fn run_function_address_validate(args: &[String]) -> ExitCode {
     let mut artifact_root: Option<PathBuf> = None;
     let mut output_root: Option<PathBuf> = None;
     let mut input_path: Option<PathBuf> = None;
+    let mut bundle_path: Option<PathBuf> = None;
     let mut receipt_path: Option<PathBuf> = None;
     let mut graph_path: Option<PathBuf> = None;
     let mut i = 0;
@@ -154,6 +143,14 @@ fn run_function_address_validate(args: &[String]) -> ExitCode {
                     return ExitCode::from(2);
                 }
                 input_path = Some(PathBuf::from(&args[i]));
+            }
+            "--bundle" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --bundle requires a value");
+                    return ExitCode::from(2);
+                }
+                bundle_path = Some(PathBuf::from(&args[i]));
             }
             "--receipt" => {
                 i += 1;
@@ -186,7 +183,7 @@ fn run_function_address_validate(args: &[String]) -> ExitCode {
         eprintln!("error: --input is required");
         return ExitCode::from(2);
     };
-    if (receipt_path.is_some() || graph_path.is_some()) && output_root.is_none() {
+    if (bundle_path.is_some() || receipt_path.is_some() || graph_path.is_some()) && output_root.is_none() {
         eprintln!("error: --output-root is required for publication outputs");
         return ExitCode::from(2);
     }
@@ -205,61 +202,53 @@ fn run_function_address_validate(args: &[String]) -> ExitCode {
                 return ExitCode::from(2);
             }
         };
-    let report = valence_core::function_address_profile::validate_function_address_evidence(&input);
-    let graph_rows = valence_core::function_address_profile::function_address_graph_rows(&input);
-    let graph_bytes = match serde_json::to_vec(&graph_rows) {
+    // r[impl valence.evidence_ir.function_address_publication.invalid_no_write]
+    let decision = valence_core::function_address_profile::plan_function_address_publication(&input);
+    if !decision.valid {
+        return print_function_address_decision(&decision, ExitCode::from(1));
+    }
+    let Some(publication) = decision.publication.as_ref() else {
+        eprintln!("error: valid publication decision omitted publication material");
+        return ExitCode::from(2);
+    };
+    let bundle_bytes = match serde_json::to_vec_pretty(&publication.bundle) {
         Ok(bytes) => bytes,
         Err(error) => {
-            eprintln!("error: cannot serialize function-address graph rows: {error}");
+            eprintln!("error: cannot serialize function-address bundle: {error}");
             return ExitCode::from(2);
         }
     };
-    let graph_root = valence_core::shared_identity::blake3_hex(&graph_bytes);
-    let output = FunctionAddressCliOutput {
-        valid: report.valid,
-        issue_count: report.issues.len(),
-        issues: report.issues,
-        policy_identity: valence_core::function_address_profile::function_address_policy_identity(),
-        artifact: report.artifact,
-        graph_rows,
-        graph_root,
-        non_claims: input.non_claims,
-    };
-    let output_json = match serde_json::to_string_pretty(&output) {
-        Ok(json) => json,
+    let receipt_bytes = match serde_json::to_vec_pretty(&publication.compatibility_receipt) {
+        Ok(bytes) => bytes,
         Err(error) => {
-            eprintln!("error: cannot serialize function-address report: {error}");
+            eprintln!("error: cannot serialize compatibility receipt: {error}");
             return ExitCode::from(2);
         }
     };
-    if let Some(path) = receipt_path
-        && let Err(error) = cap_write(
-            CapabilityRootKind::Output,
-            output_root.as_deref().expect("output root checked"),
-            &path,
-            output_json.as_bytes(),
-        )
+    let graph_bytes = match serde_json::to_vec_pretty(&publication.compatibility_graph) {
+        Ok(bytes) => bytes,
+        Err(error) => {
+            eprintln!("error: cannot serialize compatibility graph: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let root = output_root.as_deref().unwrap_or_else(|| Path::new(""));
+    if let Some(path) = bundle_path
+        && let Err(error) = cap_atomic_write(CapabilityRootKind::Output, root, &path, &bundle_bytes)
     {
-        eprintln!("error: cannot write {}: {error}", path.display());
+        eprintln!("error: cannot publish bundle {}: {error}", path.display());
         return ExitCode::from(2);
     }
-    if let Some(path) = graph_path
-        && let Err(error) = cap_write(
-            CapabilityRootKind::Output,
-            output_root.as_deref().expect("output root checked"),
-            &path,
-            &graph_bytes,
-        )
-    {
-        eprintln!("error: cannot write {}: {error}", path.display());
+    if let Err(error) = cap_atomic_write_pair(
+        CapabilityRootKind::Output,
+        root,
+        receipt_path.as_deref().map(|path| (path, receipt_bytes.as_slice())),
+        graph_path.as_deref().map(|path| (path, graph_bytes.as_slice())),
+    ) {
+        eprintln!("error: cannot publish compatibility outputs: {error}");
         return ExitCode::from(2);
     }
-    println!("{output_json}");
-    if output.valid {
-        ExitCode::SUCCESS
-    } else {
-        ExitCode::from(1)
-    }
+    print_function_address_decision(&decision, ExitCode::SUCCESS)
 }
 
 fn run_stack_provenance(args: &[String]) -> ExitCode {
@@ -774,6 +763,76 @@ fn cap_write(kind: CapabilityRootKind, root_path: &Path, locator: &Path, bytes: 
     let (root, relative) = open_capability_root(kind, root_path, locator, true)?;
     ensure_output_parent_confined(&root, &relative)?;
     root.write(&relative, bytes).map_err(|error| format!("{} write failed: {error}", kind.as_str()))
+}
+
+fn cap_atomic_write(kind: CapabilityRootKind, root_path: &Path, locator: &Path, bytes: &[u8]) -> Result<(), String> {
+    // r[impl valence.evidence_ir.function_address_publication.atomic_bundle]
+    let (root, relative) = open_capability_root(kind, root_path, locator, true)?;
+    let staging = stage_atomic_write(&root, &relative, bytes)?;
+    root.rename(&staging, &root, &relative)
+        .map_err(|error| format!("{} atomic replace failed: {error}", kind.as_str()))
+}
+
+fn cap_atomic_write_pair(
+    kind: CapabilityRootKind,
+    root_path: &Path,
+    first: Option<(&Path, &[u8])>,
+    second: Option<(&Path, &[u8])>,
+) -> Result<(), String> {
+    // r[impl valence.evidence_ir.function_address_publication.compatibility_outputs]
+    let Some((anchor_locator, anchor_bytes)) = first.or(second) else {
+        return Ok(());
+    };
+    if first.is_none() || second.is_none() {
+        return cap_atomic_write(kind, root_path, anchor_locator, anchor_bytes);
+    }
+    let (first_locator, first_bytes) = first.expect("checked first compatibility output");
+    let (second_locator, second_bytes) = second.expect("checked second compatibility output");
+    let (root, first_relative) = open_capability_root(kind, root_path, first_locator, true)?;
+    let (_, second_relative) = open_capability_root(kind, root_path, second_locator, true)?;
+    let first_staging = stage_atomic_write(&root, &first_relative, first_bytes)?;
+    let second_staging = match stage_atomic_write(&root, &second_relative, second_bytes) {
+        Ok(staging) => staging,
+        Err(error) => {
+            let _ = root.remove_file(&first_staging);
+            return Err(error);
+        }
+    };
+    root.rename(&first_staging, &root, &first_relative)
+        .map_err(|error| format!("first compatibility replace failed: {error}"))?;
+    root.rename(&second_staging, &root, &second_relative)
+        .map_err(|error| format!("second compatibility replace failed; outputs are not cross-file atomic: {error}"))
+}
+
+fn stage_atomic_write(root: &Dir, relative: &Path, bytes: &[u8]) -> Result<PathBuf, String> {
+    ensure_output_parent_confined(root, relative)?;
+    let file_name = relative.file_name().ok_or_else(|| "output locator must name a file".to_owned())?;
+    let staging_name = format!(".{}.valence-stage", file_name.to_string_lossy());
+    let staging = relative.with_file_name(staging_name);
+    let _ = root.remove_file(&staging);
+    let mut options = cap_std::fs::OpenOptions::new();
+    options.write(true).create(true).truncate(true);
+    let mut file =
+        root.open_with(&staging, &options).map_err(|error| format!("output staging open failed: {error}"))?;
+    file.write_all(bytes).map_err(|error| format!("output staging write failed: {error}"))?;
+    file.sync_all().map_err(|error| format!("output staging flush failed: {error}"))?;
+    Ok(staging)
+}
+
+fn print_function_address_decision(
+    decision: &valence_core::function_address_profile::FunctionAddressPublicationDecision,
+    exit: ExitCode,
+) -> ExitCode {
+    match serde_json::to_string_pretty(decision) {
+        Ok(json) => {
+            println!("{json}");
+            exit
+        }
+        Err(error) => {
+            eprintln!("error: cannot serialize function-address decision: {error}");
+            ExitCode::from(2)
+        }
+    }
 }
 
 fn open_capability_root(

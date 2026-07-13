@@ -96,7 +96,10 @@ non-claim boundary; see `docs/fsm-default-exhaustive.md`.
 
 The function-address Evidence IR profile records Octet/Kamacite function-address
 identity evidence as recorded-only graph/linkage input while preserving the
-non-claim boundary; see `docs/function-address-evidence-profile.md`.
+non-claim boundary; see `docs/function-address-evidence-profile.md`. Publication
+is validation-gated and prefers one atomically replaced, versioned bundle; split
+receipt/graph outputs are explicit non-transactional compatibility surfaces.
+See [`docs/function-address-publication.md`](docs/function-address-publication.md).
 
 ### `evidence_model` (v1)
 

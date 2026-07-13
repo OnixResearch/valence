@@ -147,6 +147,7 @@ fn kani_non_claims() -> Vec<String> {
 fn function_address_validate_emits_receipt_and_graph() {
     let input_json = serde_json::to_string_pretty(&function_address_input()).expect("serialize input");
     let input_path = "/tmp/valence-function-address-valid.json";
+    let bundle_path = "/tmp/valence-function-address-bundle.json";
     let receipt_path = "/tmp/valence-function-address-receipt.json";
     let graph_path = "/tmp/valence-function-address-graph.json";
     let mut tmp = fs::File::create(input_path).expect("create temp file");
@@ -161,6 +162,8 @@ fn function_address_validate_emits_receipt_and_graph() {
         .arg("valence-function-address-valid.json")
         .arg("--output-root")
         .arg("/tmp")
+        .arg("--bundle")
+        .arg("valence-function-address-bundle.json")
         .arg("--receipt")
         .arg("valence-function-address-receipt.json")
         .arg("--graph")
@@ -171,9 +174,11 @@ fn function_address_validate_emits_receipt_and_graph() {
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(output.status.success(), "function-address validation should succeed: {stdout}");
     assert!(stdout.contains("\"valid\": true"), "stdout should report valid: {stdout}");
-    assert!(stdout.contains("\"graph_root\""), "stdout should include graph root: {stdout}");
+    assert!(stdout.contains("\"graph_identity\""), "stdout should include graph identity: {stdout}");
+    let bundle = fs::read_to_string(bundle_path).expect("read bundle");
     let receipt = fs::read_to_string(receipt_path).expect("read receipt");
     let graph = fs::read_to_string(graph_path).expect("read graph");
+    assert!(bundle.contains("valence.function-address-publication.v1"));
     assert!(receipt.contains("function-address-evidence-v1"));
     assert!(graph.contains("function-depends-on"));
 }
@@ -185,8 +190,15 @@ fn function_address_validate_rejects_role_promotion_and_overclaim() {
     input.semantic_claims = vec!["proves semantic correctness".to_owned()];
     let input_json = serde_json::to_string_pretty(&input).expect("serialize input");
     let input_path = "/tmp/valence-function-address-invalid.json";
+    let bundle_path = "/tmp/valence-function-address-invalid-bundle.json";
+    let receipt_path = "/tmp/valence-function-address-invalid-receipt.json";
+    let graph_path = "/tmp/valence-function-address-invalid-graph.json";
+    const SENTINEL: &str = "preserve-existing-output";
     let mut tmp = fs::File::create(input_path).expect("create temp file");
     tmp.write_all(input_json.as_bytes()).expect("write temp file");
+    write_text(bundle_path, SENTINEL);
+    write_text(receipt_path, SENTINEL);
+    write_text(graph_path, SENTINEL);
 
     let output = Command::new(valence_binary())
         .arg("function-address")
@@ -195,6 +207,14 @@ fn function_address_validate_rejects_role_promotion_and_overclaim() {
         .arg("/tmp")
         .arg("--input")
         .arg("valence-function-address-invalid.json")
+        .arg("--output-root")
+        .arg("/tmp")
+        .arg("--bundle")
+        .arg("valence-function-address-invalid-bundle.json")
+        .arg("--receipt")
+        .arg("valence-function-address-invalid-receipt.json")
+        .arg("--graph")
+        .arg("valence-function-address-invalid-graph.json")
         .output()
         .expect("run valence function-address validate");
 
@@ -202,6 +222,44 @@ fn function_address_validate_rejects_role_promotion_and_overclaim() {
     assert!(!output.status.success(), "function-address validation should fail: {stdout}");
     assert!(stdout.contains("formal_proof_promotion_denied"));
     assert!(stdout.contains("overclaim"));
+    assert_eq!(fs::read_to_string(bundle_path).expect("bundle sentinel"), SENTINEL);
+    assert_eq!(fs::read_to_string(receipt_path).expect("receipt sentinel"), SENTINEL);
+    assert_eq!(fs::read_to_string(graph_path).expect("graph sentinel"), SENTINEL);
+}
+
+#[test]
+fn function_address_bundle_staging_failure_preserves_existing_output() {
+    // r[verify valence.evidence_ir.function_address_publication.fixtures.negative]
+    let input_json = serde_json::to_string_pretty(&function_address_input()).expect("serialize input");
+    let input_path = "/tmp/valence-function-address-stage-failure.json";
+    let bundle_path = "/tmp/valence-function-address-stage-failure-bundle.json";
+    let staging_path = "/tmp/.valence-function-address-stage-failure-bundle.json.valence-stage";
+    const SENTINEL: &str = "prior-valid-bundle";
+    write_text(input_path, &input_json);
+    write_text(bundle_path, SENTINEL);
+    let _ = fs::remove_file(staging_path);
+    let _ = fs::remove_dir_all(staging_path);
+    fs::create_dir(staging_path).expect("create staging blocker");
+
+    let output = Command::new(valence_binary())
+        .args([
+            "function-address",
+            "validate",
+            "--artifact-root",
+            "/tmp",
+            "--input",
+            "valence-function-address-stage-failure.json",
+            "--output-root",
+            "/tmp",
+            "--bundle",
+            "valence-function-address-stage-failure-bundle.json",
+        ])
+        .output()
+        .expect("run bundle staging failure");
+
+    assert!(!output.status.success());
+    assert_eq!(fs::read_to_string(bundle_path).expect("prior bundle"), SENTINEL);
+    fs::remove_dir(staging_path).expect("remove staging blocker");
 }
 
 #[test]
