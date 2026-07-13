@@ -50,6 +50,7 @@ pub mod artifact_ref;
 pub mod ast_grep_evidence;
 pub mod capability_plan;
 pub mod evidence_adapters;
+pub mod evidence_chain;
 pub mod evidence_codebase_index;
 pub mod evidence_harness;
 pub mod evidence_index;

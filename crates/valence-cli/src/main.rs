@@ -25,7 +25,8 @@ COMMANDS:
     stack-provenance verify --manifest-root <ROOT> --manifest <FILE> --sidecar-root <ROOT> --sidecar <FILE>
     stack-provenance verify-built-binary --binary-root <ROOT> --binary <FILE> --artifact-root <ROOT> --octet-export <FILE> --sidecar-root <ROOT> --sidecar <FILE> --manifest-root <ROOT> --manifest <FILE> [--json]
     stack-provenance graph-report --artifact-root <ROOT> --chain <FILE> [--format json|markdown]
-    function-address validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --receipt <FILE>] [--graph <FILE>]
+    function-address validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --bundle <FILE>] [--receipt <FILE>] [--graph <FILE>]
+    evidence-chain validate --artifact-root <ROOT> --input <FILE>
     version                             Print version
 
 EXIT CODES:
@@ -50,6 +51,7 @@ fn main() -> ExitCode {
         "explain" => run_explain(&args[2..]),
         "stack-provenance" => run_stack_provenance(&args[2..]),
         "function-address" => run_function_address(&args[2..]),
+        "evidence-chain" => run_evidence_chain(&args[2..]),
         "help" | "--help" | "-h" => {
             print!("{USAGE}");
             ExitCode::SUCCESS
@@ -249,6 +251,43 @@ fn run_function_address_validate(args: &[String]) -> ExitCode {
         return ExitCode::from(2);
     }
     print_function_address_decision(&decision, ExitCode::SUCCESS)
+}
+
+fn run_evidence_chain(args: &[String]) -> ExitCode {
+    const ARGUMENT_COUNT: usize = 5;
+    if args.len() != ARGUMENT_COUNT || args[0] != "validate" || args[1] != "--artifact-root" || args[3] != "--input" {
+        eprintln!("usage: valence evidence-chain validate --artifact-root <ROOT> --input <FILE>");
+        return ExitCode::from(2);
+    }
+    let root = Path::new(&args[2]);
+    let locator = Path::new(&args[4]);
+    let json = match cap_read_to_string(CapabilityRootKind::InputArtifact, root, locator) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read evidence-chain input: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let envelope: valence_core::evidence_chain::EvidenceChainEnvelope = match serde_json::from_str(&json) {
+        Ok(envelope) => envelope,
+        Err(error) => {
+            eprintln!("error: cannot parse evidence-chain input: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let report = valence_core::evidence_chain::validate_evidence_chain(&envelope);
+    match serde_json::to_string_pretty(&report) {
+        Ok(json) => println!("{json}"),
+        Err(error) => {
+            eprintln!("error: cannot serialize evidence-chain report: {error}");
+            return ExitCode::from(2);
+        }
+    }
+    if report.valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
+    }
 }
 
 fn run_stack_provenance(args: &[String]) -> ExitCode {

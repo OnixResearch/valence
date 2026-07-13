@@ -94,6 +94,11 @@ The `fsm-default-exhaustive` adapter profile records Octet source-shape receipts
 and optional Kamacite FSM spec/receipt identities while preserving Valence's
 non-claim boundary; see `docs/fsm-default-exhaustive.md`.
 
+The generic evidence-chain profile validates canonical Kamacite envelopes,
+typed parent links, policy/profile roots, projections, roles, and non-claims
+before explicit kind-specific dispatch; see
+[`docs/evidence-chain-profile.md`](docs/evidence-chain-profile.md).
+
 The function-address Evidence IR profile records Octet/Kamacite function-address
 identity evidence as recorded-only graph/linkage input while preserving the
 non-claim boundary; see `docs/function-address-evidence-profile.md`. Publication
