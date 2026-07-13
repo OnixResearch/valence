@@ -105,10 +105,47 @@ fn run_function_address(args: &[String]) -> ExitCode {
     };
     match command.as_str() {
         "validate" => run_function_address_validate(&args[1..]),
+        "preserves" => run_function_address_preserves(&args[1..]),
         other => {
             eprintln!("unknown function-address command: {other}");
             ExitCode::from(2)
         }
+    }
+}
+
+fn run_function_address_preserves(args: &[String]) -> ExitCode {
+    const ARGUMENT_COUNT: usize = 4;
+    if args.len() != ARGUMENT_COUNT || args[0] != "--artifact-root" || args[2] != "--input" {
+        eprintln!("usage: valence function-address preserves --artifact-root <ROOT> --input <FILE>");
+        return ExitCode::from(2);
+    }
+    let json = match cap_read_to_string(CapabilityRootKind::InputArtifact, Path::new(&args[1]), Path::new(&args[3])) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read Preserves receipt: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let receipt: valence_core::function_address_preserves::FunctionAddressPreservesReceipt =
+        match serde_json::from_str(&json) {
+            Ok(receipt) => receipt,
+            Err(error) => {
+                eprintln!("error: cannot parse Preserves receipt envelope: {error}");
+                return ExitCode::from(2);
+            }
+        };
+    let report = valence_core::function_address_preserves::validate_function_address_preserves(&receipt);
+    match serde_json::to_string_pretty(&report) {
+        Ok(json) => println!("{json}"),
+        Err(error) => {
+            eprintln!("error: cannot serialize Preserves report: {error}");
+            return ExitCode::from(2);
+        }
+    }
+    if report.valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
     }
 }
 

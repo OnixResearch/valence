@@ -232,7 +232,7 @@ fn normalized_digest(digest: &str) -> String {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
     use crate::function_address_profile::FUNCTION_ADDRESS_PROFILE_VERSION;
     use crate::function_address_profile::FunctionAddressDigest;
@@ -245,7 +245,7 @@ mod tests {
     const HEX: &str = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     const OTHER_HEX: &str = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
 
-    fn function_input() -> FunctionAddressEvidenceInput {
+    pub(crate) fn function_input() -> FunctionAddressEvidenceInput {
         let source = FunctionAddressDigest {
             domain: FunctionAddressDigestDomain::SourceEnvelope,
             digest: HEX.to_owned(),

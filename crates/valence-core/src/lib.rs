@@ -57,6 +57,7 @@ pub mod evidence_index;
 pub mod evidence_ir;
 pub mod evidence_model;
 pub mod formal_proof_chain;
+pub mod function_address_preserves;
 pub mod function_address_profile;
 pub mod function_object;
 pub mod hegel_property;
