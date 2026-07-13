@@ -175,7 +175,17 @@ fn validate_registered_profile(envelope: &EvidenceChainEnvelope, issues: &mut Ve
             }
         }
         TRELLIS_PROOF_CHAIN_KIND => {
-            // Registered by the Trellis profile module; generic validation keeps the kind explicit.
+            match serde_json::from_value::<crate::trellis_proof_evidence::TrellisProofEvidence>(
+                envelope.payload.clone(),
+            ) {
+                Ok(input) => {
+                    let report = crate::trellis_proof_evidence::validate_trellis_proof_evidence(&input);
+                    if !report.valid {
+                        issues.push(EvidenceChainIssue::new("payload", "trellis_profile_validation_failed"));
+                    }
+                }
+                Err(_) => issues.push(EvidenceChainIssue::new("payload", "profile_payload_malformed")),
+            }
         }
         _ => issues.push(EvidenceChainIssue::new("evidence_kind", "unsupported_profile")),
     }

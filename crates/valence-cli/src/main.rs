@@ -52,6 +52,7 @@ fn main() -> ExitCode {
         "stack-provenance" => run_stack_provenance(&args[2..]),
         "function-address" => run_function_address(&args[2..]),
         "evidence-chain" => run_evidence_chain(&args[2..]),
+        "wasm-component" => run_wasm_component(&args[2..]),
         "help" | "--help" | "-h" => {
             print!("{USAGE}");
             ExitCode::SUCCESS
@@ -288,6 +289,41 @@ fn run_function_address_validate(args: &[String]) -> ExitCode {
         return ExitCode::from(2);
     }
     print_function_address_decision(&decision, ExitCode::SUCCESS)
+}
+
+fn run_wasm_component(args: &[String]) -> ExitCode {
+    const ARGUMENT_COUNT: usize = 5;
+    if args.len() != ARGUMENT_COUNT || args[0] != "validate" || args[1] != "--artifact-root" || args[3] != "--input" {
+        eprintln!("usage: valence wasm-component validate --artifact-root <ROOT> --input <FILE>");
+        return ExitCode::from(2);
+    }
+    let json = match cap_read_to_string(CapabilityRootKind::InputArtifact, Path::new(&args[2]), Path::new(&args[4])) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read Wasm component graph: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let graph: valence_core::wasm_component_evidence::WasmComponentEvidenceGraph = match serde_json::from_str(&json) {
+        Ok(graph) => graph,
+        Err(error) => {
+            eprintln!("error: cannot parse Wasm component graph: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let report = valence_core::wasm_component_evidence::validate_wasm_component_graph(&graph);
+    match serde_json::to_string_pretty(&report) {
+        Ok(json) => println!("{json}"),
+        Err(error) => {
+            eprintln!("error: cannot serialize Wasm report: {error}");
+            return ExitCode::from(2);
+        }
+    }
+    if report.valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
+    }
 }
 
 fn run_evidence_chain(args: &[String]) -> ExitCode {
