@@ -47,6 +47,7 @@
 //! general HIR/THIR/MIR extraction.
 
 pub mod artifact_ref;
+pub mod ast_grep_evidence;
 pub mod evidence_adapters;
 pub mod evidence_codebase_index;
 pub mod evidence_harness;
