@@ -65,6 +65,8 @@ The corrected Preserves integrity profile structurally removes only declared top
 
 Evidence spans use validated one-based line/column coordinates, ordered byte ranges, and unique manifest IDs. Typed explanation outcomes distinguish absent IDs from invalid manifests; see [`docs/evidence-span-integrity.md`](docs/evidence-span-integrity.md).
 
+Evidence IR uses a closed control-plane envelope and an open, fully hash-bound kind-specific payload. Unknown or duplicate control fields fail before hash and claim-policy checks, and recursive canonical JSON ordering is independent of serializer map features; see [`docs/evidence-artifact-envelope.md`](docs/evidence-artifact-envelope.md).
+
 The bounded ast-grep adapter binds tool, rule-bundle, scan-scope, finding, and exact span identities while keeping rewrite previews recorded-only; see [`docs/ast-grep-evidence-spans.md`](docs/ast-grep-evidence-spans.md).
 
 These cores prove syntax, canonical content identity, role/schema/vocabulary

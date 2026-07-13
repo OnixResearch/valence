@@ -20,6 +20,7 @@ use crate::shared_identity::MIXED_BLAKE3_PROFILE;
 use crate::shared_identity::RAW_BLAKE3_PROFILE;
 use crate::shared_identity::STRICT_B3_PROFILE;
 use crate::shared_identity::blake3_hex;
+use crate::shared_identity::canonical_json_bytes;
 use crate::shared_identity::parse_digest;
 
 pub const FUNCTION_ADDRESS_PROFILE_VERSION: &str = "valence.function-address-evidence.v1";
@@ -260,7 +261,8 @@ pub fn function_address_policy_material() -> FunctionAddressPolicyMaterial {
 #[must_use]
 pub fn function_address_policy_identity() -> FunctionAddressDigest {
     let material = function_address_policy_material();
-    let bytes = serde_json::to_vec(&material).expect("function-address policy material serializes");
+    let value = serde_json::to_value(&material).expect("function-address policy material serializes");
+    let bytes = canonical_json_bytes(&value).expect("function-address policy material canonicalizes");
     FunctionAddressDigest {
         domain: FunctionAddressDigestDomain::PolicyProfile,
         digest: blake3_hex(&bytes),

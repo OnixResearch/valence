@@ -28,6 +28,9 @@
 
 use serde::Deserialize;
 use serde::Serialize;
+use serde_json::Value;
+
+use crate::shared_identity::canonical_json_bytes;
 
 /// The Evidence IR v1 schema identifier.
 pub const EVIDENCE_IR_SCHEMA: &str = "valence.evidence-ir.v1";
@@ -189,6 +192,7 @@ impl KaniStubKind {
 /// The `source_id` is the stable identifier that
 /// `valence explain --id <source_id>` resolves.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct EvidenceSpan {
     /// Stable identifier threaded through the chain.
     pub source_id: String,
@@ -279,6 +283,7 @@ fn validate_span_text(value: &str, field: &'static str, issues: &mut Vec<SpanIss
 /// excludes `canonical_hash` and `source_span` so identity is stable across
 /// path relocation and independent of its own hash output.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct EvidenceArtifact {
     /// Schema identifier, always [`EVIDENCE_IR_SCHEMA`].
     pub schema: String,
@@ -372,10 +377,10 @@ pub fn canonical_hash(artifact: &EvidenceArtifact) -> Result<String, EvidenceIrE
     let value = serde_json::to_value(&payload).map_err(|error| EvidenceIrError::CanonicalSerialization {
         detail: error.to_string(),
     })?;
-    let bytes = serde_json::to_string(&value).map_err(|error| EvidenceIrError::CanonicalSerialization {
-        detail: error.to_string(),
+    let bytes = canonical_json_bytes(&value).map_err(|error| EvidenceIrError::CanonicalSerialization {
+        detail: format!("{}:{}", error.field, error.code),
     })?;
-    Ok(full_hash(&bytes))
+    Ok(format!("b3:{}", blake3::hash(&bytes).to_hex()))
 }
 
 /// Validates a JSON-serialized Evidence IR artifact.
@@ -387,16 +392,39 @@ pub fn canonical_hash(artifact: &EvidenceArtifact) -> Result<String, EvidenceIrE
 pub fn check_evidence_artifact(json: &str) -> EvidenceCheckReport {
     let mut issue_codes = Vec::new();
 
+    // r[impl valence.evidence_ir.complete_envelope.strict_decode]
+    // r[impl valence.evidence_ir.complete_envelope.unknown_fields]
+    let envelope: Value = match serde_json::from_str(json) {
+        Ok(envelope) => envelope,
+        Err(error) => {
+            let code = if error.to_string().contains("trailing characters") {
+                "trailing_json_value"
+            } else {
+                "malformed_json"
+            };
+            return invalid_evidence_report(code);
+        }
+    };
+    inventory_closed_envelope(&envelope, &mut issue_codes);
+    if !issue_codes.is_empty() {
+        issue_codes.sort_unstable();
+        issue_codes.dedup();
+        return EvidenceCheckReport {
+            valid: false,
+            issue_codes,
+            non_claims: Vec::new(),
+        };
+    }
+
     let artifact: EvidenceArtifact = match serde_json::from_str(json) {
         Ok(artifact) => artifact,
         Err(error) => {
-            issue_codes.push("malformed_json");
-            let _ = error;
-            return EvidenceCheckReport {
-                valid: false,
-                issue_codes,
-                non_claims: Vec::new(),
+            let code = if error.to_string().contains("duplicate field") {
+                "duplicate_control_field"
+            } else {
+                "typed_field_mismatch"
             };
+            return invalid_evidence_report(code);
         }
     };
 
@@ -450,6 +478,52 @@ pub fn check_evidence_artifact(json: &str) -> EvidenceCheckReport {
         valid: issue_codes.is_empty(),
         issue_codes,
         non_claims: artifact.non_claims,
+    }
+}
+
+fn invalid_evidence_report(code: &'static str) -> EvidenceCheckReport {
+    EvidenceCheckReport {
+        valid: false,
+        issue_codes: vec![code],
+        non_claims: Vec::new(),
+    }
+}
+
+fn inventory_closed_envelope(envelope: &Value, issue_codes: &mut Vec<&'static str>) {
+    const ARTIFACT_FIELDS: &[&str] = &[
+        "schema",
+        "artifact_kind",
+        "stable_id",
+        "canonical_hash",
+        "source_span",
+        "verification_role",
+        "payload",
+        "non_claims",
+    ];
+    const SPAN_FIELDS: &[&str] = &[
+        "source_id",
+        "source_path",
+        "start_byte",
+        "end_byte",
+        "start_line",
+        "start_column",
+        "end_line",
+        "end_column",
+        "label",
+    ];
+
+    let Some(fields) = envelope.as_object() else {
+        issue_codes.push("typed_field_mismatch");
+        return;
+    };
+    if fields.keys().any(|field| !ARTIFACT_FIELDS.contains(&field.as_str())) {
+        issue_codes.push("unknown_artifact_field");
+    }
+    if let Some(span) = fields.get("source_span").filter(|span| !span.is_null())
+        && let Some(span_fields) = span.as_object()
+        && span_fields.keys().any(|field| !SPAN_FIELDS.contains(&field.as_str()))
+    {
+        issue_codes.push("unknown_span_field");
     }
 }
 
@@ -697,10 +771,6 @@ impl std::fmt::Display for EvidenceIrError {
 
 impl std::error::Error for EvidenceIrError {}
 
-fn full_hash(input: &str) -> String {
-    format!("b3:{}", blake3::hash(input.as_bytes()).to_hex())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -863,6 +933,57 @@ mod tests {
         let report = check_evidence_artifact(&json);
         assert!(report.valid);
         assert!(report.issue_codes.is_empty());
+    }
+
+    #[test]
+    fn strict_envelope_accepts_open_hash_bound_payload() {
+        // r[verify valence.evidence_ir.complete_envelope.fixtures.positive]
+        let artifact = build_evidence_artifact(
+            "producer-extension",
+            "extension:one",
+            None,
+            VerificationRole::RecordedOnly,
+            serde_json::json!({"producer_extension": {"new_field": true}}),
+            sample_non_claims(),
+        )
+        .expect("open payload builds");
+
+        let report = check_evidence_artifact(&serde_json::to_string(&artifact).expect("serialize artifact"));
+
+        assert!(report.valid, "unexpected issues: {:?}", report.issue_codes);
+    }
+
+    #[test]
+    fn strict_envelope_rejects_unknown_duplicate_and_trailing_control_data() {
+        // r[verify valence.evidence_ir.complete_envelope.fixtures.negative]
+        let artifact = sample_artifact();
+        let mut unknown = serde_json::to_value(&artifact).expect("artifact value");
+        unknown
+            .as_object_mut()
+            .expect("artifact object")
+            .insert("claims".to_owned(), serde_json::json!(["proves whole-program correctness"]));
+        let unknown_report = check_evidence_artifact(&serde_json::to_string(&unknown).expect("unknown JSON"));
+        assert_eq!(unknown_report.issue_codes, vec!["unknown_artifact_field"]);
+
+        let mut unknown_span = serde_json::to_value(&artifact).expect("artifact value");
+        unknown_span["source_span"]["display_hint"] = serde_json::json!("unbound");
+        let span_report = check_evidence_artifact(&serde_json::to_string(&unknown_span).expect("span JSON"));
+        assert_eq!(span_report.issue_codes, vec!["unknown_span_field"]);
+
+        let json = serde_json::to_string(&artifact).expect("artifact JSON");
+        let duplicate = json.replacen("{\"schema\":", "{\"schema\":\"valence.evidence-ir.v1\",\"schema\":", 1);
+        let duplicate_report = check_evidence_artifact(&duplicate);
+        assert_eq!(duplicate_report.issue_codes, vec!["duplicate_control_field"]);
+
+        let trailing_report = check_evidence_artifact(&format!("{json} null"));
+        assert_eq!(trailing_report.issue_codes, vec!["trailing_json_value"]);
+    }
+
+    #[test]
+    fn strict_envelope_preserves_legacy_artifact_identity() {
+        // r[verify valence.evidence_ir.complete_envelope.compatibility]
+        const LEGACY_SAMPLE_HASH: &str = "b3:27f5aec990efd7f4e1e3956f6c7fae4e433596352ab78ff1c3b63a772cd4c0dd";
+        assert_eq!(sample_artifact().canonical_hash, LEGACY_SAMPLE_HASH);
     }
 
     #[test]

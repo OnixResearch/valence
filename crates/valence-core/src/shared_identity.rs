@@ -238,12 +238,18 @@ pub fn parse_digest(
     })
 }
 
+/// Encode JSON with recursively sorted object keys independently of `serde_json` map features.
+///
+/// r[impl valence.evidence_ir.complete_envelope.canonical_hash]
+pub fn canonical_json_bytes(value: &Value) -> Result<Vec<u8>, SharedIdentityIssue> {
+    let mut bytes = Vec::new();
+    write_canonical_json(value, &mut bytes)?;
+    Ok(bytes)
+}
+
 /// Compute a BLAKE3 identity over explicit canonical JSON material.
 pub fn canonical_json_hash(value: &Value) -> Result<String, SharedIdentityIssue> {
-    let canonical = canonical_json_value(value);
-    let bytes = serde_json::to_vec(&canonical)
-        .map_err(|_| SharedIdentityIssue::new(FIELD_CANONICAL_JSON, "serialization_failed"))?;
-    Ok(blake3_hex(&bytes))
+    canonical_json_bytes(value).map(|bytes| blake3_hex(&bytes))
 }
 
 /// Compute a BLAKE3 identity over explicit canonical bytes for the selected profile.
@@ -321,20 +327,48 @@ fn finish_report(
     }
 }
 
-fn canonical_json_value(value: &Value) -> Value {
+fn write_canonical_json(value: &Value, bytes: &mut Vec<u8>) -> Result<(), SharedIdentityIssue> {
+    const ARRAY_OPEN: u8 = b'[';
+    const ARRAY_CLOSE: u8 = b']';
+    const OBJECT_OPEN: u8 = b'{';
+    const OBJECT_CLOSE: u8 = b'}';
+    const ITEM_SEPARATOR: u8 = b',';
+    const FIELD_SEPARATOR: u8 = b':';
+
     match value {
-        Value::Array(items) => Value::Array(items.iter().map(canonical_json_value).collect()),
+        Value::Array(items) => {
+            bytes.push(ARRAY_OPEN);
+            for (index, item) in items.iter().enumerate() {
+                if index > 0 {
+                    bytes.push(ITEM_SEPARATOR);
+                }
+                write_canonical_json(item, bytes)?;
+            }
+            bytes.push(ARRAY_CLOSE);
+        }
         Value::Object(entries) => {
+            bytes.push(OBJECT_OPEN);
             let mut sorted = entries.iter().collect::<Vec<_>>();
             sorted.sort_by(|left, right| left.0.cmp(right.0));
-            let map = sorted
-                .into_iter()
-                .map(|(key, item)| (key.clone(), canonical_json_value(item)))
-                .collect::<Map<String, Value>>();
-            Value::Object(map)
+            for (index, (key, item)) in sorted.into_iter().enumerate() {
+                if index > 0 {
+                    bytes.push(ITEM_SEPARATOR);
+                }
+                let key_bytes = serde_json::to_vec(key)
+                    .map_err(|_| SharedIdentityIssue::new(FIELD_CANONICAL_JSON, "serialization_failed"))?;
+                bytes.extend_from_slice(&key_bytes);
+                bytes.push(FIELD_SEPARATOR);
+                write_canonical_json(item, bytes)?;
+            }
+            bytes.push(OBJECT_CLOSE);
         }
-        scalar => scalar.clone(),
+        scalar => {
+            let scalar_bytes = serde_json::to_vec(scalar)
+                .map_err(|_| SharedIdentityIssue::new(FIELD_CANONICAL_JSON, "serialization_failed"))?;
+            bytes.extend_from_slice(&scalar_bytes);
+        }
     }
+    Ok(())
 }
 
 fn strip_excluded_fields(value: &Value, excluded_fields: &[&str]) -> Value {

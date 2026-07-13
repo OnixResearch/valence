@@ -1,6 +1,11 @@
 [workspace]
-members = ["crates/valence-core", "crates/valence-cli", "pilots/shared-identity"]
+members = [
+  "crates/valence-core",
+  "crates/valence-cli",
+  "pilots/shared-identity",
+]
 resolver = "2"
+exclude = ["pilots/canonical-json-preserve-order"]
 
 # r[impl valence.strict_rust_admission.consumer_scope.production]
 [workspace.metadata.octet]
