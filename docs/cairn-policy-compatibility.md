@@ -25,6 +25,23 @@ That identity is the BLAKE3 digest produced by `valence_core::function_address_p
 
 The workspace contract matrix gate is carried explicitly in disabled mode so the complete supported policy field set remains reviewable.
 
+## Artifact substance and authenticated evidence
+
+The gate policy carries Cairn's fail-closed proposal, design, requirement, task,
+and dependency-marker substance thresholds. The authenticated-evidence policy
+uses the non-promoting `diagnostic` profile, accepts the reviewed corrected
+Preserves profile, and binds the archived Valence integrity receipt plus the
+stack-provenance and function-address authentication profiles by BLAKE3. Empty
+trusted-producer configuration grants no signature authority. These inputs make
+the policy schema complete; they do not promote Valence to an authenticated
+Onix release profile.
+
+Nickel sources own the two authentication profiles. The JSON files under
+`cairn-policy/generated/` are freshness-checked exports and must not be edited
+directly. The archived integrity receipt is a byte-for-byte consumer copy of
+the Cairn acceptance receipt for Valence revision
+`1f4f6fe903a34c22d2cda53cd534ce58bbf84147`.
+
 ## Compatibility checks
 
 r[verify valence.evidence_ir.cairn_policy_compatibility.final_validation]

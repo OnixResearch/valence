@@ -77,6 +77,38 @@
               touch "$out"
             '';
 
+        cairn-policy-compatibility-inputs =
+          pkgs.runCommand "valence-cairn-policy-compatibility-inputs"
+            {
+              nativeBuildInputs = [
+                pkgs.b3sum
+                pkgs.nickel
+              ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+
+              nickel export --format json cairn-policy/default.ncl > "$TMPDIR/cairn-policy.json"
+              nickel export --format json cairn-policy/stack-provenance-authentication-profile.ncl > "$TMPDIR/stack-profile.json"
+              nickel export --format json cairn-policy/function-address-authentication-profile.ncl > "$TMPDIR/function-profile.json"
+
+              cmp "$TMPDIR/cairn-policy.json" cairn-policy/generated/cairn-policy.json
+              cmp "$TMPDIR/stack-profile.json" cairn-policy/generated/stack-provenance-authentication-profile.json
+              cmp "$TMPDIR/function-profile.json" cairn-policy/generated/function-address-authentication-profile.json
+
+              cat > "$TMPDIR/authenticated-policy-hashes" <<'EOF'
+              a1c63619b0f72140c6e350b61ed18d3d552310067406ba0b819ace462d1f1e48  cairn-policy/evidence/valence-preserves-integrity-archive-receipt.json
+              93993e99e87206d232b64efcc8631611aad3b5b0c4b81855e7e1a0cdcc391cff  cairn-policy/generated/stack-provenance-authentication-profile.json
+              62c88a0263720dea4c37a48ef46921c46e5dd3e4924fff096b84a65d5738a412  cairn-policy/generated/function-address-authentication-profile.json
+              EOF
+              sed -i 's/^              //' "$TMPDIR/authenticated-policy-hashes"
+              b3sum --check "$TMPDIR/authenticated-policy-hashes"
+
+              touch "$out"
+            '';
+
         effect-closure-policy =
           pkgs.runCommand "valence-effect-closure-policy"
             {

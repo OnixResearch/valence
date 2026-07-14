@@ -1,6 +1,6 @@
 let Contracts = import "contracts.ncl" in
 let PolicySchemaVersion = "cairn.policy-schema.v1" in
-let PolicyFieldSetDigest = "c5b71f15de4175d9ff01f7cb4b82eed898a71e55f6d1fa5e24a9a0e2bb909b42" in
+let PolicyFieldSetDigest = "5b6ca8c021d47eb08c98e6dedd16ebced68c13fdb7e58d1c1e0860bf9793a2f0" in
 {
   name = "valence-default",
   version = 1,
@@ -54,6 +54,16 @@ let PolicyFieldSetDigest = "c5b71f15de4175d9ff01f7cb4b82eed898a71e55f6d1fa5e24a9
       scope = "tasks",
       route = "auto-fix",
       promoted = "no",
+    },
+    substance = {
+      proposal_minimum_substantive_lines = 1,
+      design_minimum_substantive_lines = 1,
+      minimum_requirement_blocks = 1,
+      minimum_substantive_tasks = 1,
+      placeholder_tokens = ["cairn_placeholder", "tbd", "describe why", "describe the user-visible", "describe the current state", "implement the change", "verify and archive the change"],
+      normative_tokens = ["MUST", "SHALL", "SHOULD", "MAY"],
+      dependency_marker_id = "depends",
+      dependency_target_class = "lifecycle-id",
     },
   },
 
@@ -147,6 +157,29 @@ let PolicyFieldSetDigest = "c5b71f15de4175d9ff01f7cb4b82eed898a71e55f6d1fa5e24a9
       "kamacite.function-address-receipt.v1",
     ],
     required_boundary = "Valence function-address lifecycle policy accepts recorded-only source-shape identity and linkage evidence only; it does not prove Rust semantic correctness, compiler correctness, whole-program safety, verifier soundness, requirement satisfaction, or release eligibility",
+  },
+
+  authenticated_evidence_policy = {
+    schema_version = "cairn.authenticated-evidence.v1",
+    release_profile = "diagnostic",
+    accepted_canonicalization_profiles = ["valence.preserves-integrity.corrected.v1"],
+    accepted_valence_integrity_receipt_path = "cairn-policy/evidence/valence-preserves-integrity-archive-receipt.json",
+    accepted_valence_integrity_receipt_hash = "a1c63619b0f72140c6e350b61ed18d3d552310067406ba0b819ace462d1f1e48",
+    policy_exports = [
+      {
+        evidence_kind = "stack-provenance",
+        path = "cairn-policy/generated/stack-provenance-authentication-profile.json",
+        digest_blake3 = "93993e99e87206d232b64efcc8631611aad3b5b0c4b81855e7e1a0cdcc391cff",
+        signature_purpose = "onix.stack-provenance.release-evidence.v1",
+      },
+      {
+        evidence_kind = "function-address",
+        path = "cairn-policy/generated/function-address-authentication-profile.json",
+        digest_blake3 = "62c88a0263720dea4c37a48ef46921c46e5dd3e4924fff096b84a65d5738a412",
+        signature_purpose = "onix.function-address.release-evidence.v1",
+      },
+    ],
+    trusted_producers = [],
   },
 
   workspace_contract_matrix_gate = {
