@@ -1,6 +1,8 @@
 # kind	path	expected value or marker
 package	crates/valence-core/Cargo.toml	MPL-2.0
 package	crates/valence-cli/Cargo.toml	AGPL-3.0-or-later
+contains	crates/valence-core/Cargo.toml	publish = false
+contains	crates/valence-cli/Cargo.toml	publish = false
 package	pilots/shared-identity/Cargo.toml	AGPL-3.0-or-later
 package	pilots/canonical-json-preserve-order/Cargo.toml	AGPL-3.0-or-later
 artifact	LICENSES/MPL-2.0.txt	Mozilla Public License Version 2.0

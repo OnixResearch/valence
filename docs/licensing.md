@@ -13,4 +13,6 @@ The core must not depend on CLI or pilot crates. Executable surfaces may depend 
 
 Complete texts are in `LICENSES/MPL-2.0.txt` and `LICENSES/AGPL-3.0-or-later.txt`. Each Cargo package directory carries the applicable text so package archives are self-contained.
 
+`valence-core` and `valence-cli` are distributed from reviewed Git revisions and set `publish = false`. Their package names do not claim ownership of similarly normalized registry names. Any future registry release requires a separate package-name, ownership, compatibility, and release review.
+
 Package licensing is distribution metadata and is outside canonical Evidence IR identity unless a versioned schema explicitly includes it. Prior grants and third-party terms remain intact. This map does not prove behavioral correctness, evidence truth, or release eligibility.

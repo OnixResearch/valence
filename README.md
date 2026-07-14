@@ -5,9 +5,33 @@ representation for evidence artifacts with span/provenance threading and
 non-claim boundary enforcement.
 
 Valence is the shared evidence identity layer for the local trust stack
-(octet, mantle, trellis, cairn). It provides the stable IDs and canonical
+(Octet, Mantle, Trellis, and Cairn). It provides the stable IDs and canonical
 forms that thread source -> receipt -> binary across the stack, plus a
 checker and a span explainer.
+
+## Project status
+
+Valence is under active development. `valence-core` is a reusable MPL-2.0
+functional core; the CLI and executable pilots remain AGPL-3.0-or-later.
+Packages are distributed from reviewed Git revisions and are intentionally not
+published to crates.io. Explicitly documented schema and identity versions are
+compatibility surfaces; other APIs may evolve.
+
+## Consume `valence-core`
+
+Pin an exact public revision rather than an ambient branch:
+
+```toml
+[dependencies]
+valence-core = {
+  git = "https://github.com/OnixResearch/valence",
+  rev = "<reviewed-commit>",
+  package = "valence-core",
+}
+```
+
+This dependency grants access to deterministic identity and validation logic;
+it does not transfer producer, verifier, runtime, or release claims.
 
 ## What it is
 
@@ -305,15 +329,10 @@ Package licensing is outside canonical Evidence IR identity unless a versioned s
 
 ## References
 
-- `../octet/` — source of the extracted valence-core modules; Octet retains
-  CLI parsing, source scanning, corpus orchestration, and release ownership
-  for its own evidence surfaces.
-- `../cairn/` — lifecycle engine that will consume `verification_role` in
-  Phase 1 and the provenance ID threading in Phase 2.
-- `../trellis/` — verified-logic building blocks; `verification_frontier`
-  module is the natural core for future property-vocabulary resolution.
-- `../mantle/` — build system that will record covered valence/requirement IDs
-  in release-evidence bundles in Phase 2.
+- [OnixResearch/octet](https://github.com/OnixResearch/octet) — source of the extracted valence-core modules; Octet retains CLI parsing, source scanning, corpus orchestration, and release ownership for its own evidence surfaces.
+- [OnixResearch/cairn](https://github.com/OnixResearch/cairn) — lifecycle engine that consumes Valence evidence as bounded lifecycle-policy input.
+- [OnixResearch/trellis](https://github.com/OnixResearch/trellis) — verified-logic building blocks and proof-artifact identity references.
+- [OnixResearch/mantle](https://github.com/OnixResearch/mantle) — build system that records bounded Valence and requirement identities in release-evidence bundles.
 - unison-lang.org/docs/the-big-idea — design reference for content-addressed
   definitions, names-as-metadata, codebase-as-database tooling, effect labels,
   durable typed values, and structured refactoring. Valence uses these patterns

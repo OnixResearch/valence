@@ -3,6 +3,7 @@ name = "valence-cli"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+publish = false
 repository.workspace = true
 homepage.workspace = true
 description = "CLI shell for the Valence Evidence IR"

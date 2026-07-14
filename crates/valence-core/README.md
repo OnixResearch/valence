@@ -1,17 +1,82 @@
 # valence-core
 
-`valence-core` contains pure deterministic core logic that Octet hosts for bounded Valence evidence surfaces.
+`valence-core` is the reusable, deterministic core of the Valence Evidence IR.
+It validates canonical evidence identity, typed linkage, provenance, roles, and
+non-claim boundaries over already-loaded values. Filesystem access, process
+execution, source discovery, artifact measurement, publication, and operator
+policy remain in shells or producer repositories.
 
-Current in-repository public modules:
+## Distribution
 
-- `evidence_codebase_index`: builds, queries, renders, and boundary-checks Octet-owned evidence-codebase indexes from in-memory artifacts; Octet retains CLI parsing, filesystem traversal, artifact discovery, output writing, Nix gate ownership, release bundle ownership, and non-claim boundary enforcement.
-- `evidence_index`: renders and checks the current-head Valence evidence page from typed inputs; Octet retains command execution, repository-state capture, freshness orchestration, and publication decisions.
-- `function_object`: constructs Function Object v1 DTOs, canonical hash payloads, caveat summaries, and pure-cache eligibility from source facts; Octet retains scanning, source-marker mutation, corpus orchestration, and CLI/status reporting.
+The package is distributed from reviewed Git revisions and is not published to
+crates.io. Pin an exact public revision:
 
-## Boundary
+```toml
+[dependencies]
+valence-core = {
+  git = "https://github.com/OnixResearch/valence",
+  rev = "<reviewed-commit>",
+  package = "valence-core",
+}
+```
 
-This crate is intentionally an in-repository readiness seam, not a standalone release cutover or standalone repository cutover. It does not own CLI parsing, filesystem access, source scanning, marker mutation, corpus orchestration, supplement orchestration, stdout/stderr, process exits, repository tags, package publication, or release ownership. Those remain Octet-owned until a future reviewed cutover changes the contract.
+Rust code imports the crate as `valence_core`.
+
+## Public modules
+
+Identity and envelope primitives:
+
+- `artifact_ref`
+- `evidence_ir`
+- `evidence_chain`
+- `evidence_model`
+- `preserves_evidence`
+- `provenance`
+- `shared_identity`
+- `stack_role_registry`
+
+Evidence adapters and profiles:
+
+- `ast_grep_evidence`
+- `evidence_adapters`
+- `formal_proof_chain`
+- `function_address_preserves`
+- `function_address_profile`
+- `function_object`
+- `oxide_primitives`
+- `proof_carrying_ir`
+- `stack_provenance_adapter`
+- `trellis_proof_evidence`
+- `wasm_component_evidence`
+
+Indexes, policy models, and deterministic harnesses:
+
+- `capability_plan`
+- `evidence_codebase_index`
+- `evidence_harness`
+- `evidence_index`
+- `hegel_property`
+
+The crate-level documentation in `src/lib.rs` describes each module's bounded
+claim surface.
+
+## Functional-core boundary
+
+Production code in this crate must remain testable without filesystem,
+environment, process, clock, network, or terminal dependencies. Octet and other
+producers may construct Valence inputs, but they do not inherit Valence's
+identity or linkage claims without rerunning the applicable validators.
 
 ## Evidence limits
 
-The crate supports bounded local evidence replay for selected Octet/Valence surfaces. It does not claim behavioral correctness, semantic equivalence, exhaustive Rust coverage, pure-cache eligibility, cross-machine determinism, cross-toolchain determinism, external consumer compatibility, or general HIR/THIR/MIR extraction.
+Passing validation establishes only the specific syntax, canonical identity,
+typed linkage, role, digest-domain, or non-claim facts named by that validator.
+It does not establish evidence truth, behavioral correctness, semantic
+equivalence, verifier soundness, requirement satisfaction, runtime authority,
+whole-program safety, or release eligibility.
+
+## License
+
+`valence-core` is licensed under `MPL-2.0`. The complete package-local text is
+in [LICENSE](LICENSE); the repository-wide package map is in
+[../../docs/licensing.md](../../docs/licensing.md).
