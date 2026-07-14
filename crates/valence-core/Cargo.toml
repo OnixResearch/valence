@@ -2,7 +2,7 @@
 name = "valence-core"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "MPL-2.0"
 repository.workspace = true
 homepage.workspace = true
 description = "Pure Evidence IR core: canonical evidence identity, provenance threading, and non-claim boundary enforcement"

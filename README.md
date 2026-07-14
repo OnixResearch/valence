@@ -299,7 +299,9 @@ in [`docs/octet-deterministic-core.md`](docs/octet-deterministic-core.md).
 
 ## License
 
-AGPL-3.0-or-later
+`valence-core` is licensed under `MPL-2.0`. `valence-cli` and repository-owned executable pilots are `AGPL-3.0-or-later`. Complete texts and the package map are in [LICENSES](LICENSES) and [docs/licensing.md](docs/licensing.md).
+
+Package licensing is outside canonical Evidence IR identity unless a versioned schema explicitly includes it. Earlier grants and third-party terms remain intact, and the split does not expand Valence's behavioral or release-readiness claims.
 
 ## References
 
