@@ -25,8 +25,10 @@ COMMANDS:
     stack-provenance verify --manifest-root <ROOT> --manifest <FILE> --sidecar-root <ROOT> --sidecar <FILE>
     stack-provenance verify-built-binary --binary-root <ROOT> --binary <FILE> --artifact-root <ROOT> --octet-export <FILE> --sidecar-root <ROOT> --sidecar <FILE> --manifest-root <ROOT> --manifest <FILE> [--json]
     stack-provenance graph-report --artifact-root <ROOT> --chain <FILE> [--format json|markdown]
-    function-address validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --bundle <FILE>] [--receipt <FILE>] [--graph <FILE>]
+    function-address validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> [--bundle <FILE>] [--receipt <FILE>] [--graph <FILE>]]
+    function-address preserves --artifact-root <ROOT> --input <FILE>
     evidence-chain validate --artifact-root <ROOT> --input <FILE>
+    wasm-component validate --artifact-root <ROOT> --input <FILE>
     version                             Print version
 
 EXIT CODES:
@@ -101,7 +103,7 @@ fn run_check(args: &[String]) -> ExitCode {
 
 fn run_function_address(args: &[String]) -> ExitCode {
     let Some(command) = args.first() else {
-        eprintln!("usage: valence function-address validate --input <FILE> [--receipt <FILE>] [--graph <FILE>]");
+        eprintln!("usage: valence function-address <validate|preserves> ...");
         return ExitCode::from(2);
     };
     match command.as_str() {
@@ -365,7 +367,7 @@ fn run_evidence_chain(args: &[String]) -> ExitCode {
 
 fn run_stack_provenance(args: &[String]) -> ExitCode {
     let Some(command) = args.first() else {
-        eprintln!("usage: valence stack-provenance <build|verify> ...");
+        eprintln!("usage: valence stack-provenance <build|verify|verify-built-binary|graph-report> ...");
         return ExitCode::from(2);
     };
     match command.as_str() {
@@ -1168,6 +1170,11 @@ mod tests {
         assert!(USAGE.contains("stack-provenance build"));
         assert!(USAGE.contains("stack-provenance verify"));
         assert!(USAGE.contains("stack-provenance verify-built-binary"));
+        assert!(USAGE.contains("stack-provenance graph-report"));
+        assert!(USAGE.contains("function-address validate"));
+        assert!(USAGE.contains("function-address preserves"));
+        assert!(USAGE.contains("evidence-chain validate"));
+        assert!(USAGE.contains("wasm-component validate"));
         assert!(USAGE.contains("version"));
         assert!(USAGE.contains("EXIT CODES"));
     }

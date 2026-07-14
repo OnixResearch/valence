@@ -16,10 +16,9 @@ pub const HEGEL_GENERATED_TESTING_TIER: &str = "generated_testing";
 pub const HEGEL_GENERATED_TESTING_NON_CLAIM: &str = "Hegel checks bounded generated inputs only and does not prove correctness, semantic equivalence, verifier soundness, requirement satisfaction, release eligibility, or whole-program safety";
 /// Stable command for the fast Hegel lane.
 pub const HEGEL_FAST_LANE_COMMAND: &str =
-    "nix develop --option builders '' -c cargo test -p valence-core hegel_property_laws";
+    "nix develop --option builders '' -c cargo test -p valence-core --test hegel_property_laws";
 /// Stable command for the opt-in deep Hegel lane.
-pub const HEGEL_DEEP_LANE_COMMAND: &str =
-    "nix develop --option builders '' -c cargo test -p valence-core hegel_property_laws -- --ignored --nocapture";
+pub const HEGEL_DEEP_LANE_COMMAND: &str = "nix develop --option builders '' -c cargo test -p valence-core --test hegel_property_laws -- --ignored --nocapture";
 /// Named case budget for ordinary Hegel property tests.
 pub const HEGEL_FAST_CASE_BUDGET: u64 = 16;
 /// Named case budget for opt-in deep Hegel property tests.
@@ -528,6 +527,10 @@ mod tests {
         let lanes = default_hegel_suite_lanes();
         assert_eq!(lanes.len(), EXPECTED_LANE_COUNT);
         assert_eq!(lanes[FAST_LANE_INDEX].case_budget, HEGEL_FAST_CASE_BUDGET);
+        assert_eq!(lanes[FAST_LANE_INDEX].command, HEGEL_FAST_LANE_COMMAND);
+        assert_eq!(lanes[DEEP_LANE_INDEX].command, HEGEL_DEEP_LANE_COMMAND);
+        assert!(lanes[FAST_LANE_INDEX].command.contains("--test hegel_property_laws"));
+        assert!(!lanes[FAST_LANE_INDEX].command.contains("valence-core hegel_property_laws"));
         assert!(!lanes[FAST_LANE_INDEX].opt_in);
         assert!(lanes[DEEP_LANE_INDEX].opt_in);
         assert!(lanes.iter().all(|lane| lane.non_claims == vec![HEGEL_GENERATED_TESTING_NON_CLAIM.to_owned()]));

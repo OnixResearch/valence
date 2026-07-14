@@ -114,8 +114,9 @@ const OVERCLAIM_MARKERS: &[&str] = &[
 
 /// The verification role of an evidence artifact.
 ///
-/// Schema lands in Phase 0; enforcement (counting only `Property` as verified)
-/// lands in Phase 1 via cairn `release-readiness` and `evidence verify`.
+/// Cairn role summaries and the applicable Valence/Cairn profile validators
+/// count only `Property` artifacts as verified. `RecordedOnly` and `Boundary`
+/// remain separate non-verification roles.
 ///
 /// - `Property`: this artifact verifies a checkable predicate.
 /// - `RecordedOnly`: this artifact records structure/identity only, proves nothing. A "0 passed, 0

@@ -17,6 +17,19 @@ Packages are distributed from reviewed Git revisions and are intentionally not
 published to crates.io. Explicitly documented schema and identity versions are
 compatibility surfaces; other APIs may evolve.
 
+## Get started
+
+With Nix flakes enabled, run the CLI or the full workspace tests directly from
+a repository checkout:
+
+```bash
+nix run .#valence -- --help
+nix develop -c cargo test --workspace
+```
+
+For library consumers, the complete public-module inventory and bounded API
+claims are documented in [`crates/valence-core/README.md`](crates/valence-core/README.md).
+
 ## Consume `valence-core`
 
 Pin an exact public revision rather than an ambient branch:
@@ -53,9 +66,10 @@ The Evidence IR v1 spine:
 - `EvidenceSpan`: extended source span with `source_id`, byte offsets, line/
   column positions, and optional label. The `source_id` is the stable
   identifier that threads through the whole chain.
-- `VerificationRole`: `Property` | `RecordedOnly` | `Boundary`. Schema lands
-  now; enforcement (counting only `Property` as verified) lands in Phase 1 via
-  cairn `release-readiness`.
+- `VerificationRole`: `Property` | `RecordedOnly` | `Boundary`. Cairn role
+  summaries and the applicable Valence/Cairn profile validators count only
+  `Property` artifacts as verified; `RecordedOnly` and `Boundary` remain
+  separate non-verification roles.
 - `build_evidence_artifact`: construct from typed inputs.
 - `check_evidence_artifact`: validate schema + non-claim boundary + hash +
   reject overclaims. Fails closed.
@@ -211,14 +225,18 @@ tier preservation, and non-claim enforcement.
 
 ## CLI
 
-```bash
-valence check <FILE>                        Validate a canonical Evidence IR artifact
-valence explain --id <ID> --manifest <FILE> Resolve a stable source ID to its span
-valence stack-provenance build --octet-export <FILE> --binary-hash <B3> --output <FILE>
-valence stack-provenance verify --manifest <FILE> --sidecar <FILE>
-valence stack-provenance verify-built-binary --binary <PATH> --octet-export <FILE> --sidecar <FILE> --manifest <FILE> [--json]
-valence stack-provenance graph-report --chain <FILE> [--format json|markdown]
-valence version                             Print version
+```text
+valence check --artifact-root <ROOT> <FILE>
+valence explain --manifest-root <ROOT> --id <ID> --manifest <FILE>
+valence stack-provenance build --artifact-root <ROOT> --octet-export <FILE> --binary-hash <B3> --output-root <ROOT> --output <FILE>
+valence stack-provenance verify --manifest-root <ROOT> --manifest <FILE> --sidecar-root <ROOT> --sidecar <FILE>
+valence stack-provenance verify-built-binary --binary-root <ROOT> --binary <FILE> --artifact-root <ROOT> --octet-export <FILE> --sidecar-root <ROOT> --sidecar <FILE> --manifest-root <ROOT> --manifest <FILE> [--json]
+valence stack-provenance graph-report --artifact-root <ROOT> --chain <FILE> [--format json|markdown]
+valence function-address validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> [--bundle <FILE>] [--receipt <FILE>] [--graph <FILE>]]
+valence function-address preserves --artifact-root <ROOT> --input <FILE>
+valence evidence-chain validate --artifact-root <ROOT> --input <FILE>
+valence wasm-component validate --artifact-root <ROOT> --input <FILE>
+valence version
 ```
 
 `check` reads a JSON artifact, validates schema + hash + non-claim boundary,
@@ -243,6 +261,14 @@ machine JSON or operator Markdown from the same report DTO. Success proves
 measured-byte identity, canonical IDs, typed linkage, role policy, and non-claim
 conformance only; it is not a correctness, semantic-equivalence, verifier
 soundness, requirement-satisfaction, or release-eligibility proof.
+
+`function-address validate` checks a function-address input and can atomically
+publish a bundle or compatibility receipt/graph outputs beneath an explicitly
+declared output root. `function-address preserves`, `evidence-chain validate`,
+and `wasm-component validate` check their respective already-produced evidence
+envelopes. These commands validate bounded identity, linkage, role, and
+non-claim contracts; they do not execute producers or promote recorded evidence
+to semantic proof.
 
 `valence-cli` requires independently declared role roots and relative locators
 for local input artifact, manifest, sidecar, binary, and output paths, then opens
@@ -295,16 +321,18 @@ cross-machine determinism, cross-toolchain determinism, external consumer
 compatibility, mechanized language soundness, requirement satisfaction, or
 general HIR/THIR/MIR extraction.
 
-## Quick start
+## Development checks
+
+After entering the development shell, run focused or full validation:
 
 ```bash
-nix develop                # enter devshell
-cargo test --workspace     # run all tests
+nix develop
+cargo test --workspace
 cargo test stack_provenance_preserves -- --nocapture
 cargo test -p valence-core evidence_harness
-cargo test -p valence-core hegel_property_laws
-cargo build -p valence-cli # build the CLI
-nix build .#checks.x86_64-linux.stack-provenance-nickel-contracts --no-link
+cargo test -p valence-core --test hegel_property_laws
+cargo build -p valence-cli
+nix flake check -L
 ./target/debug/valence version
 ```
 

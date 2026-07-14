@@ -15,7 +15,7 @@ Runs hermetic transcript fixtures, malformed corpus cases, property invariants, 
 Hegel fast lane:
 
 ```bash
-nix develop --option builders '' -c cargo test -p valence-core hegel_property_laws
+nix develop --option builders '' -c cargo test -p valence-core --test hegel_property_laws
 ```
 
 Runs bounded Hegel RS generated-input checks over pure Valence cores. The named fast budget is `HEGEL_FAST_CASE_BUDGET`, Hegel uses deterministic or replayable settings, and failures should be copied into concrete regression fixtures before relying on them for future review.
