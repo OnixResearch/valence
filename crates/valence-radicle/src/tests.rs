@@ -284,6 +284,46 @@ fn independent_physical_sidecars_converge_and_require_explicit_future_selection(
 }
 
 #[test]
+fn malformed_related_root_remains_visible_as_rejected_evidence() {
+    // r[verify valence.radicle_cob_evidence.sidecar_profile.invalid]
+    let fixture = Fixture::new();
+    let store = fixture.store();
+    let target_oid = Oid::from_str(&fixture.target.object_id).expect("target oid");
+    let type_name = TypeName::from_str(&fixture.profile.cob_type).expect("sidecar type");
+    radicle_cob::create::<PhysicalSidecar, _, _>(
+        &store,
+        &fixture.signer,
+        None,
+        vec![target_oid],
+        fixture.signer.public_key(),
+        Create {
+            contents: nonempty(vec![b"{malformed".to_vec()]).expect("nonempty malformed event"),
+            type_name,
+            message: MUTATION_MESSAGE.to_owned(),
+            embeds: Vec::new(),
+            version: Version::default(),
+        },
+    )
+    .expect("create malformed signed root");
+    let snapshot = materialize_snapshot(
+        &store,
+        &fixture.profile,
+        &fixture.authorization,
+        &fixture.artifact_root(),
+        fixture.target,
+    )
+    .expect("materialize malformed root");
+    let snapshot = snapshot.report.snapshot.expect("bounded snapshot");
+    assert!(snapshot.accepted_attachments.is_empty());
+    assert!(
+        snapshot
+            .rejected_events
+            .iter()
+            .any(|event| { event.issue_codes.contains(&"event_decode_failed".to_owned()) })
+    );
+}
+
+#[test]
 fn unauthorized_and_unsafe_requests_do_not_mutate_repository() {
     // r[verify valence.radicle_cob_evidence.authority.invalid]
     // r[verify valence.radicle_cob_evidence.repository_safety.invalid]

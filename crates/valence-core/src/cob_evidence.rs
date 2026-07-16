@@ -614,14 +614,10 @@ pub fn build_observed_target_state(
         sort_issues(&mut issues);
         return Err(issues);
     }
-    let material = serde_json::json!({"target": target, "tips": canonical_tips});
+    let target_key = target_key(target).expect("validated target has an identity");
+    let material = serde_json::json!({"target_key": target_key, "tips": &canonical_tips});
     Ok(ObservedTargetState {
-        tips: material["tips"]
-            .as_array()
-            .expect("typed target tips are an array")
-            .iter()
-            .map(|value| value.as_str().expect("typed target tip is a string").to_owned())
-            .collect(),
+        tips: canonical_tips,
         state_hash: typed_blake3(&material),
     })
 }
@@ -768,7 +764,7 @@ pub fn validate_attachment_structure(
         issues.push(CobIssue::new("attachment.verification_role", "unsupported_role_promotion"));
     }
     validate_non_claims(&attachment.non_claims, &profile.required_non_claims, &mut issues);
-    validate_observed_target_state(&attachment.observed_target_state, &mut issues);
+    validate_observed_target_state(&attachment.observed_target_state, &attachment.target_key, &mut issues);
     validate_payload(profile, attachment, &mut issues);
     if attachment.attachment_id != attachment_identity(attachment) {
         issues.push(CobIssue::new("attachment.attachment_id", "stale_attachment_identity"));
@@ -843,8 +839,8 @@ pub fn reduce_logical_sidecar(input: &CobReductionInput) -> CobReductionReport {
     let mut issues = validate_profile(&input.profile);
     issues.extend(validate_authorization_profile(&input.profile, &input.authorization));
     issues.extend(validate_target(&input.target));
-    validate_observed_target_state(&input.current_target_state, &mut issues);
     let expected_target_key = target_key(&input.target).unwrap_or_default();
+    validate_observed_target_state(&input.current_target_state, &expected_target_key, &mut issues);
     let expected_profile_hash = profile_identity(&input.profile);
     let sidecars = canonical_sidecars(&input.sidecars, &mut issues);
     let sidecar_ids = sidecars.iter().map(|sidecar| sidecar.object_id.as_str()).collect::<BTreeSet<_>>();
@@ -976,9 +972,12 @@ pub fn reduce_logical_sidecar(input: &CobReductionInput) -> CobReductionReport {
         .map(|(attachment_id, mut candidate)| {
             candidate.source_keys.sort();
             candidate.source_keys.dedup();
+            let mut source_entries = candidate.source_keys.into_iter().map(|key| key.entry_oid).collect::<Vec<_>>();
+            source_entries.sort();
+            source_entries.dedup();
             AcceptedAttachment {
                 attachment: candidate.attachment,
-                source_entries: candidate.source_keys.into_iter().map(|key| key.entry_oid).collect(),
+                source_entries,
                 signers: candidate.signers.into_iter().collect(),
                 status: statuses.get(&attachment_id).cloned().unwrap_or(AttachmentStatus::Active),
             }
@@ -1083,6 +1082,9 @@ pub fn verify_binding_receipt(profile: &CobEvidenceProfile, receipt: &BindingRec
     ] {
         validate_blake3(value, field, &mut issues);
     }
+    if !valid_text(&receipt.artifact_stable_id) {
+        issues.push(CobIssue::new("binding.artifact_stable_id", "invalid_artifact_stable_id"));
+    }
     validate_git_oid(&receipt.entry_oid, "binding.entry_oid", &mut issues);
     if let Some(embed_oid) = &receipt.embed_oid {
         validate_git_oid(embed_oid, "binding.embed_oid", &mut issues);
@@ -1104,8 +1106,12 @@ pub fn verify_binding_receipt(profile: &CobEvidenceProfile, receipt: &BindingRec
     issues
 }
 
-pub fn snapshot_evidence_artifact(snapshot: &CobSnapshot) -> Result<EvidenceArtifact, Vec<CobIssue>> {
-    let issues = verify_snapshot(snapshot);
+pub fn snapshot_evidence_artifact(
+    profile: &CobEvidenceProfile,
+    authorization: &CobAuthorizationProfile,
+    snapshot: &CobSnapshot,
+) -> Result<EvidenceArtifact, Vec<CobIssue>> {
+    let issues = verify_snapshot(profile, authorization, snapshot);
     if !issues.is_empty() {
         return Err(issues);
     }
@@ -1122,38 +1128,40 @@ pub fn snapshot_evidence_artifact(snapshot: &CobSnapshot) -> Result<EvidenceArti
 }
 
 #[must_use]
-pub fn verify_snapshot(snapshot: &CobSnapshot) -> Vec<CobIssue> {
-    let mut issues = Vec::new();
-    if snapshot.schema != SNAPSHOT_SCHEMA {
+pub fn verify_snapshot(
+    profile: &CobEvidenceProfile,
+    authorization: &CobAuthorizationProfile,
+    snapshot: &CobSnapshot,
+) -> Vec<CobIssue> {
+    let mut issues = validate_profile(profile);
+    issues.extend(validate_authorization_profile(profile, authorization));
+    if snapshot.schema != profile.snapshot_schema {
         issues.push(CobIssue::new("snapshot.schema", "unsupported_snapshot_schema"));
     }
     issues.extend(validate_target(&snapshot.target));
-    match target_key(&snapshot.target) {
-        Ok(expected) if expected == snapshot.target_key => {}
-        Ok(_) => issues.push(CobIssue::new("snapshot.target_key", "stale_target_key")),
-        Err(mut target_issues) => issues.append(&mut target_issues),
+    let expected_target_key = target_key(&snapshot.target).unwrap_or_default();
+    if snapshot.target_key != expected_target_key {
+        issues.push(CobIssue::new("snapshot.target_key", "stale_target_key"));
     }
-    validate_observed_target_state(&snapshot.current_target_state, &mut issues);
+    validate_observed_target_state(&snapshot.current_target_state, &expected_target_key, &mut issues);
     validate_blake3(&snapshot.profile_hash, "snapshot.profile_hash", &mut issues);
     validate_blake3(&snapshot.authorization_hash, "snapshot.authorization_hash", &mut issues);
     validate_blake3(&snapshot.materialized_state_hash, "snapshot.materialized_state_hash", &mut issues);
     validate_blake3(&snapshot.receipt_hash, "snapshot.receipt_hash", &mut issues);
+    if snapshot.profile_hash != profile_identity(profile) {
+        issues.push(CobIssue::new("snapshot.profile_hash", "stale_profile_hash"));
+    }
+    if snapshot.authorization_hash != authorization.authorization_hash {
+        issues.push(CobIssue::new("snapshot.authorization_hash", "stale_authorization_hash"));
+    }
     if snapshot.verification_role != VerificationRole::RecordedOnly {
         issues.push(CobIssue::new("snapshot.verification_role", "unsupported_role_promotion"));
     }
     if snapshot.supported_claim != SUPPORTED_CLAIM {
         issues.push(CobIssue::new("snapshot.supported_claim", "unsupported_claim"));
     }
-    for required in [
-        REQUIRED_NON_CLAIM,
-        EVIDENCE_NON_CLAIM,
-        RETENTION_NON_CLAIM,
-        CONFIDENTIALITY_NON_CLAIM,
-    ] {
-        if !snapshot.non_claims.iter().any(|claim| claim == required) {
-            issues.push(CobIssue::new("snapshot.non_claims", "snapshot_non_claim_missing"));
-        }
-    }
+    validate_non_claims(&snapshot.non_claims, &receipt_non_claims(profile), &mut issues);
+    validate_snapshot_collections(profile, snapshot, &mut issues);
     if snapshot.materialized_state_hash != snapshot_state_hash(snapshot) {
         issues.push(CobIssue::new("snapshot.materialized_state_hash", "stale_materialized_state_hash"));
     }
@@ -1162,6 +1170,91 @@ pub fn verify_snapshot(snapshot: &CobSnapshot) -> Vec<CobIssue> {
     }
     sort_issues(&mut issues);
     issues
+}
+
+fn validate_snapshot_collections(profile: &CobEvidenceProfile, snapshot: &CobSnapshot, issues: &mut Vec<CobIssue>) {
+    let canonical_sidecar_rows = canonical_sidecars(&snapshot.sidecars, issues);
+    if canonical_sidecar_rows != snapshot.sidecars {
+        issues.push(CobIssue::new("snapshot.sidecars", "sidecars_not_canonical"));
+    }
+    let mut attachment_ids = Vec::new();
+    for accepted in &snapshot.accepted_attachments {
+        issues.extend(validate_attachment_structure(profile, &accepted.attachment));
+        if accepted.attachment.target_key != snapshot.target_key {
+            issues.push(CobIssue::new("snapshot.accepted_attachments", "foreign_target_key"));
+        }
+        let mut source_entries = accepted.source_entries.clone();
+        source_entries.sort();
+        source_entries.dedup();
+        if source_entries != accepted.source_entries || source_entries.is_empty() {
+            issues.push(CobIssue::new("snapshot.accepted_attachments.source_entries", "source_entries_not_canonical"));
+        }
+        for entry in &accepted.source_entries {
+            validate_git_oid(entry, "snapshot.accepted_attachments.source_entries", issues);
+        }
+        let mut signers = accepted.signers.clone();
+        signers.sort();
+        signers.dedup();
+        if signers != accepted.signers || signers.is_empty() {
+            issues.push(CobIssue::new("snapshot.accepted_attachments.signers", "signers_not_canonical"));
+        }
+        for signer in &accepted.signers {
+            if !valid_signer(signer) {
+                issues.push(CobIssue::new("snapshot.accepted_attachments.signers", "invalid_signer"));
+            }
+        }
+        if let AttachmentStatus::Superseded {
+            replacement_attachment_id,
+        } = &accepted.status
+        {
+            validate_blake3(
+                replacement_attachment_id,
+                "snapshot.accepted_attachments.replacement_attachment_id",
+                issues,
+            );
+        }
+        attachment_ids.push(accepted.attachment.attachment_id.clone());
+    }
+    let mut canonical_attachment_ids = attachment_ids.clone();
+    canonical_attachment_ids.sort();
+    canonical_attachment_ids.dedup();
+    if canonical_attachment_ids != attachment_ids {
+        issues.push(CobIssue::new("snapshot.accepted_attachments", "attachments_not_canonical"));
+    }
+    let mut rejected = snapshot.rejected_events.clone();
+    rejected.sort_by(rejected_order);
+    rejected.dedup();
+    if rejected != snapshot.rejected_events {
+        issues.push(CobIssue::new("snapshot.rejected_events", "rejected_events_not_canonical"));
+    }
+    for event in &snapshot.rejected_events {
+        validate_git_oid(&event.sidecar_object_id, "snapshot.rejected_events.sidecar_object_id", issues);
+        validate_git_oid(&event.entry_oid, "snapshot.rejected_events.entry_oid", issues);
+        if event.issue_codes.is_empty() {
+            issues.push(CobIssue::new("snapshot.rejected_events.issue_codes", "issue_codes_empty"));
+        }
+    }
+    let mut conflicts = snapshot.conflicts.clone();
+    conflicts.sort_by(|left, right| (&left.attachment_id, &left.code).cmp(&(&right.attachment_id, &right.code)));
+    conflicts.dedup();
+    if conflicts != snapshot.conflicts {
+        issues.push(CobIssue::new("snapshot.conflicts", "conflicts_not_canonical"));
+    }
+    for conflict in &snapshot.conflicts {
+        validate_blake3(&conflict.attachment_id, "snapshot.conflicts.attachment_id", issues);
+        if !valid_text(&conflict.code) || conflict.event_entries.is_empty() {
+            issues.push(CobIssue::new("snapshot.conflicts", "invalid_conflict"));
+        }
+        let mut event_entries = conflict.event_entries.clone();
+        event_entries.sort();
+        event_entries.dedup();
+        if event_entries != conflict.event_entries {
+            issues.push(CobIssue::new("snapshot.conflicts.event_entries", "conflict_entries_not_canonical"));
+        }
+        for entry in &conflict.event_entries {
+            validate_git_oid(entry, "snapshot.conflicts.event_entries", issues);
+        }
+    }
 }
 
 fn validate_target(target: &CobTargetRef) -> Vec<CobIssue> {
@@ -1179,7 +1272,7 @@ fn validate_target(target: &CobTargetRef) -> Vec<CobIssue> {
     issues
 }
 
-fn validate_observed_target_state(state: &ObservedTargetState, issues: &mut Vec<CobIssue>) {
+fn validate_observed_target_state(state: &ObservedTargetState, expected_target_key: &str, issues: &mut Vec<CobIssue>) {
     if state.tips.is_empty() {
         issues.push(CobIssue::new("observed_target_state.tips", "target_tips_empty"));
     }
@@ -1193,6 +1286,10 @@ fn validate_observed_target_state(state: &ObservedTargetState, issues: &mut Vec<
         validate_git_oid(tip, "observed_target_state.tips", issues);
     }
     validate_blake3(&state.state_hash, "observed_target_state.state_hash", issues);
+    let material = serde_json::json!({"target_key": expected_target_key, "tips": &state.tips});
+    if state.state_hash != typed_blake3(&material) {
+        issues.push(CobIssue::new("observed_target_state.state_hash", "stale_target_state_hash"));
+    }
 }
 
 fn validate_payload(profile: &CobEvidenceProfile, attachment: &CobEvidenceAttachment, issues: &mut Vec<CobIssue>) {
@@ -1996,6 +2093,7 @@ mod tests {
         candidate.attachment_id = attachment_identity(&candidate);
         let issues = validate_attachment_structure(&profile(), &candidate);
         assert!(issues.iter().any(|issue| issue.code == "blake3_prefix_missing"));
+        assert!(issues.iter().any(|issue| issue.code == "stale_target_state_hash"));
         assert!(issues.iter().any(|issue| issue.code == "unsupported_role_promotion"));
         assert!(issues.iter().any(|issue| issue.code == "unsafe_artifact_locator"));
         assert!(build_binding_receipt(&profile(), &candidate, &format!("{BLAKE3_PREFIX}bad"), None).is_err());
@@ -2137,10 +2235,10 @@ mod tests {
             vec![resolution],
         ));
         let mut snapshot = report.snapshot.expect("snapshot");
-        let artifact = snapshot_evidence_artifact(&snapshot).expect("snapshot artifact");
+        let artifact = snapshot_evidence_artifact(&profile(), &authorization(), &snapshot).expect("snapshot artifact");
         assert_eq!(artifact.verification_role, VerificationRole::RecordedOnly);
         snapshot.authorization_hash = format!("{BLAKE3_PREFIX}{}", "e".repeat(BLAKE3_HEX_LENGTH));
-        let issues = verify_snapshot(&snapshot);
+        let issues = verify_snapshot(&profile(), &authorization(), &snapshot);
         assert!(issues.iter().any(|issue| issue.code == "stale_materialized_state_hash"));
         assert!(issues.iter().any(|issue| issue.code == "stale_snapshot_receipt_hash"));
     }

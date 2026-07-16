@@ -12,6 +12,7 @@ mod store;
 mod transport;
 
 use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 use std::path::Path;
 use std::str::FromStr as _;
 
@@ -280,9 +281,19 @@ pub fn prepare_mutation(
             None
         }
     };
-    let sidecars = load_target_sidecars(store, profile, &target_key)?;
+    let sidecars = load_target_sidecars(store, profile, &request.target)?;
     let sidecar_candidates = sidecars.iter().map(|sidecar| sidecar.object_id.clone()).collect::<Vec<_>>();
     let selected = select_sidecar(&sidecar_candidates, request.sidecar_object_id.as_deref(), &mut issues);
+    validate_mutation_predecessors(
+        store,
+        profile,
+        authorization,
+        artifact_root,
+        &request,
+        selected.as_deref(),
+        &sidecars,
+        &mut issues,
+    )?;
     let prepared_action =
         prepare_action(profile, artifact_root, &request, observed_target_state.as_ref(), &mut issues)?;
     if let Some(event) = prepared_action.as_ref().map(|action| &action.event) {
@@ -425,9 +436,8 @@ pub fn materialize_snapshot(
     artifact_root: &cap_std::fs::Dir,
     target: CobTargetRef,
 ) -> Result<SnapshotMaterialization, AdapterError> {
-    let target_key = target_key(&target).map_err(|issues| AdapterError::Input(issue_codes(&issues).join(",")))?;
     let current_target_state = load_target_state(store, &target)?;
-    let loaded = load_target_sidecars(store, profile, &target_key)?;
+    let loaded = load_target_sidecars(store, profile, &target)?;
     let sidecars = loaded
         .iter()
         .map(|sidecar| SidecarObservation {
@@ -452,7 +462,7 @@ pub fn materialize_snapshot(
     let snapshot_artifact = report
         .snapshot
         .as_ref()
-        .map(snapshot_evidence_artifact)
+        .map(|snapshot| snapshot_evidence_artifact(profile, authorization, snapshot))
         .transpose()
         .map_err(|issues| AdapterError::Input(issue_codes(&issues).join(",")))?;
     adapter_issues.sort();
@@ -470,8 +480,12 @@ pub fn verify_saved_binding(profile: &CobEvidenceProfile, receipt: &BindingRecei
 }
 
 #[must_use]
-pub fn verify_saved_snapshot(snapshot: &CobSnapshot) -> Vec<String> {
-    issue_codes(&verify_snapshot(snapshot))
+pub fn verify_saved_snapshot(
+    profile: &CobEvidenceProfile,
+    authorization: &CobAuthorizationProfile,
+    snapshot: &CobSnapshot,
+) -> Vec<String> {
+    issue_codes(&verify_snapshot(profile, authorization, snapshot))
 }
 
 fn prepare_action(
@@ -614,8 +628,10 @@ fn load_target_state(store: &GitCobStore, target: &CobTargetRef) -> Result<Obser
 fn load_target_sidecars(
     store: &GitCobStore,
     profile: &CobEvidenceProfile,
-    expected_target_key: &str,
+    target: &CobTargetRef,
 ) -> Result<Vec<LoadedSidecar>, AdapterError> {
+    let expected_target_key =
+        target_key(target).map_err(|issues| AdapterError::Input(issue_codes(&issues).join(",")))?;
     let type_name = TypeName::from_str(&profile.cob_type).map_err(|error| AdapterError::Input(error.to_string()))?;
     let objects = radicle_cob::list::<PhysicalSidecar, _>(store, &type_name)
         .map_err(|error| AdapterError::Cob(error.to_string()))?;
@@ -634,7 +650,8 @@ fn load_target_sidecars(
                         action: CobEventAction::Initialize(root),
                         ..
                     }) if root.target_key == expected_target_key
-                )
+                ) || (event.observed.entry_oid == object_id
+                    && event.observed.related_oids.iter().any(|related| related == &target.object_id))
             });
             matches_target.then(|| LoadedSidecar {
                 object_id,
@@ -645,6 +662,62 @@ fn load_target_sidecars(
         .collect::<Vec<_>>();
     loaded.sort_by(|left, right| left.object_id.cmp(&right.object_id));
     Ok(loaded)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn validate_mutation_predecessors(
+    store: &GitCobStore,
+    profile: &CobEvidenceProfile,
+    authorization: &CobAuthorizationProfile,
+    artifact_root: &cap_std::fs::Dir,
+    request: &MutationRequest,
+    selected: Option<&str>,
+    sidecars: &[LoadedSidecar],
+    issues: &mut Vec<String>,
+) -> Result<(), AdapterError> {
+    let required_ids = match &request.action {
+        MutationRequestAction::Attach(_) => return Ok(()),
+        MutationRequestAction::Supersede(action) => {
+            vec![action.attachment_id.as_str(), action.replacement_attachment_id.as_str()]
+        }
+        MutationRequestAction::Revoke(action) => vec![action.attachment_id.as_str()],
+    };
+    let Some(selected) = selected else {
+        issues.push("existing_sidecar_required".to_owned());
+        return Ok(());
+    };
+    let materialization = materialize_snapshot(store, profile, authorization, artifact_root, request.target.clone())?;
+    if !materialization.report.valid || !materialization.adapter_issues.is_empty() {
+        issues.push("current_snapshot_invalid_or_unresolved".to_owned());
+        return Ok(());
+    }
+    let Some(snapshot) = materialization.report.snapshot else {
+        issues.push("current_snapshot_missing".to_owned());
+        return Ok(());
+    };
+    let accepted = snapshot
+        .accepted_attachments
+        .iter()
+        .map(|attachment| {
+            (
+                attachment.attachment.attachment_id.as_str(),
+                attachment.source_entries.iter().map(String::as_str).collect::<BTreeSet<_>>(),
+            )
+        })
+        .collect::<BTreeMap<_, _>>();
+    let selected_entries = sidecars
+        .iter()
+        .find(|sidecar| sidecar.object_id == selected)
+        .map(|sidecar| sidecar.events.iter().map(|event| event.observed.entry_oid.as_str()).collect::<BTreeSet<_>>())
+        .unwrap_or_default();
+    for attachment_id in required_ids {
+        match accepted.get(attachment_id) {
+            Some(source_entries) if !source_entries.is_disjoint(&selected_entries) => {}
+            Some(_) => issues.push("attachment_not_causal_in_selected_sidecar".to_owned()),
+            None => issues.push("accepted_attachment_predecessor_missing".to_owned()),
+        }
+    }
+    Ok(())
 }
 
 fn select_sidecar(candidates: &[String], requested: Option<&str>, issues: &mut Vec<String>) -> Option<String> {

@@ -34,7 +34,7 @@ valence-radicle mutate --repository PATH --profile FILE --authorization FILE --a
 valence-radicle snapshot --repository PATH --profile FILE --authorization FILE --artifact-root DIR --target FILE --output-root DIR --output FILE\n\
 valence-radicle authorization --profile FILE --actor KEY --role ROLE --output-root DIR --output FILE\n\
 valence-radicle verify-binding --profile FILE --receipt FILE\n\
-valence-radicle verify-snapshot --snapshot FILE\n\
+valence-radicle verify-snapshot --profile FILE --authorization FILE --snapshot FILE\n\
 \nMutations are preview-only unless --execute is present. Execution signs through the running SSH agent using the request actor key.\n";
 
 fn main() -> ExitCode {
@@ -172,10 +172,12 @@ fn run_verify_binding(flags: &FlagSet) -> Result<ExitCode, String> {
 }
 
 fn run_verify_snapshot(flags: &FlagSet) -> Result<ExitCode, String> {
-    flags.require_known(&["snapshot"], &[])?;
+    flags.require_known(&["profile", "authorization", "snapshot"], &[])?;
+    let profile = load_profile(flags.value("profile")?)?;
+    let authorization = load_authorization(flags.value("authorization")?)?;
     let snapshot = serde_json::from_slice::<CobSnapshot>(&read(flags.value("snapshot")?)?)
         .map_err(|error| format!("invalid snapshot JSON: {error}"))?;
-    let issues = verify_saved_snapshot(&snapshot);
+    let issues = verify_saved_snapshot(&profile, &authorization, &snapshot);
     print_verification(&issues)?;
     Ok(if issues.is_empty() {
         ExitCode::SUCCESS
