@@ -1587,15 +1587,19 @@ r[valence.evidence_ir.function_address_profile.graph.typed_edges]
 - WHEN Valence emits a graph report
 - THEN the report SHOULD preserve the typed edges and identity domains without claiming release eligibility.
 
-### Requirement: Documentation and final validation
+### Requirement: Function-address profile documentation
 
-r[valence.evidence_ir.function_address_profile.docs] Valence documentation MUST describe function-address profile ownership boundaries and non-claims. r[valence.evidence_ir.function_address_profile.final_validation] The change MUST include positive and negative fixtures, focused core tests, and lifecycle validation before archive.
+r[valence.evidence_ir.function_address_profile.docs] Valence documentation MUST describe function-address profile ownership boundaries and non-claims.
 
 #### Scenario: Boundary is visible
 r[valence.evidence_ir.function_address_profile.docs.boundary]
 - GIVEN an operator reads Valence function-address profile documentation
 - WHEN the supported claim is described
 - THEN the documentation MUST state that Valence validates identity, linkage, roles, digest domains, spans, and non-claims only; Octet owns Rust source analysis, Kamacite owns portable receipts, Mantle owns bundle-local binding, and Cairn owns lifecycle policy.
+
+### Requirement: Function-address profile final validation
+
+r[valence.evidence_ir.function_address_profile.final_validation] The change MUST include positive and negative fixtures, focused core tests, and lifecycle validation before archive.
 
 #### Scenario: Final validation covers fixtures
 r[valence.evidence_ir.function_address_profile.final_validation.fixtures]
