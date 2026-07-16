@@ -61,11 +61,6 @@ impl CobIssue {
             entry_oid: None,
         }
     }
-
-    fn at_entry(mut self, entry_oid: &str) -> Self {
-        self.entry_oid = Some(entry_oid.to_owned());
-        self
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -592,7 +587,6 @@ pub fn validate_profile(profile: &CobEvidenceProfile) -> Vec<CobIssue> {
     issues
 }
 
-#[must_use]
 pub fn target_key(target: &CobTargetRef) -> Result<String, Vec<CobIssue>> {
     let mut issues = validate_target(target);
     if !issues.is_empty() {
@@ -602,7 +596,6 @@ pub fn target_key(target: &CobTargetRef) -> Result<String, Vec<CobIssue>> {
     Ok(typed_blake3(target))
 }
 
-#[must_use]
 pub fn build_observed_target_state(
     target: &CobTargetRef,
     tips: &[String],
@@ -779,6 +772,67 @@ pub fn validate_attachment_structure(
     validate_payload(profile, attachment, &mut issues);
     if attachment.attachment_id != attachment_identity(attachment) {
         issues.push(CobIssue::new("attachment.attachment_id", "stale_attachment_identity"));
+    }
+    sort_issues(&mut issues);
+    issues
+}
+
+#[must_use]
+pub fn validate_event(profile: &CobEvidenceProfile, event: &CobEvent) -> Vec<CobIssue> {
+    let mut issues = validate_profile(profile);
+    if event.schema != profile.event_schema {
+        issues.push(CobIssue::new("event.schema", "unsupported_event_schema"));
+    }
+    match &event.action {
+        CobEventAction::Initialize(root) => {
+            if root.schema != profile.root_schema {
+                issues.push(CobIssue::new("root.schema", "unsupported_root_schema"));
+            }
+            issues.extend(validate_target(&root.target));
+            match target_key(&root.target) {
+                Ok(expected) if expected == root.target_key => {}
+                Ok(_) => issues.push(CobIssue::new("root.target_key", "stale_target_key")),
+                Err(mut target_issues) => issues.append(&mut target_issues),
+            }
+            if root.profile_hash != profile_identity(profile) {
+                issues.push(CobIssue::new("root.profile_hash", "stale_profile_hash"));
+            }
+            if root.verification_role != VerificationRole::RecordedOnly {
+                issues.push(CobIssue::new("root.verification_role", "unsupported_role_promotion"));
+            }
+            validate_non_claims(&root.non_claims, &profile.required_non_claims, &mut issues);
+        }
+        CobEventAction::Attach(attachment) => {
+            issues.extend(validate_attachment_structure(profile, attachment));
+        }
+        CobEventAction::Supersede(action) => {
+            issues.extend(validate_action_boundary(
+                profile,
+                &action.profile_hash,
+                action.verification_role,
+                &action.non_claims,
+            ));
+            validate_blake3(&action.attachment_id, "supersede.attachment_id", &mut issues);
+            validate_blake3(&action.replacement_attachment_id, "supersede.replacement_attachment_id", &mut issues);
+            if action.attachment_id == action.replacement_attachment_id {
+                issues.push(CobIssue::new("supersede.replacement_attachment_id", "self_supersession"));
+            }
+        }
+        CobEventAction::Revoke(action) => {
+            issues.extend(validate_action_boundary(
+                profile,
+                &action.profile_hash,
+                action.verification_role,
+                &action.non_claims,
+            ));
+            validate_blake3(&action.attachment_id, "revoke.attachment_id", &mut issues);
+            if !valid_text(&action.reason) {
+                issues.push(CobIssue::new("revoke.reason", "invalid_revoke_reason"));
+            }
+            if contains_overclaim(&action.reason) {
+                issues.push(CobIssue::new("revoke.reason", "unsupported_overclaim"));
+            }
+        }
     }
     sort_issues(&mut issues);
     issues
@@ -970,7 +1024,6 @@ pub fn reduce_logical_sidecar(input: &CobReductionInput) -> CobReductionReport {
     }
 }
 
-#[must_use]
 pub fn build_binding_receipt(
     profile: &CobEvidenceProfile,
     attachment: &CobEvidenceAttachment,
@@ -1372,7 +1425,8 @@ fn validate_observed_transport(
     issues
 }
 
-fn actor_is_authorized(
+#[must_use]
+pub fn actor_is_authorized(
     profile: &CobEvidenceProfile,
     authorization: &CobAuthorizationProfile,
     signer: &str,
@@ -1458,10 +1512,8 @@ fn validate_disposition_predecessors(
             candidate.source_keys.iter().any(|source_key| precedes(source_key, &disposition.key, parents))
         });
         let valid = causal_source && causal_replacement;
-        if !valid {
-            if let Some(observed) = events.iter().find(|event| event_key(event) == disposition.key) {
-                rejected.push(rejected_event(observed, vec!["unknown_or_noncausal_predecessor".to_owned()]));
-            }
+        if !valid && let Some(observed) = events.iter().find(|event| event_key(event) == disposition.key) {
+            rejected.push(rejected_event(observed, vec!["unknown_or_noncausal_predecessor".to_owned()]));
         }
         valid
     });

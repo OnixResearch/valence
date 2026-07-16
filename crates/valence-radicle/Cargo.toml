@@ -1,0 +1,34 @@
+[package]
+name = "valence-radicle"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+repository.workspace = true
+homepage.workspace = true
+description = "Local Git/Radicle COB adapter for Valence recorded-only evidence sidecars"
+readme = "README.md"
+
+[lib]
+name = "valence_radicle"
+path = "src/lib.rs"
+
+[[bin]]
+name = "valence-radicle"
+path = "src/main.rs"
+
+[dependencies]
+blake3.workspace = true
+cap-std.workspace = true
+git2.workspace = true
+nonempty.workspace = true
+radicle-cob.workspace = true
+radicle-crypto.workspace = true
+radicle-oid.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+valence-core.workspace = true
+
+[dev-dependencies]
+tempfile = "3"

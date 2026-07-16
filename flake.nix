@@ -27,6 +27,19 @@
           nativeBuildInputs = [ pkgs.pkg-config ];
           buildInputs = [ ];
         };
+        valence-radicle = pkgs.rustPlatform.buildRustPackage {
+          pname = "valence-radicle";
+          version = "0.1.0";
+          src = self;
+          cargoLock.lockFile = ./Cargo.lock;
+          cargoBuildFlags = [
+            "-p"
+            "valence-radicle"
+          ];
+          doCheck = true;
+          nativeBuildInputs = [ pkgs.pkg-config ];
+          buildInputs = [ ];
+        };
         default = self.packages.${pkgs.stdenv.hostPlatform.system}.valence;
       });
 
