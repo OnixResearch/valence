@@ -1,6 +1,8 @@
 // r[verify valence.radicle_cob_evidence.adapter_boundary]
 // r[verify valence.radicle_cob_evidence.repository_safety]
 // r[verify valence.radicle_cob_evidence.final_validation]
+// r[verify valence.radicle_cob_evidence.adapter_boundary.invalid]
+// r[verify valence.radicle_cob_evidence.authority.valid]
 use std::path::Path;
 
 use cap_std::ambient_authority;

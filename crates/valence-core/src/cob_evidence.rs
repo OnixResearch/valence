@@ -1934,6 +1934,14 @@ mod tests {
     // r[verify valence.radicle_cob_evidence.snapshot_handoff]
     // r[verify valence.radicle_cob_evidence.privacy_retention]
     // r[verify valence.radicle_cob_evidence.final_validation]
+    // r[verify valence.radicle_cob_evidence.attachment_identity.change]
+    // r[verify valence.radicle_cob_evidence.attachment_identity.stable]
+    // r[verify valence.radicle_cob_evidence.digest_domains.valid]
+    // r[verify valence.radicle_cob_evidence.final_validation.negative]
+    // r[verify valence.radicle_cob_evidence.final_validation.positive]
+    // r[verify valence.radicle_cob_evidence.pure_core.boundary]
+    // r[verify valence.radicle_cob_evidence.pure_core.valid]
+    // r[verify valence.radicle_cob_evidence.role_policy.valid]
     use super::*;
     use crate::evidence_ir::build_evidence_artifact;
 

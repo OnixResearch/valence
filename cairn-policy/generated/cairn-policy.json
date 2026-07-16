@@ -2554,6 +2554,54 @@
             "source_kind": "accepted_specs"
           }
         ]
+      },
+      {
+        "evidence_sources": [
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-core/src/cob_evidence.rs",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-radicle/src",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "ncl"
+            ],
+            "root": "contracts/radicle-cob-evidence",
+            "source_kind": "nickel_source"
+          },
+          {
+            "extensions": [
+              "md"
+            ],
+            "root": "docs/radicle-cob-evidence.md",
+            "source_kind": "tool_source"
+          }
+        ],
+        "id": "radicle-cob-evidence",
+        "marker_verbs": [
+          "impl",
+          "verify",
+          "depends",
+          "related"
+        ],
+        "requirement_sources": [
+          {
+            "extensions": [
+              "md"
+            ],
+            "root": "cairn/specs/radicle-cob-evidence/spec.md",
+            "source_kind": "accepted_specs"
+          }
+        ]
       }
     ]
   },
