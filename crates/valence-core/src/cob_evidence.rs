@@ -36,6 +36,8 @@ pub const BINDING_SCHEMA: &str = "valence.radicle-cob-evidence.binding.v1";
 pub const SNAPSHOT_SCHEMA: &str = "valence.radicle-cob-evidence.snapshot.v1";
 pub const AUTHORIZATION_SCHEMA: &str = "valence.radicle-cob-evidence.authorization.v1";
 pub const SNAPSHOT_ARTIFACT_KIND: &str = "radicle-cob-evidence-snapshot-v1";
+pub const MAX_EMBEDDED_ARTIFACT_BYTES: u64 = 65_536;
+pub const EMBEDDED_ARTIFACT_MEDIA_TYPE: &str = "application/json";
 pub const EVIDENCE_NON_CLAIM: &str = "attaching evidence records identity and linkage only; it does not prove target correctness, authorize a waiver or disposition, satisfy a requirement, or establish lifecycle or release readiness";
 pub const RETENTION_NON_CLAIM: &str = "supersession and revocation change accepted state but do not promise deletion of replicated Git or Radicle history";
 pub const CONFIDENTIALITY_NON_CLAIM: &str =
@@ -557,6 +559,15 @@ pub fn validate_profile(profile: &CobEvidenceProfile) -> Vec<CobIssue> {
         }
     }
     require_unique_nonempty(&profile.relationships, "relationships", &mut issues);
+    let expected_relationships = vec![
+        AttachmentRelationship::ContextFor,
+        AttachmentRelationship::DispositionFor,
+        AttachmentRelationship::EvidenceAgainst,
+        AttachmentRelationship::EvidenceFor,
+    ];
+    if profile.relationships != expected_relationships {
+        issues.push(CobIssue::new("relationships", "unsupported_relationship_vocabulary"));
+    }
     require_unique_nonempty(&profile.actor_roles, "actor_roles", &mut issues);
     require_unique_nonempty(&profile.embed_policy.media_types, "embed_policy.media_types", &mut issues);
     require_unique_nonempty(
@@ -564,10 +575,39 @@ pub fn validate_profile(profile: &CobEvidenceProfile) -> Vec<CobIssue> {
         "embed_policy.allowed_reference_confidentiality",
         &mut issues,
     );
-    if profile.embed_policy.max_bytes == 0 {
-        issues.push(CobIssue::new("embed_policy.max_bytes", "embed_limit_zero"));
+    if profile.embed_policy.max_bytes != MAX_EMBEDDED_ARTIFACT_BYTES {
+        issues.push(CobIssue::new("embed_policy.max_bytes", "unsupported_embed_limit"));
+    }
+    if profile.embed_policy.media_types != [EMBEDDED_ARTIFACT_MEDIA_TYPE] {
+        issues.push(CobIssue::new("embed_policy.media_types", "unsupported_embed_media_types"));
+    }
+    if profile.embed_policy.allowed_reference_confidentiality
+        != [ConfidentialityClass::Public, ConfidentialityClass::Restricted]
+    {
+        issues.push(CobIssue::new(
+            "embed_policy.allowed_reference_confidentiality",
+            "unsupported_confidentiality_vocabulary",
+        ));
     }
     let mut role_names = BTreeSet::new();
+    let expected_roles = vec![
+        ActorRoleProfile {
+            role: "attacher".to_owned(),
+            operations: vec![CobOperation::Attach, CobOperation::Initialize],
+        },
+        ActorRoleProfile {
+            role: "maintainer".to_owned(),
+            operations: vec![
+                CobOperation::Attach,
+                CobOperation::Initialize,
+                CobOperation::Revoke,
+                CobOperation::Supersede,
+            ],
+        },
+    ];
+    if profile.actor_roles != expected_roles {
+        issues.push(CobIssue::new("actor_roles", "unsupported_actor_role_vocabulary"));
+    }
     for role in &profile.actor_roles {
         if !valid_text(&role.role) {
             issues.push(CobIssue::new("actor_roles.role", "invalid_role"));
@@ -578,10 +618,14 @@ pub fn validate_profile(profile: &CobEvidenceProfile) -> Vec<CobIssue> {
         require_unique_nonempty(&role.operations, "actor_roles.operations", &mut issues);
     }
     validate_non_claims(&profile.required_non_claims, &profile.required_non_claims, &mut issues);
-    for required in [EVIDENCE_NON_CLAIM, RETENTION_NON_CLAIM, CONFIDENTIALITY_NON_CLAIM] {
+    let expected_non_claims = [EVIDENCE_NON_CLAIM, RETENTION_NON_CLAIM, CONFIDENTIALITY_NON_CLAIM];
+    for required in expected_non_claims {
         if !profile.required_non_claims.iter().any(|claim| claim == required) {
             issues.push(CobIssue::new("required_non_claims", "profile_non_claim_missing"));
         }
+    }
+    if profile.required_non_claims.len() != expected_non_claims.len() {
+        issues.push(CobIssue::new("required_non_claims", "unsupported_non_claim_vocabulary"));
     }
     sort_issues(&mut issues);
     issues
@@ -1878,10 +1922,21 @@ fn sort_issues(issues: &mut Vec<CobIssue>) {
 
 #[cfg(test)]
 mod tests {
+    // r[verify valence.radicle_cob_evidence.sidecar_profile]
+    // r[verify valence.radicle_cob_evidence.pure_core]
+    // r[verify valence.radicle_cob_evidence.attachment_identity]
+    // r[verify valence.radicle_cob_evidence.digest_domains]
+    // r[verify valence.radicle_cob_evidence.payload_modes]
+    // r[verify valence.radicle_cob_evidence.binding_receipt]
+    // r[verify valence.radicle_cob_evidence.role_policy]
+    // r[verify valence.radicle_cob_evidence.authority]
+    // r[verify valence.radicle_cob_evidence.convergence]
+    // r[verify valence.radicle_cob_evidence.snapshot_handoff]
+    // r[verify valence.radicle_cob_evidence.privacy_retention]
+    // r[verify valence.radicle_cob_evidence.final_validation]
     use super::*;
     use crate::evidence_ir::build_evidence_artifact;
 
-    const MAX_EMBED_BYTES: u64 = 65_536;
     const ACTOR: &str = "z6MkrLMMsiPWUcNPHcRajuMi9mDfYckSoJyPwwnknocNYPm7";
     const OTHER_ACTOR: &str = "z6MkvUJtYD9dHDJfpevWRT98mzDDpdAtmUjwyDSkyqksUr7C";
 
@@ -1920,8 +1975,8 @@ mod tests {
                 },
             ],
             embed_policy: EmbedPolicy {
-                max_bytes: MAX_EMBED_BYTES,
-                media_types: vec!["application/json".to_owned()],
+                max_bytes: MAX_EMBEDDED_ARTIFACT_BYTES,
+                media_types: vec![EMBEDDED_ARTIFACT_MEDIA_TYPE.to_owned()],
                 allowed_reference_confidentiality: vec![ConfidentialityClass::Public, ConfidentialityClass::Restricted],
             },
             required_non_claims: vec![
@@ -2266,6 +2321,135 @@ mod tests {
             );
             assert!(result.is_err());
         }
+    }
+
+    #[test]
+    fn malformed_profile_target_and_duplicate_fields_fail_closed() {
+        // r[verify valence.radicle_cob_evidence.sidecar_profile.invalid]
+        let mut unsupported_profile = profile();
+        unsupported_profile.relationships.pop();
+        unsupported_profile.embed_policy.max_bytes = 1;
+        unsupported_profile.required_non_claims.push("unreviewed boundary".to_owned());
+        let issues = validate_profile(&unsupported_profile);
+        assert!(issues.iter().any(|issue| issue.code == "unsupported_relationship_vocabulary"));
+        assert!(issues.iter().any(|issue| issue.code == "unsupported_embed_limit"));
+        assert!(issues.iter().any(|issue| issue.code == "unsupported_non_claim_vocabulary"));
+
+        let invalid_target = CobTargetRef {
+            repository_rid: "not-a-rid".to_owned(),
+            type_name: "invalid..type".to_owned(),
+            object_id: format!("{BLAKE3_PREFIX}{}", "a".repeat(BLAKE3_HEX_LENGTH)),
+        };
+        let target_issues = target_key(&invalid_target).expect_err("invalid target must fail");
+        assert!(target_issues.iter().any(|issue| issue.code == "invalid_repository_rid"));
+        assert!(target_issues.iter().any(|issue| issue.code == "invalid_cob_type_name"));
+        assert!(target_issues.iter().any(|issue| issue.code == "digest_domain_mismatch"));
+
+        let duplicate = format!(
+            "{{\"repository_rid\":\"rad:one\",\"repository_rid\":\"rad:two\",\"type_name\":\"x.y\",\"object_id\":\"{}\"}}",
+            oid('a')
+        );
+        let error = serde_json::from_str::<CobTargetRef>(&duplicate).expect_err("duplicate field must fail");
+        assert!(error.to_string().contains("duplicate field"));
+    }
+
+    #[test]
+    fn oversized_tampered_embed_and_weakened_boundary_fail_closed() {
+        // r[verify valence.radicle_cob_evidence.payload_modes.invalid]
+        // r[verify valence.radicle_cob_evidence.role_policy.invalid]
+        let (mut candidate, mut resolution) = attachment("embed-negative");
+        candidate.payload = AttachmentPayload::Embedded {
+            name: "evidence.json".to_owned(),
+            git_oid: oid('b'),
+            media_type: EMBEDDED_ARTIFACT_MEDIA_TYPE.to_owned(),
+            size_bytes: MAX_EMBEDDED_ARTIFACT_BYTES + 1,
+            raw_blake3: candidate.payload.raw_blake3().to_owned(),
+        };
+        candidate.attachment_id = attachment_identity(&candidate);
+        resolution.attachment_id = candidate.attachment_id.clone();
+        resolution.size_bytes = candidate.payload.size_bytes();
+        resolution.git_oid = Some(oid('c'));
+        resolution.locator = None;
+        let issues = validate_resolution(&profile(), &candidate, &resolution);
+        assert!(issues.iter().any(|issue| issue.code == "embed_limit_exceeded"));
+        assert!(issues.iter().any(|issue| issue.code == "embed_resolution_mismatch"));
+
+        candidate.non_claims.clear();
+        candidate.attachment_id = attachment_identity(&candidate);
+        let boundary_issues = validate_attachment_structure(&profile(), &candidate);
+        assert!(boundary_issues.iter().any(|issue| issue.code == "non_claims_empty"));
+        assert!(boundary_issues.iter().any(|issue| issue.code == "required_non_claim_missing"));
+    }
+
+    #[test]
+    fn duplicate_replay_is_idempotent_and_invalid_signature_or_predecessor_is_rejected() {
+        // r[verify valence.radicle_cob_evidence.convergence.valid]
+        // r[verify valence.radicle_cob_evidence.authority.invalid]
+        let sidecar_a = oid('3');
+        let sidecar_b = oid('4');
+        let entry_a = oid('5');
+        let entry_b = oid('6');
+        let revoke_entry = oid('7');
+        let (attachment, resolution) = attachment("duplicate-replay");
+        let attachment_id = attachment.attachment_id.clone();
+        let mut invalid_signature = observed(
+            &sidecar_b,
+            &entry_b,
+            vec![sidecar_b.clone()],
+            OTHER_ACTOR,
+            0,
+            CobEventAction::Attach(attachment.clone()),
+        );
+        invalid_signature.signature_valid = false;
+        let events = vec![
+            root(&sidecar_a, ACTOR),
+            observed(
+                &sidecar_a,
+                &entry_a,
+                vec![sidecar_a.clone()],
+                ACTOR,
+                0,
+                CobEventAction::Attach(attachment.clone()),
+            ),
+            root(&sidecar_b, OTHER_ACTOR),
+            invalid_signature,
+            observed(
+                &sidecar_a,
+                &revoke_entry,
+                vec![entry_a.clone()],
+                ACTOR,
+                0,
+                CobEventAction::Revoke(RevokeAction {
+                    profile_hash: profile_identity(&profile()),
+                    attachment_id: format!("{BLAKE3_PREFIX}{}", "d".repeat(BLAKE3_HEX_LENGTH)),
+                    reason: "unknown producer evidence".to_owned(),
+                    verification_role: VerificationRole::RecordedOnly,
+                    non_claims: profile().required_non_claims,
+                }),
+            ),
+            observed(&sidecar_a, &oid('8'), vec![entry_a], ACTOR, 0, CobEventAction::Attach(attachment)),
+        ];
+        let report = reduce_logical_sidecar(&reduction_input(events, vec![resolution]));
+        let snapshot = report.snapshot.expect("snapshot");
+        let accepted = snapshot
+            .accepted_attachments
+            .iter()
+            .find(|accepted| accepted.attachment.attachment_id == attachment_id)
+            .expect("deduplicated attachment");
+        assert_eq!(snapshot.accepted_attachments.len(), 1);
+        assert_eq!(accepted.source_entries.len(), 2);
+        assert!(
+            snapshot
+                .rejected_events
+                .iter()
+                .any(|event| { event.issue_codes.contains(&"signature_invalid".to_owned()) })
+        );
+        assert!(
+            snapshot
+                .rejected_events
+                .iter()
+                .any(|event| { event.issue_codes.contains(&"unknown_or_noncausal_predecessor".to_owned()) })
+        );
     }
 
     #[test]

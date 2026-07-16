@@ -114,6 +114,15 @@ valence-radicle snapshot \
 
 The result binds target tips, all physical sidecar IDs/tips, accepted attachments, rejected events, explicit conflicts, profile and authorization identities, materialized-state hash, receipt hash, and required non-claims. The nested Evidence IR artifact and snapshot are `recorded_only` even when a referenced artifact has the `property` role.
 
+Verify a saved snapshot against the exact reviewed profile and authorization inputs without repository or network access:
+
+```bash
+valence-radicle verify-snapshot \
+  --profile contracts/radicle-cob-evidence/generated/profile.json \
+  --authorization evidence/radicle/authorization.json \
+  --snapshot evidence/radicle/snapshot.json
+```
+
 A future Cairn policy may ingest the saved snapshot and binding receipts as read-only inputs. It must verify them offline, apply its own freshness and authorization policy, and retain Cairn files/receipts as source of truth. Snapshot presence alone cannot waive a lint, complete a task, or pass a gate.
 
 ## Lint guidance
