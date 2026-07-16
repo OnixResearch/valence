@@ -77,6 +77,34 @@
               touch "$out"
             '';
 
+        radicle-cob-evidence-profile =
+          pkgs.runCommand "valence-radicle-cob-evidence-profile"
+            {
+              nativeBuildInputs = [ pkgs.nickel ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+
+              nickel typecheck contracts/radicle-cob-evidence/profile.ncl
+              nickel export --format json contracts/radicle-cob-evidence/profile.ncl > "$TMPDIR/profile.json"
+              cmp "$TMPDIR/profile.json" contracts/radicle-cob-evidence/generated/profile.json
+
+              for fixture in contracts/radicle-cob-evidence/fixtures/pass/*.ncl; do
+                nickel export "$fixture" >/dev/null
+              done
+
+              for fixture in contracts/radicle-cob-evidence/fixtures/fail/*.ncl; do
+                if nickel export "$fixture" >/dev/null 2>"$TMPDIR/nickel-error.log"; then
+                  echo "expected Radicle COB evidence fixture to fail: $fixture" >&2
+                  exit 1
+                fi
+              done
+
+              touch "$out"
+            '';
+
         cairn-policy-compatibility-inputs =
           pkgs.runCommand "valence-cairn-policy-compatibility-inputs"
             {
