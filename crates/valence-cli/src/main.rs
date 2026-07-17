@@ -332,7 +332,6 @@ fn run_wasm_component(args: &[String]) -> ExitCode {
 }
 
 fn run_formal_proof(args: &[String]) -> ExitCode {
-    // r[impl valence.provenance.aeneas_translation_chain.cli]
     const ARGUMENT_COUNT: usize = 6;
     if args.len() != ARGUMENT_COUNT
         || args[0] != "aeneas-chain"
@@ -1239,7 +1238,6 @@ mod tests {
 
     #[test]
     fn usage_documentation_is_stable() {
-        // r[verify valence.provenance.aeneas_translation_chain.cli]
         assert!(USAGE.contains("check --artifact-root <ROOT> <FILE>"));
         assert!(USAGE.contains("explain --manifest-root <ROOT>"));
         assert!(USAGE.contains("stack-provenance build"));

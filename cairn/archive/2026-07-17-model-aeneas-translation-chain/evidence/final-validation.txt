@@ -115,6 +115,14 @@ all checks passed
 
 Sync and archive validation are recorded by the archive commit.
 
+The optional default Tracey profile remains red for unrelated, pre-existing
+stack-provenance debt: 25 missing markers and four dangling
+`function_address_publication` markers. That profile scans only
+`cairn/specs/stack-provenance-adapter/spec.md` and does not include this
+change's `cairn/specs/provenance/spec.md` or Aeneas core/test files. The Aeneas
+change introduced no dangling marker in the profile, and the Cairn archive
+dry-run passes with no reasons or cross-repository evidence issues.
+
 ## Non-claims
 
 These checks establish canonical BLAKE3 identity, exact typed linkage, bounded

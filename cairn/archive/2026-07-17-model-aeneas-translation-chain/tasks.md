@@ -1,4 +1,4 @@
-Evidence for every completed task: `crates/valence-core/src/formal_proof_chain/aeneas.rs`, `crates/valence-core/tests/aeneas_translation_chain.rs`, `crates/valence-cli/src/main.rs`, `fixtures/aeneas-translation-chain/`, `docs/aeneas-translation-chain.md`, and `cairn/changes/model-aeneas-translation-chain/evidence/final-validation.txt`.
+Evidence for every completed task: `crates/valence-core/src/formal_proof_chain/aeneas.rs`, `crates/valence-core/tests/aeneas_translation_chain.rs`, `crates/valence-cli/src/main.rs`, `fixtures/aeneas-translation-chain/`, `docs/aeneas-translation-chain.md`, and `cairn/archive/2026-07-17-model-aeneas-translation-chain/evidence/final-validation.txt`.
 
 ## Phase 1: Translation-chain model
 
