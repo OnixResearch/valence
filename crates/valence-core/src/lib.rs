@@ -15,8 +15,9 @@
 //! - `evidence_index`: renders and checks the current-head Valence evidence page from typed inputs.
 //!   Octet retains command execution, repository-state capture, freshness orchestration, and
 //!   publication decisions.
-//! - `formal_proof_chain`: validates frozen formal-proof stack-chain fixtures for role-preserving
-//!   linkage and Cairn readiness-input counts.
+//! - `formal_proof_chain`: validates frozen formal-proof stack-chain fixtures and the closed
+//!   Aeneas/Lean provider profile for canonical identity, typed linkage, bounded role summaries,
+//!   and generic Cairn readiness input.
 //! - `function_address_profile`: validates Octet/Kamacite function-address evidence profiles as
 //!   recorded-only Evidence IR with typed digest domains, graph rows, and non-claim boundaries.
 //! - `function_object`: constructs Function Object v1 DTOs, canonical hash payloads, caveat
@@ -34,7 +35,7 @@
 //! # Boundary
 //!
 //! This crate intentionally contains deterministic core logic only. CLI I/O,
-//! filesystem reads, artifact byte measurement, path resolution, source scanning,
+//! filesystem reads, artifact byte loading, path resolution, source scanning,
 //! object marker mutation, corpus orchestration, supplement orchestration,
 //! stdout/stderr, process exits, repository tags, package publication, and
 //! release ownership remain in shells or producer repositories. Standalone

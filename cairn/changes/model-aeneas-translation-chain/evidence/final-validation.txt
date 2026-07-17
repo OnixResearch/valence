@@ -1,0 +1,125 @@
+# Aeneas translation-chain final validation
+
+Requirements:
+
+- `r[valence.provenance.aeneas_translation_chain.profile]`
+- `r[valence.provenance.aeneas_translation_chain.charon_contract]`
+- `r[valence.provenance.aeneas_translation_chain.linkage]`
+- `r[valence.provenance.aeneas_translation_chain.translation_manifest]`
+- `r[valence.provenance.aeneas_translation_chain.identity]`
+- `r[valence.provenance.aeneas_translation_chain.digest_roles]`
+- `r[valence.provenance.aeneas_translation_chain.role_policy]`
+- `r[valence.provenance.aeneas_translation_chain.theorem_link]`
+- `r[valence.provenance.aeneas_translation_chain.adequacy_link]`
+- `r[valence.provenance.aeneas_translation_chain.cli]`
+- `r[valence.provenance.aeneas_translation_chain.fixture]`
+- `r[valence.provenance.aeneas_translation_chain.handoff]`
+- `r[valence.provenance.aeneas_translation_chain.non_claims]`
+- `r[valence.provenance.aeneas_translation_chain.final_validation]`
+
+## Mechanism selection and audit
+
+Three mechanisms were evaluated. Extending `formal_proof_chain` with a closed
+provider submodule survived because it preserves one Valence proof-linkage
+authority while enforcing Aeneas-specific roles and edges. Dispatch through the
+generic evidence-chain adapter was rejected because its open kind projection
+cannot prove the required stage ordering or promotion policy. A parallel
+Aeneas evidence authority was rejected because it would duplicate and weaken
+the formal-proof chain boundary.
+
+The adversarial source audit found and repaired duplicate artifact-role aliasing,
+"at least one" proof-card/provenance matches, and unclosed non-function manifest
+sections. The final validator rejects duplicate artifact locators, requires one
+matching Aeneas proof card and one receipt provenance record, and binds function,
+type, global, trait-declaration, and trait-implementation inventory counts.
+VibeThinker was attempted once as an advisory reviewer and returned `fetch
+failed`; it is not counted as evidence.
+
+## Frozen producer evidence
+
+The checked-in fixture records Octet revision
+`ef18352bf579bb7c6eb39070d917e3d005385a61`, adapter schema
+`octet-aeneas-lean-valence-adapter/v1`, and adapter BLAKE3
+`19a10c8d3e4ce29b4a058bd2202ff52fc42cee7508f04312840d0bfd398b00a8`.
+`tools/import-aeneas-translation-fixture.rs` owns refresh copying and its
+positive/negative self-test passes. The Nickel-authored positive fixture and
+negative matrix export byte-for-byte to their committed JSON files.
+
+## Baseline
+
+Before core edits:
+
+```text
+$ cargo test -p valence-core formal_proof_chain -- --nocapture
+2 passed; 0 failed
+
+$ cargo test --workspace
+passed
+```
+
+## Focused positive and negative checks
+
+```text
+$ cargo test -p valence-core --test aeneas_translation_chain -- --nocapture
+5 passed; 0 failed
+```
+
+The five tests cover the frozen positive chain; a typed 37-case negative
+matrix; exhaustive removal/substitution/promotion/tamper loops over every node,
+required edge, digest domain, intermediate role, and loaded artifact; canonical
+ordering/path/label/run-local-ID laws; and proof-relevant identity changes.
+Invalid chains never emit a passing generic handoff.
+
+```text
+$ cargo test -p valence-cli -- --nocapture
+17 passed; 0 failed
+
+$ valence formal-proof aeneas-chain validate \
+    --artifact-root fixtures/aeneas-translation-chain \
+    --input chain.json
+valid: true
+computed_chain_identity: b3:03540b95b9227e85b02e4e324bd56ec766992c39d158f6b55800dceb4e51c8f6
+role counts: property=1, recorded_only=6, boundary=10
+issues: []
+```
+
+The CLI uses confined capability-root reads and performs no writes or tool
+execution. The core purity search for filesystem, environment, process, clock,
+async, and printing APIs returns no matches.
+
+## Repository gates
+
+```text
+$ nix build --option builders '' --option secret-key-files '' \
+    .#checks.x86_64-linux.aeneas-translation-chain-fixtures --no-link -L
+passed
+
+$ cargo fmt --check
+passed
+
+$ cargo test --workspace
+passed
+
+$ cargo clippy --workspace --all-targets -- -D warnings
+passed
+
+$ cairn gate proposal model-aeneas-translation-chain --root .
+$ cairn gate design model-aeneas-translation-chain --root .
+$ cairn gate tasks model-aeneas-translation-chain --root .
+$ cairn validate --root .
+all gates passed; valid: true; 14 tasks complete
+
+$ nix flake check --option builders '' --option secret-key-files '' -L
+all checks passed
+```
+
+Sync and archive validation are recorded by the archive commit.
+
+## Non-claims
+
+These checks establish canonical BLAKE3 identity, exact typed linkage, bounded
+role policy, and required non-claim conformance only. They do not establish Rust
+correctness; Charon, Aeneas, Lean, translation, external-model, theorem,
+adequacy-policy, requirement-selection, or verifier soundness; semantic
+equivalence; requirement satisfaction; whole-program correctness; lifecycle
+readiness; or release eligibility.

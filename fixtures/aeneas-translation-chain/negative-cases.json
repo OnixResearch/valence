@@ -1,0 +1,187 @@
+[
+  {
+    "case_id": "errorful-extraction",
+    "expected_issue": "errorful_extraction",
+    "mutation": "errorful_extraction"
+  },
+  {
+    "case_id": "borrow-check-bypass",
+    "expected_issue": "borrow_check_skipped",
+    "mutation": "skip_borrowck"
+  },
+  {
+    "case_id": "target-drift",
+    "expected_issue": "target_metadata_mismatch",
+    "mutation": "target_drift"
+  },
+  {
+    "case_id": "profile-drift",
+    "expected_issue": "extraction_profile_mismatch",
+    "mutation": "profile_drift"
+  },
+  {
+    "case_id": "stale-source",
+    "expected_issue": "artifact_digest_mismatch",
+    "mutation": "stale_source"
+  },
+  {
+    "case_id": "swapped-llbc",
+    "expected_issue": "artifact_digest_mismatch",
+    "mutation": "swapped_llbc"
+  },
+  {
+    "case_id": "stale-manifest",
+    "expected_issue": "artifact_digest_mismatch",
+    "mutation": "stale_manifest"
+  },
+  {
+    "case_id": "cross-run-def-id",
+    "expected_issue": "cross_run_def_id",
+    "mutation": "cross_run_def_id"
+  },
+  {
+    "case_id": "durable-def-id",
+    "expected_issue": "run_local_def_id_used_as_stable_identity",
+    "mutation": "durable_def_id"
+  },
+  {
+    "case_id": "manifest-opacity-drift",
+    "expected_issue": "observed_manifest_mismatch",
+    "mutation": "manifest_opacity_drift"
+  },
+  {
+    "case_id": "manifest-failure-drift",
+    "expected_issue": "observed_manifest_mismatch",
+    "mutation": "manifest_failure_drift"
+  },
+  {
+    "case_id": "manifest-divergence-drift",
+    "expected_issue": "observed_manifest_mismatch",
+    "mutation": "manifest_divergence_drift"
+  },
+  {
+    "case_id": "manifest-recursion-drift",
+    "expected_issue": "observed_manifest_mismatch",
+    "mutation": "manifest_recursion_drift"
+  },
+  {
+    "case_id": "loop-parent-drift",
+    "expected_issue": "loop_parent_identity_mismatch",
+    "mutation": "loop_parent_drift"
+  },
+  {
+    "case_id": "stale-generated-lean",
+    "expected_issue": "artifact_digest_mismatch",
+    "mutation": "stale_generated_lean"
+  },
+  {
+    "case_id": "missing-trust-node",
+    "expected_issue": "required_stage_missing",
+    "mutation": "missing_trust_node"
+  },
+  {
+    "case_id": "theorem-mismatch",
+    "expected_issue": "theorem_link_mismatch",
+    "mutation": "theorem_mismatch"
+  },
+  {
+    "case_id": "adequacy-mismatch",
+    "expected_issue": "claim_artifact_mismatch",
+    "mutation": "adequacy_mismatch"
+  },
+  {
+    "case_id": "wrong-digest-domain",
+    "expected_issue": "digest_role_mismatch",
+    "mutation": "wrong_digest_domain"
+  },
+  {
+    "case_id": "artifact-role-alias",
+    "expected_issue": "artifact_role_alias",
+    "mutation": "artifact_role_alias"
+  },
+  {
+    "case_id": "unsupported-profile",
+    "expected_issue": "unsupported_profile",
+    "mutation": "unsupported_profile"
+  },
+  {
+    "case_id": "unsupported-stage-role",
+    "expected_issue": "parse_error",
+    "mutation": "unsupported_stage_role"
+  },
+  {
+    "case_id": "missing-node-field",
+    "expected_issue": "parse_error",
+    "mutation": "missing_node_field"
+  },
+  {
+    "case_id": "duplicate-edge",
+    "expected_issue": "duplicate_edge",
+    "mutation": "duplicate_edge"
+  },
+  {
+    "case_id": "missing-edge",
+    "expected_issue": "required_edge_missing",
+    "mutation": "missing_edge"
+  },
+  {
+    "case_id": "dangling-edge",
+    "expected_issue": "dangling_edge",
+    "mutation": "dangling_edge"
+  },
+  {
+    "case_id": "cycle",
+    "expected_issue": "cycle_detected",
+    "mutation": "cycle"
+  },
+  {
+    "case_id": "lean-result-promotion",
+    "expected_issue": "role_promotion",
+    "mutation": "lean_role_promotion"
+  },
+  {
+    "case_id": "manifest-promotion",
+    "expected_issue": "role_promotion",
+    "mutation": "manifest_role_promotion"
+  },
+  {
+    "case_id": "missing-octet-verification",
+    "expected_issue": "octet_verification_missing",
+    "mutation": "missing_octet_verification"
+  },
+  {
+    "case_id": "vacuous-approval-drift",
+    "expected_issue": "theorem_approval_mismatch",
+    "mutation": "vacuous_approval_drift"
+  },
+  {
+    "case_id": "undeclared-trust-input",
+    "expected_issue": "trust_closure_incomplete",
+    "mutation": "undeclared_trust_input"
+  },
+  {
+    "case_id": "weakened-non-claims",
+    "expected_issue": "non_claim_boundary_weakened",
+    "mutation": "weakened_non_claims"
+  },
+  {
+    "case_id": "unsupported-non-claim",
+    "expected_issue": "parse_error",
+    "mutation": "unsupported_non_claim"
+  },
+  {
+    "case_id": "tampered-artifact",
+    "expected_issue": "artifact_digest_mismatch",
+    "mutation": "tampered_artifact"
+  },
+  {
+    "case_id": "proof-card-mismatch",
+    "expected_issue": "proof_card_claim_mismatch",
+    "mutation": "proof_card_mismatch"
+  },
+  {
+    "case_id": "provenance-mismatch",
+    "expected_issue": "provenance_receipt_mismatch",
+    "mutation": "provenance_mismatch"
+  }
+]

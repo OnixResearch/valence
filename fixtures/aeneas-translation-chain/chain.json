@@ -1,0 +1,564 @@
+{
+  "charon_contract": {
+    "drop_policy": "include-drops",
+    "endianness": "little",
+    "exclude_rules": [],
+    "extraction_profile_identity": {
+      "domain": "provider_profile",
+      "value": "b3:cd11b49d1acede2c6a91fa26f0b7a6b4b28db4007b4601a65b3269706a0ce625"
+    },
+    "has_errors": false,
+    "include_rules": [
+      "src/verified"
+    ],
+    "mir_start_stage": "borrowck",
+    "opaque_rules": [],
+    "pointer_width_bits": 64,
+    "reviewed_profile_id": "octet-aeneas-lean-0.1.0-bc2eb6f",
+    "serialization_format": "llbc-json-v1",
+    "skip_borrowck": false,
+    "start_from": "crate",
+    "target_triple": "x86_64-unknown-linux-gnu",
+    "transformation_settings": [
+      "preserve-spans"
+    ]
+  },
+  "claim": {
+    "adequacy_decision": {
+      "domain": "adequacy_decision",
+      "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+    },
+    "adequacy_policy_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+    "approved_statement_blake3": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+    "claim_class": "named-theorem-over-generated-model",
+    "requirement_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+    "theorem_id": "aeneas.fixture.safe_add",
+    "trust_closure": {
+      "domain": "trust_closure",
+      "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+    }
+  },
+  "declared_chain_identity": {
+    "domain": "complete_chain",
+    "value": "b3:03540b95b9227e85b02e4e324bd56ec766992c39d158f6b55800dceb4e51c8f6"
+  },
+  "edges": [
+    {
+      "from": "aeneas.provider-profile",
+      "kind": "configured-by",
+      "to": "aeneas.charon-contract"
+    },
+    {
+      "from": "aeneas.rust-source",
+      "kind": "extracted-from",
+      "to": "aeneas.charon-extraction"
+    },
+    {
+      "from": "aeneas.charon-contract",
+      "kind": "configured-by",
+      "to": "aeneas.charon-extraction"
+    },
+    {
+      "from": "aeneas.charon-extraction",
+      "kind": "generated-as",
+      "to": "aeneas.llbc"
+    },
+    {
+      "from": "aeneas.llbc",
+      "kind": "translated-from",
+      "to": "aeneas.translation-observation"
+    },
+    {
+      "from": "aeneas.translation-observation",
+      "kind": "declared-in-manifest",
+      "to": "aeneas.translation-manifest"
+    },
+    {
+      "from": "aeneas.translation-manifest",
+      "kind": "generated-as",
+      "to": "aeneas.generated-lean"
+    },
+    {
+      "from": "aeneas.generated-lean",
+      "kind": "modeled-by",
+      "to": "aeneas.external-model"
+    },
+    {
+      "from": "aeneas.generated-lean",
+      "kind": "theorem-over",
+      "to": "aeneas.maintained-theorem"
+    },
+    {
+      "from": "aeneas.external-model",
+      "kind": "trusts",
+      "to": "aeneas.trust-closure"
+    },
+    {
+      "from": "aeneas.maintained-theorem",
+      "kind": "approved-as",
+      "to": "aeneas.adequacy-decision"
+    },
+    {
+      "from": "aeneas.maintained-theorem",
+      "kind": "trusts",
+      "to": "aeneas.trust-closure"
+    },
+    {
+      "from": "aeneas.maintained-theorem",
+      "kind": "checked-with",
+      "to": "aeneas.lean-checker"
+    },
+    {
+      "from": "aeneas.adequacy-decision",
+      "kind": "approved-as",
+      "to": "aeneas.lean-checker"
+    },
+    {
+      "from": "aeneas.trust-closure",
+      "kind": "trusts",
+      "to": "aeneas.lean-checker"
+    },
+    {
+      "from": "aeneas.package-lock",
+      "kind": "checked-with",
+      "to": "aeneas.lean-checker"
+    },
+    {
+      "from": "aeneas.lean-checker",
+      "kind": "attested-by",
+      "to": "aeneas.octet-receipt"
+    },
+    {
+      "from": "aeneas.octet-receipt",
+      "kind": "attested-by",
+      "to": "aeneas.proof-card"
+    },
+    {
+      "from": "aeneas.octet-receipt",
+      "kind": "attested-by",
+      "to": "aeneas.provenance"
+    }
+  ],
+  "nodes": [
+    {
+      "artifact": "artifacts/provider-profile.json",
+      "claim": null,
+      "digest": {
+        "domain": "provider_profile",
+        "value": "b3:cd11b49d1acede2c6a91fa26f0b7a6b4b28db4007b4601a65b3269706a0ce625"
+      },
+      "display_label": "reviewed provider profile",
+      "producer": "octet",
+      "role": "provider_profile",
+      "source_span": null,
+      "stable_id": "aeneas.provider-profile",
+      "status": "reviewed",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/source.rs",
+      "claim": null,
+      "digest": {
+        "domain": "rust_source",
+        "value": "b3:fc70d39d863627bf99ab6a2c13a0b798aac059dc2520d9d2e48f7ac599fb4502"
+      },
+      "display_label": "checked Rust source",
+      "producer": "octet",
+      "role": "rust_source",
+      "source_span": {
+        "begin_line": 1,
+        "end_line": 3,
+        "source_id": "src/lib.rs"
+      },
+      "stable_id": "aeneas.rust-source",
+      "status": "recorded",
+      "verification_role": "recorded_only"
+    },
+    {
+      "artifact": "artifacts/charon-options.json",
+      "claim": null,
+      "digest": {
+        "domain": "extraction_profile",
+        "value": "b3:628826f12a1951a45e105272e54328586bbc1591b25d74bf8a5afc9453b5ff95"
+      },
+      "display_label": "effective Charon contract",
+      "producer": "octet",
+      "role": "charon_contract",
+      "source_span": null,
+      "stable_id": "aeneas.charon-contract",
+      "status": "reviewed",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/charon-command.json",
+      "claim": null,
+      "digest": {
+        "domain": "extraction_observation",
+        "value": "b3:3d546d9090d3331d821aa2f328c7323f9b2aca9bf1836f14d4804fa94b992aef"
+      },
+      "display_label": "Charon extraction observation",
+      "producer": "charon",
+      "role": "charon_extraction",
+      "source_span": null,
+      "stable_id": "aeneas.charon-extraction",
+      "status": "passed",
+      "verification_role": "recorded_only"
+    },
+    {
+      "artifact": "artifacts/llbc.llbc",
+      "claim": null,
+      "digest": {
+        "domain": "llbc",
+        "value": "b3:2af893a633e19e0d8d5b96bbe2bdfec84b658f28e5eb583b1ef522ff17c029e5"
+      },
+      "display_label": "measured LLBC",
+      "producer": "charon",
+      "role": "llbc",
+      "source_span": null,
+      "stable_id": "aeneas.llbc",
+      "status": "recorded",
+      "verification_role": "recorded_only"
+    },
+    {
+      "artifact": "artifacts/aeneas-command.json",
+      "claim": null,
+      "digest": {
+        "domain": "translation_observation",
+        "value": "b3:7255d9366ad9340a5abcb82a970c8b8f461739e90274b2698db2f3b4ffb3880b"
+      },
+      "display_label": "Aeneas translation observation",
+      "producer": "aeneas",
+      "role": "aeneas_translation",
+      "source_span": null,
+      "stable_id": "aeneas.translation-observation",
+      "status": "passed",
+      "verification_role": "recorded_only"
+    },
+    {
+      "artifact": "artifacts/translation.json",
+      "claim": null,
+      "digest": {
+        "domain": "translation_manifest",
+        "value": "b3:0e8c4e0040003a4488fc572c04e2a66509834857a4b2786ad443cfc90fb100c8"
+      },
+      "display_label": "translation manifest",
+      "producer": "aeneas",
+      "role": "translation_manifest",
+      "source_span": null,
+      "stable_id": "aeneas.translation-manifest",
+      "status": "recorded",
+      "verification_role": "recorded_only"
+    },
+    {
+      "artifact": "artifacts/generated.lean",
+      "claim": null,
+      "digest": {
+        "domain": "generated_model",
+        "value": "b3:7b6726a5a5a9271ffed325f25aae9c11871f3dc681a3a9d90f5f70ba4d2ad48f"
+      },
+      "display_label": "generated Lean definitions",
+      "producer": "aeneas",
+      "role": "generated_lean",
+      "source_span": null,
+      "stable_id": "aeneas.generated-lean",
+      "status": "recorded",
+      "verification_role": "recorded_only"
+    },
+    {
+      "artifact": "artifacts/external-models.json",
+      "claim": null,
+      "digest": {
+        "domain": "external_model",
+        "value": "b3:9fa8dc9570625be2be53d308f958332981ec8fb8137d3dd7ba0ae5da317eaa7d"
+      },
+      "display_label": "external model inventory",
+      "producer": "octet",
+      "role": "external_model",
+      "source_span": null,
+      "stable_id": "aeneas.external-model",
+      "status": "reviewed",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/theorem.lean",
+      "claim": {
+        "adequacy_decision": {
+          "domain": "adequacy_decision",
+          "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+        },
+        "adequacy_policy_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "approved_statement_blake3": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+        "claim_class": "named-theorem-over-generated-model",
+        "requirement_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "theorem_id": "aeneas.fixture.safe_add",
+        "trust_closure": {
+          "domain": "trust_closure",
+          "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+        }
+      },
+      "digest": {
+        "domain": "theorem",
+        "value": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125"
+      },
+      "display_label": "maintained theorem source",
+      "producer": "octet",
+      "role": "maintained_theorem",
+      "source_span": null,
+      "stable_id": "aeneas.maintained-theorem",
+      "status": "reviewed",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/theorem-adequacy.json",
+      "claim": {
+        "adequacy_decision": {
+          "domain": "adequacy_decision",
+          "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+        },
+        "adequacy_policy_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "approved_statement_blake3": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+        "claim_class": "named-theorem-over-generated-model",
+        "requirement_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "theorem_id": "aeneas.fixture.safe_add",
+        "trust_closure": {
+          "domain": "trust_closure",
+          "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+        }
+      },
+      "digest": {
+        "domain": "adequacy_decision",
+        "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+      },
+      "display_label": "theorem adequacy decision",
+      "producer": "octet",
+      "role": "adequacy_decision",
+      "source_span": null,
+      "stable_id": "aeneas.adequacy-decision",
+      "status": "approved",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/trust-closure.json",
+      "claim": {
+        "adequacy_decision": {
+          "domain": "adequacy_decision",
+          "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+        },
+        "adequacy_policy_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "approved_statement_blake3": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+        "claim_class": "named-theorem-over-generated-model",
+        "requirement_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "theorem_id": "aeneas.fixture.safe_add",
+        "trust_closure": {
+          "domain": "trust_closure",
+          "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+        }
+      },
+      "digest": {
+        "domain": "trust_closure",
+        "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+      },
+      "display_label": "declared trust closure",
+      "producer": "octet",
+      "role": "trust_closure",
+      "source_span": null,
+      "stable_id": "aeneas.trust-closure",
+      "status": "complete",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/package-lock.json",
+      "claim": null,
+      "digest": {
+        "domain": "package_lock",
+        "value": "b3:a90f0bc8c3ab6544519d582a901324b218242e006e4f53236a4f486b3ed07a7d"
+      },
+      "display_label": "Lean package lock",
+      "producer": "octet",
+      "role": "package_lock",
+      "source_span": null,
+      "stable_id": "aeneas.package-lock",
+      "status": "reviewed",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/checker-result.json",
+      "claim": {
+        "adequacy_decision": {
+          "domain": "adequacy_decision",
+          "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+        },
+        "adequacy_policy_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "approved_statement_blake3": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+        "claim_class": "named-theorem-over-generated-model",
+        "requirement_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "theorem_id": "aeneas.fixture.safe_add",
+        "trust_closure": {
+          "domain": "trust_closure",
+          "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+        }
+      },
+      "digest": {
+        "domain": "checker_receipt",
+        "value": "b3:64e64cc32fc5966221fd60c6efd5ea84669478ad975fc483a169488985de5455"
+      },
+      "display_label": "Lean checker result",
+      "producer": "lean",
+      "role": "lean_checker",
+      "source_span": null,
+      "stable_id": "aeneas.lean-checker",
+      "status": "passed",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/octet-receipt.json",
+      "claim": {
+        "adequacy_decision": {
+          "domain": "adequacy_decision",
+          "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+        },
+        "adequacy_policy_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "approved_statement_blake3": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+        "claim_class": "named-theorem-over-generated-model",
+        "requirement_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "theorem_id": "aeneas.fixture.safe_add",
+        "trust_closure": {
+          "domain": "trust_closure",
+          "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+        }
+      },
+      "digest": {
+        "domain": "octet_receipt",
+        "value": "b3:b0ce7c7d5673e67b0dc5fff7f54d351f4f58f2b70c986023a3933dee15bcf489"
+      },
+      "display_label": "verified Octet theorem receipt",
+      "producer": "octet",
+      "role": "octet_receipt",
+      "source_span": null,
+      "stable_id": "aeneas.octet-receipt",
+      "status": "passed",
+      "verification_role": "property"
+    },
+    {
+      "artifact": "artifacts/proof-cards.json",
+      "claim": {
+        "adequacy_decision": {
+          "domain": "adequacy_decision",
+          "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+        },
+        "adequacy_policy_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "approved_statement_blake3": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+        "claim_class": "named-theorem-over-generated-model",
+        "requirement_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "theorem_id": "aeneas.fixture.safe_add",
+        "trust_closure": {
+          "domain": "trust_closure",
+          "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+        }
+      },
+      "digest": {
+        "domain": "proof_card",
+        "value": "b3:fff32b3950ae540eccec22cfd7122866b73b0fb904b479f94b471ba2561222a2"
+      },
+      "display_label": "Octet proof card",
+      "producer": "octet",
+      "role": "proof_card",
+      "source_span": null,
+      "stable_id": "aeneas.proof-card",
+      "status": "verified",
+      "verification_role": "boundary"
+    },
+    {
+      "artifact": "artifacts/provenance.json",
+      "claim": {
+        "adequacy_decision": {
+          "domain": "adequacy_decision",
+          "value": "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+        },
+        "adequacy_policy_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "approved_statement_blake3": "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+        "claim_class": "named-theorem-over-generated-model",
+        "requirement_id": "octet.aeneas_lean_proof_rail.theorem_adequacy",
+        "theorem_id": "aeneas.fixture.safe_add",
+        "trust_closure": {
+          "domain": "trust_closure",
+          "value": "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+        }
+      },
+      "digest": {
+        "domain": "provenance_projection",
+        "value": "b3:1378e8646e230bd8976f25b57dcb5bf1a8693d0953157ecddc9cd54205d39ba0"
+      },
+      "display_label": "Octet provenance projection",
+      "producer": "octet",
+      "role": "provenance_projection",
+      "source_span": null,
+      "stable_id": "aeneas.provenance",
+      "status": "verified",
+      "verification_role": "boundary"
+    }
+  ],
+  "non_claims": [
+    "rust_correctness",
+    "charon_soundness",
+    "aeneas_soundness",
+    "lean_soundness",
+    "translation_soundness",
+    "external_model_soundness",
+    "theorem_truth",
+    "adequacy_policy_correctness",
+    "requirement_selection_correctness",
+    "verifier_soundness",
+    "semantic_equivalence",
+    "requirement_satisfaction",
+    "whole_program_correctness",
+    "lifecycle_readiness",
+    "release_eligibility"
+  ],
+  "octet_artifact_verified": true,
+  "producer_fixture": {
+    "artifact": "artifacts/producer-adapter.json",
+    "blake3": "b3:19a10c8d3e4ce29b4a058bd2202ff52fc42cee7508f04312840d0bfd398b00a8",
+    "octet_revision": "ef18352bf579bb7c6eb39070d917e3d005385a61",
+    "schema": "octet-aeneas-lean-valence-adapter/v1"
+  },
+  "profile": "aeneas-lean/v1",
+  "role_summary": {
+    "boundary_count": 10,
+    "property_count": 1,
+    "recorded_only_count": 6,
+    "verified_count": 1
+  },
+  "schema": "valence.formal-proof.aeneas-lean-chain.v1",
+  "translation_metadata": {
+    "aeneas_version": "bc2eb6f",
+    "charon_version": "0.1.223",
+    "crate_name": "real_fixture",
+    "declarations": [
+      {
+        "can_diverge": false,
+        "can_fail": true,
+        "declaration_identity": "b3:259cb6db8faa745440b0988ea010ff2a679afdb570779d0cdb363dbfabc394f2",
+        "def_id": 0,
+        "is_opaque": false,
+        "is_recursive": false,
+        "lean_file": "Llbc.lean",
+        "lean_name": "real_fixture.safe_add",
+        "loop_parent_declaration_identity": null,
+        "loop_parent_def_id": null,
+        "run_identity": "b3:0e8c4e0040003a4488fc572c04e2a66509834857a4b2786ad443cfc90fb100c8",
+        "rust_name": "real_fixture::safe_add",
+        "source": {
+          "begin_line": 1,
+          "end_line": 3,
+          "source_id": "src/lib.rs"
+        }
+      }
+    ],
+    "global_count": 0,
+    "manifest_run_identity": "b3:0e8c4e0040003a4488fc572c04e2a66509834857a4b2786ad443cfc90fb100c8",
+    "trait_declaration_count": 0,
+    "trait_implementation_count": 0,
+    "type_count": 0
+  }
+}

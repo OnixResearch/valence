@@ -16,6 +16,8 @@ use crate::shared_identity::MIXED_BLAKE3_PROFILE;
 use crate::shared_identity::contains_overclaim;
 use crate::shared_identity::parse_digest;
 
+pub mod aeneas;
+
 const FIELD_BINARY_HASH: &str = "binary_hash";
 const FIELD_EDGE_KIND: &str = "edge_kind";
 const FIELD_NON_CLAIMS: &str = "non_claims";

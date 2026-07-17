@@ -12,6 +12,7 @@ use cap_std::ambient_authority;
 use cap_std::fs::Dir;
 
 const VERSION: &str = "0.1.0";
+const JSON_SUFFIX: &str = ".json";
 const USAGE: &str = "\
 valence — Evidence IR CLI
 
@@ -27,6 +28,7 @@ COMMANDS:
     stack-provenance graph-report --artifact-root <ROOT> --chain <FILE> [--format json|markdown]
     function-address validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> [--bundle <FILE>] [--receipt <FILE>] [--graph <FILE>]]
     function-address preserves --artifact-root <ROOT> --input <FILE>
+    formal-proof aeneas-chain validate --artifact-root <ROOT> --input <FILE>
     evidence-chain validate --artifact-root <ROOT> --input <FILE>
     wasm-component validate --artifact-root <ROOT> --input <FILE>
     version                             Print version
@@ -53,6 +55,7 @@ fn main() -> ExitCode {
         "explain" => run_explain(&args[2..]),
         "stack-provenance" => run_stack_provenance(&args[2..]),
         "function-address" => run_function_address(&args[2..]),
+        "formal-proof" => run_formal_proof(&args[2..]),
         "evidence-chain" => run_evidence_chain(&args[2..]),
         "wasm-component" => run_wasm_component(&args[2..]),
         "help" | "--help" | "-h" => {
@@ -318,6 +321,77 @@ fn run_wasm_component(args: &[String]) -> ExitCode {
         Ok(json) => println!("{json}"),
         Err(error) => {
             eprintln!("error: cannot serialize Wasm report: {error}");
+            return ExitCode::from(2);
+        }
+    }
+    if report.valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(1)
+    }
+}
+
+fn run_formal_proof(args: &[String]) -> ExitCode {
+    // r[impl valence.provenance.aeneas_translation_chain.cli]
+    const ARGUMENT_COUNT: usize = 6;
+    if args.len() != ARGUMENT_COUNT
+        || args[0] != "aeneas-chain"
+        || args[1] != "validate"
+        || args[2] != "--artifact-root"
+        || args[4] != "--input"
+    {
+        eprintln!("usage: valence formal-proof aeneas-chain validate --artifact-root <ROOT> --input <FILE>");
+        return ExitCode::from(2);
+    }
+    let root = Path::new(&args[3]);
+    let input = Path::new(&args[5]);
+    let input_json = match cap_read_to_string(CapabilityRootKind::InputArtifact, root, input) {
+        Ok(json) => json,
+        Err(error) => {
+            eprintln!("error: cannot read Aeneas translation-chain input: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let chain: valence_core::formal_proof_chain::aeneas::AeneasTranslationChain =
+        match serde_json::from_str(&input_json) {
+            Ok(chain) => chain,
+            Err(error) => {
+                eprintln!("error: cannot parse Aeneas translation-chain input: {error}");
+                return ExitCode::from(2);
+            }
+        };
+    let mut loaded = Vec::new();
+    for artifact in valence_core::formal_proof_chain::aeneas::aeneas_translation_chain_artifacts(&chain) {
+        let bytes = match cap_read(CapabilityRootKind::InputArtifact, root, Path::new(&artifact)) {
+            Ok(bytes) => bytes,
+            Err(error) => {
+                eprintln!("error: cannot read Aeneas artifact {artifact}: {error}");
+                return ExitCode::from(2);
+            }
+        };
+        let measured_blake3 = format!("b3:{}", valence_core::shared_identity::blake3_hex(&bytes));
+        let parsed_json = if artifact.ends_with(JSON_SUFFIX) {
+            match serde_json::from_slice(&bytes) {
+                Ok(value) => Some(value),
+                Err(error) => {
+                    eprintln!("error: cannot parse Aeneas artifact {artifact}: {error}");
+                    return ExitCode::from(2);
+                }
+            }
+        } else {
+            None
+        };
+        loaded.push(valence_core::formal_proof_chain::aeneas::LoadedAeneasArtifact {
+            artifact,
+            measured_blake3,
+            parsed_json,
+        });
+    }
+    let report = valence_core::formal_proof_chain::aeneas::validate_aeneas_translation_chain(&chain, &loaded);
+    match serde_json::to_string_pretty(&report) {
+        Ok(json) => println!("{json}"),
+        Err(error) => {
+            eprintln!("error: cannot serialize Aeneas translation-chain report: {error}");
             return ExitCode::from(2);
         }
     }
@@ -1165,6 +1239,7 @@ mod tests {
 
     #[test]
     fn usage_documentation_is_stable() {
+        // r[verify valence.provenance.aeneas_translation_chain.cli]
         assert!(USAGE.contains("check --artifact-root <ROOT> <FILE>"));
         assert!(USAGE.contains("explain --manifest-root <ROOT>"));
         assert!(USAGE.contains("stack-provenance build"));
@@ -1173,6 +1248,7 @@ mod tests {
         assert!(USAGE.contains("stack-provenance graph-report"));
         assert!(USAGE.contains("function-address validate"));
         assert!(USAGE.contains("function-address preserves"));
+        assert!(USAGE.contains("formal-proof aeneas-chain validate"));
         assert!(USAGE.contains("evidence-chain validate"));
         assert!(USAGE.contains("wasm-component validate"));
         assert!(USAGE.contains("version"));

@@ -58,13 +58,20 @@ Indexes, policy models, and deterministic harnesses:
 - `evidence_index`
 - `hegel_property`
 
+`formal_proof_chain::aeneas` validates the closed Aeneas/Lean provider profile
+over shell-measured digests and parsed producer observations. It checks typed
+graph and claim linkage and emits only a bounded generic handoff;
+see [`docs/aeneas-translation-chain.md`](../../docs/aeneas-translation-chain.md).
+
 The crate-level documentation in `src/lib.rs` describes each module's bounded
 claim surface.
 
 ## Functional-core boundary
 
 Production code in this crate must remain testable without filesystem,
-environment, process, clock, network, or terminal dependencies. Octet and other
+environment, process, clock, network, or terminal dependencies. Deterministic
+hashing and parsing over already-loaded bytes remain pure core operations.
+Octet and other
 producers may construct Valence inputs, but they do not inherit Valence's
 identity or linkage claims without rerunning the applicable validators.
 

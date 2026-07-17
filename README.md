@@ -132,6 +132,12 @@ The `fsm-default-exhaustive` adapter profile records Octet source-shape receipts
 and optional Kamacite FSM spec/receipt identities while preserving Valence's
 non-claim boundary; see `docs/fsm-default-exhaustive.md`.
 
+The closed `aeneas-lean/v1` formal-proof provider profile validates frozen
+Octet-produced source, Charon, LLBC, Aeneas manifest/generated Lean,
+model/trust, theorem, checker, receipt, proof-card, and provenance identities
+without executing proof tools or promoting intermediate stages. See
+[`docs/aeneas-translation-chain.md`](docs/aeneas-translation-chain.md).
+
 The generic evidence-chain profile validates canonical Kamacite envelopes,
 typed parent links, policy/profile roots, projections, roles, and non-claims
 before explicit kind-specific dispatch; see
@@ -234,6 +240,7 @@ valence stack-provenance verify-built-binary --binary-root <ROOT> --binary <FILE
 valence stack-provenance graph-report --artifact-root <ROOT> --chain <FILE> [--format json|markdown]
 valence function-address validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> [--bundle <FILE>] [--receipt <FILE>] [--graph <FILE>]]
 valence function-address preserves --artifact-root <ROOT> --input <FILE>
+valence formal-proof aeneas-chain validate --artifact-root <ROOT> --input <FILE>
 valence evidence-chain validate --artifact-root <ROOT> --input <FILE>
 valence wasm-component validate --artifact-root <ROOT> --input <FILE>
 valence version
@@ -330,6 +337,7 @@ nix develop
 cargo test --workspace
 cargo test stack_provenance_preserves -- --nocapture
 cargo test -p valence-core evidence_harness
+cargo test -p valence-core --test aeneas_translation_chain
 cargo test -p valence-core --test hegel_property_laws
 cargo build -p valence-cli
 nix flake check -L

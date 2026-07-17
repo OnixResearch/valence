@@ -90,6 +90,26 @@
               touch "$out"
             '';
 
+        aeneas-translation-chain-fixtures =
+          pkgs.runCommand "valence-aeneas-translation-chain-fixtures"
+            {
+              nativeBuildInputs = [ pkgs.nickel ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+
+              nickel typecheck fixtures/aeneas-translation-chain/chain.ncl
+              nickel typecheck fixtures/aeneas-translation-chain/negative-cases.ncl
+              nickel export --format json fixtures/aeneas-translation-chain/chain.ncl > "$TMPDIR/chain.json"
+              nickel export --format json fixtures/aeneas-translation-chain/negative-cases.ncl > "$TMPDIR/negative-cases.json"
+              cmp "$TMPDIR/chain.json" fixtures/aeneas-translation-chain/chain.json
+              cmp "$TMPDIR/negative-cases.json" fixtures/aeneas-translation-chain/negative-cases.json
+
+              touch "$out"
+            '';
+
         radicle-cob-evidence-profile =
           pkgs.runCommand "valence-radicle-cob-evidence-profile"
             {

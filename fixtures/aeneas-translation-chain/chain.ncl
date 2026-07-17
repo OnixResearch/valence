@@ -1,0 +1,226 @@
+let NonEmptyString = std.contract.from_predicate (fun value =>
+  std.is_string value && std.string.length value > 0
+) in
+let OneOf = fun allowed => std.contract.from_predicate (fun value =>
+  std.is_string value && std.array.elem value allowed
+) in
+let Digest = std.contract.from_predicate (fun value =>
+  std.is_string value && std.string.is_match "^b3:[0-9a-f]{64}$" value
+) in
+let Claim = {
+  theorem_id | NonEmptyString,
+  approved_statement_blake3 | Digest,
+  requirement_id | NonEmptyString,
+  claim_class | NonEmptyString,
+  adequacy_policy_id | NonEmptyString,
+  adequacy_decision | {
+    domain | OneOf ["adequacy_decision"],
+    value | Digest,
+  },
+  trust_closure | {
+    domain | OneOf ["trust_closure"],
+    value | Digest,
+  },
+} in
+let Node = {
+  stable_id | NonEmptyString,
+  role | NonEmptyString,
+  digest | {
+    domain | NonEmptyString,
+    value | Digest,
+  },
+  artifact | NonEmptyString,
+  display_label | NonEmptyString,
+  producer | OneOf ["octet", "charon", "aeneas", "lean"],
+  verification_role | OneOf ["property", "recorded_only", "boundary"],
+  status | OneOf ["approved", "complete", "passed", "recorded", "reviewed", "verified"],
+  source_span | Dyn,
+  claim | Dyn,
+} in
+let Edge = {
+  from | NonEmptyString,
+  to | NonEmptyString,
+  kind | NonEmptyString,
+} in
+let Chain = {
+  schema | OneOf ["valence.formal-proof.aeneas-lean-chain.v1"],
+  profile | OneOf ["aeneas-lean/v1"],
+  producer_fixture | {
+    octet_revision | NonEmptyString,
+    schema | OneOf ["octet-aeneas-lean-valence-adapter/v1"],
+    artifact | NonEmptyString,
+    blake3 | Digest,
+  },
+  nodes | Array Node,
+  edges | Array Edge,
+  charon_contract | Dyn,
+  translation_metadata | Dyn,
+  claim | Claim,
+  octet_artifact_verified | Bool,
+  role_summary | {
+    property_count | Number,
+    recorded_only_count | Number,
+    boundary_count | Number,
+    verified_count | Number,
+  },
+  non_claims | Array NonEmptyString,
+  declared_chain_identity | {
+    domain | OneOf ["complete_chain"],
+    value | Digest,
+  },
+} in
+let make_digest = fun digest_domain digest_value => {
+  domain = digest_domain,
+  value = digest_value,
+} in
+let span = {
+  source_id = "src/lib.rs",
+  begin_line = 1,
+  end_line = 3,
+} in
+let theorem_claim = {
+  theorem_id = "aeneas.fixture.safe_add",
+  approved_statement_blake3 = "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125",
+  requirement_id = "octet.aeneas_lean_proof_rail.theorem_adequacy",
+  claim_class = "named-theorem-over-generated-model",
+  adequacy_policy_id = "octet.aeneas_lean_proof_rail.theorem_adequacy",
+  adequacy_decision = make_digest "adequacy_decision" "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4",
+  trust_closure = make_digest "trust_closure" "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379",
+} in
+let node = fun node_id node_role digest_domain digest_value artifact_locator label producer_id evidence_role node_status claim_binding => {
+  stable_id = node_id,
+  role = node_role,
+  digest = make_digest digest_domain digest_value,
+  artifact = artifact_locator,
+  display_label = label,
+  producer = producer_id,
+  verification_role = evidence_role,
+  status = node_status,
+  source_span = if node_role == "rust_source" then span else null,
+  claim = claim_binding,
+} in
+let edge = fun source_id target_id edge_kind => {
+  from = source_id,
+  to = target_id,
+  kind = edge_kind,
+} in
+{
+  schema = "valence.formal-proof.aeneas-lean-chain.v1",
+  profile = "aeneas-lean/v1",
+  producer_fixture = {
+    octet_revision = "ef18352bf579bb7c6eb39070d917e3d005385a61",
+    schema = "octet-aeneas-lean-valence-adapter/v1",
+    artifact = "artifacts/producer-adapter.json",
+    blake3 = "b3:19a10c8d3e4ce29b4a058bd2202ff52fc42cee7508f04312840d0bfd398b00a8",
+  },
+  nodes = [
+    node "aeneas.provider-profile" "provider_profile" "provider_profile" "b3:cd11b49d1acede2c6a91fa26f0b7a6b4b28db4007b4601a65b3269706a0ce625" "artifacts/provider-profile.json" "reviewed provider profile" "octet" "boundary" "reviewed" null,
+    node "aeneas.rust-source" "rust_source" "rust_source" "b3:fc70d39d863627bf99ab6a2c13a0b798aac059dc2520d9d2e48f7ac599fb4502" "artifacts/source.rs" "checked Rust source" "octet" "recorded_only" "recorded" null,
+    node "aeneas.charon-contract" "charon_contract" "extraction_profile" "b3:628826f12a1951a45e105272e54328586bbc1591b25d74bf8a5afc9453b5ff95" "artifacts/charon-options.json" "effective Charon contract" "octet" "boundary" "reviewed" null,
+    node "aeneas.charon-extraction" "charon_extraction" "extraction_observation" "b3:3d546d9090d3331d821aa2f328c7323f9b2aca9bf1836f14d4804fa94b992aef" "artifacts/charon-command.json" "Charon extraction observation" "charon" "recorded_only" "passed" null,
+    node "aeneas.llbc" "llbc" "llbc" "b3:2af893a633e19e0d8d5b96bbe2bdfec84b658f28e5eb583b1ef522ff17c029e5" "artifacts/llbc.llbc" "measured LLBC" "charon" "recorded_only" "recorded" null,
+    node "aeneas.translation-observation" "aeneas_translation" "translation_observation" "b3:7255d9366ad9340a5abcb82a970c8b8f461739e90274b2698db2f3b4ffb3880b" "artifacts/aeneas-command.json" "Aeneas translation observation" "aeneas" "recorded_only" "passed" null,
+    node "aeneas.translation-manifest" "translation_manifest" "translation_manifest" "b3:0e8c4e0040003a4488fc572c04e2a66509834857a4b2786ad443cfc90fb100c8" "artifacts/translation.json" "translation manifest" "aeneas" "recorded_only" "recorded" null,
+    node "aeneas.generated-lean" "generated_lean" "generated_model" "b3:7b6726a5a5a9271ffed325f25aae9c11871f3dc681a3a9d90f5f70ba4d2ad48f" "artifacts/generated.lean" "generated Lean definitions" "aeneas" "recorded_only" "recorded" null,
+    node "aeneas.external-model" "external_model" "external_model" "b3:9fa8dc9570625be2be53d308f958332981ec8fb8137d3dd7ba0ae5da317eaa7d" "artifacts/external-models.json" "external model inventory" "octet" "boundary" "reviewed" null,
+    node "aeneas.maintained-theorem" "maintained_theorem" "theorem" "b3:08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125" "artifacts/theorem.lean" "maintained theorem source" "octet" "boundary" "reviewed" theorem_claim,
+    node "aeneas.adequacy-decision" "adequacy_decision" "adequacy_decision" "b3:dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4" "artifacts/theorem-adequacy.json" "theorem adequacy decision" "octet" "boundary" "approved" theorem_claim,
+    node "aeneas.trust-closure" "trust_closure" "trust_closure" "b3:021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379" "artifacts/trust-closure.json" "declared trust closure" "octet" "boundary" "complete" theorem_claim,
+    node "aeneas.package-lock" "package_lock" "package_lock" "b3:a90f0bc8c3ab6544519d582a901324b218242e006e4f53236a4f486b3ed07a7d" "artifacts/package-lock.json" "Lean package lock" "octet" "boundary" "reviewed" null,
+    node "aeneas.lean-checker" "lean_checker" "checker_receipt" "b3:64e64cc32fc5966221fd60c6efd5ea84669478ad975fc483a169488985de5455" "artifacts/checker-result.json" "Lean checker result" "lean" "boundary" "passed" theorem_claim,
+    node "aeneas.octet-receipt" "octet_receipt" "octet_receipt" "b3:b0ce7c7d5673e67b0dc5fff7f54d351f4f58f2b70c986023a3933dee15bcf489" "artifacts/octet-receipt.json" "verified Octet theorem receipt" "octet" "property" "passed" theorem_claim,
+    node "aeneas.proof-card" "proof_card" "proof_card" "b3:fff32b3950ae540eccec22cfd7122866b73b0fb904b479f94b471ba2561222a2" "artifacts/proof-cards.json" "Octet proof card" "octet" "boundary" "verified" theorem_claim,
+    node "aeneas.provenance" "provenance_projection" "provenance_projection" "b3:1378e8646e230bd8976f25b57dcb5bf1a8693d0953157ecddc9cd54205d39ba0" "artifacts/provenance.json" "Octet provenance projection" "octet" "boundary" "verified" theorem_claim,
+  ],
+  edges = [
+    edge "aeneas.provider-profile" "aeneas.charon-contract" "configured-by",
+    edge "aeneas.rust-source" "aeneas.charon-extraction" "extracted-from",
+    edge "aeneas.charon-contract" "aeneas.charon-extraction" "configured-by",
+    edge "aeneas.charon-extraction" "aeneas.llbc" "generated-as",
+    edge "aeneas.llbc" "aeneas.translation-observation" "translated-from",
+    edge "aeneas.translation-observation" "aeneas.translation-manifest" "declared-in-manifest",
+    edge "aeneas.translation-manifest" "aeneas.generated-lean" "generated-as",
+    edge "aeneas.generated-lean" "aeneas.external-model" "modeled-by",
+    edge "aeneas.generated-lean" "aeneas.maintained-theorem" "theorem-over",
+    edge "aeneas.external-model" "aeneas.trust-closure" "trusts",
+    edge "aeneas.maintained-theorem" "aeneas.adequacy-decision" "approved-as",
+    edge "aeneas.maintained-theorem" "aeneas.trust-closure" "trusts",
+    edge "aeneas.maintained-theorem" "aeneas.lean-checker" "checked-with",
+    edge "aeneas.adequacy-decision" "aeneas.lean-checker" "approved-as",
+    edge "aeneas.trust-closure" "aeneas.lean-checker" "trusts",
+    edge "aeneas.package-lock" "aeneas.lean-checker" "checked-with",
+    edge "aeneas.lean-checker" "aeneas.octet-receipt" "attested-by",
+    edge "aeneas.octet-receipt" "aeneas.proof-card" "attested-by",
+    edge "aeneas.octet-receipt" "aeneas.provenance" "attested-by",
+  ],
+  charon_contract = {
+    reviewed_profile_id = "octet-aeneas-lean-0.1.0-bc2eb6f",
+    extraction_profile_identity = make_digest "provider_profile" "b3:cd11b49d1acede2c6a91fa26f0b7a6b4b28db4007b4601a65b3269706a0ce625",
+    has_errors = false,
+    skip_borrowck = false,
+    target_triple = "x86_64-unknown-linux-gnu",
+    pointer_width_bits = 64,
+    endianness = "little",
+    mir_start_stage = "borrowck",
+    drop_policy = "include-drops",
+    start_from = "crate",
+    include_rules = ["src/verified"],
+    exclude_rules = [],
+    opaque_rules = [],
+    transformation_settings = ["preserve-spans"],
+    serialization_format = "llbc-json-v1",
+  },
+  translation_metadata = {
+    manifest_run_identity = "b3:0e8c4e0040003a4488fc572c04e2a66509834857a4b2786ad443cfc90fb100c8",
+    aeneas_version = "bc2eb6f",
+    charon_version = "0.1.223",
+    crate_name = "real_fixture",
+    type_count = 0,
+    global_count = 0,
+    trait_declaration_count = 0,
+    trait_implementation_count = 0,
+    declarations = [
+      {
+        def_id = 0,
+        run_identity = "b3:0e8c4e0040003a4488fc572c04e2a66509834857a4b2786ad443cfc90fb100c8",
+        declaration_identity = "b3:259cb6db8faa745440b0988ea010ff2a679afdb570779d0cdb363dbfabc394f2",
+        rust_name = "real_fixture::safe_add",
+        lean_name = "real_fixture.safe_add",
+        lean_file = "Llbc.lean",
+        source = span,
+        is_opaque = false,
+        can_fail = true,
+        can_diverge = false,
+        is_recursive = false,
+        loop_parent_def_id = null,
+        loop_parent_declaration_identity = null,
+      },
+    ],
+  },
+  claim = theorem_claim,
+  octet_artifact_verified = true,
+  role_summary = {
+    property_count = 1,
+    recorded_only_count = 6,
+    boundary_count = 10,
+    verified_count = 1,
+  },
+  non_claims = [
+    "rust_correctness",
+    "charon_soundness",
+    "aeneas_soundness",
+    "lean_soundness",
+    "translation_soundness",
+    "external_model_soundness",
+    "theorem_truth",
+    "adequacy_policy_correctness",
+    "requirement_selection_correctness",
+    "verifier_soundness",
+    "semantic_equivalence",
+    "requirement_satisfaction",
+    "whole_program_correctness",
+    "lifecycle_readiness",
+    "release_eligibility",
+  ],
+  declared_chain_identity = make_digest "complete_chain" "b3:03540b95b9227e85b02e4e324bd56ec766992c39d158f6b55800dceb4e51c8f6",
+} | Chain
