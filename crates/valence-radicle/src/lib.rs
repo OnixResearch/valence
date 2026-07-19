@@ -8,6 +8,7 @@
 //! r[impl valence.radicle_cob_evidence.adapter_boundary]
 //! r[impl valence.radicle_cob_evidence.repository_safety]
 
+mod artifact_auth;
 mod store;
 mod transport;
 
@@ -16,6 +17,7 @@ use std::collections::BTreeSet;
 use std::path::Path;
 use std::str::FromStr as _;
 
+pub use artifact_auth::*;
 use nonempty::NonEmpty;
 use radicle_cob::Create;
 use radicle_cob::Embed;

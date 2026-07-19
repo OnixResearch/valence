@@ -15,23 +15,38 @@
     }:
     let
       artifactAuthRevision = "799459346d5416fbd7b9f55840a7371441b55afa";
-      artifactAuthCargoDependency =
-        (builtins.fromTOML (builtins.readFile ./Cargo.toml)).workspace.dependencies.artifact-auth-core;
-      artifactAuthLockPackages = builtins.filter (
-        package: package.name == "artifact-auth-core"
-      ) (builtins.fromTOML (builtins.readFile ./Cargo.lock)).package;
+      artifactAuthRepository = "ssh://git@github.com/OnixResearch/artifact-auth.git";
+      artifactAuthWorkspaceDependencies =
+        (builtins.fromTOML (builtins.readFile ./Cargo.toml)).workspace.dependencies;
+      artifactAuthCargoDependencies = [
+        artifactAuthWorkspaceDependencies.artifact-auth-core
+        artifactAuthWorkspaceDependencies.artifact-auth-ed25519
+      ];
+      artifactAuthRequiredPackages = [
+        "artifact-auth-core"
+        "artifact-auth-ed25519"
+      ];
       artifactAuthExpectedLockSource =
         "git+ssh://git@github.com/OnixResearch/artifact-auth.git?rev=${artifactAuthRevision}#${artifactAuthRevision}";
+      artifactAuthLockPackages = builtins.filter (
+        package: (package.source or "") == artifactAuthExpectedLockSource
+      ) (builtins.fromTOML (builtins.readFile ./Cargo.lock)).package;
+      artifactAuthLockedPackageNames = builtins.map (package: package.name) artifactAuthLockPackages;
       artifactAuthWorkspace = builtins.fromTOML (builtins.readFile (artifact-auth-src + "/Cargo.toml"));
       artifactAuthSourceAdmitted =
         assert nixpkgs.lib.assertMsg (
-          artifactAuthCargoDependency.git == "ssh://git@github.com/OnixResearch/artifact-auth.git"
-          && artifactAuthCargoDependency.rev == artifactAuthRevision
+          builtins.all (
+            dependency:
+            dependency.git == artifactAuthRepository
+            && dependency.rev == artifactAuthRevision
+          ) artifactAuthCargoDependencies
           && artifact-auth-src.rev == artifactAuthRevision
-          && builtins.length artifactAuthLockPackages == 1
-          && (builtins.head artifactAuthLockPackages).source == artifactAuthExpectedLockSource
+          && builtins.length artifactAuthLockPackages == builtins.length artifactAuthRequiredPackages
+          && builtins.all (
+            packageName: builtins.elem packageName artifactAuthLockedPackageNames
+          ) artifactAuthRequiredPackages
           && artifactAuthWorkspace.workspace.package.license == "MIT OR Apache-2.0"
-        ) "Valence artifact-auth Cargo/Nix source identity, uniqueness, or license drifted";
+        ) "Valence artifact-auth Cargo/Nix source identity, uniqueness, package set, or license drifted";
         true;
       systems = [
         "x86_64-linux"

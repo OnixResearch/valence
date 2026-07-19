@@ -18,6 +18,8 @@ name = "valence-radicle"
 path = "src/main.rs"
 
 [dependencies]
+artifact-auth-core.workspace = true
+artifact-auth-ed25519.workspace = true
 blake3.workspace = true
 cap-std.workspace = true
 git2.workspace = true

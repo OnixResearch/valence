@@ -9,6 +9,7 @@ use cap_std::ambient_authority;
 use cap_std::fs::Dir;
 use radicle_crypto::ssh::keystore::MemorySigner;
 use valence_core::cob_evidence::AttachmentStatus;
+use valence_core::cob_evidence::CobOperation;
 use valence_core::cob_evidence::ConfidentialityClass;
 use valence_core::cob_evidence::EVIDENCE_NON_CLAIM;
 use valence_core::evidence_ir::REQUIRED_NON_CLAIM;
@@ -356,6 +357,256 @@ fn unauthorized_and_unsafe_requests_do_not_mutate_repository() {
     assert!(!unsafe_plan.plan.valid);
     assert!(!unsafe_plan.plan.mutated);
     assert_eq!(store.all_reference_targets().expect("after refs"), before);
+}
+
+// r[verify valence.artifact_auth_shell.exact_verification]
+// r[verify valence.artifact_auth_shell.evidence]
+// r[verify valence.artifact_auth_shell.authority]
+#[test]
+fn dedicated_artifact_auth_signature_uses_real_radicle_signer_without_authority_promotion() {
+    const ENTRY_OID: &str = "1111111111111111111111111111111111111111";
+    const PARENT_OID: &str = "2222222222222222222222222222222222222222";
+    const RELATED_OID: &str = "3333333333333333333333333333333333333333";
+    const GENERATION_ONE: u64 = 1;
+
+    let signer = MemorySigner::r#gen();
+    let evidence_profile = parse_profile(PROFILE_BYTES).expect("evidence profile");
+    let authorization =
+        valence_core::cob_evidence::build_authorization_profile(&profile_identity(&evidence_profile), vec![
+            ActorBinding {
+                signer: signer.public_key().to_string(),
+                role: "maintainer".to_owned(),
+            },
+        ]);
+    let event = valence_core::cob_evidence::ObservedCobEvent {
+        sidecar_object_id: "sidecar-object".to_owned(),
+        entry_oid: ENTRY_OID.to_owned(),
+        operation_index: 0,
+        parent_oids: vec![PARENT_OID.to_owned()],
+        related_oids: vec![RELATED_OID.to_owned()],
+        signer: signer.public_key().to_string(),
+        signature_valid: true,
+        event: None,
+        decode_issue: None,
+    };
+    let key_identity = artifact_auth_ed25519::public_key_identity(&signer.public_key().to_byte_array());
+    let statement = valence_core::artifact_auth::ValenceArtifactAuthStatementInput {
+        observed: &event,
+        related_target: RELATED_OID,
+        profile_id: "valence-radicle-cob-artifact-auth-v1",
+        profile_context: "org.onixresearch.valence.evidence:v1",
+        generation: GENERATION_ONE,
+        currentness: artifact_auth_core::KeyCurrentness::Current,
+        currentness_context: "reviewed-radicle-key-currentness",
+        protocol_key_identity_blake3: &key_identity.digest_hex,
+    };
+    let shell_input = ValenceArtifactAuthShellInput {
+        statement,
+        evidence_profile: &evidence_profile,
+        authorization: &authorization,
+        operation: CobOperation::Attach,
+        actor_authorization_ref: "blake3:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    };
+    let signed = sign_valence_artifact_auth_statement(&signer, &shell_input).expect("dedicated signature");
+    let report = evaluate_valence_artifact_auth_shell(&shell_input, &signed).expect("dedicated verification");
+
+    assert!(report.cryptographic_failure_code.is_none());
+    assert!(report.dual_run.protocol_signature_valid);
+    assert!(report.dual_run.standalone.as_ref().is_some_and(|decision| decision.passed));
+    assert!(report.dual_run.compatibility.case_explained);
+    assert!(report.dual_run.compatibility.legacy_authoritative);
+    assert!(!report.dual_run.compatibility.standalone_authority_admitted);
+    assert!(report.dual_run.compatibility.rollback_available);
+    assert!(report.actor_authorization_observed);
+    assert_eq!(report.public_key_ref, format!("blake3:{}", key_identity.digest_hex));
+    assert_eq!(signed.signature_bytes.len(), artifact_auth_ed25519::ED25519_SIGNATURE_BYTES);
+    assert!(signed.signature_hex.bytes().all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte)));
+    assert!(!format!("{signed:?}{report:?}").contains("MemorySigner"));
+}
+
+// r[verify valence.artifact_auth_shell.exact_verification]
+// r[verify valence.artifact_auth_shell.evidence]
+// r[verify valence.artifact_auth_shell.authority]
+#[test]
+fn dedicated_artifact_auth_signature_rejects_protocol_tamper_key_currentness_and_false_parity() {
+    use radicle_crypto::signature::Signer as _;
+
+    const ENTRY_OID: &str = "1111111111111111111111111111111111111111";
+    const OTHER_ENTRY_OID: &str = "4444444444444444444444444444444444444444";
+    const PARENT_OID: &str = "2222222222222222222222222222222222222222";
+    const RELATED_OID: &str = "3333333333333333333333333333333333333333";
+    const GENERATION_ONE: u64 = 1;
+    const MALFORMED_SIGNATURE_BYTES: usize = 1;
+
+    let signer = MemorySigner::r#gen();
+    let evidence_profile = parse_profile(PROFILE_BYTES).expect("evidence profile");
+    let authorization =
+        valence_core::cob_evidence::build_authorization_profile(&profile_identity(&evidence_profile), vec![
+            ActorBinding {
+                signer: signer.public_key().to_string(),
+                role: "maintainer".to_owned(),
+            },
+        ]);
+    let event = valence_core::cob_evidence::ObservedCobEvent {
+        sidecar_object_id: "sidecar-object".to_owned(),
+        entry_oid: ENTRY_OID.to_owned(),
+        operation_index: 0,
+        parent_oids: vec![PARENT_OID.to_owned()],
+        related_oids: vec![RELATED_OID.to_owned()],
+        signer: signer.public_key().to_string(),
+        signature_valid: true,
+        event: None,
+        decode_issue: None,
+    };
+    let key_identity = artifact_auth_ed25519::public_key_identity(&signer.public_key().to_byte_array());
+    let statement = valence_core::artifact_auth::ValenceArtifactAuthStatementInput {
+        observed: &event,
+        related_target: RELATED_OID,
+        profile_id: "valence-radicle-cob-artifact-auth-v1",
+        profile_context: "org.onixresearch.valence.evidence:v1",
+        generation: GENERATION_ONE,
+        currentness: artifact_auth_core::KeyCurrentness::Current,
+        currentness_context: "reviewed-radicle-key-currentness",
+        protocol_key_identity_blake3: &key_identity.digest_hex,
+    };
+    let shell_input = ValenceArtifactAuthShellInput {
+        statement,
+        evidence_profile: &evidence_profile,
+        authorization: &authorization,
+        operation: CobOperation::Attach,
+        actor_authorization_ref: "blake3:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    };
+    let signed = sign_valence_artifact_auth_statement(&signer, &shell_input).expect("dedicated signature");
+
+    let mut protocol_rejected_event = event.clone();
+    protocol_rejected_event.signature_valid = false;
+    let rejected_statement = valence_core::artifact_auth::ValenceArtifactAuthStatementInput {
+        observed: &protocol_rejected_event,
+        ..statement
+    };
+    let rejected_signing = sign_valence_artifact_auth_statement(&signer, &ValenceArtifactAuthShellInput {
+        statement: rejected_statement,
+        ..shell_input
+    })
+    .expect_err("protocol rejection blocks dedicated signing");
+    assert!(rejected_signing.to_string().contains("requires protocol verification"));
+
+    let unauthorized_signer = MemorySigner::r#gen();
+    let unauthorized_profile =
+        valence_core::cob_evidence::build_authorization_profile(&profile_identity(&evidence_profile), vec![
+            ActorBinding {
+                signer: unauthorized_signer.public_key().to_string(),
+                role: "maintainer".to_owned(),
+            },
+        ]);
+    let unauthorized = sign_valence_artifact_auth_statement(&signer, &ValenceArtifactAuthShellInput {
+        authorization: &unauthorized_profile,
+        ..shell_input
+    })
+    .expect_err("actor authorization blocks dedicated signing");
+    assert!(unauthorized.to_string().contains("requires actor authorization"));
+
+    let wrong_signer = MemorySigner::r#gen();
+    let signer_mismatch = sign_valence_artifact_auth_statement(&wrong_signer, &shell_input)
+        .expect_err("actor mismatch blocks dedicated signing");
+    assert!(signer_mismatch.to_string().contains("does not match the protocol actor"));
+
+    let protocol_preimage_signature: radicle_crypto::Signature = signer.sign(b"radicle-protocol-preimage");
+    let mut protocol_preimage_carrier = signed.clone();
+    protocol_preimage_carrier.replace_signature_bytes_for_test(protocol_preimage_signature.as_ref().to_vec());
+    let protocol_preimage = evaluate_valence_artifact_auth_shell(&shell_input, &protocol_preimage_carrier)
+        .expect("protocol preimage decision");
+    assert_eq!(protocol_preimage.cryptographic_failure_code.as_deref(), Some("ed25519.signature_invalid"));
+    assert!(protocol_preimage.dual_run.compatibility.decision_drift);
+
+    let mut wrong_preimage_event = event.clone();
+    wrong_preimage_event.entry_oid = OTHER_ENTRY_OID.to_owned();
+    let wrong_preimage_statement = valence_core::artifact_auth::ValenceArtifactAuthStatementInput {
+        observed: &wrong_preimage_event,
+        ..statement
+    };
+    let mapped = valence_core::artifact_auth::map_valence_artifact_auth_statement(&wrong_preimage_statement)
+        .expect("wrong preimage statement");
+    let mapped_bytes = artifact_auth_core::canonical_statement_bytes(&mapped).expect("canonical statement");
+    let mut wrong_preimage_carrier = signed.clone();
+    wrong_preimage_carrier.statement_ref = format!("blake3:{}", blake3::hash(&mapped_bytes).to_hex());
+    let wrong_preimage = evaluate_valence_artifact_auth_shell(
+        &ValenceArtifactAuthShellInput {
+            statement: wrong_preimage_statement,
+            ..shell_input
+        },
+        &wrong_preimage_carrier,
+    )
+    .expect("wrong preimage decision");
+    assert_eq!(wrong_preimage.cryptographic_failure_code.as_deref(), Some("ed25519.signature_invalid"));
+
+    let mut wrong_key_carrier = signed.clone();
+    wrong_key_carrier.replace_public_key_for_test(*wrong_signer.public_key());
+    let wrong_key = evaluate_valence_artifact_auth_shell(&shell_input, &wrong_key_carrier).expect("wrong key decision");
+    assert!(!wrong_key.dual_run.compatibility.identity_drift_explained);
+    assert!(wrong_key.dual_run.compatibility.blockers.contains(&"identity-drift".to_owned()));
+
+    let mut malformed = signed.clone();
+    malformed.replace_signature_bytes_for_test(vec![0_u8; MALFORMED_SIGNATURE_BYTES]);
+    let malformed_report =
+        evaluate_valence_artifact_auth_shell(&shell_input, &malformed).expect("malformed signature decision");
+    assert_eq!(malformed_report.cryptographic_failure_code.as_deref(), Some("ed25519.signature_length"));
+
+    let mut carrier_drift = signed.clone();
+    carrier_drift.signature_ref = "blake3:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".to_owned();
+    let carrier_error =
+        evaluate_valence_artifact_auth_shell(&shell_input, &carrier_drift).expect_err("carrier drift denied");
+    assert!(carrier_error.to_string().contains("carrier signature identity mismatch"));
+
+    let unknown_statement = valence_core::artifact_auth::ValenceArtifactAuthStatementInput {
+        currentness: artifact_auth_core::KeyCurrentness::Unknown,
+        ..statement
+    };
+    let unknown = evaluate_valence_artifact_auth_shell(
+        &ValenceArtifactAuthShellInput {
+            statement: unknown_statement,
+            ..shell_input
+        },
+        &signed,
+    )
+    .expect("unknown currentness decision");
+    assert!(unknown.dual_run.compatibility.decision_drift);
+    assert!(!unknown.dual_run.compatibility.standalone_authority_admitted);
+
+    let false_parity = evaluate_valence_artifact_auth_shell(
+        &ValenceArtifactAuthShellInput {
+            statement: rejected_statement,
+            ..shell_input
+        },
+        &signed,
+    )
+    .expect("protocol rejection and standalone pass decision");
+    assert!(!false_parity.dual_run.protocol_signature_valid);
+    assert!(false_parity.dual_run.standalone.as_ref().is_some_and(|decision| decision.passed));
+    assert!(!false_parity.dual_run.compatibility.case_explained);
+
+    let mut decode_failed_event = protocol_rejected_event;
+    decode_failed_event.decode_issue = Some("event_json_invalid".to_owned());
+    let decode_statement = valence_core::artifact_auth::ValenceArtifactAuthStatementInput {
+        observed: &decode_failed_event,
+        ..statement
+    };
+    let decode_false_parity = evaluate_valence_artifact_auth_shell(
+        &ValenceArtifactAuthShellInput {
+            statement: decode_statement,
+            ..shell_input
+        },
+        &protocol_preimage_carrier,
+    )
+    .expect("decode false parity decision");
+    assert!(!decode_false_parity.dual_run.compatibility.case_explained);
+    assert!(
+        decode_false_parity
+            .dual_run
+            .compatibility
+            .blockers
+            .contains(&"unrelated-protocol-and-decode-failures".to_owned())
+    );
 }
 
 fn create_independent_sidecar(

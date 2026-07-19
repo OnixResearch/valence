@@ -43,6 +43,18 @@ const FAILED_VERIFICATION: &str = "valence-standalone-cryptographic-verification
 const PREIMAGE_CLASS: &str = "radicle-protocol-preimage-vs-artifact-auth-statement";
 const AUTHORITY_BOUNDARY: &str = "standalone authentication is a bounded post-Radicle observation only; Valence retains protocol verification, actor authorization, Evidence IR identity and roles, COB reduction, Git storage, SSH-agent effects, lifecycle handoff, and release interpretation";
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ValenceArtifactAuthStatementInput<'a> {
+    pub observed: &'a ObservedCobEvent,
+    pub related_target: &'a str,
+    pub profile_id: &'a str,
+    pub profile_context: &'a str,
+    pub generation: u64,
+    pub currentness: KeyCurrentness,
+    pub currentness_context: &'a str,
+    pub protocol_key_identity_blake3: &'a str,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ValenceArtifactAuthObservation<'a> {
     pub observed: &'a ObservedCobEvent,
@@ -63,6 +75,8 @@ pub struct ValenceArtifactAuthCompatibility {
     pub identity_drift_explained: bool,
     pub decision_drift: bool,
     pub issue_class: String,
+    pub protocol_failure_causes: Vec<String>,
+    pub standalone_failure_causes: Vec<String>,
     pub non_claim_drift: bool,
     pub blockers: Vec<String>,
     pub legacy_authoritative: bool,
@@ -105,13 +119,44 @@ pub fn evaluate_valence_artifact_auth(observation: &ValenceArtifactAuthObservati
     }
 }
 
+// r[impl valence.artifact_auth_shell.exact_verification]
+/// Map a protocol observation to the exact signer-specific standalone statement.
+pub fn map_valence_artifact_auth_statement(
+    input: &ValenceArtifactAuthStatementInput<'_>,
+) -> Result<ArtifactStatement, Vec<String>> {
+    let (_, _, statement) = map_statement_and_policy(input)?;
+    Ok(statement)
+}
+
 fn map_observation(
     observation: &ValenceArtifactAuthObservation<'_>,
 ) -> Result<(AuthenticationPolicy, AuthenticationScope, Vec<SignatureEvidence>), Vec<String>> {
-    let observed = observation.observed;
+    let input = ValenceArtifactAuthStatementInput {
+        observed: observation.observed,
+        related_target: observation.related_target,
+        profile_id: observation.profile_id,
+        profile_context: observation.profile_context,
+        generation: observation.generation,
+        currentness: observation.currentness,
+        currentness_context: observation.currentness_context,
+        protocol_key_identity_blake3: observation.protocol_key_identity_blake3,
+    };
+    let (policy, scope, statement) = map_statement_and_policy(&input)?;
+    let evidence = vec![SignatureEvidence {
+        statement,
+        generation: observation.generation,
+        cryptographic: observation.standalone_cryptographic.clone(),
+    }];
+    Ok((policy, scope, evidence))
+}
+
+fn map_statement_and_policy(
+    input: &ValenceArtifactAuthStatementInput<'_>,
+) -> Result<(AuthenticationPolicy, AuthenticationScope, ArtifactStatement), Vec<String>> {
+    let observed = input.observed;
     validate_oid(&observed.entry_oid, "entry_oid")?;
-    validate_oid(observation.related_target, "related_target")?;
-    if !observed.related_oids.iter().any(|oid| oid == observation.related_target) {
+    validate_oid(input.related_target, "related_target")?;
+    if !observed.related_oids.iter().any(|oid| oid == input.related_target) {
         return Err(vec!["related_target:not-observed".to_string()]);
     }
     let mut seen_parents = BTreeSet::new();
@@ -123,44 +168,41 @@ fn map_observation(
         }
         parents.push(hashed_ref(RADICLE_PARENT_PROFILE, PARENT_HASH_DOMAIN, parent));
     }
-    parents.push(hashed_ref(RADICLE_RELATED_PROFILE, RELATED_HASH_DOMAIN, observation.related_target));
-    if !valid_blake3_hex(observation.protocol_key_identity_blake3) {
+    parents.push(hashed_ref(RADICLE_RELATED_PROFILE, RELATED_HASH_DOMAIN, input.related_target));
+    if !valid_blake3_hex(input.protocol_key_identity_blake3) {
         return Err(vec!["protocol_key_identity_blake3:malformed".to_string()]);
     }
-    if observation.profile_id.is_empty()
-        || observation.profile_context.is_empty()
-        || observation.currentness_context.is_empty()
-    {
+    if input.profile_id.is_empty() || input.profile_context.is_empty() || input.currentness_context.is_empty() {
         return Err(vec!["profile_or_currentness_context:empty".to_string()]);
     }
     let key_identity = ArtifactRef {
         profile: ED25519_PUBLIC_KEY_PROFILE_V1.to_string(),
         algorithm: ALGORITHM_BLAKE3.to_string(),
-        digest_hex: observation.protocol_key_identity_blake3.to_string(),
+        digest_hex: input.protocol_key_identity_blake3.to_string(),
     };
     let scope = AuthenticationScope {
         domain: ARTIFACT_AUTH_DOMAIN.to_string(),
         purpose: ARTIFACT_AUTH_PURPOSE.to_string(),
-        profile_id: observation.profile_id.to_string(),
+        profile_id: input.profile_id.to_string(),
         subject: hashed_ref(RADICLE_ENTRY_PROFILE, ENTRY_HASH_DOMAIN, &observed.entry_oid),
         parents,
-        verifier_context: hashed_ref(VALENCE_PROFILE_CONTEXT, PROFILE_HASH_DOMAIN, observation.profile_context),
+        verifier_context: hashed_ref(VALENCE_PROFILE_CONTEXT, PROFILE_HASH_DOMAIN, input.profile_context),
     };
     let policy = AuthenticationPolicy {
         schema: POLICY_SCHEMA_V1.to_string(),
-        profile_id: observation.profile_id.to_string(),
+        profile_id: input.profile_id.to_string(),
         threshold: THRESHOLD_ONE,
         trusted_keys: vec![TrustedKeyObservation {
             producer_id: observed.signer.clone(),
             key_id: observed.signer.clone(),
             key_identity: key_identity.clone(),
             allowed_purposes: vec![ARTIFACT_AUTH_PURPOSE.to_string()],
-            generation: observation.generation,
-            currentness: observation.currentness,
+            generation: input.generation,
+            currentness: input.currentness,
             currentness_ref: hashed_ref(
                 VALENCE_CURRENTNESS_CONTEXT,
                 CURRENTNESS_HASH_DOMAIN,
-                observation.currentness_context,
+                input.currentness_context,
             ),
         }],
     };
@@ -171,12 +213,7 @@ fn map_observation(
         key_id: observed.signer.clone(),
         key_identity,
     };
-    let evidence = vec![SignatureEvidence {
-        statement,
-        generation: observation.generation,
-        cryptographic: observation.standalone_cryptographic.clone(),
-    }];
-    Ok((policy, scope, evidence))
+    Ok((policy, scope, statement))
 }
 
 fn compare(
@@ -184,6 +221,8 @@ fn compare(
     standalone: Option<&AuthenticationDecision>,
     mut blockers: Vec<String>,
 ) -> ValenceArtifactAuthCompatibility {
+    let protocol_causes = protocol_failure_causes(observation.observed);
+    let standalone_causes = standalone.map_or_else(BTreeSet::new, standalone_failure_causes);
     let protocol_passed = observation.observed.signature_valid;
     let standalone_passed = standalone.is_some_and(|decision| decision.passed);
     let decision_drift = standalone.is_some() && protocol_passed != standalone_passed;
@@ -202,6 +241,9 @@ fn compare(
     if non_claim_drift {
         blockers.push("non-claim-drift".to_string());
     }
+    if !protocol_passed && !standalone_passed && protocol_causes.is_disjoint(&standalone_causes) {
+        blockers.push("unrelated-rejection-causes".to_string());
+    }
     if !protocol_passed && !standalone_passed && observation.observed.decode_issue.is_some() {
         blockers.push("unrelated-protocol-and-decode-failures".to_string());
     }
@@ -217,12 +259,45 @@ fn compare(
         } else {
             "protocol-vs-standalone-taxonomy".to_string()
         },
+        protocol_failure_causes: protocol_causes.into_iter().collect(),
+        standalone_failure_causes: standalone_causes.into_iter().collect(),
         non_claim_drift,
         blockers,
         legacy_authoritative: true,
         standalone_authority_admitted: false,
         rollback_available: true,
     }
+}
+
+fn protocol_failure_causes(observed: &ObservedCobEvent) -> BTreeSet<String> {
+    let mut causes = BTreeSet::new();
+    if !observed.signature_valid {
+        causes.insert("signature".to_string());
+    }
+    if observed.decode_issue.is_some() {
+        causes.insert("decode".to_string());
+    }
+    causes
+}
+
+fn standalone_failure_causes(decision: &AuthenticationDecision) -> BTreeSet<String> {
+    decision.issues.iter().map(|issue| standalone_issue_class(&issue.code)).collect()
+}
+
+fn standalone_issue_class(issue_code: &str) -> String {
+    if issue_code.contains("crypto") || issue_code.contains("signature") || issue_code.contains("ed25519") {
+        return "signature".to_string();
+    }
+    if issue_code.contains("current") || issue_code.contains("unknown") || issue_code.contains("revoked") {
+        return "currentness".to_string();
+    }
+    if issue_code.contains("generation") {
+        return "generation".to_string();
+    }
+    if issue_code.contains("identity") || issue_code.contains("key") {
+        return "signer-identity".to_string();
+    }
+    "standalone-policy".to_string()
 }
 
 fn validate_oid(value: &str, field: &str) -> Result<(), Vec<String>> {
