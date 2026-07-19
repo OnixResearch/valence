@@ -149,6 +149,18 @@ The adapter does not checkout, stage, commit tracked source, update `HEAD`, crea
 
 A branch-only clone is not a sidecar backup. Backups must retain the repository object database and `refs/rad/*/cobs/org.onixresearch.valence.evidence/*` refs, plus referenced external evidence and authorization/profile inputs. After restore, run snapshot materialization and offline verification and compare target, sidecar-tip, materialized-state, profile, authorization, and receipt identities to the retained snapshot. Availability, replication, and disaster recovery remain operator responsibilities.
 
+## Standalone artifact-auth compatibility
+
+Valence pins `artifact-auth-core` from `ssh://git@github.com/OnixResearch/artifact-auth.git` at revision `799459346d5416fbd7b9f55840a7371441b55afa`. Cargo and the non-flake Nix input must resolve that same full revision; flake evaluation rejects duplicate lock packages, source mismatch, or a standalone license other than `MIT OR Apache-2.0`. SSH credentials authorize retrieval only.
+
+`valence_core::artifact_auth` is a pure one-way adapter over an already protocol-observed `ObservedCobEvent`. It BLAKE3-binds the exact Radicle entry, parent, related-target, profile-context, and currentness strings while retaining the original Radicle/Git identities in the report. A separate full-key BLAKE3 identity and `CryptographicObservation` must authenticate the exact standalone statement. `signature_valid` is Radicle protocol evidence and is never reused as standalone Ed25519 proof.
+
+Dual-run output classifies protocol-versus-standalone preimages, full-key identity, decisions, issue taxonomy, non-claims, malformed/lossy OIDs, unobserved related targets, unknown currentness, and unrelated decode/signature failure masking. `legacy_authoritative` and `rollback_available` remain true; `standalone_authority_admitted` remains false. Runtime cutover is rejected until a later change adds shell integration and current operational evidence without replacing Radicle verification.
+
+To update, review the candidate standalone release and `config/consumers/valence.ncl`, change the exact Cargo/Nix revisions together, regenerate `Cargo.lock` with Cargo and `flake.lock` with Nix, and rerun core/Radicle tests, strict Clippy, Cairn validation, and Nix checks. Runtime rollback stops supplying standalone observations. Dependency rollback restores the last reviewed declarations as one VCS change and regenerates both locks with their owning tools. Never edit a lock manually.
+
+Standalone success proves neither actor authorization, Evidence IR identity or role correctness, COB reduction, Git integrity, lifecycle handoff, nor release eligibility. Those remain Valence-owned decisions.
+
 ## Dependency upgrades and project split
 
 `radicle-cob` is exact-pinned because its pre-1.0 storage and evaluator APIs are compatibility-sensitive. Upgrade only with a reviewed dependency diff, local create/list/update round trip, signature negatives, multi-root convergence, embed/reference tests, and repository-ref confinement checks.

@@ -2,10 +2,37 @@
   description = "Valence Evidence IR";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.artifact-auth-src = {
+    url = "git+ssh://git@github.com/OnixResearch/artifact-auth.git?rev=799459346d5416fbd7b9f55840a7371441b55afa";
+    flake = false;
+  };
 
   outputs =
-    { self, nixpkgs }:
+    {
+      self,
+      nixpkgs,
+      artifact-auth-src,
+    }:
     let
+      artifactAuthRevision = "799459346d5416fbd7b9f55840a7371441b55afa";
+      artifactAuthCargoDependency =
+        (builtins.fromTOML (builtins.readFile ./Cargo.toml)).workspace.dependencies.artifact-auth-core;
+      artifactAuthLockPackages = builtins.filter (
+        package: package.name == "artifact-auth-core"
+      ) (builtins.fromTOML (builtins.readFile ./Cargo.lock)).package;
+      artifactAuthExpectedLockSource =
+        "git+ssh://git@github.com/OnixResearch/artifact-auth.git?rev=${artifactAuthRevision}#${artifactAuthRevision}";
+      artifactAuthWorkspace = builtins.fromTOML (builtins.readFile (artifact-auth-src + "/Cargo.toml"));
+      artifactAuthSourceAdmitted =
+        assert nixpkgs.lib.assertMsg (
+          artifactAuthCargoDependency.git == "ssh://git@github.com/OnixResearch/artifact-auth.git"
+          && artifactAuthCargoDependency.rev == artifactAuthRevision
+          && artifact-auth-src.rev == artifactAuthRevision
+          && builtins.length artifactAuthLockPackages == 1
+          && (builtins.head artifactAuthLockPackages).source == artifactAuthExpectedLockSource
+          && artifactAuthWorkspace.workspace.package.license == "MIT OR Apache-2.0"
+        ) "Valence artifact-auth Cargo/Nix source identity, uniqueness, or license drifted";
+        true;
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -18,7 +45,10 @@
           pname = "valence";
           version = "0.1.0";
           src = self;
-          cargoLock.lockFile = ./Cargo.lock;
+          cargoLock = {
+            lockFile = ./Cargo.lock;
+            allowBuiltinFetchGit = artifactAuthSourceAdmitted;
+          };
           cargoBuildFlags = [
             "-p"
             "valence-cli"
@@ -31,7 +61,10 @@
           pname = "valence-radicle";
           version = "0.1.0";
           src = self;
-          cargoLock.lockFile = ./Cargo.lock;
+          cargoLock = {
+            lockFile = ./Cargo.lock;
+            allowBuiltinFetchGit = artifactAuthSourceAdmitted;
+          };
           cargoBuildFlags = [
             "-p"
             "valence-radicle"
@@ -60,7 +93,10 @@
           pname = "valence-test";
           version = "0.1.0";
           src = self;
-          cargoLock.lockFile = ./Cargo.lock;
+          cargoLock = {
+            lockFile = ./Cargo.lock;
+            allowBuiltinFetchGit = artifactAuthSourceAdmitted;
+          };
           doCheck = true;
           nativeBuildInputs = [ pkgs.pkg-config ];
           buildInputs = [ ];

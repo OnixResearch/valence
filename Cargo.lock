@@ -84,6 +84,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3fb67a6e08acf24fdeccbac2cb6ac4305825bd1f117462e0e6f2f193345ad56"
 
 [[package]]
+name = "artifact-auth-core"
+version = "0.1.0"
+source = "git+ssh://git@github.com/OnixResearch/artifact-auth.git?rev=799459346d5416fbd7b9f55840a7371441b55afa#799459346d5416fbd7b9f55840a7371441b55afa"
+dependencies = [
+ "blake3",
+ "serde",
+]
+
+[[package]]
 name = "ascii"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1949,6 +1958,7 @@ dependencies = [
 name = "valence-core"
 version = "0.1.0"
 dependencies = [
+ "artifact-auth-core",
  "blake3",
  "hegeltest",
  "iddqd",

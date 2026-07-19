@@ -2,6 +2,9 @@
 //!
 //! # Current public modules
 //!
+//! - `artifact_auth`: maps already protocol-verified Radicle observations into bounded standalone
+//!   authentication decisions without transferring actor, Evidence IR, lifecycle, or release
+//!   authority.
 //! - `artifact_ref`: validates typed artifact references, digest spelling profiles, confined path
 //!   metadata, declared hash/size metadata, and public-field compatibility adapters over
 //!   already-loaded in-memory metadata.
@@ -50,6 +53,7 @@
 //! determinism, cross-toolchain determinism, external consumer compatibility, or
 //! general HIR/THIR/MIR extraction.
 
+pub mod artifact_auth;
 pub mod artifact_ref;
 pub mod ast_grep_evidence;
 pub mod capability_plan;

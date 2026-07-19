@@ -12,6 +12,7 @@ keywords = ["valence", "evidence", "ir", "blake3", "provenance"]
 categories = ["development-tools"]
 
 [dependencies]
+artifact-auth-core.workspace = true
 blake3.workspace = true
 iddqd.workspace = true
 serde.workspace = true
