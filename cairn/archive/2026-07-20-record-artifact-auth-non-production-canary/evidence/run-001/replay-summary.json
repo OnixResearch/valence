@@ -1,0 +1,10 @@
+{
+  "legacy_authoritative": true,
+  "phase": "restart-replay",
+  "receipt_stable_id": "blake3:7672dfa1941ed027f774561d0a99b2ad256eea8882b744b374a0c33bbc10aaaf",
+  "result": "pass",
+  "rollback_available": true,
+  "schema": "valence-artifact-auth-canary-summary-v1",
+  "standalone_authority_admitted": false,
+  "standalone_passed": true
+}

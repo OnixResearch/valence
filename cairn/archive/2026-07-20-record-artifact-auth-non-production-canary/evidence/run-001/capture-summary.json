@@ -1,0 +1,14 @@
+{
+  "initial_entry_oid": "8cf3b718446ff7e110e0a0232fc5a9b28666dc02",
+  "legacy_authoritative": true,
+  "non_claim": "non-production signed COB canary evidence does not grant Radicle membership, global revocation, lifecycle, or release authority",
+  "operational_entry_oid": "1d0b818d63b2c7403a52d24acd56cb331447758f",
+  "phase": "capture",
+  "receipt_stable_id": "blake3:7672dfa1941ed027f774561d0a99b2ad256eea8882b744b374a0c33bbc10aaaf",
+  "result": "pass",
+  "rollback_available": true,
+  "schema": "valence-artifact-auth-canary-summary-v1",
+  "signer_source": "ephemeral-memory-ed25519-non-production",
+  "standalone_authority_admitted": false,
+  "verification_role": "recorded_only"
+}

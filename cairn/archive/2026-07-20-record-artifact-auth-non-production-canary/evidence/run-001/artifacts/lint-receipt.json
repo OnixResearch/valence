@@ -1,0 +1,16 @@
+{
+  "schema": "valence.evidence-ir.v1",
+  "artifact_kind": "ast-grep-lint-receipt-v1",
+  "stable_id": "canary:lint:durable-unwrap",
+  "canonical_hash": "b3:43b870472efa1a26b41efd959f1fb1dd54f502a30ada550f287e33f20330dbb3",
+  "source_span": null,
+  "verification_role": "property",
+  "payload": {
+    "canary": true,
+    "finding": "unwrap",
+    "triaged": true
+  },
+  "non_claims": [
+    "does not claim behavioral correctness, semantic equivalence, or whole-program verification"
+  ]
+}

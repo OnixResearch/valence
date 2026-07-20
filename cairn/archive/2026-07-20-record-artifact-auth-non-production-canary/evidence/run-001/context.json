@@ -1,0 +1,11 @@
+{
+  "actor": "z6MkhbvtAcWM8eYUrgNGJXFMijgUNtLVqyp9gzhfXgvkcRbj",
+  "target": {
+    "repository_rid": "rad:z3gqcJUoA1n9HaHKufZs5FCSGazv5",
+    "type_name": "xyz.radicle.issue",
+    "object_id": "b265f31abf6074372769822d240274a99cb01225"
+  },
+  "initial_entry_oid": "8cf3b718446ff7e110e0a0232fc5a9b28666dc02",
+  "operational_entry_oid": "1d0b818d63b2c7403a52d24acd56cb331447758f",
+  "receipt_stable_id": "blake3:7672dfa1941ed027f774561d0a99b2ad256eea8882b744b374a0c33bbc10aaaf"
+}

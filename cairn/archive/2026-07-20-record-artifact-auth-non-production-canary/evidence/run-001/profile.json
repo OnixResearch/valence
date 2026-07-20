@@ -1,0 +1,48 @@
+{
+  "schema": "valence.radicle-cob-evidence.profile.v1",
+  "cob_type": "org.onixresearch.valence.evidence",
+  "root_schema": "valence.radicle-cob-evidence.root.v1",
+  "event_schema": "valence.radicle-cob-evidence.event.v1",
+  "binding_schema": "valence.radicle-cob-evidence.binding.v1",
+  "snapshot_schema": "valence.radicle-cob-evidence.snapshot.v1",
+  "authorization_schema": "valence.radicle-cob-evidence.authorization.v1",
+  "relationships": [
+    "context_for",
+    "disposition_for",
+    "evidence_against",
+    "evidence_for"
+  ],
+  "actor_roles": [
+    {
+      "role": "attacher",
+      "operations": [
+        "attach",
+        "initialize"
+      ]
+    },
+    {
+      "role": "maintainer",
+      "operations": [
+        "attach",
+        "initialize",
+        "revoke",
+        "supersede"
+      ]
+    }
+  ],
+  "embed_policy": {
+    "max_bytes": 65536,
+    "media_types": [
+      "application/json"
+    ],
+    "allowed_reference_confidentiality": [
+      "public",
+      "restricted"
+    ]
+  },
+  "required_non_claims": [
+    "attaching evidence records identity and linkage only; it does not prove target correctness, authorize a waiver or disposition, satisfy a requirement, or establish lifecycle or release readiness",
+    "supersession and revocation change accepted state but do not promise deletion of replicated Git or Radicle history",
+    "Radicle selective replication is not an at-rest encryption or secret-storage guarantee"
+  ]
+}

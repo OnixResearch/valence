@@ -1,0 +1,8 @@
+{
+  "error": "invalid adapter input: artifact-auth operational currentness requires actor authorization",
+  "phase": "authorization-removal",
+  "result": "expected-denial",
+  "rollback_available": true,
+  "schema": "valence-artifact-auth-canary-summary-v1",
+  "standalone_authority_admitted": false
+}

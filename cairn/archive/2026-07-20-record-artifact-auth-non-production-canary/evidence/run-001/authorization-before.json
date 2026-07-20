@@ -1,0 +1,11 @@
+{
+  "schema": "valence.radicle-cob-evidence.authorization.v1",
+  "sidecar_profile_hash": "b3:fcdcbca4e7501dfd23897c0f518c5f7b8a43ce468aa499c81da2ee56f37ef73e",
+  "bindings": [
+    {
+      "signer": "z6MkhbvtAcWM8eYUrgNGJXFMijgUNtLVqyp9gzhfXgvkcRbj",
+      "role": "maintainer"
+    }
+  ],
+  "authorization_hash": "b3:8d36c6428dc62e796ff83002fb3a028b7bccf9a5917698457c49fea84bd1f63b"
+}
