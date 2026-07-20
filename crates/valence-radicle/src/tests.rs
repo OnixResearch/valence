@@ -12,6 +12,8 @@ use valence_core::cob_evidence::AttachmentStatus;
 use valence_core::cob_evidence::CobOperation;
 use valence_core::cob_evidence::ConfidentialityClass;
 use valence_core::cob_evidence::EVIDENCE_NON_CLAIM;
+use valence_core::cob_evidence::ObservedCobEvent;
+use valence_core::evidence_ir::EvidenceArtifact;
 use valence_core::evidence_ir::REQUIRED_NON_CLAIM;
 use valence_core::evidence_ir::VerificationRole;
 use valence_core::evidence_ir::build_evidence_artifact;
@@ -607,6 +609,170 @@ fn dedicated_artifact_auth_signature_rejects_protocol_tamper_key_currentness_and
             .blockers
             .contains(&"unrelated-protocol-and-decode-failures".to_owned())
     );
+}
+
+// r[verify valence.artifact_auth_operational_receipt.currentness]
+// r[verify valence.artifact_auth_operational_receipt.identity]
+// r[verify valence.artifact_auth_operational_receipt.persistence]
+// r[verify valence.artifact_auth_operational_receipt.authority]
+#[test]
+fn artifact_auth_operational_receipt_is_capability_written_cob_attached_and_replayed() {
+    const OPERATIONAL_LOCATOR: &str = "artifact-auth-operational.json";
+
+    let fixture = Fixture::new();
+    let store = fixture.store();
+    let artifact_root = fixture.artifact_root();
+    let initial = prepare_mutation(
+        &store,
+        &fixture.profile,
+        &fixture.authorization,
+        &artifact_root,
+        fixture.attach_request(RequestedPayloadMode::ReferenceOnly),
+    )
+    .expect("prepare initial evidence");
+    let initial_result =
+        execute_mutation(&store, &fixture.profile, &fixture.signer, initial).expect("execute initial evidence");
+    let observed = ObservedCobEvent {
+        sidecar_object_id: initial_result.sidecar_object_id.clone(),
+        entry_oid: initial_result.entry_oid.clone(),
+        operation_index: 0,
+        parent_oids: Vec::new(),
+        related_oids: vec![fixture.target.object_id.clone()],
+        signer: fixture.signer.public_key().to_string(),
+        signature_valid: true,
+        event: None,
+        decode_issue: None,
+    };
+    let key_identity = artifact_auth_ed25519::public_key_identity(&fixture.signer.public_key().to_byte_array());
+    let authorization_observation_ref = valence_authorization_observation_ref(&fixture.authorization);
+    let operational_input = ValenceArtifactAuthOperationalInput {
+        observed: &observed,
+        related_target: &fixture.target.object_id,
+        profile_id: "valence-radicle-cob-artifact-auth-v1",
+        profile_context: "org.onixresearch.valence.evidence:v1",
+        protocol_key_identity_blake3: &key_identity.digest_hex,
+        evidence_profile: &fixture.profile,
+        authorization: &fixture.authorization,
+        operation: CobOperation::Attach,
+        authorization_observation_ref: &authorization_observation_ref,
+    };
+    let artifact = capture_valence_artifact_auth_operational_artifact(&fixture.signer, &operational_input)
+        .expect("capture operational artifact");
+    let artifact_bytes = serde_json::to_vec_pretty(&artifact).expect("serialize operational artifact");
+    artifact_root.write(OPERATIONAL_LOCATOR, &artifact_bytes).expect("capability-root write");
+
+    let mut attach = fixture.attach_request(RequestedPayloadMode::ReferenceOnly);
+    let MutationRequestAction::Attach(request) = &mut attach.action else {
+        panic!("fixture attach request");
+    };
+    request.artifact_locator = OPERATIONAL_LOCATOR.to_owned();
+    let prepared = prepare_mutation(&store, &fixture.profile, &fixture.authorization, &artifact_root, attach)
+        .expect("prepare operational attachment");
+    assert!(prepared.plan.valid, "{:?}", prepared.plan.issues);
+    let persisted =
+        execute_mutation(&store, &fixture.profile, &fixture.signer, prepared).expect("persist operational attachment");
+    assert_ne!(persisted.entry_oid, initial_result.entry_oid);
+
+    let materialized =
+        materialize_snapshot(&store, &fixture.profile, &fixture.authorization, &artifact_root, fixture.target.clone())
+            .expect("materialize persisted receipt");
+    assert!(materialized.adapter_issues.is_empty(), "{:?}", materialized.adapter_issues);
+    let snapshot = materialized.report.snapshot.expect("valid snapshot");
+    assert!(
+        snapshot
+            .accepted_attachments
+            .iter()
+            .any(|accepted| accepted.attachment.artifact.stable_id == artifact.stable_id)
+    );
+
+    let reopened_bytes = artifact_root.read(OPERATIONAL_LOCATOR).expect("reopen capability-root artifact");
+    let reopened = serde_json::from_slice::<EvidenceArtifact>(&reopened_bytes).expect("parse reopened artifact");
+    let replay = replay_valence_artifact_auth_operational_artifact(&operational_input, &reopened)
+        .expect("replay persisted operational receipt");
+    assert!(replay.dual_run.standalone.as_ref().is_some_and(|decision| decision.passed));
+    assert!(replay.dual_run.compatibility.legacy_authoritative);
+    assert!(!replay.dual_run.compatibility.standalone_authority_admitted);
+    assert!(replay.dual_run.compatibility.rollback_available);
+}
+
+// r[verify valence.artifact_auth_operational_receipt.currentness]
+// r[verify valence.artifact_auth_operational_receipt.identity]
+// r[verify valence.artifact_auth_operational_receipt.persistence]
+#[test]
+fn artifact_auth_operational_receipt_rejects_sequence_authorization_operation_and_payload_drift() {
+    let fixture = Fixture::new();
+    let observed = ObservedCobEvent {
+        sidecar_object_id: "1111111111111111111111111111111111111111".to_owned(),
+        entry_oid: "2222222222222222222222222222222222222222".to_owned(),
+        operation_index: 0,
+        parent_oids: Vec::new(),
+        related_oids: vec![fixture.target.object_id.clone()],
+        signer: fixture.signer.public_key().to_string(),
+        signature_valid: true,
+        event: None,
+        decode_issue: None,
+    };
+    let key_identity = artifact_auth_ed25519::public_key_identity(&fixture.signer.public_key().to_byte_array());
+    let authorization_observation_ref = valence_authorization_observation_ref(&fixture.authorization);
+    let input = ValenceArtifactAuthOperationalInput {
+        observed: &observed,
+        related_target: &fixture.target.object_id,
+        profile_id: "valence-radicle-cob-artifact-auth-v1",
+        profile_context: "org.onixresearch.valence.evidence:v1",
+        protocol_key_identity_blake3: &key_identity.digest_hex,
+        evidence_profile: &fixture.profile,
+        authorization: &fixture.authorization,
+        operation: CobOperation::Attach,
+        authorization_observation_ref: &authorization_observation_ref,
+    };
+    let artifact = capture_valence_artifact_auth_operational_artifact(&fixture.signer, &input)
+        .expect("capture operational artifact");
+
+    let mut overflow_event = observed.clone();
+    overflow_event.operation_index = u32::MAX;
+    let overflow_input = ValenceArtifactAuthOperationalInput {
+        observed: &overflow_event,
+        ..input
+    };
+    let overflow = derive_valence_artifact_auth_operational_shell_input(&overflow_input)
+        .expect_err("operation sequence overflow rejected");
+    assert!(overflow.to_string().contains("generation overflow"));
+
+    let unauthorized =
+        valence_core::cob_evidence::build_authorization_profile(&profile_identity(&fixture.profile), Vec::new());
+    let unauthorized_input = ValenceArtifactAuthOperationalInput {
+        authorization: &unauthorized,
+        ..input
+    };
+    let denied = derive_valence_artifact_auth_operational_shell_input(&unauthorized_input)
+        .expect_err("removed actor authorization rejected");
+    assert!(denied.to_string().contains("requires actor authorization"));
+
+    let operation_input = ValenceArtifactAuthOperationalInput {
+        operation: CobOperation::Supersede,
+        ..input
+    };
+    let operation_drift = replay_valence_artifact_auth_operational_artifact(&operation_input, &artifact)
+        .expect_err("operation drift rejected");
+    assert!(operation_drift.to_string().contains("replay drifted"));
+
+    let mut tampered = artifact.clone();
+    tampered.payload["authorization_hash"] =
+        serde_json::Value::String("blake3:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".to_owned());
+    let payload_drift =
+        replay_valence_artifact_auth_operational_artifact(&input, &tampered).expect_err("payload drift rejected");
+    assert!(payload_drift.to_string().contains("Evidence IR is invalid"));
+
+    let mut stale_authorization = fixture.authorization.clone();
+    stale_authorization.authorization_hash =
+        "b3:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".to_owned();
+    let stale_input = ValenceArtifactAuthOperationalInput {
+        authorization: &stale_authorization,
+        ..input
+    };
+    let stale = derive_valence_artifact_auth_operational_shell_input(&stale_input)
+        .expect_err("stale authorization identity rejected");
+    assert!(stale.to_string().contains("stale_authorization_hash"));
 }
 
 fn create_independent_sidecar(
