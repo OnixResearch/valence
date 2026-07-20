@@ -632,17 +632,24 @@ fn artifact_auth_operational_receipt_is_capability_written_cob_attached_and_repl
     .expect("prepare initial evidence");
     let initial_result =
         execute_mutation(&store, &fixture.profile, &fixture.signer, initial).expect("execute initial evidence");
-    let observed = ObservedCobEvent {
-        sidecar_object_id: initial_result.sidecar_object_id.clone(),
-        entry_oid: initial_result.entry_oid.clone(),
-        operation_index: 0,
-        parent_oids: Vec::new(),
-        related_oids: vec![fixture.target.object_id.clone()],
-        signer: fixture.signer.public_key().to_string(),
-        signature_valid: true,
-        event: None,
-        decode_issue: None,
-    };
+    let observed = load_target_sidecars(&store, &fixture.profile, &fixture.target)
+        .expect("reload signed sidecar")
+        .into_iter()
+        .flat_map(|sidecar| sidecar.events.into_iter())
+        .map(|event| event.observed)
+        .find(|event| {
+            event.entry_oid == initial_result.entry_oid
+                && matches!(
+                    &event.event,
+                    Some(CobEvent {
+                        action: CobEventAction::Attach(_),
+                        ..
+                    })
+                )
+        })
+        .expect("reload signed attachment event");
+    assert!(observed.signature_valid);
+    assert_eq!(observed.sidecar_object_id, initial_result.sidecar_object_id);
     let key_identity = artifact_auth_ed25519::public_key_identity(&fixture.signer.public_key().to_byte_array());
     let authorization_observation_ref = valence_authorization_observation_ref(&fixture.authorization);
     let operational_input = ValenceArtifactAuthOperationalInput {
