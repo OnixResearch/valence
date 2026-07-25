@@ -86,9 +86,9 @@ let receipt | CutoverReceipt = {
     source_archive_blake3 = "246a7cad91e7e8a158e22da21f3bff3e61aa0431a58936b5a739178bc62064c7",
   },
   publication = {
-    revision = "b4343c1a1217de67726b259b5909657d720f09fd",
+    revision = "b5d26329d2f568e9602f53acc2b6c167e30c1cb5",
     receipt_type = "artifact-auth.radicle-publication.v1",
-    receipt_blake3 = "ac9bc126ea66c4ea9debcc320f88df667b8c5559a06eea97437f4e195d815fc2",
+    receipt_blake3 = "e58a3de4d6b3b32a547c3cfe5c3e829292cda73891c7776f214f5d4edce10b1c",
     status = "accepted",
   },
   cargo = {
@@ -144,7 +144,7 @@ let receipt | CutoverReceipt = {
     "release-readiness",
   ],
   evidence = [
-    "cairn/changes/consume-artifact-auth-from-radicle/evidence/source-cutover-2026-07-25.md",
+    "cairn/archive/2026-07-25-consume-artifact-auth-from-radicle/evidence/source-cutover-2026-07-25.md",
     "evidence/radicle/artifact-auth-cutover-v1.json",
     "artifact-auth:evidence/radicle/publication-v1.json",
     "onix-core:evidence/radicle/source-admission-v1.json",

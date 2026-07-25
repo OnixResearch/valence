@@ -2,7 +2,7 @@
 
 Valence now resolves `artifact-auth-core` and `artifact-auth-ed25519` from `https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git` at unchanged revision `799459346d5416fbd7b9f55840a7371441b55afa`. The source archive BLAKE3 remains `246a7cad91e7e8a158e22da21f3bff3e61aa0431a58936b5a739178bc62064c7`.
 
-The accepted artifact-auth publication receipt at revision `b4343c1a1217de67726b259b5909657d720f09fd` has BLAKE3 `ac9bc126ea66c4ea9debcc320f88df667b8c5559a06eea97437f4e195d815fc2`.
+The accepted artifact-auth publication receipt at archived revision `b5d26329d2f568e9602f53acc2b6c167e30c1cb5` has BLAKE3 `e58a3de4d6b3b32a547c3cfe5c3e829292cda73891c7776f214f5d4edce10b1c`.
 
 ## Lock agreement
 
