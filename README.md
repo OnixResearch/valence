@@ -209,6 +209,10 @@ Focused fast, deep, Hegel, and nightly lanes are documented in the
 `contracts/` provide static preflight checks; Rust remains responsible for
 runtime parsing, capability-confined I/O, and measured-byte identity.
 
+### artifact-auth source transport
+
+Cargo and Nix resolve the frozen `artifact-auth` revision `799459346d5416fbd7b9f55840a7371441b55afa` through `https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git`. The typed cutover receipt is [`evidence/radicle/artifact-auth-cutover-v1.ncl`](evidence/radicle/artifact-auth-cutover-v1.ncl). There is no executable GitHub fallback; an unavailable admitted source fails visibly.
+
 ## Project status and compatibility
 
 Valence is under active development. Explicitly documented schema and identity

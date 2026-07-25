@@ -1,0 +1,5 @@
+- [x] [serial] Bind the accepted artifact-auth publication receipt and exact Radicle HTTPS source. r[valence.artifact_auth_adoption.radicle_transport]
+- [x] [serial] Cut Cargo and Nix manifests and owning-tool lockfiles over without revision or content drift. r[valence.artifact_auth_adoption.lock_agreement]
+- [x] [parallel] Run focused mapping, workspace, no-std, formatting, and Clippy checks before and after cutover. r[valence.artifact_auth_adoption.behavior]
+- [x] [serial] Prove GitHub fallback, mismatched RID/revision, and changed lock identity are rejected. r[valence.artifact_auth_adoption.fallback]
+- [ ] [serial] Emit a typed BLAKE3 cutover receipt, sync the accepted spec, and archive at the bounded claim boundary. r[valence.artifact_auth_adoption.radicle_evidence]

@@ -3,7 +3,7 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.artifact-auth-src = {
-    url = "git+ssh://git@github.com/OnixResearch/artifact-auth.git?rev=799459346d5416fbd7b9f55840a7371441b55afa";
+    url = "git+https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git?rev=799459346d5416fbd7b9f55840a7371441b55afa";
     flake = false;
   };
 
@@ -15,7 +15,7 @@
     }:
     let
       artifactAuthRevision = "799459346d5416fbd7b9f55840a7371441b55afa";
-      artifactAuthRepository = "ssh://git@github.com/OnixResearch/artifact-auth.git";
+      artifactAuthRepository = "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git";
       artifactAuthWorkspaceDependencies =
         (builtins.fromTOML (builtins.readFile ./Cargo.toml)).workspace.dependencies;
       artifactAuthCargoDependencies = [
@@ -26,8 +26,7 @@
         "artifact-auth-core"
         "artifact-auth-ed25519"
       ];
-      artifactAuthExpectedLockSource =
-        "git+ssh://git@github.com/OnixResearch/artifact-auth.git?rev=${artifactAuthRevision}#${artifactAuthRevision}";
+      artifactAuthExpectedLockSource = "git+https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git?rev=${artifactAuthRevision}#${artifactAuthRevision}";
       artifactAuthLockPackages = builtins.filter (
         package: (package.source or "") == artifactAuthExpectedLockSource
       ) (builtins.fromTOML (builtins.readFile ./Cargo.lock)).package;
@@ -36,9 +35,7 @@
       artifactAuthSourceAdmitted =
         assert nixpkgs.lib.assertMsg (
           builtins.all (
-            dependency:
-            dependency.git == artifactAuthRepository
-            && dependency.rev == artifactAuthRevision
+            dependency: dependency.git == artifactAuthRepository && dependency.rev == artifactAuthRevision
           ) artifactAuthCargoDependencies
           && artifact-auth-src.rev == artifactAuthRevision
           && builtins.length artifactAuthLockPackages == builtins.length artifactAuthRequiredPackages
@@ -116,6 +113,73 @@
           nativeBuildInputs = [ pkgs.pkg-config ];
           buildInputs = [ ];
         };
+
+        artifact-auth-radicle-cutover =
+          assert artifactAuthSourceAdmitted;
+          pkgs.runCommand "valence-artifact-auth-radicle-cutover"
+            {
+              nativeBuildInputs = [
+                pkgs.b3sum
+                pkgs.jq
+                pkgs.nickel
+                pkgs.ripgrep
+              ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+
+              nickel typecheck evidence/radicle/artifact-auth-cutover-v1.ncl
+              nickel typecheck lib/artifact-auth-cutover-receipt.ncl
+              nickel export --format json tests/artifact-auth-cutover.ncl > "$TMPDIR/tests.json"
+              grep -Fq '"tests": true' "$TMPDIR/tests.json"
+
+              nickel export --format json evidence/radicle/artifact-auth-cutover-v1.ncl > "$TMPDIR/cutover.json"
+              jq -S . "$TMPDIR/cutover.json" > "$TMPDIR/cutover.normalized.json"
+              jq -S . evidence/radicle/artifact-auth-cutover-v1.json > "$TMPDIR/evidence.normalized.json"
+              cmp "$TMPDIR/cutover.normalized.json" "$TMPDIR/evidence.normalized.json"
+
+              receipt_hash="$(b3sum evidence/radicle/artifact-auth-cutover-v1.json | cut -d ' ' -f 1)"
+              expected_receipt_hash="$(tr -d '\n' < evidence/radicle/artifact-auth-cutover-v1.blake3)"
+              test "$receipt_hash" = "$expected_receipt_hash"
+
+              for binding in \
+                'cargo.manifest_blake3:Cargo.toml' \
+                'cargo.lock_blake3:Cargo.lock' \
+                'nix.flake_blake3:flake.nix' \
+                'nix.lock_blake3:flake.lock'; do
+                field="''${binding%%:*}"
+                path="''${binding#*:}"
+                expected="$(jq -r ".$field" evidence/radicle/artifact-auth-cutover-v1.json)"
+                actual="$(b3sum "$path" | cut -d ' ' -f 1)"
+                test "$actual" = "$expected"
+              done
+
+              source_url='https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git'
+              source_rev='799459346d5416fbd7b9f55840a7371441b55afa'
+              source_nar_hash='sha256-nEgz2FtVuDesX95yyxidp0vhjxL4INB6Ve8rkpLyJk0='
+              jq -e \
+                --arg url "$source_url" \
+                --arg rev "$source_rev" \
+                --arg nar_hash "$source_nar_hash" \
+                '.nodes["artifact-auth-src"] as $source
+                 | $source.locked.url == $url
+                 and $source.original.url == $url
+                 and $source.locked.rev == $rev
+                 and $source.original.rev == $rev
+                 and $source.locked.narHash == $nar_hash' \
+                flake.lock >/dev/null
+
+              github_host='github.com'
+              forbidden_source="$github_host/OnixResearch/artifact-auth"
+              if rg -F "$forbidden_source" Cargo.toml Cargo.lock flake.nix flake.lock; then
+                echo 'executable artifact-auth GitHub fallback remains' >&2
+                exit 1
+              fi
+
+              touch "$out"
+            '';
 
         stack-provenance-nickel-contracts =
           pkgs.runCommand "stack-provenance-nickel-contracts"

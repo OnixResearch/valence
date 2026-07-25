@@ -1,0 +1,154 @@
+# Typed evidence for Valence's artifact-auth transport cutover.
+let CutoverReceipt = {
+  schema_version | Number,
+  receipt_type | String,
+  status | String,
+  observed_date | String,
+  source
+    | {
+      rid | String,
+      https_git | String,
+      reviewed_commit | String,
+      source_archive_blake3 | String,
+    },
+  publication
+    | {
+      revision | String,
+      receipt_type | String,
+      receipt_blake3 | String,
+      status | String,
+    },
+  cargo
+    | {
+      manifest_blake3 | String,
+      lock_blake3 | String,
+      lock_source | String,
+      packages | Array String,
+      package_version | String,
+      crate_graph_changed | Bool,
+    },
+  nix
+    | {
+      flake_blake3 | String,
+      lock_blake3 | String,
+      locked_url | String,
+      original_url | String,
+      locked_rev | String,
+      original_rev | String,
+      nar_hash | String,
+      nar_hash_preserved | Bool,
+    },
+  validation
+    | {
+      baseline_revision | String,
+      baseline_workspace | String,
+      post_cutover_workspace | String,
+      focused_positive_mapping | String,
+      focused_negative_mapping | String,
+      frozen_source_no_std | String,
+      formatting | String,
+      clippy | String,
+      source_agreement_positive | String,
+      source_agreement_negative | String,
+      rust_implementation_changed | Bool,
+    },
+  fallback
+    | {
+      manifest_github_source | Bool,
+      cargo_lock_github_source | Bool,
+      nix_input_github_source | Bool,
+      nix_lock_github_source | Bool,
+      automatic_fallback | Bool,
+      outage_result | String,
+    },
+  rollback
+    | {
+      automatic | Bool,
+      requires_owning_tool_lock_regeneration | Bool,
+      requires_source_identity_review | Bool,
+    },
+  non_claims | Array String,
+  evidence | Array String,
+}
+in
+let expected_reviewed_commit = "799459346d5416fbd7b9f55840a7371441b55afa" in
+let expected_https_git = "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git" in
+let expected_lock_source = "git+%{expected_https_git}?rev=%{expected_reviewed_commit}#%{expected_reviewed_commit}" in
+let receipt | CutoverReceipt = {
+  schema_version = 1,
+  receipt_type = "valence.artifact-auth-radicle-cutover.v1",
+  status = "accepted",
+  observed_date = "2026-07-25",
+  source = {
+    rid = "rad:z4JGYYW7WsesXUq7MXVdx16Fawu2f",
+    https_git = expected_https_git,
+    reviewed_commit = expected_reviewed_commit,
+    source_archive_blake3 = "246a7cad91e7e8a158e22da21f3bff3e61aa0431a58936b5a739178bc62064c7",
+  },
+  publication = {
+    revision = "b4343c1a1217de67726b259b5909657d720f09fd",
+    receipt_type = "artifact-auth.radicle-publication.v1",
+    receipt_blake3 = "ac9bc126ea66c4ea9debcc320f88df667b8c5559a06eea97437f4e195d815fc2",
+    status = "accepted",
+  },
+  cargo = {
+    manifest_blake3 = "45ff39f643cec55c40991acf67657cfc3835b60014201c804ab62c8391542fd0",
+    lock_blake3 = "855618624f1fadb4c5eca0e8c948a68aac8c56c2e1aaab265cb3c277c08e297a",
+    lock_source = expected_lock_source,
+    packages = ["artifact-auth-core", "artifact-auth-ed25519"],
+    package_version = "0.1.0",
+    crate_graph_changed = false,
+  },
+  nix = {
+    flake_blake3 = "d4a38c66262fb8e0e5c598fe45158f6c39fcee446abd51f3dd307c03049e757f",
+    lock_blake3 = "02fea0fd364148495be2b39d59522431c378a0acb6303d9c223f9900175ea27a",
+    locked_url = expected_https_git,
+    original_url = expected_https_git,
+    locked_rev = expected_reviewed_commit,
+    original_rev = expected_reviewed_commit,
+    nar_hash = "sha256-nEgz2FtVuDesX95yyxidp0vhjxL4INB6Ve8rkpLyJk0=",
+    nar_hash_preserved = true,
+  },
+  validation = {
+    baseline_revision = "70b36b91ec596915ae1a29aa3bbb53f0cba1ae48",
+    baseline_workspace = "passed",
+    post_cutover_workspace = "passed",
+    focused_positive_mapping = "passed",
+    focused_negative_mapping = "passed",
+    frozen_source_no_std = "passed",
+    formatting = "passed",
+    clippy = "passed",
+    source_agreement_positive = "passed",
+    source_agreement_negative = "passed",
+    rust_implementation_changed = false,
+  },
+  fallback = {
+    manifest_github_source = false,
+    cargo_lock_github_source = false,
+    nix_input_github_source = false,
+    nix_lock_github_source = false,
+    automatic_fallback = false,
+    outage_result = "visible-resolution-failure",
+  },
+  rollback = {
+    automatic = false,
+    requires_owning_tool_lock_regeneration = true,
+    requires_source_identity_review = true,
+  },
+  non_claims = [
+    "artifact-auth-source-correctness",
+    "whole-valence-behavior-correctness",
+    "forge-availability",
+    "automatic-fallback",
+    "whole-stack-github-independence",
+    "release-readiness",
+  ],
+  evidence = [
+    "cairn/changes/consume-artifact-auth-from-radicle/evidence/source-cutover-2026-07-25.md",
+    "evidence/radicle/artifact-auth-cutover-v1.json",
+    "artifact-auth:evidence/radicle/publication-v1.json",
+    "onix-core:evidence/radicle/source-admission-v1.json",
+  ],
+}
+in
+receipt
