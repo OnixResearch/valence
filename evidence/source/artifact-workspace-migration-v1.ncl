@@ -1,0 +1,128 @@
+# Typed evidence for Valence's unified Artifact source migration.
+let MigrationReceipt = {
+  schema_version | Number,
+  receipt_type | String,
+  status | String,
+  observed_date | String,
+  source | {
+    repository | String,
+    profile_repository | String,
+    revision | String,
+    nar_hash | String,
+    source_archive_blake3 | String,
+    license | String,
+    packages | Array String,
+  },
+  consumer | {
+    cargo_lock_source | String,
+    packages | Array String,
+    transfer_package_resolved | Bool,
+    binding_package_resolved | Bool,
+    cargo_nix_aligned | Bool,
+  },
+  parity | {
+    core_blake3 | String,
+    ed25519_blake3 | String,
+    directory_comparison | String,
+    rust_implementation_changed | Bool,
+  },
+  validation | {
+    baseline_revision | String,
+    baseline_core_test_count | Number,
+    baseline_shell_test_count | Number,
+    historical_receipt | String,
+    post_core | String,
+    post_shell | String,
+    no_std | String,
+    workspace | String,
+    formatting | String,
+    clippy | String,
+    source_admission_positive | String,
+    source_admission_negative | String,
+  },
+  history | {
+    repository | String,
+    revision | String,
+    receipt_blake3 | String,
+    status | String,
+  },
+  rollback | {
+    automatic | Bool,
+    requires_owning_tool_lock_regeneration | Bool,
+    requires_source_identity_review | Bool,
+  },
+  non_claims | Array String,
+  evidence | Array String,
+}
+in
+let source_revision = "e41340bec587b6d049b5cc518ec7db925dde84be" in
+let source_repository = "ssh://git@github.com/OnixResearch/onix-artifact.git" in
+let receipt | MigrationReceipt = {
+  schema_version = 1,
+  receipt_type = "valence.artifact-source-migration.v1",
+  status = "accepted",
+  observed_date = "2026-07-26",
+  source = {
+    repository = source_repository,
+    profile_repository = "https://github.com/OnixResearch/onix-artifact",
+    revision = source_revision,
+    nar_hash = "sha256-2cM912L2YXVnVX9LquwhAPKyjPP/z/oFQRe7Qq9bHHE=",
+    source_archive_blake3 = "8fc65f3d7968d76af419f08ac972955514c8256f8aa5ed90815d8bdcced28113",
+    license = "MIT OR Apache-2.0",
+    packages = ["artifact-auth-core", "artifact-auth-ed25519", "artifact-transfer-core"],
+  },
+  consumer = {
+    cargo_lock_source = "git+%{source_repository}?rev=%{source_revision}#%{source_revision}",
+    packages = ["artifact-auth-core", "artifact-auth-ed25519"],
+    transfer_package_resolved = false,
+    binding_package_resolved = false,
+    cargo_nix_aligned = true,
+  },
+  parity = {
+    core_blake3 = "839ea3e35429e2a1252020dd779b46ebd185b6911674036820da118d487d1d21",
+    ed25519_blake3 = "7fd3987fe3ddc6d30efca37878952135f19905a00b52f349db237054be6b3633",
+    directory_comparison = "identical",
+    rust_implementation_changed = false,
+  },
+  validation = {
+    baseline_revision = "4daa5030f2b0ace54c4c08b3a30ebd8cd0c57621",
+    baseline_core_test_count = 3,
+    baseline_shell_test_count = 4,
+    historical_receipt = "passed",
+    post_core = "passed",
+    post_shell = "passed",
+    no_std = "passed",
+    workspace = "passed",
+    formatting = "passed",
+    clippy = "passed",
+    source_admission_positive = "passed",
+    source_admission_negative = "passed",
+  },
+  history = {
+    repository = "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git",
+    revision = "799459346d5416fbd7b9f55840a7371441b55afa",
+    receipt_blake3 = "ef8d13a0cb8d560a99b79f91f9471350db774e8c3bf753d52fed7382f9bd85f7",
+    status = "historical-only",
+  },
+  rollback = {
+    automatic = false,
+    requires_owning_tool_lock_regeneration = true,
+    requires_source_identity_review = true,
+  },
+  non_claims = [
+    "artifact-source-correctness",
+    "whole-valence-behavior-correctness",
+    "forge-availability",
+    "automatic-fallback",
+    "whole-stack-github-independence",
+    "authorization",
+    "release-readiness",
+  ],
+  evidence = [
+    "cairn/changes/consume-artifact-auth-from-unified-workspace/evidence/source-migration-2026-07-26.md",
+    "evidence/source/artifact-workspace-migration-v1.json",
+    "evidence/radicle/artifact-auth-cutover-v1.json",
+  ],
+}
+in
+receipt

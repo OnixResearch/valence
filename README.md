@@ -211,7 +211,7 @@ runtime parsing, capability-confined I/O, and measured-byte identity.
 
 ### artifact-auth source transport
 
-Cargo and Nix resolve the frozen `artifact-auth` revision `799459346d5416fbd7b9f55840a7371441b55afa` through `https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git`. The typed cutover receipt is [`evidence/radicle/artifact-auth-cutover-v1.ncl`](evidence/radicle/artifact-auth-cutover-v1.ncl). There is no executable GitHub fallback; an unavailable admitted source fails visibly.
+Cargo and Nix resolve `artifact-auth-core` and `artifact-auth-ed25519` from the unified [`OnixResearch/onix-artifact`](https://github.com/OnixResearch/onix-artifact) workspace. Both tools pin revision `e41340bec587b6d049b5cc518ec7db925dde84be`. The typed [migration receipt](evidence/source/artifact-workspace-migration-v1.ncl) binds the source, package graph, byte parity, rollback, and non-claims. The prior [Radicle receipt](evidence/radicle/artifact-auth-cutover-v1.ncl) is historical evidence only. Valence does not select a second source if the admitted revision is unavailable.
 
 ## Project status and compatibility
 

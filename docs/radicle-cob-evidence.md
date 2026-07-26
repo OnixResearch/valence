@@ -151,7 +151,7 @@ A branch-only clone is not a sidecar backup. Backups must retain the repository 
 
 ## Standalone artifact-auth compatibility
 
-Valence pins `artifact-auth-core` and `artifact-auth-ed25519` from `ssh://git@github.com/OnixResearch/artifact-auth.git` at revision `799459346d5416fbd7b9f55840a7371441b55afa`. Cargo and the non-flake Nix input must resolve that same full revision and exact package set; flake evaluation rejects duplicate/missing packages, source mismatch, or a standalone license other than `MIT OR Apache-2.0`. SSH credentials authorize retrieval only.
+Valence pins `artifact-auth-core` and `artifact-auth-ed25519` from `ssh://git@github.com/OnixResearch/onix-artifact.git` at revision `e41340bec587b6d049b5cc518ec7db925dde84be`. Cargo and the non-flake Nix input must resolve that full revision. The source workspace must contain the three reviewed Artifact packages, but Valence's lock must contain only the two authentication packages. Flake evaluation rejects duplicate or missing packages, consumer graph widening, source or NAR mismatch, entry-point byte drift, and a source license other than `MIT OR Apache-2.0`. SSH credentials authorize retrieval only. The earlier Radicle source receipt remains historical evidence and is not an executable fallback.
 
 `valence_core::artifact_auth` is a pure one-way adapter over an already protocol-observed `ObservedCobEvent`. It BLAKE3-binds the exact Radicle entry, parent, related-target, profile-context, and currentness strings while retaining the original Radicle/Git identities in the report. `map_valence_artifact_auth_statement` exposes the exact signer-specific statement without signing or I/O.
 

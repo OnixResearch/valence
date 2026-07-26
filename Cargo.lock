@@ -86,7 +86,7 @@ checksum = "d3fb67a6e08acf24fdeccbac2cb6ac4305825bd1f117462e0e6f2f193345ad56"
 [[package]]
 name = "artifact-auth-core"
 version = "0.1.0"
-source = "git+https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git?rev=799459346d5416fbd7b9f55840a7371441b55afa#799459346d5416fbd7b9f55840a7371441b55afa"
+source = "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=e41340bec587b6d049b5cc518ec7db925dde84be#e41340bec587b6d049b5cc518ec7db925dde84be"
 dependencies = [
  "blake3",
  "serde",
@@ -95,7 +95,7 @@ dependencies = [
 [[package]]
 name = "artifact-auth-ed25519"
 version = "0.1.0"
-source = "git+https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git?rev=799459346d5416fbd7b9f55840a7371441b55afa#799459346d5416fbd7b9f55840a7371441b55afa"
+source = "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=e41340bec587b6d049b5cc518ec7db925dde84be#e41340bec587b6d049b5cc518ec7db925dde84be"
 dependencies = [
  "artifact-auth-core",
  "blake3",

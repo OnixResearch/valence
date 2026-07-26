@@ -1,0 +1,74 @@
+{
+  "consumer": {
+    "binding_package_resolved": false,
+    "cargo_lock_source": "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=e41340bec587b6d049b5cc518ec7db925dde84be#e41340bec587b6d049b5cc518ec7db925dde84be",
+    "cargo_nix_aligned": true,
+    "packages": [
+      "artifact-auth-core",
+      "artifact-auth-ed25519"
+    ],
+    "transfer_package_resolved": false
+  },
+  "evidence": [
+    "cairn/changes/consume-artifact-auth-from-unified-workspace/evidence/source-migration-2026-07-26.md",
+    "evidence/source/artifact-workspace-migration-v1.json",
+    "evidence/radicle/artifact-auth-cutover-v1.json"
+  ],
+  "history": {
+    "receipt_blake3": "ef8d13a0cb8d560a99b79f91f9471350db774e8c3bf753d52fed7382f9bd85f7",
+    "repository": "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git",
+    "revision": "799459346d5416fbd7b9f55840a7371441b55afa",
+    "status": "historical-only"
+  },
+  "non_claims": [
+    "artifact-source-correctness",
+    "whole-valence-behavior-correctness",
+    "forge-availability",
+    "automatic-fallback",
+    "whole-stack-github-independence",
+    "authorization",
+    "release-readiness"
+  ],
+  "observed_date": "2026-07-26",
+  "parity": {
+    "core_blake3": "839ea3e35429e2a1252020dd779b46ebd185b6911674036820da118d487d1d21",
+    "directory_comparison": "identical",
+    "ed25519_blake3": "7fd3987fe3ddc6d30efca37878952135f19905a00b52f349db237054be6b3633",
+    "rust_implementation_changed": false
+  },
+  "receipt_type": "valence.artifact-source-migration.v1",
+  "rollback": {
+    "automatic": false,
+    "requires_owning_tool_lock_regeneration": true,
+    "requires_source_identity_review": true
+  },
+  "schema_version": 1,
+  "source": {
+    "license": "MIT OR Apache-2.0",
+    "nar_hash": "sha256-2cM912L2YXVnVX9LquwhAPKyjPP/z/oFQRe7Qq9bHHE=",
+    "packages": [
+      "artifact-auth-core",
+      "artifact-auth-ed25519",
+      "artifact-transfer-core"
+    ],
+    "profile_repository": "https://github.com/OnixResearch/onix-artifact",
+    "repository": "ssh://git@github.com/OnixResearch/onix-artifact.git",
+    "revision": "e41340bec587b6d049b5cc518ec7db925dde84be",
+    "source_archive_blake3": "8fc65f3d7968d76af419f08ac972955514c8256f8aa5ed90815d8bdcced28113"
+  },
+  "status": "accepted",
+  "validation": {
+    "baseline_core_test_count": 3,
+    "baseline_revision": "4daa5030f2b0ace54c4c08b3a30ebd8cd0c57621",
+    "baseline_shell_test_count": 4,
+    "clippy": "passed",
+    "formatting": "passed",
+    "historical_receipt": "passed",
+    "no_std": "passed",
+    "post_core": "passed",
+    "post_shell": "passed",
+    "source_admission_negative": "passed",
+    "source_admission_positive": "passed",
+    "workspace": "passed"
+  }
+}

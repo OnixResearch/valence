@@ -2,8 +2,8 @@
   description = "Valence Evidence IR";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  inputs.artifact-auth-src = {
-    url = "git+https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git?rev=799459346d5416fbd7b9f55840a7371441b55afa";
+  inputs.artifact = {
+    url = "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=e41340bec587b6d049b5cc518ec7db925dde84be";
     flake = false;
   };
 
@@ -11,39 +11,39 @@
     {
       self,
       nixpkgs,
-      artifact-auth-src,
+      artifact,
     }:
     let
-      artifactAuthRevision = "799459346d5416fbd7b9f55840a7371441b55afa";
-      artifactAuthRepository = "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git";
-      artifactAuthWorkspaceDependencies =
-        (builtins.fromTOML (builtins.readFile ./Cargo.toml)).workspace.dependencies;
-      artifactAuthCargoDependencies = [
-        artifactAuthWorkspaceDependencies.artifact-auth-core
-        artifactAuthWorkspaceDependencies.artifact-auth-ed25519
-      ];
-      artifactAuthRequiredPackages = [
-        "artifact-auth-core"
-        "artifact-auth-ed25519"
-      ];
-      artifactAuthExpectedLockSource = "git+https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git?rev=${artifactAuthRevision}#${artifactAuthRevision}";
-      artifactAuthLockPackages = builtins.filter (
-        package: (package.source or "") == artifactAuthExpectedLockSource
-      ) (builtins.fromTOML (builtins.readFile ./Cargo.lock)).package;
-      artifactAuthLockedPackageNames = builtins.map (package: package.name) artifactAuthLockPackages;
-      artifactAuthWorkspace = builtins.fromTOML (builtins.readFile (artifact-auth-src + "/Cargo.toml"));
-      artifactAuthSourceAdmitted =
-        assert nixpkgs.lib.assertMsg (
-          builtins.all (
-            dependency: dependency.git == artifactAuthRepository && dependency.rev == artifactAuthRevision
-          ) artifactAuthCargoDependencies
-          && artifact-auth-src.rev == artifactAuthRevision
-          && builtins.length artifactAuthLockPackages == builtins.length artifactAuthRequiredPackages
-          && builtins.all (
-            packageName: builtins.elem packageName artifactAuthLockedPackageNames
-          ) artifactAuthRequiredPackages
-          && artifactAuthWorkspace.workspace.package.license == "MIT OR Apache-2.0"
-        ) "Valence artifact-auth Cargo/Nix source identity, uniqueness, package set, or license drifted";
+      artifactSourcePin = import ./nix/artifact-source-pin.nix {
+        lib = nixpkgs.lib;
+      };
+      artifactSourceHashes = {
+        core = "839ea3e35429e2a1252020dd779b46ebd185b6911674036820da118d487d1d21";
+        ed25519 = "7fd3987fe3ddc6d30efca37878952135f19905a00b52f349db237054be6b3633";
+      };
+      artifactSourcePinInput = {
+        cargoWorkspace = builtins.fromTOML (builtins.readFile ./Cargo.toml);
+        coreManifest = builtins.fromTOML (builtins.readFile ./crates/valence-core/Cargo.toml);
+        radicleManifest = builtins.fromTOML (builtins.readFile ./crates/valence-radicle/Cargo.toml);
+        cargoLock = builtins.fromTOML (builtins.readFile ./Cargo.lock);
+        flakeLock = builtins.fromJSON (builtins.readFile ./flake.lock);
+        releaseProfile = builtins.fromJSON (builtins.readFile "${artifact}/release/profile.json");
+        sourceWorkspaceManifest = builtins.fromTOML (builtins.readFile "${artifact}/Cargo.toml");
+        sourceCoreManifest = builtins.fromTOML (
+          builtins.readFile "${artifact}/crates/artifact-auth-core/Cargo.toml"
+        );
+        sourceEd25519Manifest = builtins.fromTOML (
+          builtins.readFile "${artifact}/crates/artifact-auth-ed25519/Cargo.toml"
+        );
+        resolvedNixRevision = artifact.rev or null;
+        resolvedNixNarHash = artifact.narHash or null;
+      };
+      artifactSourceValidation = artifactSourcePin.validate artifactSourcePinInput;
+      artifactSourceAdmitted =
+        assert nixpkgs.lib.assertMsg artifactSourceValidation.valid (
+          "Valence Artifact source pin drifted: "
+          + nixpkgs.lib.concatStringsSep ", " artifactSourceValidation.issues
+        );
         true;
       systems = [
         "x86_64-linux"
@@ -59,7 +59,7 @@
           src = self;
           cargoLock = {
             lockFile = ./Cargo.lock;
-            allowBuiltinFetchGit = artifactAuthSourceAdmitted;
+            allowBuiltinFetchGit = artifactSourceAdmitted;
           };
           cargoBuildFlags = [
             "-p"
@@ -75,7 +75,7 @@
           src = self;
           cargoLock = {
             lockFile = ./Cargo.lock;
-            allowBuiltinFetchGit = artifactAuthSourceAdmitted;
+            allowBuiltinFetchGit = artifactSourceAdmitted;
           };
           cargoBuildFlags = [
             "-p"
@@ -107,22 +107,20 @@
           src = self;
           cargoLock = {
             lockFile = ./Cargo.lock;
-            allowBuiltinFetchGit = artifactAuthSourceAdmitted;
+            allowBuiltinFetchGit = artifactSourceAdmitted;
           };
           doCheck = true;
           nativeBuildInputs = [ pkgs.pkg-config ];
           buildInputs = [ ];
         };
 
-        artifact-auth-radicle-cutover =
-          assert artifactAuthSourceAdmitted;
-          pkgs.runCommand "valence-artifact-auth-radicle-cutover"
+        artifact-auth-radicle-cutover-history =
+          pkgs.runCommand "valence-artifact-auth-radicle-cutover-history"
             {
               nativeBuildInputs = [
                 pkgs.b3sum
                 pkgs.jq
                 pkgs.nickel
-                pkgs.ripgrep
               ];
               src = self;
             }
@@ -144,37 +142,87 @@
               expected_receipt_hash="$(tr -d '\n' < evidence/radicle/artifact-auth-cutover-v1.blake3)"
               test "$receipt_hash" = "$expected_receipt_hash"
 
-              for binding in \
-                'cargo.manifest_blake3:Cargo.toml' \
-                'cargo.lock_blake3:Cargo.lock' \
-                'nix.flake_blake3:flake.nix' \
-                'nix.lock_blake3:flake.lock'; do
-                field="''${binding%%:*}"
-                path="''${binding#*:}"
-                expected="$(jq -r ".$field" evidence/radicle/artifact-auth-cutover-v1.json)"
-                actual="$(b3sum "$path" | cut -d ' ' -f 1)"
-                test "$actual" = "$expected"
-              done
+              touch "$out"
+            '';
 
-              source_url='https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git'
-              source_rev='799459346d5416fbd7b9f55840a7371441b55afa'
-              source_nar_hash='sha256-nEgz2FtVuDesX95yyxidp0vhjxL4INB6Ve8rkpLyJk0='
-              jq -e \
-                --arg url "$source_url" \
-                --arg rev "$source_rev" \
-                --arg nar_hash "$source_nar_hash" \
-                '.nodes["artifact-auth-src"] as $source
-                 | $source.locked.url == $url
-                 and $source.original.url == $url
-                 and $source.locked.rev == $rev
-                 and $source.original.rev == $rev
-                 and $source.locked.narHash == $nar_hash' \
-                flake.lock >/dev/null
+        artifact-auth-source-pin =
+          let
+            validation = artifactSourceValidation;
+            selfTestIssues = artifactSourcePin.selfTest artifactSourcePinInput;
+            issues = validation.issues ++ selfTestIssues;
+          in
+          if issues != [ ] then
+            throw "artifact source pin invalid:\n${nixpkgs.lib.concatStringsSep "\n" issues}"
+          else
+            pkgs.runCommand "valence-artifact-auth-source-pin"
+              {
+                nativeBuildInputs = [ pkgs.b3sum ];
+              }
+              ''
+                # r[verify valence.artifact_auth_adoption.radicle_transport]
+                core_hash="$(b3sum ${artifact}/crates/artifact-auth-core/src/lib.rs | cut -d ' ' -f 1)"
+                ed25519_hash="$(b3sum ${artifact}/crates/artifact-auth-ed25519/src/lib.rs | cut -d ' ' -f 1)"
+                test "$core_hash" = '${artifactSourceHashes.core}'
+                test "$ed25519_hash" = '${artifactSourceHashes.ed25519}'
 
-              github_host='github.com'
-              forbidden_source="$github_host/OnixResearch/artifact-auth"
-              if rg -F "$forbidden_source" Cargo.toml Cargo.lock flake.nix flake.lock; then
-                echo 'executable artifact-auth GitHub fallback remains' >&2
+                cp ${artifact}/crates/artifact-auth-core/src/lib.rs "$TMPDIR/core.rs"
+                chmod u+w "$TMPDIR/core.rs"
+                printf '\n' >> "$TMPDIR/core.rs"
+                mutated_core_hash="$(b3sum "$TMPDIR/core.rs" | cut -d ' ' -f 1)"
+                test "$mutated_core_hash" != '${artifactSourceHashes.core}'
+
+                printf '%s\n' '${validation.revision}' > "$out"
+              '';
+
+        artifact-source-migration =
+          assert artifactSourceAdmitted;
+          pkgs.runCommand "valence-artifact-source-migration"
+            {
+              nativeBuildInputs = [
+                pkgs.b3sum
+                pkgs.jq
+                pkgs.nickel
+                pkgs.ripgrep
+              ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+
+              # r[verify valence.artifact_auth_adoption.radicle_evidence]
+              nickel typecheck evidence/source/artifact-workspace-migration-v1.ncl
+              nickel typecheck lib/artifact-source-migration-receipt.ncl
+              nickel export --format json tests/artifact-source-migration.ncl > "$TMPDIR/tests.json"
+              grep -Fq '"tests": true' "$TMPDIR/tests.json"
+
+              nickel export --format json evidence/source/artifact-workspace-migration-v1.ncl > "$TMPDIR/migration.json"
+              jq -S . "$TMPDIR/migration.json" > "$TMPDIR/migration.normalized.json"
+              jq -S . evidence/source/artifact-workspace-migration-v1.json > "$TMPDIR/evidence.normalized.json"
+              cmp "$TMPDIR/migration.normalized.json" "$TMPDIR/evidence.normalized.json"
+
+              receipt_hash="$(b3sum evidence/source/artifact-workspace-migration-v1.json | cut -d ' ' -f 1)"
+              expected_receipt_hash="$(tr -d '\n' < evidence/source/artifact-workspace-migration-v1.blake3)"
+              test "$receipt_hash" = "$expected_receipt_hash"
+
+              predecessor_owner='OnixResearch'
+              predecessor_repository='artifact-auth'
+              forbidden_github_source="$predecessor_owner/$predecessor_repository"
+              if rg -F "$forbidden_github_source" Cargo.toml Cargo.lock flake.nix flake.lock; then
+                echo 'executable predecessor artifact-auth source remains' >&2
+                exit 1
+              fi
+
+              radicle_host='git.onix.computer'
+              predecessor_rid='z4JGYYW7WsesXUq7MXVdx16Fawu2f'
+              forbidden_radicle_source="$radicle_host/$predecessor_rid"
+              if rg -F "$forbidden_radicle_source" Cargo.toml Cargo.lock flake.nix flake.lock; then
+                echo 'executable predecessor Radicle source remains' >&2
+                exit 1
+              fi
+
+              if rg -F 'artifact-transfer-core' Cargo.lock; then
+                echo 'artifact-transfer-core entered the Valence consumer graph' >&2
                 exit 1
               fi
 

@@ -21,8 +21,8 @@ homepage = "https://github.com/OnixResearch/valence"
 version = "0.1.0"
 
 [workspace.dependencies]
-artifact-auth-core = { git = "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git", rev = "799459346d5416fbd7b9f55840a7371441b55afa", version = "0.1.0" }
-artifact-auth-ed25519 = { git = "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git", rev = "799459346d5416fbd7b9f55840a7371441b55afa", version = "0.1.0" }
+artifact-auth-core = { git = "ssh://git@github.com/OnixResearch/onix-artifact.git", rev = "e41340bec587b6d049b5cc518ec7db925dde84be", version = "0.1.0" }
+artifact-auth-ed25519 = { git = "ssh://git@github.com/OnixResearch/onix-artifact.git", rev = "e41340bec587b6d049b5cc518ec7db925dde84be", version = "0.1.0" }
 blake3 = "1"
 cap-std = "4.0.2"
 git2 = { version = "=0.20.4", default-features = false, features = ["vendored-libgit2"] }
