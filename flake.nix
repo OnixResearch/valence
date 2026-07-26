@@ -205,6 +205,14 @@
               expected_receipt_hash="$(tr -d '\n' < evidence/source/artifact-workspace-migration-v1.blake3)"
               test "$receipt_hash" = "$expected_receipt_hash"
 
+              jq -r '.evidence[]' evidence/source/artifact-workspace-migration-v1.json \
+                | while IFS= read -r evidence_path; do
+                  if ! test -f "$evidence_path"; then
+                    echo "migration evidence path is missing: $evidence_path" >&2
+                    exit 1
+                  fi
+                done
+
               predecessor_owner='OnixResearch'
               predecessor_repository='artifact-auth'
               forbidden_github_source="$predecessor_owner/$predecessor_repository"

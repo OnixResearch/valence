@@ -16,7 +16,7 @@ Active unified source:
 - Revision: `e41340bec587b6d049b5cc518ec7db925dde84be`
 - Nix NAR hash: `sha256-2cM912L2YXVnVX9LquwhAPKyjPP/z/oFQRe7Qq9bHHE=`
 - Source archive BLAKE3: `8fc65f3d7968d76af419f08ac972955514c8256f8aa5ed90815d8bdcced28113`
-- Valence migration receipt BLAKE3: `263db2d483645068f632de9b0fd50e7fe564faa1fe2e617f41fb4573ac34d880`
+- Valence migration receipt BLAKE3: `0b3b742587f06ce6ae131b41fa954e9285d10f5d556800cbe262517fc44f9a6a`
 
 Remote main resolved to the full unified revision during the observation window. This proves object availability at that time only.
 

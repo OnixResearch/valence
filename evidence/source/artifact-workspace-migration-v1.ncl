@@ -119,7 +119,7 @@ let receipt | MigrationReceipt = {
     "release-readiness",
   ],
   evidence = [
-    "cairn/changes/consume-artifact-auth-from-unified-workspace/evidence/source-migration-2026-07-26.md",
+    "cairn/archive/2026-07-26-consume-artifact-auth-from-unified-workspace/evidence/source-migration-2026-07-26.md",
     "evidence/source/artifact-workspace-migration-v1.json",
     "evidence/radicle/artifact-auth-cutover-v1.json",
   ],

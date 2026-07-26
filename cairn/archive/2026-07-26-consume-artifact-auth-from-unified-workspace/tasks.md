@@ -11,4 +11,4 @@
 ## Phase 3: Validation and closeout
 
 - [x] [serial] Run focused Cargo, strict workspace, no-std, Nix, Cairn, and traceability checks without changing Rust implementation behavior. r[valence.artifact_auth_adoption.behavior]
-- [ ] [serial] Sync the accepted specification and archive only after all receiver evidence agrees. r[valence.artifact_auth_adoption.radicle_evidence]
+- [x] [serial] Sync the accepted specification and archive only after all receiver evidence agrees. r[valence.artifact_auth_adoption.radicle_evidence]

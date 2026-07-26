@@ -8,13 +8,13 @@ Defines the `artifact-auth-adoption` capability.
 
 ### Requirement: Valence adopts one immutable reviewed source
 
-r[valence.artifact_auth_adoption.source] Valence MUST consume one immutable reviewed `artifact-auth` revision with aligned Cargo and Nix identities and MUST bind the Valence mapping profile and checked projection from that same revision before implementation or cutover.
+r[valence.artifact_auth_adoption.source] Valence MUST consume `artifact-auth-core` and `artifact-auth-ed25519` from one immutable reviewed `OnixResearch/onix-artifact` revision with aligned Cargo and Nix identities, exact source-workspace membership, compatible licensing, and a consumer graph limited to those two authentication packages.
 
-#### Scenario: Source identity is admissible
+#### Scenario: Unified source identity is admissible
 
-- GIVEN Cargo, Nix, the mapping profile, and its checked projection resolve revision `799459346d5416fbd7b9f55840a7371441b55afa`
+- GIVEN Cargo and Nix resolve revision `e41340bec587b6d049b5cc518ec7db925dde84be`, the complete source profile agrees, and authentication entry-point bytes match the reviewed identities
 - WHEN Valence evaluates dependency admission
-- THEN it SHALL reject floating, duplicate, mismatched, sibling-path, product-dependent, or license-incompatible source selections.
+- THEN it SHALL accept only the two authentication packages and SHALL reject floating, duplicate, mismatched, sibling-path, graph-widening, byte-drifted, or license-incompatible source selections.
 
 ### Requirement: Valence retains protocol, identity, and authorization authority
 
@@ -36,82 +36,82 @@ r[valence.artifact_auth_adoption.cutover] Valence MUST dual-run legacy and stand
 - WHEN Valence evaluates cutover admission
 - THEN the legacy path SHALL remain authoritative and the exact blocker SHALL be recorded without weakening protocol, identity, authorization, lifecycle, or release gates.
 
-### Requirement: Radicle-backed source transport r[valence.artifact_auth_adoption.radicle_transport]
+### Requirement: Unified Artifact workspace source transport r[valence.artifact_auth_adoption.radicle_transport]
 
-Valence MUST consume the accepted public artifact-auth RID through the upload-pack-only Radicle HTTPS adapter at exact revision `799459346d5416fbd7b9f55840a7371441b55afa`.
+Valence MUST consume the two authentication packages from the immutable unified Artifact repository at exact revision `e41340bec587b6d049b5cc518ec7db925dde84be` while retaining the predecessor Radicle identity as historical evidence only.
 
-#### Scenario: Exact public source is admitted
+#### Scenario: Exact unified source is admitted
 
-- GIVEN an accepted publication receipt, RID, URL, commit, and source archive identity
+- GIVEN the repository, revision, Nix NAR hash, source archive identity, package profile, and authentication source identities agree
 - WHEN Valence evaluates the dependency source
-- THEN all identities MUST agree before the source is used.
+- THEN the source MAY be used without admitting transfer packages or Artifact-owned authority into Valence.
 
-#### Scenario: Unaccepted source is rejected
+#### Scenario: Mixed or widened source is rejected
 
-- GIVEN a different RID, URL, commit, visibility, or archive identity
+- GIVEN a different repository, revision, NAR hash, package set, source identity, or executable predecessor dependency
 - WHEN source admission runs
 - THEN the dependency MUST be rejected.
 
 ### Requirement: Cargo and Nix lock agreement r[valence.artifact_auth_adoption.lock_agreement]
 
-Cargo manifests, `Cargo.lock`, `flake.nix`, and `flake.lock` MUST identify the same Radicle HTTPS repository and reviewed Git revision while preserving the locked Nix content identity.
+Cargo manifests, `Cargo.lock`, `flake.nix`, and `flake.lock` MUST identify the same unified Artifact repository and reviewed Git revision while preserving the locked Nix content identity and exact two-package Valence consumer graph.
 
 #### Scenario: Owning tools preserve identity
 
 - GIVEN regenerated Cargo and Nix locks
 - WHEN agreement validation runs
-- THEN both artifact-auth packages, the exact revision, the public URL, and the expected Nix content hash MUST match.
+- THEN both authentication packages, the exact revision, the unified repository, and the expected Nix content hash MUST match.
 
 #### Scenario: Lock drift fails closed
 
-- GIVEN a stale GitHub source, mismatched revision, missing package, or changed Nix content hash
+- GIVEN a predecessor, floating, local, mismatched, duplicate, missing, or widened source selection
 - WHEN agreement validation runs
 - THEN validation MUST fail.
 
 ### Requirement: Behavioral parity checks r[valence.artifact_auth_adoption.behavior]
 
-The transport cutover MUST preserve existing Valence and artifact-auth behavior under focused mapping, workspace, no-std, formatting, and Clippy checks.
+The source migration MUST preserve existing Valence and artifact-auth behavior under focused positive and negative mapping, shell, workspace, no-std, formatting, and Clippy checks without Rust implementation changes.
 
 #### Scenario: Existing positive and negative behavior passes
 
-- GIVEN the Radicle-backed source at the reviewed commit
+- GIVEN the unified source at the reviewed commit
 - WHEN the focused and workspace suites run
 - THEN existing acceptance and rejection behavior MUST pass without Rust implementation changes.
 
 #### Scenario: Behavioral drift blocks acceptance
 
-- GIVEN any changed fixture result, feature graph, package version, or authority boundary
+- GIVEN any changed fixture result, feature graph, package version, source entry point, or authority boundary
 - WHEN parity is evaluated
-- THEN the cutover MUST not be accepted.
+- THEN the migration MUST not be accepted.
 
-### Requirement: No executable GitHub fallback r[valence.artifact_auth_adoption.fallback]
+### Requirement: No mixed or automatic source fallback r[valence.artifact_auth_adoption.fallback]
 
-Valence MUST NOT retain an executable GitHub source fallback for artifact-auth.
+Valence MUST use only the admitted unified source in executable manifests and locks and MUST NOT automatically select the predecessor repository, a sibling path, or a floating source.
 
-#### Scenario: Radicle source is unavailable
+#### Scenario: Unified source is unavailable
 
-- GIVEN the admitted Radicle HTTPS source cannot serve the exact object
+- GIVEN the admitted source cannot serve the exact object
 - WHEN dependency resolution runs
-- THEN resolution MUST fail visibly rather than selecting GitHub.
+- THEN resolution MUST fail visibly rather than selecting another source.
 
-#### Scenario: Historical documentation remains bounded
+#### Scenario: Historical evidence remains bounded
 
-- GIVEN documentation names historical GitHub provenance
-- WHEN fallback validation runs
-- THEN documentation MAY remain while manifests and locks contain no executable artifact-auth GitHub source.
+- GIVEN documentation and archived receipts name the predecessor GitHub and Radicle sources
+- WHEN active-source validation runs
+- THEN historical evidence MAY remain while executable manifests and locks contain only the admitted unified source.
 
-### Requirement: Typed Radicle cutover evidence r[valence.artifact_auth_adoption.radicle_evidence]
+### Requirement: Typed source migration evidence r[valence.artifact_auth_adoption.radicle_evidence]
 
-Valence MUST emit typed Nickel/JSON evidence with a BLAKE3 sidecar binding publication, source, locks, test observations, rollback boundary, and non-claims.
+Valence MUST emit typed Nickel/JSON evidence with a BLAKE3 sidecar that binds the unified source, source and consumer package sets, source-byte parity, test observations, rollback boundary, and non-claims while retaining the prior Radicle receipt as historical evidence.
 
-#### Scenario: Complete cutover evidence passes
+#### Scenario: Complete migration evidence passes
 
-- GIVEN matching publication, source, lock, and test observations
+- GIVEN matching source, package, parity, lock, and test observations
 - WHEN receipt validation runs
 - THEN it MUST accept deterministically.
 
 #### Scenario: Missing linkage or overclaim fails
 
-- GIVEN missing publication linkage, drifted locks, missing negative evidence, or weakened non-claims
+- GIVEN source drift, package widening, missing negative evidence, automatic rollback, absolute evidence paths, or weakened non-claims
 - WHEN receipt validation runs
 - THEN it MUST fail closed.
