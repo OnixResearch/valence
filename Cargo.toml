@@ -6,7 +6,10 @@ members = [
   "pilots/shared-identity",
 ]
 resolver = "2"
-exclude = ["pilots/canonical-json-preserve-order"]
+exclude = [
+  "crates/valence-radicle-native",
+  "pilots/canonical-json-preserve-order",
+]
 
 # r[impl valence.strict_rust_admission.consumer_scope.production]
 [workspace.metadata.octet]

@@ -2602,6 +2602,61 @@
             "source_kind": "accepted_specs"
           }
         ]
+      },
+      {
+        "evidence_sources": [
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-core/src/radicle_forge_ops.rs",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-radicle/src/main.rs",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-radicle-native/src",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "ncl"
+            ],
+            "root": "contracts/radicle-forge-operations",
+            "source_kind": "nickel_source"
+          },
+          {
+            "extensions": [
+              "md"
+            ],
+            "root": "docs/radicle-forge-operations.md",
+            "source_kind": "tool_source"
+          }
+        ],
+        "id": "radicle-forge-operations",
+        "marker_verbs": [
+          "impl",
+          "verify",
+          "depends",
+          "related"
+        ],
+        "requirement_sources": [
+          {
+            "extensions": [
+              "md"
+            ],
+            "root": "cairn/specs/radicle-forge-operations/spec.md",
+            "source_kind": "accepted_specs"
+          }
+        ]
       }
     ]
   },

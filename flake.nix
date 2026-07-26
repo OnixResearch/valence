@@ -81,8 +81,26 @@
             "-p"
             "valence-radicle"
           ];
+          cargoTestFlags = [
+            "-p"
+            "valence-radicle"
+          ];
           doCheck = true;
           nativeBuildInputs = [ pkgs.pkg-config ];
+          buildInputs = [ ];
+        };
+        valence-radicle-native = pkgs.rustPlatform.buildRustPackage {
+          pname = "valence-radicle-native";
+          version = "0.1.0";
+          src = self;
+          cargoRoot = "crates/valence-radicle-native";
+          buildAndTestSubdir = "crates/valence-radicle-native";
+          cargoLock.lockFile = ./crates/valence-radicle-native/Cargo.lock;
+          doCheck = true;
+          nativeBuildInputs = [
+            pkgs.git
+            pkgs.pkg-config
+          ];
           buildInputs = [ ];
         };
         default = self.packages.${pkgs.stdenv.hostPlatform.system}.valence;
@@ -305,6 +323,77 @@
                   exit 1
                 fi
               done
+
+              touch "$out"
+            '';
+
+        radicle-forge-operations =
+          pkgs.runCommand "valence-radicle-forge-operations"
+            {
+              nativeBuildInputs = [
+                pkgs.jq
+                pkgs.nickel
+                self.packages.${pkgs.stdenv.hostPlatform.system}.valence-radicle
+                self.packages.${pkgs.stdenv.hostPlatform.system}.valence-radicle-native
+              ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+
+              nickel typecheck contracts/radicle-forge-operations/profile.ncl
+              nickel export --format json contracts/radicle-forge-operations/profile.ncl > "$TMPDIR/profile.json"
+              cmp "$TMPDIR/profile.json" contracts/radicle-forge-operations/generated/profile.json
+
+              for fixture in contracts/radicle-forge-operations/fixtures/pass/*.ncl; do
+                nickel export "$fixture" >/dev/null
+              done
+              for fixture in contracts/radicle-forge-operations/fixtures/fail/*.ncl; do
+                if nickel export "$fixture" >/dev/null 2>"$TMPDIR/nickel-error.log"; then
+                  echo "expected Radicle forge operations fixture to fail: $fixture" >&2
+                  exit 1
+                fi
+              done
+
+              mkdir "$TMPDIR/output"
+              valence-radicle forge-plan \
+                --profile contracts/radicle-forge-operations/generated/profile.json \
+                --source fixtures/radicle-forge-operations/source-batch.json \
+                --output-root "$TMPDIR/output" \
+                --output migration-plan.json >/dev/null
+              cmp "$TMPDIR/output/migration-plan.json" \
+                fixtures/radicle-forge-operations/migration-plan.json
+              valence-radicle-native import \
+                --repository /nonexistent-preview-repository \
+                --plan "$TMPDIR/output/migration-plan.json" \
+                --output-root "$TMPDIR/output" \
+                --output native-observations.json \
+                > "$TMPDIR/native-preview.json"
+              test "$(jq -r '.effects' "$TMPDIR/native-preview.json")" = no-write-preview
+              test ! -e "$TMPDIR/output/native-observations.json"
+
+              valence-radicle ci-admission \
+                --input fixtures/radicle-forge-operations/ci-admission-input.json \
+                --output-root "$TMPDIR/output" \
+                --output ci-admission-report.json >/dev/null
+              cmp "$TMPDIR/output/ci-admission-report.json" \
+                fixtures/radicle-forge-operations/ci-admission-report.json
+              jq '.receipt' "$TMPDIR/output/ci-admission-report.json" > "$TMPDIR/admission-receipt.json"
+              valence-radicle verify-ci-admission --receipt "$TMPDIR/admission-receipt.json" >/dev/null
+
+              jq '.result.disposition = "timed_out" | .result.exit_code = null' \
+                fixtures/radicle-forge-operations/ci-admission-input.json \
+                > "$TMPDIR/failed-admission.json"
+              if valence-radicle ci-admission \
+                --input "$TMPDIR/failed-admission.json" \
+                --output-root "$TMPDIR/output" \
+                --output rejected-admission.json >/dev/null; then
+                echo "expected failed CI result to be denied" >&2
+                exit 1
+              fi
+              test "$(jq -r '.admitted' "$TMPDIR/output/rejected-admission.json")" = false
+              test "$(jq -r '.receipt' "$TMPDIR/output/rejected-admission.json")" = null
 
               touch "$out"
             '';

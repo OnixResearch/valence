@@ -1,0 +1,80 @@
+{
+  "policy": {
+    "schema": "valence.radicle-forge-operations.ci-admission.v1",
+    "policy_blake3": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "rid": "rad:z2CpqLFpdP36fZXYUK5ZNWxMibpCo",
+    "bot_did": "did:key:z6Mbotbotbotbotbotbotbotbotbotbotbotbotbotbotbotbot",
+    "delegates": [
+      "did:key:z6MkjCqx5ksRqcDeNeuEnz53udbUHebRLHhddCxecWJu9koE",
+      "did:key:z6MksnXbFoE8zkCkGWhHc8zuxpnEUhrJHv2KECRV4GSv9gkx"
+    ],
+    "threshold": 2,
+    "required_check": "onix/bounded-exec",
+    "signed_refs_feature": "parent",
+    "required_non_claims": [
+      "migration records normalized source metadata and observed native COB state; it does not prove source export completeness, source actor authenticity, original signature or timestamp preservation, or semantic equivalence",
+      "imported review metadata is recorded attribution only and does not create Radicle approval, merge eligibility, delegate authority, or canonical-ref authority",
+      "CI admission is bounded input for an external guarded compare-and-swap; it is not protocol-enforced mandatory CI, bypass-proof delegate behavior, canonical mutation, CI correctness, or release readiness"
+    ]
+  },
+  "patch": {
+    "patch_id": "1111111111111111111111111111111111111111",
+    "revision_id": "2222222222222222222222222222222222222222",
+    "base_oid": "1111111111111111111111111111111111111111",
+    "head_oid": "3333333333333333333333333333333333333333",
+    "target_ref": "refs/heads/main",
+    "current_canonical_oid": "2222222222222222222222222222222222222222",
+    "candidate_is_descendant": true,
+    "canonical_observation_current": true
+  },
+  "event": {
+    "schema": "onix.radicle-ci-event.v1",
+    "event_blake3": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "job_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "policy_blake3": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "rid": "rad:z2CpqLFpdP36fZXYUK5ZNWxMibpCo",
+    "trigger": "patch",
+    "object_oid": "3333333333333333333333333333333333333333",
+    "patch_id": "1111111111111111111111111111111111111111",
+    "revision_id": "2222222222222222222222222222222222222222",
+    "source_archive_blake3": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "result": {
+    "schema": "onix.radicle-ci-result.v1",
+    "result_blake3": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "job_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "rid": "rad:z2CpqLFpdP36fZXYUK5ZNWxMibpCo",
+    "trigger": "patch",
+    "object_oid": "3333333333333333333333333333333333333333",
+    "patch_id": "1111111111111111111111111111111111111111",
+    "revision_id": "2222222222222222222222222222222222222222",
+    "disposition": "succeeded",
+    "exit_code": 0,
+    "artifact_blake3": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "bot_status": {
+    "signer_did": "did:key:z6Mbotbotbotbotbotbotbotbotbotbotbotbotbotbotbotbot",
+    "signature_verified": true,
+    "patch_id": "1111111111111111111111111111111111111111",
+    "revision_id": "2222222222222222222222222222222222222222",
+    "check_name": "onix/bounded-exec",
+    "job_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "object_oid": "3333333333333333333333333333333333333333",
+    "disposition": "succeeded",
+    "artifact_blake3": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "approvals": [
+    {
+      "delegate_did": "did:key:z6MkjCqx5ksRqcDeNeuEnz53udbUHebRLHhddCxecWJu9koE",
+      "signature_verified": true,
+      "revision_id": "2222222222222222222222222222222222222222",
+      "verdict": "accept"
+    },
+    {
+      "delegate_did": "did:key:z6MksnXbFoE8zkCkGWhHc8zuxpnEUhrJHv2KECRV4GSv9gkx",
+      "signature_verified": true,
+      "revision_id": "2222222222222222222222222222222222222222",
+      "verdict": "accept"
+    }
+  ]
+}

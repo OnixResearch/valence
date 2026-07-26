@@ -1,0 +1,70 @@
+{
+  "schema": "valence.radicle-forge-operations.plan.v1",
+  "valid": true,
+  "issues": [],
+  "plan": {
+    "schema": "valence.radicle-forge-operations.plan.v1",
+    "profile_blake3": "1ca1407a5aa4e3fa0d503bcbb02cb8e45363cabddabee6e6cbeb1a3bdbe1d19d",
+    "source_batch_blake3": "4d319f61950fbc0199994325e59b37e77d7f7e05430c7d403a4a4232c8e5ae00",
+    "plan_blake3": "ea76d10eb45d711cc65d1026119c52309436291a7682d686613bcd75fa1c106b",
+    "source_system": "github",
+    "repository_url": "https://github.com/OnixResearch/bounded-exec",
+    "repository_rid": "rad:z2CpqLFpdP36fZXYUK5ZNWxMibpCo",
+    "importer_did": "did:key:z6MksnXbFoE8zkCkGWhHc8zuxpnEUhrJHv2KECRV4GSv9gkx",
+    "records": [
+      {
+        "source_key": "github:OnixResearch/bounded-exec:issue:1",
+        "source_record_blake3": "3588369eaeda47ee3fdfcb81178407047011f48b7c482aba735541ad613268cc",
+        "target_type": "xyz.radicle.issue",
+        "decision": "create",
+        "operations": [
+          {
+            "operation": "create_issue",
+            "title": "Fixture issue",
+            "description": "<!-- valence-radicle-forge-import:v1 -->\nsource-system: github\nsource-key: github:OnixResearch/bounded-exec:issue:1\nsource-url: https://github.com/OnixResearch/bounded-exec/issues/1\nsource-actor: fixture-author\nsource-actor-id: github:1001\nsource-created-at: 2026-07-26T10:00:00Z\nsource-updated-at: 2026-07-26T12:00:00Z\nsource-state: solved\nsource-labels: migration,validation\nimporter-did: did:key:z6MksnXbFoE8zkCkGWhHc8zuxpnEUhrJHv2KECRV4GSv9gkx\n\n---\n\nFixture issue body.",
+            "labels": [
+              "source-migration",
+              "source-validation"
+            ],
+            "state": "solved"
+          },
+          {
+            "operation": "append_comment",
+            "event_id": "issue-comment-1",
+            "body": "<!-- valence-radicle-forge-import:v1 -->\nsource-system: github\nsource-key: github:OnixResearch/bounded-exec:issue:1\nsource-event-id: issue-comment-1\nsource-event-kind: comment\nsource-url: https://github.com/OnixResearch/bounded-exec/issues/1#issuecomment-1\nsource-actor: fixture-reviewer\nsource-actor-id: github:1002\nsource-timestamp: 2026-07-26T11:00:00Z\nimporter-did: did:key:z6MksnXbFoE8zkCkGWhHc8zuxpnEUhrJHv2KECRV4GSv9gkx\n\n---\n\nFixture issue comment."
+          }
+        ]
+      },
+      {
+        "source_key": "github:OnixResearch/bounded-exec:pull_request:2",
+        "source_record_blake3": "9061d243f247c95d16f041f89d9ba45e705741ef06c15a138a938616973833c1",
+        "target_type": "xyz.radicle.patch",
+        "decision": "create",
+        "operations": [
+          {
+            "operation": "create_patch",
+            "title": "Fixture pull request",
+            "description": "<!-- valence-radicle-forge-import:v1 -->\nsource-system: github\nsource-key: github:OnixResearch/bounded-exec:pull_request:2\nsource-url: https://github.com/OnixResearch/bounded-exec/pull/2\nsource-actor: fixture-author\nsource-actor-id: github:1001\nsource-created-at: 2026-07-26T10:00:00Z\nsource-updated-at: 2026-07-26T12:00:00Z\nsource-state: merged\nsource-labels: migration\nimporter-did: did:key:z6MksnXbFoE8zkCkGWhHc8zuxpnEUhrJHv2KECRV4GSv9gkx\n\n---\n\nFixture pull-request body.",
+            "labels": [
+              "source-migration"
+            ],
+            "lifecycle": "archived",
+            "base_oid": "1111111111111111111111111111111111111111",
+            "head_oid": "2222222222222222222222222222222222222222",
+            "target_ref": "refs/heads/main"
+          },
+          {
+            "operation": "append_comment",
+            "event_id": "pull-review-1",
+            "body": "<!-- valence-radicle-forge-import:v1 -->\nsource-system: github\nsource-key: github:OnixResearch/bounded-exec:pull_request:2\nsource-event-id: pull-review-1\nsource-event-kind: review\nsource-url: https://github.com/OnixResearch/bounded-exec/pull/2#pullrequestreview-1\nsource-actor: fixture-reviewer\nsource-actor-id: github:1002\nsource-timestamp: 2026-07-26T11:00:00Z\nsource-review-state: approved\nimporter-did: did:key:z6MksnXbFoE8zkCkGWhHc8zuxpnEUhrJHv2KECRV4GSv9gkx\n\n---\n\nFixture approval text."
+          }
+        ]
+      }
+    ],
+    "required_non_claims": [
+      "migration records normalized source metadata and observed native COB state; it does not prove source export completeness, source actor authenticity, original signature or timestamp preservation, or semantic equivalence",
+      "imported review metadata is recorded attribution only and does not create Radicle approval, merge eligibility, delegate authority, or canonical-ref authority",
+      "CI admission is bounded input for an external guarded compare-and-swap; it is not protocol-enforced mandatory CI, bypass-proof delegate behavior, canonical mutation, CI correctness, or release readiness"
+    ]
+  }
+}

@@ -145,6 +145,20 @@ let PolicyFieldSetDigest = "5b6ca8c021d47eb08c98e6dedd16ebced68c13fdb7e58d1c1e08
         ],
         marker_verbs = ["impl", "verify", "depends", "related"],
       },
+      {
+        id = "radicle-forge-operations",
+        requirement_sources = [
+          { root = "cairn/specs/radicle-forge-operations/spec.md", source_kind = "accepted_specs", extensions = ["md"] },
+        ],
+        evidence_sources = [
+          { root = "crates/valence-core/src/radicle_forge_ops.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-radicle/src/main.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-radicle-native/src", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "contracts/radicle-forge-operations", source_kind = "nickel_source", extensions = ["ncl"] },
+          { root = "docs/radicle-forge-operations.md", source_kind = "tool_source", extensions = ["md"] },
+        ],
+        marker_verbs = ["impl", "verify", "depends", "related"],
+      },
     ],
   },
 
