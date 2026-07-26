@@ -256,6 +256,8 @@ includes it.
 - [oxidecomputer/rats-corim](https://github.com/oxidecomputer/rats-corim), [oxidecomputer/vm-attest](https://github.com/oxidecomputer/vm-attest), [oxidecomputer/dice-util](https://github.com/oxidecomputer/dice-util), and [oxidecomputer/pki-playground](https://github.com/oxidecomputer/pki-playground) — bounded attestation vocabulary and certificate-chain references whose claims do not transfer to Valence.
 - [joweeba/tMIR](https://github.com/joweeba/tMIR) — proof-carrying IR lineage and proof-sidecar reference; Valence remains an evidence IR rather than a compiler IR or proof checker.
 - [AeneasVerif/aeneas](https://github.com/AeneasVerif/aeneas) — Rust/Charon/LLBC/proof-assistant translation-chain reference; Valence validates bounded identities, links, roles, and non-claims.
+- [AeneasVerif/eurydice](https://github.com/AeneasVerif/eurydice) — deferred Rust-to-C lineage reference. Valence requires a concrete Octet producer schema before it adds a profile.
+- [AeneasVerif/scylla](https://github.com/AeneasVerif/scylla) — deferred experimental C-to-Rust lineage reference. Later Rust evidence does not establish source-C equivalence.
 
 ### Evaluated but not adopted
 

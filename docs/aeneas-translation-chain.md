@@ -48,6 +48,25 @@ ID; role counts; and full non-claim boundary. Cairn may consume that report via
 its generic evidence-chain readiness policy, and Mantle may carry it as opaque
 external evidence. Neither layer gains proof-execution authority.
 
+## Deferred code-generation and migration lineages
+
+Valence has no Eurydice or Scylla evidence profile. A future profile requires a
+concrete, versioned Octet producer schema and positive and negative producer
+fixtures.
+
+A Eurydice lineage must keep its Charon contract separate from the Aeneas
+contract unless exact compatibility is validated. The generated C and its
+translation receipt remain recorded-only unless another profile grants a
+narrower role.
+
+A Scylla lineage must bind the C source, annotations, manual rewrites, Clang,
+Scylla, KaRaMeL, and generated Rust. Later Rust proof evidence does not prove
+C-to-Rust equivalence.
+
+Valence will validate identity, linkage, role separation, and non-claims for
+these branches. It will not execute translators or define their semantic
+guarantees.
+
 ## Frozen producer fixture
 
 The fixture under `fixtures/aeneas-translation-chain/` was imported from Octet
