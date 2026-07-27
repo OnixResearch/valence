@@ -20,7 +20,7 @@ Valence owns canonical evidence linkage. It needs a versioned reference that pre
 
 ## Affected specs
 
-- `provenance`: content-bound requirement references, registry validation, stack context, and legacy boundaries.
+- `content-bound-requirements`: typed references, registry validation, stack context, and legacy boundaries.
 
 ## Dependencies
 

@@ -15,8 +15,9 @@ path = "src/main.rs"
 [dependencies]
 cap-std.workspace = true
 serde.workspace = true
-valence-core.workspace = true
 serde_json.workspace = true
+serde_path_to_error.workspace = true
+valence-core.workspace = true
 
 [dev-dependencies]
 blake3.workspace = true

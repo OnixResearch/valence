@@ -1,6 +1,10 @@
-# Provenance Specification Delta
+# Content Bound Requirements Specification
 
-## ADDED Requirements
+## Purpose
+
+Defines the `content-bound-requirements` capability.
+
+## Requirements
 
 ### Requirement: Provenance uses content-bound requirement references
 

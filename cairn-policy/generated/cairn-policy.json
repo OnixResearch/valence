@@ -2561,6 +2561,38 @@
             "extensions": [
               "rs"
             ],
+            "root": "crates/valence-core/src/content_bound_requirements.rs",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-cli/src/content_bound_requirement_cli.rs",
+            "source_kind": "rust_source"
+          }
+        ],
+        "id": "content-bound-requirements",
+        "marker_verbs": [
+          "impl",
+          "verify"
+        ],
+        "requirement_sources": [
+          {
+            "extensions": [
+              "md"
+            ],
+            "root": "cairn/specs/content-bound-requirements/spec.md",
+            "source_kind": "accepted_specs"
+          }
+        ]
+      },
+      {
+        "evidence_sources": [
+          {
+            "extensions": [
+              "rs"
+            ],
             "root": "crates/valence-core/src/cob_evidence.rs",
             "source_kind": "rust_source"
           },

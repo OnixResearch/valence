@@ -7,6 +7,7 @@ use std::io::Write;
 use std::path::Path;
 use std::process::Command;
 
+use valence_core::content_bound_requirements as content_bound;
 use valence_core::evidence_ir::EvidenceSpan;
 use valence_core::evidence_ir::KANI_CONTRACT_ARTIFACT_KIND;
 use valence_core::evidence_ir::KANI_NON_CLAIM_ALIASING;
@@ -852,12 +853,215 @@ fn stack_provenance_graph_report_rejects_unsupported_edge_fixture() {
 }
 
 #[test]
+fn content_bound_requirement_and_stack_context_cli_round_trip() {
+    // r[verify valence.provenance.content_bound_requirement_ref]
+    // r[verify valence.provenance.stack_trace_context]
+    let root = content_bound_temp_dir("positive");
+    let registry = content_bound_registry_fixture();
+    write_json(&root.join("registry.json"), &registry);
+    let reference = content_bound::build_requirement_ref(&registry, "valence.provenance.content_bound_requirement_ref")
+        .expect("build content-bound requirement reference");
+    let linkage = content_bound::RequirementLinkageInputV1 {
+        schema: content_bound::REQUIREMENT_LINKAGE_INPUT_SCHEMA_V1.to_owned(),
+        profile: content_bound::RequirementLinkageProfileV1::StrictContentBound,
+        legacy_requirement_ids: Vec::new(),
+        requirement_refs: vec![reference.clone()],
+        verification_role: VerificationRole::RecordedOnly,
+        non_claims: owned_non_claims(content_bound::CONTENT_BOUND_REQUIREMENT_NON_CLAIMS),
+    };
+    write_json(&root.join("requirement-input.json"), &linkage);
+
+    let requirement_output = Command::new(valence_binary())
+        .args(["requirement-reference", "validate", "--artifact-root"])
+        .arg(&root)
+        .args([
+            "--input",
+            "requirement-input.json",
+            "--registry",
+            "registry.json",
+            "--output-root",
+        ])
+        .arg(&root)
+        .args(["--out", "requirement-report.json"])
+        .output()
+        .expect("run requirement-reference validate");
+    let requirement_stdout = String::from_utf8_lossy(&requirement_output.stdout);
+    assert!(requirement_output.status.success(), "requirement reference must pass: {requirement_stdout}");
+    let requirement_report: serde_json::Value =
+        serde_json::from_slice(&requirement_output.stdout).expect("requirement report");
+    assert_eq!(requirement_report["valid"], true);
+    assert_eq!(requirement_report["strict_profile_satisfied"], true);
+    assert!(root.join("requirement-report.json").is_file());
+
+    let revision_set = content_bound::build_stack_revision_set(vec![content_bound::StackRevisionEntryV1 {
+        repository_id: reference.repository_id.clone(),
+        revision: reference.revision.clone(),
+    }])
+    .expect("build selected revision set");
+    let graph_identity =
+        content_bound_digest(content_bound::RequirementDigestDomainV1::EvidenceGraph, b"current-evidence-graph");
+    let release_identity = content_bound_digest(content_bound::RequirementDigestDomainV1::Release, b"current-release");
+    let context = content_bound::build_stack_trace_context(content_bound::StackTraceContextDraftV1 {
+        revision_set,
+        requirement_refs: vec![reference],
+        evidence_graph_identity: graph_identity.clone(),
+        release_identity: Some(release_identity.clone()),
+        lifecycle_identity: None,
+        runtime_identity: None,
+        required_links: Vec::new(),
+        non_claims: owned_non_claims(content_bound::STACK_TRACE_CONTEXT_NON_CLAIMS),
+    })
+    .expect("build stack context");
+    let envelope = content_bound::StackTraceValidationEnvelopeV1 {
+        schema: content_bound::STACK_TRACE_VALIDATION_ENVELOPE_SCHEMA_V1.to_owned(),
+        context,
+        registries: vec![registry],
+        expectations: content_bound::StackTraceExpectationsV1 {
+            evidence_graph_identity: graph_identity,
+            release_identity: Some(release_identity),
+            lifecycle_identity: None,
+            runtime_identity: None,
+        },
+    };
+    write_json(&root.join("context-input.json"), &envelope);
+    let context_output = Command::new(valence_binary())
+        .args(["stack-context", "validate", "--artifact-root"])
+        .arg(&root)
+        .args(["--input", "context-input.json", "--output-root"])
+        .arg(&root)
+        .args(["--out", "context-report.json"])
+        .output()
+        .expect("run stack-context validate");
+    let context_stdout = String::from_utf8_lossy(&context_output.stdout);
+    assert!(context_output.status.success(), "stack context must pass: {context_stdout}");
+    let context_report: serde_json::Value = serde_json::from_slice(&context_output.stdout).expect("context report");
+    assert_eq!(context_report["valid"], true);
+    assert!(root.join("context-report.json").is_file());
+    fs::remove_dir_all(root).expect("remove content-bound positive fixture");
+}
+
+#[test]
+fn content_bound_cli_rejects_malformed_unsafe_and_legacy_only_strict_inputs_without_writes() {
+    // r[verify valence.provenance.requirement_registry_validation]
+    // r[verify valence.provenance.legacy_requirement_id_boundary]
+    let root = content_bound_temp_dir("negative");
+    const SENTINEL: &str = "preserve-prior-validation-report";
+    write_text(
+        root.join("malformed.json").to_str().expect("malformed path"),
+        r#"{"schema":"valence.requirement-linkage-input.v1","profile":{"private":"SECRET"}}"#,
+    );
+    write_text(root.join("report.json").to_str().expect("report path"), SENTINEL);
+    let malformed = Command::new(valence_binary())
+        .args(["requirement-reference", "validate", "--artifact-root"])
+        .arg(&root)
+        .args(["--input", "malformed.json", "--output-root"])
+        .arg(&root)
+        .args(["--out", "report.json"])
+        .output()
+        .expect("run malformed requirement validation");
+    assert!(!malformed.status.success());
+    let malformed_report: serde_json::Value = serde_json::from_slice(&malformed.stdout).expect("malformed report");
+    assert_eq!(malformed_report["issues"][0]["code"], "input_parse_failed");
+    let malformed_text = String::from_utf8_lossy(&malformed.stdout);
+    assert!(!malformed_text.contains("SECRET"));
+    assert!(!malformed_text.contains(&root.display().to_string()));
+    assert_eq!(fs::read_to_string(root.join("report.json")).expect("sentinel report"), SENTINEL);
+
+    let legacy = content_bound::RequirementLinkageInputV1 {
+        schema: content_bound::REQUIREMENT_LINKAGE_INPUT_SCHEMA_V1.to_owned(),
+        profile: content_bound::RequirementLinkageProfileV1::LegacyRecordedOnly,
+        legacy_requirement_ids: vec!["r[valence.provenance.content_bound_requirement_ref]".to_owned()],
+        requirement_refs: Vec::new(),
+        verification_role: VerificationRole::RecordedOnly,
+        non_claims: vec![content_bound::LEGACY_REQUIREMENT_BOUNDARY.to_owned()],
+    };
+    write_json(&root.join("legacy.json"), &legacy);
+    let legacy_output = Command::new(valence_binary())
+        .args(["requirement-reference", "validate", "--artifact-root"])
+        .arg(&root)
+        .args(["--input", "legacy.json"])
+        .output()
+        .expect("run legacy compatibility validation");
+    assert!(legacy_output.status.success());
+    let legacy_report: serde_json::Value = serde_json::from_slice(&legacy_output.stdout).expect("legacy report");
+    assert_eq!(legacy_report["valid"], true);
+    assert_eq!(legacy_report["strict_profile_satisfied"], false);
+
+    let unsafe_output = Command::new(valence_binary())
+        .args(["requirement-reference", "validate", "--artifact-root"])
+        .arg(&root)
+        .args(["--input", "../legacy.json"])
+        .output()
+        .expect("run unsafe requirement locator");
+    assert!(!unsafe_output.status.success());
+    assert!(String::from_utf8_lossy(&unsafe_output.stderr).contains("capability_locator_"));
+
+    let mut strict_legacy_only = legacy;
+    strict_legacy_only.profile = content_bound::RequirementLinkageProfileV1::StrictContentBound;
+    strict_legacy_only.non_claims = owned_non_claims(content_bound::CONTENT_BOUND_REQUIREMENT_NON_CLAIMS);
+    write_json(&root.join("strict-legacy-only.json"), &strict_legacy_only);
+    let strict_output = Command::new(valence_binary())
+        .args(["requirement-reference", "validate", "--artifact-root"])
+        .arg(&root)
+        .args(["--input", "strict-legacy-only.json", "--output-root"])
+        .arg(&root)
+        .args(["--out", "report.json"])
+        .output()
+        .expect("run strict legacy-only validation");
+    assert!(!strict_output.status.success());
+    let strict_report: serde_json::Value = serde_json::from_slice(&strict_output.stdout).expect("strict report");
+    assert!(
+        strict_report["issues"]
+            .as_array()
+            .expect("strict issues")
+            .iter()
+            .any(|issue| issue["code"] == "missing_content_bound_reference")
+    );
+    assert_eq!(fs::read_to_string(root.join("report.json")).expect("preserved report"), SENTINEL);
+    fs::remove_dir_all(root).expect("remove content-bound negative fixture");
+}
+
+#[test]
 fn version_command_succeeds() {
     let output = Command::new(valence_binary()).arg("version").output().expect("run valence version");
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(output.status.success(), "version should succeed: {stdout}");
     assert!(stdout.contains("valence"), "stdout should contain 'valence': {stdout}");
+}
+
+fn content_bound_registry_fixture() -> content_bound::CairnContentBoundRequirementRegistryV1 {
+    let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let path = manifest_dir.join("../../fixtures/content-bound-requirements/cairn-registry.json");
+    serde_json::from_str(&fs::read_to_string(path).expect("read frozen Cairn registry"))
+        .expect("parse frozen Cairn registry")
+}
+
+fn content_bound_temp_dir(label: &str) -> std::path::PathBuf {
+    let root = std::env::temp_dir().join(format!("valence-content-bound-{label}-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    fs::create_dir_all(&root).expect("create content-bound temp root");
+    root
+}
+
+fn content_bound_digest(
+    domain: content_bound::RequirementDigestDomainV1,
+    bytes: &[u8],
+) -> content_bound::RequirementDigestV1 {
+    content_bound::RequirementDigestV1 {
+        domain,
+        blake3: blake3::hash(bytes).to_hex().to_string(),
+    }
+}
+
+fn owned_non_claims(non_claims: &[&str]) -> Vec<String> {
+    non_claims.iter().map(|non_claim| (*non_claim).to_owned()).collect()
+}
+
+fn write_json<T: serde::Serialize>(path: &Path, value: &T) {
+    let mut bytes = serde_json::to_vec_pretty(value).expect("serialize JSON fixture");
+    bytes.push(b'\n');
+    fs::write(path, bytes).expect("write JSON fixture");
 }
 
 fn graph_fixture_path(relative: &str) -> String {

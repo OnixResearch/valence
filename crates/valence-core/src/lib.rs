@@ -11,6 +11,8 @@
 //! - `cob_evidence`: validates typed Valence evidence attachments, authorization inputs,
 //!   deterministic Radicle COB sidecar reduction, and saved binding/snapshot receipts over
 //!   already-loaded values.
+//! - `content_bound_requirements`: consumes frozen Cairn registry contracts and validates typed
+//!   requirement references, legacy recorded-only linkage, selected revisions, and stack contexts.
 //! - `evidence_adapters`: validates parsed Cairn, ChaosControl, state-machine, and canonical-core
 //!   cutover rows as bounded Evidence IR identity/linkage inputs.
 //! - `evidence_codebase_index`: builds, queries, renders, and boundary-checks Octet-owned
@@ -58,6 +60,7 @@ pub mod artifact_ref;
 pub mod ast_grep_evidence;
 pub mod capability_plan;
 pub mod cob_evidence;
+pub mod content_bound_requirements;
 pub mod evidence_adapters;
 pub mod evidence_chain;
 pub mod evidence_codebase_index;

@@ -53,7 +53,7 @@ Issue ordering is deterministic. One invalid edge cannot be hidden by another va
 
 Core tests cover valid single and multi-repository contexts. Negative tests mutate one identity domain at a time.
 
-CLI tests cover malformed nested input, capability-root rejection, legacy compatibility, and no-write failure behavior.
+CLI tests cover malformed nested input, capability-root rejection, legacy compatibility, and no-write failure behavior. The `content-bound-requirements` Cairn trace profile keeps this change separate from known gaps in older profiles.
 
 ## Rollout
 

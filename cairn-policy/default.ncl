@@ -133,6 +133,17 @@ let PolicyFieldSetDigest = "5b6ca8c021d47eb08c98e6dedd16ebced68c13fdb7e58d1c1e08
         marker_verbs = ["impl", "verify", "depends", "related"],
       },
       {
+        id = "content-bound-requirements",
+        requirement_sources = [
+          { root = "cairn/specs/content-bound-requirements/spec.md", source_kind = "accepted_specs", extensions = ["md"] },
+        ],
+        evidence_sources = [
+          { root = "crates/valence-core/src/content_bound_requirements.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-cli/src/content_bound_requirement_cli.rs", source_kind = "rust_source", extensions = ["rs"] },
+        ],
+        marker_verbs = ["impl", "verify"],
+      },
+      {
         id = "radicle-cob-evidence",
         requirement_sources = [
           { root = "cairn/specs/radicle-cob-evidence/spec.md", source_kind = "accepted_specs", extensions = ["md"] },

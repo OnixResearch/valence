@@ -3,6 +3,9 @@
 //! This is the imperative shell: argument parsing, file reads, stdout/stderr,
 //! and exit codes. All core logic lives in `valence_core`.
 
+mod content_bound_requirement_cli;
+
+use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 use std::path::PathBuf;
@@ -30,6 +33,8 @@ COMMANDS:
     function-address preserves --artifact-root <ROOT> --input <FILE>
     formal-proof aeneas-chain validate --artifact-root <ROOT> --input <FILE>
     evidence-chain validate --artifact-root <ROOT> --input <FILE>
+    requirement-reference validate --artifact-root <ROOT> --input <FILE> [--registry <FILE>] [--output-root <ROOT> --out <FILE>]
+    stack-context validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --out <FILE>]
     wasm-component validate --artifact-root <ROOT> --input <FILE>
     version                             Print version
 
@@ -57,6 +62,8 @@ fn main() -> ExitCode {
         "function-address" => run_function_address(&args[2..]),
         "formal-proof" => run_formal_proof(&args[2..]),
         "evidence-chain" => run_evidence_chain(&args[2..]),
+        "requirement-reference" => content_bound_requirement_cli::run_requirement_reference(&args[2..]),
+        "stack-context" => content_bound_requirement_cli::run_stack_context(&args[2..]),
         "wasm-component" => run_wasm_component(&args[2..]),
         "help" | "--help" | "-h" => {
             print!("{USAGE}");
@@ -938,6 +945,27 @@ fn cap_read_to_string(kind: CapabilityRootKind, root_path: &Path, locator: &Path
     let (root, relative) = open_capability_root(kind, root_path, locator, false)?;
     ensure_existing_path_confined(&root, &relative)?;
     root.read_to_string(&relative).map_err(|error| format!("{} read failed: {error}", kind.as_str()))
+}
+
+fn cap_read_bounded_to_string(
+    kind: CapabilityRootKind,
+    root_path: &Path,
+    locator: &Path,
+    max_bytes: u64,
+) -> Result<String, String> {
+    let (root, relative) = open_capability_root(kind, root_path, locator, false)?;
+    ensure_existing_path_confined(&root, &relative)?;
+    let read_limit = max_bytes.saturating_add(1);
+    let file = root.open(&relative).map_err(|error| format!("{} read failed: {error}", kind.as_str()))?;
+    let mut reader = file.take(read_limit);
+    let mut bytes = Vec::new();
+    reader.read_to_end(&mut bytes).map_err(|error| format!("{} read failed: {error}", kind.as_str()))?;
+    let byte_count =
+        u64::try_from(bytes.len()).map_err(|_error| format!("{} input size is not portable", kind.as_str()))?;
+    if byte_count > max_bytes {
+        return Err(format!("{} input exceeds the bounded read limit", kind.as_str()));
+    }
+    String::from_utf8(bytes).map_err(|_error| format!("{} input is not UTF-8", kind.as_str()))
 }
 
 fn cap_read(kind: CapabilityRootKind, root_path: &Path, locator: &Path) -> Result<Vec<u8>, String> {

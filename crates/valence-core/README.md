@@ -27,6 +27,7 @@ Rust code imports the crate as `valence_core`.
 Identity and envelope primitives:
 
 - `artifact_ref`
+- `content_bound_requirements`
 - `evidence_ir`
 - `evidence_chain`
 - `evidence_model`
