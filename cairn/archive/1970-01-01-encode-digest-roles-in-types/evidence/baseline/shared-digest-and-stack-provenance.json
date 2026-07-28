@@ -1,0 +1,28 @@
+{
+  "schema": "valence.nominal-digest-role-baseline.v1",
+  "source_revision": "6ab37aa3",
+  "shared_digest": {
+    "role": "artifact_identity",
+    "original": "b3:000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+    "normalized_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+    "spelling": "b3_prefix",
+    "wire_json": "{\"role\":\"artifact_identity\",\"original\":\"b3:000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f\",\"normalized_hex\":\"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f\",\"spelling\":\"b3_prefix\"}",
+    "canonical_json_blake3": "a371886a0c90ab6ff83db5755ad02038adaca4531ba80f5d2fefaec79d733666"
+  },
+  "stack_provenance": {
+    "corpus": "contracts/stack-provenance/preserves-corpus/corpus.json",
+    "binary_hash": "6c6b50f32058af2bad4e7e4aad2dd2a62725bb31e84e9978c974fea205f2a5f6",
+    "sidecar_digest": "5af2ab6b1764a361e9ff34fb33e9872bc5415c5e6d0c78b6d1c75815e1813dfc",
+    "preserves_content_hashes": {
+      "stack-provenance-sidecar": "4fd7566d1ef466ecfb77a817101e31d5180ec04ea10d9018a2d81146912d6892",
+      "mantle-release-manifest-view": "1756ff52c45ba23cf06956c2be1ac4a882357726a0def7bcdc9957e32528d8e5",
+      "built-binary-thread-input": "2963805bd462f251122eac7d71a673e8d5c4a2bb77b426ff4cf26b1a155eeba1"
+    }
+  },
+  "baseline_command": "nix develop --option substituters '' --option builders '' -c cargo test --workspace",
+  "baseline_result": "pass",
+  "non_claims": [
+    "the baseline binds selected public bytes and fixture identities only",
+    "the baseline does not prove measured-byte truth, evidence truth, producer authority, behavioral correctness, verifier soundness, or release eligibility"
+  ]
+}

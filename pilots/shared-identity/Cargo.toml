@@ -10,6 +10,7 @@ publish = false
 # r[impl valence.strict_rust_admission.consumer_scope.production]
 [lib]
 path = "../../crates/valence-core/src/shared_identity.rs"
+doctest = false
 
 [dependencies]
 blake3.workspace = true

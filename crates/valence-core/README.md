@@ -65,7 +65,9 @@ graph and claim linkage and emits only a bounded generic handoff;
 see [`docs/aeneas-translation-chain.md`](../../docs/aeneas-translation-chain.md).
 
 The crate-level documentation in `src/lib.rs` describes each module's bounded
-claim surface.
+claim surface. The [nominal digest role guide](../../docs/nominal-digest-roles.md)
+describes owned role types, borrowed views, wire adapters, and consumer
+migration.
 
 ## Functional-core boundary
 

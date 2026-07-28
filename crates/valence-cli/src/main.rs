@@ -536,6 +536,20 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
         eprintln!("error: --binary-hash is required");
         return ExitCode::from(2);
     };
+    let binary_hash = match valence_core::shared_identity::AdmittedBinaryDigest::parse_compatible(
+        &binary_hash,
+        valence_core::shared_identity::MIXED_BLAKE3_PROFILE,
+        "binary_hash",
+    ) {
+        Ok(binary_hash) => binary_hash,
+        Err(_) => {
+            print_stack_provenance_report(&valence_core::stack_provenance_adapter::StackProvenanceReport {
+                valid: false,
+                issue_codes: vec!["binary_hash_invalid".to_owned()],
+            });
+            return ExitCode::from(1);
+        }
+    };
     let Some(output_path) = output_path else {
         eprintln!("error: --output is required");
         return ExitCode::from(2);
@@ -549,7 +563,7 @@ fn run_stack_provenance_build(args: &[String]) -> ExitCode {
                 return ExitCode::from(2);
             }
         };
-    let sidecar_json = match valence_core::stack_provenance_adapter::build_sidecar_json_from_octet_export_json(
+    let sidecar_json = match valence_core::stack_provenance_adapter::build_sidecar_json_from_typed_binary(
         &octet_export_json,
         &binary_hash,
     ) {

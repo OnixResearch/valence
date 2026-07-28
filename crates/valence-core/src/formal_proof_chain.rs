@@ -11,10 +11,13 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::shared_identity::DigestRole;
+use crate::shared_identity::BinaryRole;
+use crate::shared_identity::Digest;
+use crate::shared_identity::DigestRoleMarker;
 use crate::shared_identity::MIXED_BLAKE3_PROFILE;
+use crate::shared_identity::ReceiptRole;
+use crate::shared_identity::SidecarRole;
 use crate::shared_identity::contains_overclaim;
-use crate::shared_identity::parse_digest;
 
 pub mod aeneas;
 
@@ -163,7 +166,7 @@ pub fn validate_formal_proof_stack_chain(fixture: &FormalProofStackChainFixture)
 
 fn validate_receipt(receipt: &FormalProofReceiptNode, issues: &mut Vec<FormalProofChainIssue>) {
     validate_non_claims(&receipt.non_claims, issues);
-    validate_digest(&receipt.receipt_hash, DigestRole::ReceiptIdentity, FIELD_RECEIPT, issues);
+    validate_digest::<ReceiptRole>(&receipt.receipt_hash, FIELD_RECEIPT, issues);
     if receipt.status != PASS_STATUS {
         issues.push(FormalProofChainIssue::new(FIELD_STATUS, "receipt_not_passed"));
     }
@@ -181,7 +184,7 @@ fn validate_proof_card(
     issues: &mut Vec<FormalProofChainIssue>,
 ) {
     validate_non_claims(&proof_card.non_claims, issues);
-    validate_digest(&proof_card.proof_card_hash, DigestRole::ReceiptIdentity, FIELD_PROOF_CARD, issues);
+    validate_digest::<ReceiptRole>(&proof_card.proof_card_hash, FIELD_PROOF_CARD, issues);
     if proof_card.linked_receipt_id != receipt.receipt_id {
         issues.push(FormalProofChainIssue::new(FIELD_PROOF_CARD, "stale_receipt_link"));
     }
@@ -193,8 +196,8 @@ fn validate_provenance(
     issues: &mut Vec<FormalProofChainIssue>,
 ) {
     validate_non_claims(&provenance.non_claims, issues);
-    validate_digest(&provenance.binary_hash, DigestRole::BinaryBytes, FIELD_BINARY_HASH, issues);
-    validate_digest(&provenance.sidecar_digest, DigestRole::SidecarBytes, FIELD_SIDECAR_DIGEST, issues);
+    validate_digest::<BinaryRole>(&provenance.binary_hash, FIELD_BINARY_HASH, issues);
+    validate_digest::<SidecarRole>(&provenance.sidecar_digest, FIELD_SIDECAR_DIGEST, issues);
     if provenance.linked_receipt_id != receipt.receipt_id {
         issues.push(FormalProofChainIssue::new(FIELD_RECEIPT, "provenance_receipt_link_mismatch"));
     }
@@ -238,8 +241,8 @@ fn validate_readiness(
     }
 }
 
-fn validate_digest(digest: &str, role: DigestRole, field: &'static str, issues: &mut Vec<FormalProofChainIssue>) {
-    if parse_digest(digest, role, MIXED_BLAKE3_PROFILE, field).is_err() {
+fn validate_digest<Role: DigestRoleMarker>(digest: &str, field: &'static str, issues: &mut Vec<FormalProofChainIssue>) {
+    if Digest::<Role>::parse(digest, MIXED_BLAKE3_PROFILE, field).is_err() {
         issues.push(FormalProofChainIssue::new(field, "malformed_blake3"));
     }
 }

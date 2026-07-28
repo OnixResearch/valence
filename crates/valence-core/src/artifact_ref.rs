@@ -13,8 +13,8 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-/// Number of lowercase hexadecimal characters in a BLAKE3 digest.
-const BLAKE3_HEX_LENGTH: usize = 64;
+use crate::shared_identity::ArtifactIdentityDigest;
+use crate::shared_identity::DigestProfile as SharedDigestProfile;
 
 const B3_PREFIX: &str = "b3:";
 const BLAKE3_PREFIX: &str = "blake3:";
@@ -269,7 +269,7 @@ fn parse_digest(
         return None;
     }
 
-    let (spelling, hex) = if let Some(stripped) = trimmed.strip_prefix(B3_PREFIX) {
+    let (spelling, _hex) = if let Some(stripped) = trimmed.strip_prefix(B3_PREFIX) {
         (DigestSpelling::B3Prefix, stripped)
     } else if let Some(stripped) = trimmed.strip_prefix(BLAKE3_PREFIX) {
         (DigestSpelling::Blake3Prefix, stripped)
@@ -284,14 +284,17 @@ fn parse_digest(
         issues.push(ArtifactRefIssue::new(field, "digest_unsupported_prefix"));
         return None;
     }
-    if !is_blake3_hex(hex) {
-        issues.push(ArtifactRefIssue::new(field, "digest_malformed"));
-        return None;
-    }
+    let typed = match ArtifactIdentityDigest::parse_compatible(trimmed, shared_digest_profile(profile), field) {
+        Ok(digest) => digest,
+        Err(_) => {
+            issues.push(ArtifactRefIssue::new(field, "digest_malformed"));
+            return None;
+        }
+    };
 
     Some(ArtifactDigest {
         original: trimmed.to_owned(),
-        normalized_hex: hex.to_ascii_lowercase(),
+        normalized_hex: typed.as_hex().to_owned(),
         spelling,
     })
 }
@@ -304,8 +307,13 @@ fn profile_allows_spelling(profile: DigestSpellingProfile, spelling: DigestSpell
     }
 }
 
-fn is_blake3_hex(value: &str) -> bool {
-    value.len() == BLAKE3_HEX_LENGTH && value.chars().all(|character| character.is_ascii_hexdigit())
+fn shared_digest_profile(profile: DigestSpellingProfile) -> SharedDigestProfile {
+    SharedDigestProfile {
+        name: profile.name,
+        allow_raw_hex: profile.allow_raw_hex,
+        allow_b3_prefix: profile.allow_b3_prefix,
+        allow_blake3_prefix: profile.allow_blake3_prefix,
+    }
 }
 
 fn validate_path(path: Option<&str>, issues: &mut Vec<ArtifactRefIssue>) {

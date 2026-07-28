@@ -9,6 +9,8 @@
 //! r[impl valence.evidence_ir.shared_identity.validation]
 //! r[impl valence.evidence_ir.shared_identity.compatibility_adapters]
 
+use std::marker::PhantomData;
+
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Map;
@@ -24,6 +26,7 @@ const FIELD_CANONICAL_JSON: &str = "canonical_json";
 const FIELD_DIGEST: &str = "digest";
 const FIELD_EXPECTED_ROLE: &str = "expected_role";
 const FIELD_NON_CLAIMS: &str = "non_claims";
+const FIELD_ROLE: &str = "role";
 const FIELD_SELF_HASH_EXCLUSION: &str = "self_hash_exclusion";
 
 /// Required visible non-claim for shared identity reports.
@@ -53,6 +56,9 @@ pub enum DigestRole {
     SidecarBytes,
     ArtifactIdentity,
     ReceiptIdentity,
+    PolicyIdentity,
+    GraphIdentity,
+    SourceIdentity,
     PreservesMetadata,
     CompatibilityReference,
 }
@@ -65,6 +71,9 @@ impl DigestRole {
             Self::SidecarBytes => "sidecar_bytes",
             Self::ArtifactIdentity => "artifact_identity",
             Self::ReceiptIdentity => "receipt_identity",
+            Self::PolicyIdentity => "policy_identity",
+            Self::GraphIdentity => "graph_identity",
+            Self::SourceIdentity => "source_identity",
             Self::PreservesMetadata => "preserves_metadata",
             Self::CompatibilityReference => "compatibility_reference",
         }
@@ -113,6 +122,41 @@ pub const MIXED_BLAKE3_PROFILE: DigestProfile = DigestProfile {
     allow_blake3_prefix: true,
 };
 
+#[path = "shared_identity/typed_digest.rs"]
+mod typed_digest;
+pub use typed_digest::AdmittedBinaryDigest;
+pub use typed_digest::AdmittedDigest;
+pub use typed_digest::ArtifactIdentityDigest;
+pub use typed_digest::ArtifactIdentityDigestRef;
+pub use typed_digest::ArtifactIdentityRole;
+pub use typed_digest::BinaryDigest;
+pub use typed_digest::BinaryDigestRef;
+pub use typed_digest::BinaryRole;
+pub use typed_digest::CompatibilityDigest;
+pub use typed_digest::CompatibilityDigestRef;
+pub use typed_digest::CompatibilityReferenceRole;
+pub use typed_digest::Digest;
+pub use typed_digest::DigestRef;
+pub use typed_digest::DigestRoleMarker;
+pub use typed_digest::GraphDigest;
+pub use typed_digest::GraphDigestRef;
+pub use typed_digest::GraphRole;
+pub use typed_digest::PolicyDigest;
+pub use typed_digest::PolicyDigestRef;
+pub use typed_digest::PolicyRole;
+pub use typed_digest::PreservesMetadataDigest;
+pub use typed_digest::PreservesMetadataDigestRef;
+pub use typed_digest::PreservesMetadataRole;
+pub use typed_digest::ReceiptDigest;
+pub use typed_digest::ReceiptDigestRef;
+pub use typed_digest::ReceiptRole;
+pub use typed_digest::SidecarDigest;
+pub use typed_digest::SidecarDigestRef;
+pub use typed_digest::SidecarRole;
+pub use typed_digest::SourceDigest;
+pub use typed_digest::SourceDigestRef;
+pub use typed_digest::SourceRole;
+
 #[path = "shared_identity/canonical_hash_profile.rs"]
 mod canonical_hash_profile;
 pub use canonical_hash_profile::CanonicalHashProfile;
@@ -139,13 +183,145 @@ pub const BUNDLE_SELF_HASH_EXCLUSION: SelfHashExclusionProfile = SelfHashExclusi
     excluded_fields: BUNDLE_SELF_HASH_FIELDS,
 };
 
-/// Parsed digest preserving the public spelling and declared role.
+/// Closed wire DTO preserving the public spelling and declared role.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct SharedDigest {
     pub role: DigestRole,
     pub original: String,
     pub normalized_hex: String,
     pub spelling: DigestSpelling,
+}
+
+/// Explicit name for the compatibility wire DTO.
+pub type SharedDigestWire = SharedDigest;
+
+/// Closed admitted representation for heterogeneous digest wire records.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum AnyDigest {
+    Binary(AdmittedDigest<BinaryRole>),
+    Sidecar(AdmittedDigest<SidecarRole>),
+    Artifact(AdmittedDigest<ArtifactIdentityRole>),
+    Receipt(AdmittedDigest<ReceiptRole>),
+    Policy(AdmittedDigest<PolicyRole>),
+    Graph(AdmittedDigest<GraphRole>),
+    Source(AdmittedDigest<SourceRole>),
+    PreservesMetadata(AdmittedDigest<PreservesMetadataRole>),
+    CompatibilityReference(AdmittedDigest<CompatibilityReferenceRole>),
+}
+
+impl AnyDigest {
+    #[must_use]
+    pub fn role(&self) -> DigestRole {
+        match self {
+            Self::Binary(_) => DigestRole::BinaryBytes,
+            Self::Sidecar(_) => DigestRole::SidecarBytes,
+            Self::Artifact(_) => DigestRole::ArtifactIdentity,
+            Self::Receipt(_) => DigestRole::ReceiptIdentity,
+            Self::Policy(_) => DigestRole::PolicyIdentity,
+            Self::Graph(_) => DigestRole::GraphIdentity,
+            Self::Source(_) => DigestRole::SourceIdentity,
+            Self::PreservesMetadata(_) => DigestRole::PreservesMetadata,
+            Self::CompatibilityReference(_) => DigestRole::CompatibilityReference,
+        }
+    }
+
+    #[must_use]
+    pub fn normalized_hex(&self) -> &str {
+        match self {
+            Self::Binary(value) => value.digest().as_hex(),
+            Self::Sidecar(value) => value.digest().as_hex(),
+            Self::Artifact(value) => value.digest().as_hex(),
+            Self::Receipt(value) => value.digest().as_hex(),
+            Self::Policy(value) => value.digest().as_hex(),
+            Self::Graph(value) => value.digest().as_hex(),
+            Self::Source(value) => value.digest().as_hex(),
+            Self::PreservesMetadata(value) => value.digest().as_hex(),
+            Self::CompatibilityReference(value) => value.digest().as_hex(),
+        }
+    }
+
+    pub fn try_into_role<Role: DigestRoleMarker>(self) -> Result<Digest<Role>, SharedIdentityIssue> {
+        if self.role() != Role::ROLE {
+            return Err(SharedIdentityIssue::new(FIELD_ROLE, "role_mismatch"));
+        }
+        Digest::<Role>::parse(self.normalized_hex(), RAW_BLAKE3_PROFILE, FIELD_DIGEST)
+    }
+}
+
+impl TryFrom<SharedDigest> for AnyDigest {
+    type Error = SharedIdentityIssue;
+
+    fn try_from(wire: SharedDigest) -> Result<Self, Self::Error> {
+        let role = wire.role;
+        let original = wire.original;
+        let normalized_hex = wire.normalized_hex;
+        let spelling = wire.spelling;
+        match role {
+            DigestRole::BinaryBytes => {
+                AdmittedDigest::<BinaryRole>::from_wire(original, normalized_hex, spelling, FIELD_DIGEST)
+                    .map(Self::Binary)
+            }
+            DigestRole::SidecarBytes => {
+                AdmittedDigest::<SidecarRole>::from_wire(original, normalized_hex, spelling, FIELD_DIGEST)
+                    .map(Self::Sidecar)
+            }
+            DigestRole::ArtifactIdentity => {
+                AdmittedDigest::<ArtifactIdentityRole>::from_wire(original, normalized_hex, spelling, FIELD_DIGEST)
+                    .map(Self::Artifact)
+            }
+            DigestRole::ReceiptIdentity => {
+                AdmittedDigest::<ReceiptRole>::from_wire(original, normalized_hex, spelling, FIELD_DIGEST)
+                    .map(Self::Receipt)
+            }
+            DigestRole::PolicyIdentity => {
+                AdmittedDigest::<PolicyRole>::from_wire(original, normalized_hex, spelling, FIELD_DIGEST)
+                    .map(Self::Policy)
+            }
+            DigestRole::GraphIdentity => {
+                AdmittedDigest::<GraphRole>::from_wire(original, normalized_hex, spelling, FIELD_DIGEST)
+                    .map(Self::Graph)
+            }
+            DigestRole::SourceIdentity => {
+                AdmittedDigest::<SourceRole>::from_wire(original, normalized_hex, spelling, FIELD_DIGEST)
+                    .map(Self::Source)
+            }
+            DigestRole::PreservesMetadata => {
+                AdmittedDigest::<PreservesMetadataRole>::from_wire(original, normalized_hex, spelling, FIELD_DIGEST)
+                    .map(Self::PreservesMetadata)
+            }
+            DigestRole::CompatibilityReference => AdmittedDigest::<CompatibilityReferenceRole>::from_wire(
+                original,
+                normalized_hex,
+                spelling,
+                FIELD_DIGEST,
+            )
+            .map(Self::CompatibilityReference),
+        }
+    }
+}
+
+impl From<AnyDigest> for SharedDigest {
+    fn from(digest: AnyDigest) -> Self {
+        let role = digest.role();
+        let (original, normalized_hex, spelling) = match digest {
+            AnyDigest::Binary(value) => value.into_wire_parts(),
+            AnyDigest::Sidecar(value) => value.into_wire_parts(),
+            AnyDigest::Artifact(value) => value.into_wire_parts(),
+            AnyDigest::Receipt(value) => value.into_wire_parts(),
+            AnyDigest::Policy(value) => value.into_wire_parts(),
+            AnyDigest::Graph(value) => value.into_wire_parts(),
+            AnyDigest::Source(value) => value.into_wire_parts(),
+            AnyDigest::PreservesMetadata(value) => value.into_wire_parts(),
+            AnyDigest::CompatibilityReference(value) => value.into_wire_parts(),
+        };
+        Self {
+            role,
+            original,
+            normalized_hex,
+            spelling,
+        }
+    }
 }
 
 /// Deterministic field-scoped issue emitted by shared identity validation.
@@ -162,7 +338,38 @@ impl SharedIdentityIssue {
     }
 }
 
-/// Pure validation candidate for a digest-bearing identity field.
+/// Pure typed validation candidate for a statically known digest role.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TypedDigestCandidate<Role: DigestRoleMarker> {
+    pub digest: String,
+    pub profile: DigestProfile,
+    pub non_claims: Vec<String>,
+    role: PhantomData<fn() -> Role>,
+}
+
+impl<Role: DigestRoleMarker> TypedDigestCandidate<Role> {
+    #[must_use]
+    pub fn new(digest: String, profile: DigestProfile, non_claims: Vec<String>) -> Self {
+        Self {
+            digest,
+            profile,
+            non_claims,
+            role: PhantomData,
+        }
+    }
+}
+
+/// Validation report whose admitted digest retains its compile-time role.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TypedIdentityReport<Role: DigestRoleMarker> {
+    pub valid: bool,
+    pub digest: Option<Digest<Role>>,
+    pub issues: Vec<SharedIdentityIssue>,
+    pub supported_claim: String,
+    pub non_claims: Vec<String>,
+}
+
+/// Pure validation candidate for a compatibility wire digest field.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SharedDigestCandidate {
     pub role: DigestRole,
@@ -182,7 +389,32 @@ pub struct SharedIdentityReport {
     pub non_claims: Vec<String>,
 }
 
-/// Validate a digest-bearing identity candidate without I/O.
+/// Validate a statically known digest role without a runtime expected-role argument.
+#[must_use]
+pub fn validate_typed_digest<Role: DigestRoleMarker>(
+    candidate: &TypedDigestCandidate<Role>,
+) -> TypedIdentityReport<Role> {
+    let mut issues = Vec::new();
+    let digest = match Digest::<Role>::parse(&candidate.digest, candidate.profile, FIELD_DIGEST) {
+        Ok(digest) => Some(digest),
+        Err(issue) => {
+            issues.push(issue);
+            None
+        }
+    };
+    issues.extend(validate_non_claims(&candidate.non_claims));
+    issues.sort();
+    issues.dedup();
+    TypedIdentityReport {
+        valid: issues.is_empty(),
+        digest,
+        issues,
+        supported_claim: SHARED_IDENTITY_SUPPORTED_CLAIM.to_owned(),
+        non_claims: candidate.non_claims.clone(),
+    }
+}
+
+/// Validate a compatibility wire digest candidate without I/O.
 #[must_use]
 pub fn validate_shared_digest(candidate: &SharedDigestCandidate) -> SharedIdentityReport {
     let mut issues = Vec::new();
@@ -209,27 +441,7 @@ pub fn parse_digest(
     profile: DigestProfile,
     field: &'static str,
 ) -> Result<SharedDigest, SharedIdentityIssue> {
-    let (spelling, hex) = if let Some(hex) = value.strip_prefix(B3_PREFIX) {
-        if !profile.allow_b3_prefix {
-            return Err(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
-        }
-        (DigestSpelling::B3Prefix, hex)
-    } else if let Some(hex) = value.strip_prefix(BLAKE3_PREFIX) {
-        if !profile.allow_blake3_prefix {
-            return Err(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
-        }
-        (DigestSpelling::Blake3Prefix, hex)
-    } else {
-        if !profile.allow_raw_hex {
-            return Err(SharedIdentityIssue::new(field, "unsupported_digest_spelling"));
-        }
-        (DigestSpelling::RawHex, value)
-    };
-
-    if hex.len() != BLAKE3_HEX_LENGTH || !hex.chars().all(is_lower_hex) {
-        return Err(SharedIdentityIssue::new(field, "malformed_blake3"));
-    }
-
+    let (spelling, hex) = typed_digest::parse_lower_parts(value, profile, field)?;
     Ok(SharedDigest {
         role,
         original: value.to_owned(),
@@ -393,10 +605,6 @@ fn strip_excluded_fields(value: &Value, excluded_fields: &[&str]) -> Value {
         }
         scalar => scalar.clone(),
     }
-}
-
-fn is_lower_hex(character: char) -> bool {
-    character.is_ascii_digit() || ('a'..='f').contains(&character)
 }
 
 #[cfg(test)]

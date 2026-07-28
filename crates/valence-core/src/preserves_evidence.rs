@@ -6,10 +6,9 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::shared_identity::DigestRole;
 use crate::shared_identity::MIXED_BLAKE3_PROFILE;
+use crate::shared_identity::PreservesMetadataDigest;
 use crate::shared_identity::blake3_hex;
-use crate::shared_identity::parse_digest;
 
 const FIELD_ARTIFACT_ROLE: &str = "artifact_role";
 const FIELD_CLAIM_BOUNDARY: &str = "claim_boundary";
@@ -472,7 +471,7 @@ fn legacy_rendered_line_hash(text: &str, exclusion_profile: &str) -> Result<Stri
 }
 
 fn validate_declared_hash(declared: &str, expected: Option<&str>, issues: &mut Vec<PreservesEvidenceIssue>) {
-    let parsed = match parse_digest(declared, DigestRole::PreservesMetadata, MIXED_BLAKE3_PROFILE, FIELD_CONTENT_HASH) {
+    let parsed = match PreservesMetadataDigest::parse(declared, MIXED_BLAKE3_PROFILE, FIELD_CONTENT_HASH) {
         Ok(parsed) => parsed,
         Err(_) => {
             issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "malformed_blake3"));
@@ -483,7 +482,7 @@ fn validate_declared_hash(declared: &str, expected: Option<&str>, issues: &mut V
         issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "hash_material_unavailable"));
         return;
     };
-    if parsed.normalized_hex != expected {
+    if parsed.as_hex() != expected {
         issues.push(PreservesEvidenceIssue::new(FIELD_CONTENT_HASH, "profile_digest_mismatch"));
     }
 }

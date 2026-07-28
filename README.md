@@ -186,7 +186,7 @@ lifecycle files, or promote recorded evidence into proof. See
 
 ## Documentation by task
 
-- **Identity and envelopes:** [artifact envelope](docs/evidence-artifact-envelope.md), [span integrity](docs/evidence-span-integrity.md), [content-bound requirements](docs/content-bound-requirements.md), and [Preserves migration](docs/preserves-integrity-migration.md).
+- **Identity and envelopes:** [artifact envelope](docs/evidence-artifact-envelope.md), [nominal digest roles](docs/nominal-digest-roles.md), [span integrity](docs/evidence-span-integrity.md), [content-bound requirements](docs/content-bound-requirements.md), and [Preserves migration](docs/preserves-integrity-migration.md).
 - **Evidence profiles:** [generic chains](docs/evidence-chain-profile.md), [function addresses](docs/function-address-evidence-profile.md), [Preserves ingest](docs/function-address-preserves-ingest.md), [Wasm components](docs/wasm-component-evidence.md), [ast-grep spans](docs/ast-grep-evidence-spans.md), [Kani boundaries](docs/kani-evidence-boundaries.md), and [FSM receipts](docs/fsm-default-exhaustive.md).
 - **Proof-oriented adapters:** [Aeneas/Lean chains](docs/aeneas-translation-chain.md), [Trellis evidence](docs/trellis-proof-evidence.md), and [proof-carrying IR lineage](docs/proof-carrying-ir-lineage.md).
 - **Operations and policy:** [CLI roots](docs/cli-capability-roots.md), [function-address publication](docs/function-address-publication.md), [Radicle sidecars](docs/radicle-cob-evidence.md), and [Cairn compatibility](docs/cairn-policy-compatibility.md).

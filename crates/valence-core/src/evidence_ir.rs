@@ -30,6 +30,9 @@ use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
 
+use crate::shared_identity::ArtifactIdentityDigest;
+use crate::shared_identity::MIXED_BLAKE3_PROFILE;
+use crate::shared_identity::SharedIdentityIssue;
 use crate::shared_identity::canonical_json_bytes;
 
 /// The Evidence IR v1 schema identifier.
@@ -382,6 +385,11 @@ pub fn canonical_hash(artifact: &EvidenceArtifact) -> Result<String, EvidenceIrE
         detail: format!("{}:{}", error.field, error.code),
     })?;
     Ok(format!("b3:{}", blake3::hash(&bytes).to_hex()))
+}
+
+/// Admit the public canonical-hash field into the typed artifact identity core.
+pub fn artifact_identity(artifact: &EvidenceArtifact) -> Result<ArtifactIdentityDigest, SharedIdentityIssue> {
+    ArtifactIdentityDigest::parse(&artifact.canonical_hash, MIXED_BLAKE3_PROFILE, "canonical_hash")
 }
 
 /// Validates a JSON-serialized Evidence IR artifact.
@@ -984,7 +992,21 @@ mod tests {
     fn strict_envelope_preserves_legacy_artifact_identity() {
         // r[verify valence.evidence_ir.complete_envelope.compatibility]
         const LEGACY_SAMPLE_HASH: &str = "b3:27f5aec990efd7f4e1e3956f6c7fae4e433596352ab78ff1c3b63a772cd4c0dd";
-        assert_eq!(sample_artifact().canonical_hash, LEGACY_SAMPLE_HASH);
+        let artifact = sample_artifact();
+        assert_eq!(artifact.canonical_hash, LEGACY_SAMPLE_HASH);
+        assert_eq!(
+            artifact_identity(&artifact).expect("legacy canonical hash admits as an artifact identity").as_hex(),
+            LEGACY_SAMPLE_HASH.trim_start_matches("b3:")
+        );
+    }
+
+    #[test]
+    fn typed_artifact_identity_rejects_malformed_wire_hash() {
+        let mut artifact = sample_artifact();
+        artifact.canonical_hash = "b3:not-a-blake3-digest".to_owned();
+        let issue = artifact_identity(&artifact).expect_err("malformed artifact identity must fail");
+        assert_eq!(issue.field, "canonical_hash");
+        assert_eq!(issue.code, "malformed_blake3");
     }
 
     #[test]

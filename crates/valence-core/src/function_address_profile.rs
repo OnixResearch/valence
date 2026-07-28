@@ -14,14 +14,20 @@ use crate::evidence_ir::EvidenceIrError;
 use crate::evidence_ir::EvidenceSpan;
 use crate::evidence_ir::VerificationRole;
 use crate::evidence_ir::build_evidence_artifact;
+use crate::shared_identity::ArtifactIdentityDigest;
+use crate::shared_identity::BinaryDigest;
+use crate::shared_identity::CompatibilityDigest;
 use crate::shared_identity::DigestProfile;
-use crate::shared_identity::DigestRole;
+use crate::shared_identity::GraphDigest;
 use crate::shared_identity::MIXED_BLAKE3_PROFILE;
+use crate::shared_identity::PolicyDigest;
 use crate::shared_identity::RAW_BLAKE3_PROFILE;
+use crate::shared_identity::ReceiptDigest;
 use crate::shared_identity::STRICT_B3_PROFILE;
+use crate::shared_identity::SidecarDigest;
+use crate::shared_identity::SourceDigest;
 use crate::shared_identity::blake3_hex;
 use crate::shared_identity::canonical_json_bytes;
-use crate::shared_identity::parse_digest;
 
 pub const FUNCTION_ADDRESS_PROFILE_VERSION: &str = "valence.function-address-evidence.v1";
 pub const FUNCTION_ADDRESS_ARTIFACT_KIND: &str = "function-address-evidence-v1";
@@ -349,9 +355,12 @@ pub fn function_address_policy_identity() -> FunctionAddressDigest {
     let material = function_address_policy_material();
     let value = serde_json::to_value(&material).expect("function-address policy material serializes");
     let bytes = canonical_json_bytes(&value).expect("function-address policy material canonicalizes");
+    let raw_digest = blake3_hex(&bytes);
+    let digest = PolicyDigest::parse(&raw_digest, RAW_BLAKE3_PROFILE, "policy_identity")
+        .expect("BLAKE3 output is a valid policy digest");
     FunctionAddressDigest {
         domain: FunctionAddressDigestDomain::PolicyProfile,
-        digest: blake3_hex(&bytes),
+        digest: digest.as_hex().to_owned(),
     }
 }
 
@@ -359,12 +368,7 @@ pub fn function_address_policy_identity() -> FunctionAddressDigest {
 pub fn normalize_function_address_digest_spelling(
     input: &FunctionAddressDigestSpellingInput,
 ) -> FunctionAddressDigestSpellingReport {
-    let parsed = parse_digest(
-        &input.digest,
-        DigestRole::CompatibilityReference,
-        digest_boundary_profile(input.boundary),
-        "digest",
-    );
+    let parsed = CompatibilityDigest::parse(&input.digest, digest_boundary_profile(input.boundary), "digest");
     let mut issues = parsed
         .as_ref()
         .err()
@@ -380,7 +384,7 @@ pub fn normalize_function_address_digest_spelling(
     issues.dedup();
     let normalized = parsed.ok().map(|digest| FunctionAddressDigest {
         domain: input.domain,
-        digest: digest.normalized_hex,
+        digest: digest.as_hex().to_owned(),
     });
     let canonical_spelling = normalized.as_ref().map(|digest| format!("b3:{}", digest.digest));
     FunctionAddressDigestSpellingReport {
@@ -552,8 +556,11 @@ pub fn plan_function_address_publication(input: &FunctionAddressEvidenceInput) -
         rows: &rows,
         non_claims: &non_claims,
     };
-    let Some(graph_identity) = hash_serializable(&graph_material) else {
+    let Some(graph_identity_text) = hash_serializable(&graph_material) else {
         return publication_failure("graph", "canonical_serialization_failed");
+    };
+    let Ok(graph_identity) = GraphDigest::parse(&graph_identity_text, RAW_BLAKE3_PROFILE, "graph_identity") else {
+        return publication_failure("graph", "generated_graph_identity_invalid");
     };
     let graph = FunctionAddressGraphReport {
         schema: FUNCTION_ADDRESS_GRAPH_SCHEMA,
@@ -564,7 +571,7 @@ pub fn plan_function_address_publication(input: &FunctionAddressEvidenceInput) -
         dependency_edge_count,
         rows,
         non_claims: non_claims.clone(),
-        graph_identity,
+        graph_identity: graph_identity.as_hex().to_owned(),
     };
     let publication_material = FunctionAddressPublicationHashMaterial {
         schema: FUNCTION_ADDRESS_BUNDLE_SCHEMA,
@@ -797,7 +804,7 @@ fn validate_policy_identity(input: &FunctionAddressEvidenceInput, issues: &mut V
         issues.push(FunctionAddressEvidenceIssue::new("policy_identity", "identity_domain_substitution"));
         return;
     }
-    if parse_digest(&policy_identity.digest, DigestRole::ArtifactIdentity, MIXED_BLAKE3_PROFILE, "digest").is_err() {
+    if PolicyDigest::parse(&policy_identity.digest, MIXED_BLAKE3_PROFILE, "digest").is_err() {
         issues.push(FunctionAddressEvidenceIssue::new("policy_identity", "malformed_policy_identity"));
         return;
     }
@@ -827,8 +834,33 @@ fn validate_digest_field(
         issues.push(FunctionAddressEvidenceIssue::new(field, "identity_domain_substitution"));
         return;
     }
-    if parse_digest(&identity.digest, DigestRole::ArtifactIdentity, MIXED_BLAKE3_PROFILE, "digest").is_err() {
+    if !digest_matches_domain(&identity.digest, expected) {
         issues.push(FunctionAddressEvidenceIssue::new(field, "malformed_digest"));
+    }
+}
+
+fn digest_matches_domain(digest: &str, domain: FunctionAddressDigestDomain) -> bool {
+    match domain {
+        FunctionAddressDigestDomain::SourceEnvelope => {
+            SourceDigest::parse(digest, MIXED_BLAKE3_PROFILE, "digest").is_ok()
+        }
+        FunctionAddressDigestDomain::SidecarDigest => {
+            SidecarDigest::parse(digest, MIXED_BLAKE3_PROFILE, "digest").is_ok()
+        }
+        FunctionAddressDigestDomain::ReleaseBinary => {
+            BinaryDigest::parse(digest, MIXED_BLAKE3_PROFILE, "digest").is_ok()
+        }
+        FunctionAddressDigestDomain::KamaciteReceipt | FunctionAddressDigestDomain::OctetProducerReceipt => {
+            ReceiptDigest::parse(digest, MIXED_BLAKE3_PROFILE, "digest").is_ok()
+        }
+        FunctionAddressDigestDomain::PolicyProfile => {
+            PolicyDigest::parse(digest, MIXED_BLAKE3_PROFILE, "digest").is_ok()
+        }
+        FunctionAddressDigestDomain::FunctionAddress
+        | FunctionAddressDigestDomain::DependencyClosure
+        | FunctionAddressDigestDomain::ValenceProjection => {
+            ArtifactIdentityDigest::parse(digest, MIXED_BLAKE3_PROFILE, "digest").is_ok()
+        }
     }
 }
 

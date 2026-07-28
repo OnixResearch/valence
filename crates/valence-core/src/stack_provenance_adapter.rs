@@ -79,6 +79,13 @@ use crate::provenance::PROVENANCE_BOUNDARY;
 use crate::provenance::ProvenanceChain;
 use crate::provenance::ProvenanceLink;
 use crate::provenance::check_provenance_chain;
+use crate::shared_identity::AdmittedBinaryDigest;
+use crate::shared_identity::ArtifactIdentityRole;
+use crate::shared_identity::BinaryRole;
+use crate::shared_identity::DigestRef;
+use crate::shared_identity::MIXED_BLAKE3_PROFILE;
+use crate::shared_identity::PreservesMetadataRole;
+use crate::shared_identity::SidecarRole;
 
 mod graph;
 pub use graph::*;
@@ -109,8 +116,7 @@ const BUILT_BINARY_OVERCLAIM_PATTERNS: &[&str] = &[
     "guarantees behavioral correctness",
     "guarantees whole-program safety",
 ];
-const BLAKE3_HEX_LENGTH: usize = 64;
-const BLAKE3_PREFIX: &str = "b3:";
+const FIELD_STACK_DIGEST: &str = "digest";
 const PRESERVES_STRING_QUOTE_OVERHEAD: usize = 2;
 const PRESERVES_OPTION_NONE: &str = "<none>";
 const PRESERVES_OPTION_SOME_TAG: &str = "some";
@@ -119,46 +125,21 @@ const PRESERVES_METADATA_NON_CLAIM: &str = "Preserves stack-provenance values pr
 /// Canonical text encoding label used for stack-provenance Preserves values.
 pub const STACK_PROVENANCE_PRESERVES_ENCODING: &str = "valence.stack-provenance-preserves-text.v1";
 
+/// Compatibility wrapper for a shared typed binary digest view.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct Blake3Digest<'a> {
-    normalized: &'a str,
-}
-
-impl<'a> Blake3Digest<'a> {
-    fn parse(value: &'a str) -> Option<Self> {
-        let normalized = value.strip_prefix(BLAKE3_PREFIX).unwrap_or(value);
-        if normalized.len() == BLAKE3_HEX_LENGTH && normalized.chars().all(|character| character.is_ascii_hexdigit()) {
-            Some(Self { normalized })
-        } else {
-            None
-        }
-    }
-
-    fn matches(self, other: Self) -> bool {
-        self.normalized.eq_ignore_ascii_case(other.normalized)
-    }
-
-    fn normalized(self) -> &'a str {
-        self.normalized
-    }
-}
-
-/// BLAKE3 digest for measured binary bytes.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct BinaryDigest<'a>(Blake3Digest<'a>);
+pub struct BinaryDigest<'a>(DigestRef<'a, BinaryRole>);
 
 impl<'a> BinaryDigest<'a> {
     /// Parse a string-compatible binary digest.
     #[must_use]
     pub fn parse(value: &'a str) -> Option<Self> {
-        Blake3Digest::parse(value).map(Self)
+        DigestRef::parse_compatible(value, MIXED_BLAKE3_PROFILE, FIELD_STACK_DIGEST).ok().map(Self)
     }
 
-    /// Return the canonical digest bytes as lowercase/uppercase preserving hex without the optional
-    /// `b3:` prefix.
+    /// Return the validated digest hex without its optional prefix.
     #[must_use]
     pub fn normalized(self) -> &'a str {
-        self.0.normalized()
+        self.0.as_hex()
     }
 
     #[must_use]
@@ -167,20 +148,20 @@ impl<'a> BinaryDigest<'a> {
     }
 }
 
-/// BLAKE3 digest for Valence sidecar bytes as recorded by Mantle.
+/// Compatibility wrapper for a shared typed sidecar digest view.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct SidecarDigest<'a>(Blake3Digest<'a>);
+pub struct SidecarDigest<'a>(DigestRef<'a, SidecarRole>);
 
 impl<'a> SidecarDigest<'a> {
     /// Parse a string-compatible sidecar digest.
     #[must_use]
     pub fn parse(value: &'a str) -> Option<Self> {
-        Blake3Digest::parse(value).map(Self)
+        DigestRef::parse_compatible(value, MIXED_BLAKE3_PROFILE, FIELD_STACK_DIGEST).ok().map(Self)
     }
 
     #[must_use]
     pub fn normalized(self) -> &'a str {
-        self.0.normalized()
+        self.0.as_hex()
     }
 
     #[must_use]
@@ -189,37 +170,37 @@ impl<'a> SidecarDigest<'a> {
     }
 }
 
-/// BLAKE3 digest for Octet or Valence artifact identities.
+/// Compatibility wrapper for a shared typed artifact digest view.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct ArtifactDigest<'a>(Blake3Digest<'a>);
+pub struct ArtifactDigest<'a>(DigestRef<'a, ArtifactIdentityRole>);
 
 impl<'a> ArtifactDigest<'a> {
     /// Parse a string-compatible artifact digest.
     #[must_use]
     pub fn parse(value: &'a str) -> Option<Self> {
-        Blake3Digest::parse(value).map(Self)
+        DigestRef::parse_compatible(value, MIXED_BLAKE3_PROFILE, FIELD_STACK_DIGEST).ok().map(Self)
     }
 
     #[must_use]
     pub fn normalized(self) -> &'a str {
-        self.0.normalized()
+        self.0.as_hex()
     }
 }
 
-/// BLAKE3 digest for canonical Preserves metadata bytes.
+/// Compatibility wrapper for a shared typed Preserves metadata digest view.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct PreservesMetadataDigest<'a>(Blake3Digest<'a>);
+pub struct PreservesMetadataDigest<'a>(DigestRef<'a, PreservesMetadataRole>);
 
 impl<'a> PreservesMetadataDigest<'a> {
     /// Parse a string-compatible Preserves metadata digest.
     #[must_use]
     pub fn parse(value: &'a str) -> Option<Self> {
-        Blake3Digest::parse(value).map(Self)
+        DigestRef::parse_compatible(value, MIXED_BLAKE3_PROFILE, FIELD_STACK_DIGEST).ok().map(Self)
     }
 
     #[must_use]
     pub fn normalized(self) -> &'a str {
-        self.0.normalized()
+        self.0.as_hex()
     }
 }
 
@@ -887,7 +868,15 @@ pub fn validate_octet_export(export: &OctetValenceProvenanceExport) -> StackProv
     }
 }
 
-/// Parse, build, validate, and render a stack sidecar as pretty JSON.
+/// Build a stack sidecar from an already admitted binary-role argument.
+pub fn build_sidecar_json_from_typed_binary(
+    octet_export_json: &str,
+    binary_hash: &AdmittedBinaryDigest,
+) -> Result<String, StackProvenanceReport> {
+    build_sidecar_json_from_octet_export_json(octet_export_json, binary_hash.original())
+}
+
+/// Compatibility adapter that parses, builds, validates, and renders a stack sidecar.
 pub fn build_sidecar_json_from_octet_export_json(
     octet_export_json: &str,
     binary_hash: &str,
@@ -1813,6 +1802,21 @@ mod tests {
         let report = verify_mantle_external_evidence_sidecar(&manifest, &json);
 
         assert!(report.valid, "unexpected issues: {:?}", report.issue_codes);
+    }
+
+    #[test]
+    fn typed_binary_adapter_preserves_accepted_wire_spelling() {
+        let export_json = serde_json::to_string(&sample_export()).expect("Octet export JSON");
+        let prefixed_uppercase = format!("b3:{}", BINARY_HASH.to_ascii_uppercase());
+        let admitted = AdmittedBinaryDigest::parse_compatible(&prefixed_uppercase, MIXED_BLAKE3_PROFILE, "binary_hash")
+            .expect("compatible binary argument");
+        let typed = build_sidecar_json_from_typed_binary(&export_json, &admitted).expect("typed sidecar JSON");
+        let compatibility = build_sidecar_json_from_octet_export_json(&export_json, &prefixed_uppercase)
+            .expect("compatibility sidecar JSON");
+        let sidecar: StackProvenanceSidecar = serde_json::from_str(&typed).expect("typed sidecar projection");
+
+        assert_eq!(typed, compatibility);
+        assert_eq!(sidecar.binary_hash, prefixed_uppercase);
     }
 
     #[test]
