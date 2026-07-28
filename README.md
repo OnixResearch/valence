@@ -257,6 +257,7 @@ License metadata is outside canonical Evidence IR identity unless a versioned sc
 - [oxidecomputer/iddqd](https://github.com/oxidecomputer/iddqd) — derived-key maps and duplicate-key rejection.
 - [oxidecomputer/newtype-uuid](https://github.com/oxidecomputer/newtype-uuid) — typed UUID wrappers. Valence identity remains BLAKE3.
 - [oxidecomputer/daft](https://github.com/oxidecomputer/daft) — semantic differences as review evidence, not equivalence proof.
+- [Nostr protocol and NIPs](https://github.com/nostr-protocol/nips) — external signed-event identity reference. Valence preserves Nostr protocol digests without promoting authentication into proof or authority.
 
 ### Attestation and proof
 
