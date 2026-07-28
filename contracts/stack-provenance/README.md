@@ -12,7 +12,13 @@ They validate:
 - Built-binary thread report shape and bounded non-claim text.
 - Negative cases for bad schema strings, malformed BLAKE3 digests, missing sidecar role, missing non-claims, stale parent links, Trellis/manual-review tier promotion, and overclaim wording.
 
-Boundary: Nickel validates metadata shape and static invariants only. Rust remains the authority for reading binary bytes, computing BLAKE3, and comparing measured identity across the sidecar, provenance links, Octet export, and Mantle release metadata. Passing these contracts is not a behavioral-correctness, semantic-equivalence, requirement-satisfaction, release-eligibility, verifier-soundness, or whole-program-safety proof.
+## Claim boundary
+
+Nickel validates metadata shape and static invariants only.
+
+Rust reads binary bytes, computes BLAKE3, and compares measured identities across the evidence chain.
+
+Passing these contracts does not prove behavior, semantic equivalence, requirement satisfaction, release eligibility, verifier soundness, or whole-program safety.
 
 Run the deterministic contract gate with:
 

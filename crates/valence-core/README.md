@@ -59,10 +59,11 @@ Indexes, policy models, and deterministic harnesses:
 - `evidence_index`
 - `hegel_property`
 
-`formal_proof_chain::aeneas` validates the closed Aeneas/Lean provider profile
-over shell-measured digests and parsed producer observations. It checks typed
-graph and claim linkage and emits only a bounded generic handoff;
-see [`docs/aeneas-translation-chain.md`](../../docs/aeneas-translation-chain.md).
+`formal_proof_chain::aeneas` validates the closed Aeneas and Lean provider profile.
+
+It checks typed graph and claim linkage over measured digests and parsed producer observations. It emits only a bounded generic handoff.
+
+Read [`docs/aeneas-translation-chain.md`](../../docs/aeneas-translation-chain.md).
 
 The crate-level documentation in `src/lib.rs` describes each module's bounded
 claim surface. The [nominal digest role guide](../../docs/nominal-digest-roles.md)
@@ -74,9 +75,9 @@ migration.
 Production code in this crate must remain testable without filesystem,
 environment, process, clock, network, or terminal dependencies. Deterministic
 hashing and parsing over already-loaded bytes remain pure core operations.
-Octet and other
-producers may construct Valence inputs, but they do not inherit Valence's
-identity or linkage claims without rerunning the applicable validators.
+Octet and other producers can construct Valence inputs. They do not inherit Valence identity or linkage claims.
+
+Consumers must run the applicable validators again.
 
 ## Evidence limits
 
@@ -88,6 +89,6 @@ whole-program safety, or release eligibility.
 
 ## License
 
-`valence-core` is licensed under `MPL-2.0`. The complete package-local text is
-in [LICENSE](LICENSE); the repository-wide package map is in
-[../../docs/licensing.md](../../docs/licensing.md).
+`valence-core` uses the `MPL-2.0` license.
+
+Read [LICENSE](LICENSE) for the package text. Read [../../docs/licensing.md](../../docs/licensing.md) for the repository package map.
