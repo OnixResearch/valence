@@ -5,7 +5,7 @@ use super::*;
 const DIGEST_HEX: &str = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
 const OTHER_DIGEST_HEX: &str = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 const NOMINAL_DIGEST_BASELINE: &str = include_str!(
-    "../../../../cairn/changes/encode-digest-roles-in-types/evidence/baseline/shared-digest-and-stack-provenance.json"
+    "../../../../cairn/archive/1970-01-01-encode-digest-roles-in-types/evidence/baseline/shared-digest-and-stack-provenance.json"
 );
 const STACK_PROVENANCE_CORPUS: &str =
     include_str!("../../../../contracts/stack-provenance/preserves-corpus/corpus.json");

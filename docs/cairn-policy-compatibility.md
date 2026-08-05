@@ -42,6 +42,29 @@ directly. The archived integrity receipt is a byte-for-byte consumer copy of
 the Cairn acceptance receipt for Valence revision
 `1f4f6fe903a34c22d2cda53cd534ce58bbf84147`.
 
+## Workflow schema catalog
+
+r[impl valence.evidence_ir.cairn_policy_compatibility.workflow_schema]
+
+The supported Cairn parser requires workflow-schema v1 policy content: typed
+artifact entries with output paths, path kinds, structural admission classes,
+and lifecycle stages, plus schema-level bounds, deterministic state order,
+spec-effect and task-link classes, receipt fields, and required non-claims.
+Valence declares the full supported profile catalog (`spec-driven`,
+`assurance`, and `no-spec-delta`) and the workflow profile registry in
+contracted Nickel. The default profile remains `spec-driven`; declaring the
+assurance and no-spec-delta profiles restores parser compatibility without
+changing how existing Valence changes flow.
+
+The registry forbids ambient profile selection sources (`user-global`,
+`environment`, `agent-prompt`, `remote-package`). Negative fixtures prove that
+a policy missing the workflow profile registry or an artifact missing its
+output path fails Nickel contract evaluation before generated JSON is
+accepted.
+
+Profile declaration proves parser compatibility only. It does not prove
+evidence truth, workflow artifact quality, or release eligibility.
+
 ## Compatibility checks
 
 r[verify valence.evidence_ir.cairn_policy_compatibility.final_validation]
