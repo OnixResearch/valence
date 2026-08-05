@@ -110,11 +110,12 @@ Downstream consumers must apply their own freshness, authorization, lifecycle, a
 
 | Component | Purpose |
 |---|---|
-| [`valence-core`](crates/valence-core/README.md) | MPL-2.0 pure core for deterministic checks over loaded values |
-| `valence` | AGPL CLI shell for capability-confined I/O, measurement, checks, and reports |
-| [`valence-radicle`](crates/valence-radicle/README.md) | AGPL preview-first adapter for recorded-only links in signed local Radicle Collaborative Objects |
-| `contracts/` and `cairn-policy/` | Nickel schemas and lifecycle inputs with positive and negative fixtures |
-| `docs/`, `fixtures/`, and `evidence/` | Profile specifications, producer inputs, migration guides, and retained evidence |
+| [`valence-core`](crates/valence-core/README.md) | MPL-2.0 functional core for deterministic validation over already-loaded values. Its README lists every public module. |
+| `valence` | AGPL CLI shell for capability-confined reads, writes, measurements, validation, and reports. |
+| [`valence-radicle`](crates/valence-radicle/README.md) | AGPL preview-first adapter for recorded-only evidence links plus canonical forge plans, bindings, and CI-admission receipts. |
+| [`valence-radicle-native`](crates/valence-radicle-native/README.md) | Process-isolated AGPL shell for bounded built-in Radicle issue/patch metadata writes without contaminating Valence canonical JSON. |
+| `contracts/` and `cairn-policy/` | Nickel-authored schemas and lifecycle compatibility inputs with positive and negative fixtures. |
+| `docs/`, `fixtures/`, and `evidence/` | Profile specifications, frozen producer inputs, migration guidance, and retained evidence. |
 
 The core covers these areas:
 
@@ -175,6 +176,12 @@ valence-radicle mutate ... --execute        # sign and update one local COB ref
 valence-radicle snapshot ...
 valence-radicle verify-binding ...
 valence-radicle verify-snapshot ...
+valence-radicle forge-plan ...               # deterministic, no writes
+valence-radicle-native import ...            # preview unless --execute
+valence-radicle forge-bind ...
+valence-radicle verify-forge-binding ...
+valence-radicle ci-admission ...             # external-guard input only
+valence-radicle verify-ci-admission ...
 ```
 
 The adapter does not perform these functions:
@@ -189,10 +196,10 @@ Read [Radicle COB evidence sidecars](docs/radicle-cob-evidence.md).
 ## Documentation by task
 
 - **Identity and envelopes:** [artifact envelope](docs/evidence-artifact-envelope.md), [digest roles](docs/nominal-digest-roles.md), [span integrity](docs/evidence-span-integrity.md), [requirements](docs/content-bound-requirements.md), and [Preserves migration](docs/preserves-integrity-migration.md).
-- **Evidence profiles:** [chains](docs/evidence-chain-profile.md), [function addresses](docs/function-address-evidence-profile.md), [Preserves ingest](docs/function-address-preserves-ingest.md), [Wasm](docs/wasm-component-evidence.md), [ast-grep](docs/ast-grep-evidence-spans.md), [Kani](docs/kani-evidence-boundaries.md), and [FSM](docs/fsm-default-exhaustive.md).
-- **Proof adapters:** [Aeneas and Lean](docs/aeneas-translation-chain.md), [Trellis](docs/trellis-proof-evidence.md), and [proof-carrying IR](docs/proof-carrying-ir-lineage.md).
-- **Operations and policy:** [CLI roots](docs/cli-capability-roots.md), [publication](docs/function-address-publication.md), [Radicle sidecars](docs/radicle-cob-evidence.md), and [Cairn compatibility](docs/cairn-policy-compatibility.md).
-- **Tests and pilots:** [test harness](docs/testing-harness.md), [strict Rust admission](docs/octet-deterministic-core.md), and the rejected [build-graph pilot](docs/build-graph-pilot.md).
+- **Evidence profiles:** [generic chains](docs/evidence-chain-profile.md), [function addresses](docs/function-address-evidence-profile.md), [Preserves ingest](docs/function-address-preserves-ingest.md), [Wasm components](docs/wasm-component-evidence.md), [ast-grep spans](docs/ast-grep-evidence-spans.md), [Kani boundaries](docs/kani-evidence-boundaries.md), and [FSM receipts](docs/fsm-default-exhaustive.md).
+- **Proof-oriented adapters:** [Aeneas/Lean chains](docs/aeneas-translation-chain.md), [Trellis evidence](docs/trellis-proof-evidence.md), and [proof-carrying IR lineage](docs/proof-carrying-ir-lineage.md).
+- **Operations and policy:** [CLI roots](docs/cli-capability-roots.md), [function-address publication](docs/function-address-publication.md), [Radicle sidecars](docs/radicle-cob-evidence.md), [Radicle forge operations](docs/radicle-forge-operations.md), and [Cairn compatibility](docs/cairn-policy-compatibility.md).
+- **Testing and pilots:** [testing harness](docs/testing-harness.md), [strict Rust admission](docs/octet-deterministic-core.md), and the rejected [build-graph pilot](docs/build-graph-pilot.md).
 
 ## Development and checks
 

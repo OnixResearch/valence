@@ -32,6 +32,9 @@
 //!   collections, semantic diffs, and bounded attestation vocabulary.
 //! - `preserves_evidence`: validates Preserves evidence envelopes and Preserves-to-Valence bridge
 //!   rows over already-loaded canonical bytes/text.
+//! - `radicle_forge_ops`: validates normalized issue/pull-request metadata, derives deterministic
+//!   native COB operation plans and bindings, and admits exact CI revisions only from matching
+//!   already-loaded status, approval, and canonical-predecessor observations.
 //! - `shared_identity`: normalizes BLAKE3 spellings, digest roles, canonical hashes, self-hash
 //!   exclusion profiles, and reusable non-claim boundaries.
 //! - `stack_role_registry`: validates stack schema/role rows, verification-role counting
@@ -77,6 +80,7 @@ pub mod oxide_primitives;
 pub mod preserves_evidence;
 pub mod proof_carrying_ir;
 pub mod provenance;
+pub mod radicle_forge_ops;
 pub mod shared_identity;
 pub mod stack_provenance_adapter;
 pub mod stack_role_registry;

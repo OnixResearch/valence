@@ -16,6 +16,20 @@ use valence_core::cob_evidence::CobAuthorizationProfile;
 use valence_core::cob_evidence::CobEvidenceProfile;
 use valence_core::cob_evidence::CobSnapshot;
 use valence_core::cob_evidence::CobTargetRef;
+use valence_core::radicle_forge_ops::CiAdmissionInput;
+use valence_core::radicle_forge_ops::CiAdmissionReceipt;
+use valence_core::radicle_forge_ops::ForgeOperationsProfile;
+use valence_core::radicle_forge_ops::MigrationBindingReceipt;
+use valence_core::radicle_forge_ops::MigrationPlanningReport;
+use valence_core::radicle_forge_ops::ObservedRecordBinding;
+use valence_core::radicle_forge_ops::admit_ci_revision;
+use valence_core::radicle_forge_ops::build_binding_receipt as build_forge_binding_receipt;
+use valence_core::radicle_forge_ops::parse_profile as parse_forge_profile;
+use valence_core::radicle_forge_ops::parse_source_batch;
+use valence_core::radicle_forge_ops::plan_migration;
+use valence_core::radicle_forge_ops::validate_profile as validate_forge_profile;
+use valence_core::radicle_forge_ops::verify_binding_receipt as verify_forge_binding_receipt;
+use valence_core::radicle_forge_ops::verify_ci_admission_receipt;
 use valence_radicle::GitCobStore;
 use valence_radicle::build_authorization_for_actor;
 use valence_radicle::execute_mutation;
@@ -27,6 +41,9 @@ use valence_radicle::prepare_mutation;
 use valence_radicle::verify_saved_binding;
 use valence_radicle::verify_saved_snapshot;
 
+// r[impl valence.radicle_forge_ops.shell]
+// r[impl valence.radicle_forge_ops.boundaries]
+
 const EXIT_INVALID: u8 = 1;
 const EXIT_IO: u8 = 2;
 const USAGE: &str = "\
@@ -35,7 +52,12 @@ valence-radicle snapshot --repository PATH --profile FILE --authorization FILE -
 valence-radicle authorization --profile FILE --actor KEY --role ROLE --output-root DIR --output FILE\n\
 valence-radicle verify-binding --profile FILE --receipt FILE\n\
 valence-radicle verify-snapshot --profile FILE --authorization FILE --snapshot FILE\n\
-\nMutations are preview-only unless --execute is present. Execution signs through the running SSH agent using the request actor key.\n";
+valence-radicle forge-plan --profile FILE --source FILE --output-root DIR --output FILE\n\
+valence-radicle forge-bind --profile FILE --plan FILE --observations FILE --output-root DIR --output FILE\n\
+valence-radicle verify-forge-binding --profile FILE --receipt FILE\n\
+valence-radicle ci-admission --input FILE --output-root DIR --output FILE\n\
+valence-radicle verify-ci-admission --receipt FILE\n\
+\nMutations are preview-only unless --execute is present. Execution signs through the running SSH agent using the planned actor key.\n";
 
 fn main() -> ExitCode {
     match run(env::args().skip(1).collect()) {
@@ -59,6 +81,11 @@ fn run(args: Vec<String>) -> Result<ExitCode, String> {
         "authorization" => run_authorization(&flags),
         "verify-binding" => run_verify_binding(&flags),
         "verify-snapshot" => run_verify_snapshot(&flags),
+        "forge-plan" => run_forge_plan(&flags),
+        "forge-bind" => run_forge_bind(&flags),
+        "verify-forge-binding" => run_verify_forge_binding(&flags),
+        "ci-admission" => run_ci_admission(&flags),
+        "verify-ci-admission" => run_verify_ci_admission(&flags),
         "help" | "--help" | "-h" => {
             println!("{USAGE}");
             Ok(ExitCode::SUCCESS)
@@ -184,6 +211,95 @@ fn run_verify_snapshot(flags: &FlagSet) -> Result<ExitCode, String> {
     } else {
         ExitCode::from(EXIT_INVALID)
     })
+}
+
+fn run_forge_plan(flags: &FlagSet) -> Result<ExitCode, String> {
+    flags.require_known(&["profile", "source", "output-root", "output"], &[])?;
+    let profile = load_forge_profile(flags.value("profile")?)?;
+    let source = parse_source_batch(&read(flags.value("source")?)?)
+        .map_err(|error| format!("invalid normalized forge source JSON: {error}"))?;
+    let report = plan_migration(&profile, &source);
+    let valid = report.valid;
+    write_json(flags, &report)?;
+    Ok(if valid {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(EXIT_INVALID)
+    })
+}
+
+fn run_forge_bind(flags: &FlagSet) -> Result<ExitCode, String> {
+    flags.require_known(&["profile", "plan", "observations", "output-root", "output"], &[])?;
+    let profile = load_forge_profile(flags.value("profile")?)?;
+    let planning = serde_json::from_slice::<MigrationPlanningReport>(&read(flags.value("plan")?)?)
+        .map_err(|error| format!("invalid forge migration planning report JSON: {error}"))?;
+    if !planning.valid || !planning.issues.is_empty() {
+        return Err("forge migration planning report is not valid".to_owned());
+    }
+    let plan = planning.plan.as_ref().ok_or_else(|| "valid forge planning report lacks a plan".to_owned())?;
+    let observed = serde_json::from_slice::<Vec<ObservedRecordBinding>>(&read(flags.value("observations")?)?)
+        .map_err(|error| format!("invalid native forge observations JSON: {error}"))?;
+    let receipt = build_forge_binding_receipt(&profile, plan, observed)
+        .map_err(|issues| format!("native forge binding is invalid: {}", issue_codes(&issues)))?;
+    write_json(flags, &receipt)?;
+    Ok(ExitCode::SUCCESS)
+}
+
+fn run_verify_forge_binding(flags: &FlagSet) -> Result<ExitCode, String> {
+    flags.require_known(&["profile", "receipt"], &[])?;
+    let profile = load_forge_profile(flags.value("profile")?)?;
+    let receipt = serde_json::from_slice::<MigrationBindingReceipt>(&read(flags.value("receipt")?)?)
+        .map_err(|error| format!("invalid forge binding receipt JSON: {error}"))?;
+    let issues = verify_forge_binding_receipt(&profile, &receipt);
+    let codes = issues.iter().map(|issue| issue.code.clone()).collect::<Vec<_>>();
+    print_verification(&codes)?;
+    Ok(if issues.is_empty() {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(EXIT_INVALID)
+    })
+}
+
+fn run_ci_admission(flags: &FlagSet) -> Result<ExitCode, String> {
+    flags.require_known(&["input", "output-root", "output"], &[])?;
+    let input = serde_json::from_slice::<CiAdmissionInput>(&read(flags.value("input")?)?)
+        .map_err(|error| format!("invalid CI admission input JSON: {error}"))?;
+    let report = admit_ci_revision(&input);
+    let admitted = report.admitted;
+    write_json(flags, &report)?;
+    Ok(if admitted {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(EXIT_INVALID)
+    })
+}
+
+fn run_verify_ci_admission(flags: &FlagSet) -> Result<ExitCode, String> {
+    flags.require_known(&["receipt"], &[])?;
+    let receipt = serde_json::from_slice::<CiAdmissionReceipt>(&read(flags.value("receipt")?)?)
+        .map_err(|error| format!("invalid CI admission receipt JSON: {error}"))?;
+    let issues = verify_ci_admission_receipt(&receipt);
+    let codes = issues.iter().map(|issue| issue.code.clone()).collect::<Vec<_>>();
+    print_verification(&codes)?;
+    Ok(if issues.is_empty() {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(EXIT_INVALID)
+    })
+}
+
+fn load_forge_profile(path: &str) -> Result<ForgeOperationsProfile, String> {
+    let profile = parse_forge_profile(&read(path)?).map_err(|error| error.to_string())?;
+    let issues = validate_forge_profile(&profile);
+    if issues.is_empty() {
+        Ok(profile)
+    } else {
+        Err(format!("invalid forge operations profile: {}", issue_codes(&issues)))
+    }
+}
+
+fn issue_codes(issues: &[valence_core::radicle_forge_ops::ForgeIssue]) -> String {
+    issues.iter().map(|issue| issue.code.as_str()).collect::<Vec<_>>().join(",")
 }
 
 fn load_profile(path: &str) -> Result<CobEvidenceProfile, String> {

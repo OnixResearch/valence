@@ -1,0 +1,27 @@
+[workspace]
+resolver = "2"
+
+[package]
+name = "valence-radicle-native"
+version = "0.1.0"
+edition = "2024"
+license = "AGPL-3.0-or-later"
+publish = false
+description = "Process-isolated native Radicle issue and patch mutation shell"
+repository = "https://github.com/OnixResearch/valence"
+homepage = "https://github.com/OnixResearch/valence"
+
+[dependencies]
+blake3 = "1"
+git2 = { version = "=0.20.4", default-features = false, features = ["vendored-libgit2"] }
+radicle = "=0.24.0"
+radicle-cob = { version = "=0.20.0", features = ["git2"] }
+radicle-crypto = { version = "=0.17.0", features = ["ssh"] }
+radicle-oid = "=0.2.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+
+[dev-dependencies]
+radicle = { version = "=0.24.0", features = ["test"] }
+tempfile = "3"

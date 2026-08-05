@@ -1,0 +1,46 @@
+{
+  "admission_schema": "valence.radicle-forge-operations.ci-admission.v1",
+  "binding_schema": "valence.radicle-forge-operations.binding.v1",
+  "bounds": {
+    "max_events_per_record": 512,
+    "max_labels_per_record": 64,
+    "max_records": 128,
+    "max_text_bytes": 262144,
+    "max_title_bytes": 512
+  },
+  "cob_types": {
+    "issue": "xyz.radicle.issue",
+    "pull_request": "xyz.radicle.patch"
+  },
+  "issue_states": [
+    "open",
+    "closed",
+    "solved"
+  ],
+  "plan_schema": "valence.radicle-forge-operations.plan.v1",
+  "pull_request_states": [
+    "open",
+    "closed",
+    "merged",
+    "draft"
+  ],
+  "required_non_claims": [
+    "migration records normalized source metadata and observed native COB state; it does not prove source export completeness, source actor authenticity, original signature or timestamp preservation, or semantic equivalence",
+    "imported review metadata is recorded attribution only and does not create Radicle approval, merge eligibility, delegate authority, or canonical-ref authority",
+    "CI admission is bounded input for an external guarded compare-and-swap; it is not protocol-enforced mandatory CI, bypass-proof delegate behavior, canonical mutation, CI correctness, or release readiness"
+  ],
+  "review_handling": "attributed-comment-only",
+  "review_states": [
+    "approved",
+    "changes_requested",
+    "commented",
+    "dismissed",
+    "pending"
+  ],
+  "schema": "valence.radicle-forge-operations.profile.v1",
+  "source_kinds": [
+    "issue",
+    "pull_request"
+  ],
+  "source_schema": "valence.radicle-forge-operations.source-batch.v1"
+}
