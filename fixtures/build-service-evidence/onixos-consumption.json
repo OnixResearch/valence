@@ -1,0 +1,18 @@
+{
+  "consumer": "onixos",
+  "consumes": [
+    "machine_classes",
+    "resource_decisions",
+    "usage_records"
+  ],
+  "non_claims": [
+    "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+  ],
+  "record_identities": [
+    "cf2c52942006220198a52aa9a390bf670db76766bfa8e6c3c4e8c2383b81d339",
+    "d8088ea29e633874ddfde9dc4fd901f7a1e89e3f984d405c34baef278ea4964e",
+    "c6d7f048da34b1bdcc8a661b92c5ecdffa11165acc865a1f2149638e1bdf7310",
+    "eb577e307e00affbd20074ab4b76a4abd1900c9542d0d09c3d34cecfdecdece7",
+    "3db600c4c34c7137c4545f480b0f6755272928d18d127a5514671d8fd20eaa40"
+  ]
+}

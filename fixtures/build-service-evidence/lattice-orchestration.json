@@ -1,0 +1,12 @@
+{
+  "consumer": "lattice",
+  "non_claims": [
+    "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+  ],
+  "produces": [
+    "orchestration_jobs"
+  ],
+  "record_identities": [
+    "7a3c8842ba3049fc5586c7ab0ea26fd31d72eb9c53902d22c9b2ad7422c61f11"
+  ]
+}

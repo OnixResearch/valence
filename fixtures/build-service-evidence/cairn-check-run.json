@@ -1,0 +1,12 @@
+{
+  "consumer": "cairn",
+  "consumes": [
+    "external_statuses"
+  ],
+  "non_claims": [
+    "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+  ],
+  "record_identities": [
+    "3fbe0b92f9001a55fc32fc0ba005e91094068ddee4ebbce1c70b557984d54ab9"
+  ]
+}

@@ -1,0 +1,355 @@
+{
+  "profile": {
+    "profile_id": "valence.build-service-evidence.v1",
+    "profile_version": 1,
+    "canonicalization": "valence-canonical-json-v1",
+    "producer_policy": "6d616e746c652d706f6c6963796d616e746c652d706f6c6963796d616e746c65",
+    "claimed_observation_classes": [
+      "build",
+      "retry",
+      "reuse",
+      "usage",
+      "external-status"
+    ],
+    "non_claims": [
+      "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+    ]
+  },
+  "service_requests": [
+    {
+      "request_id": "request-one",
+      "concrete_request_hash": "726571756573742d6f6e65726571756573742d6f6e65726571756573742d6f6e",
+      "idempotency_key": "idem-request-one",
+      "role": "Linked",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "request_id": "request-two",
+      "concrete_request_hash": "726571756573742d74776f726571756573742d74776f726571756573742d7477",
+      "idempotency_key": "idem-request-two",
+      "role": "Linked",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "attempts": [
+    {
+      "attempt_id": "attempt-one",
+      "request_identity": "6df192003e1d7b2da62103e76d5d8bf8b2400ada40fc79278847165c895f7aa7",
+      "generation": 1,
+      "parent_attempt_identity": null,
+      "service_policy": "mantle-service-policy.v1",
+      "role": "Linked",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "attempt_id": "attempt-two",
+      "request_identity": "6df192003e1d7b2da62103e76d5d8bf8b2400ada40fc79278847165c895f7aa7",
+      "generation": 2,
+      "parent_attempt_identity": "bf3240c556fbb064eb6602eeefd555bc8fdf580b7f5ea04bb1d411b9d1c6d8d8",
+      "service_policy": "mantle-service-policy.v1",
+      "role": "Linked",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "attempt_identity": "bf3240c556fbb064eb6602eeefd555bc8fdf580b7f5ea04bb1d411b9d1c6d8d8",
+      "prior_state": "queued",
+      "next_state": "scheduled",
+      "sequence": 1,
+      "observed_at": "2026-08-05T12:00:00Z",
+      "producer": "mantle",
+      "reason": "queued-to-scheduled",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "attempt_identity": "bf3240c556fbb064eb6602eeefd555bc8fdf580b7f5ea04bb1d411b9d1c6d8d8",
+      "prior_state": "scheduled",
+      "next_state": "running",
+      "sequence": 2,
+      "observed_at": "2026-08-05T12:00:00Z",
+      "producer": "mantle",
+      "reason": "scheduled-to-running",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "attempt_identity": "bf3240c556fbb064eb6602eeefd555bc8fdf580b7f5ea04bb1d411b9d1c6d8d8",
+      "prior_state": "running",
+      "next_state": "failed",
+      "sequence": 3,
+      "observed_at": "2026-08-05T12:00:00Z",
+      "producer": "mantle",
+      "reason": "running-to-failed",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "prior_state": "queued",
+      "next_state": "scheduled",
+      "sequence": 1,
+      "observed_at": "2026-08-05T12:00:00Z",
+      "producer": "mantle",
+      "reason": "queued-to-scheduled",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "prior_state": "scheduled",
+      "next_state": "running",
+      "sequence": 2,
+      "observed_at": "2026-08-05T12:00:00Z",
+      "producer": "mantle",
+      "reason": "scheduled-to-running",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "prior_state": "running",
+      "next_state": "succeeded",
+      "sequence": 3,
+      "observed_at": "2026-08-05T12:00:00Z",
+      "producer": "mantle",
+      "reason": "running-to-succeeded",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "authority_decisions": [
+    {
+      "decision_id": "decision-build",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "subject_projection": "basalt-public-subject:builder",
+      "policy_identity": "626173616c742d706f6c696379626173616c742d706f6c696379626173616c74",
+      "operation": "build.execute",
+      "decision": "allow",
+      "verifier_evidence_ref": "basalt-verification:receipt-1",
+      "role": "Verified",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "decision_id": "decision-reuse",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "subject_projection": "basalt-public-subject:consumer",
+      "policy_identity": "626173616c742d706f6c696379626173616c742d706f6c696379626173616c74",
+      "operation": "build.reuse",
+      "decision": "allow",
+      "verifier_evidence_ref": "basalt-verification:receipt-2",
+      "role": "Verified",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "machine_classes": [
+    {
+      "class_id": "small",
+      "platform": "x86_64-linux",
+      "resource_class": "class-small",
+      "ordinal": 1,
+      "role": "Linked",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "class_id": "large",
+      "platform": "x86_64-linux",
+      "resource_class": "class-large",
+      "ordinal": 2,
+      "role": "Linked",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "resource_decisions": [
+    {
+      "decision_id": "resource-decision-one",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "declared_minima": [
+        "mem>=512MiB"
+      ],
+      "eligible_class_identities": [
+        "cf2c52942006220198a52aa9a390bf670db76766bfa8e6c3c4e8c2383b81d339",
+        "d8088ea29e633874ddfde9dc4fd901f7a1e89e3f984d405c34baef278ea4964e"
+      ],
+      "selected_class_identity": "d8088ea29e633874ddfde9dc4fd901f7a1e89e3f984d405c34baef278ea4964e",
+      "policy": "mantle-resource-policy.v1",
+      "compatible_observation_identities": [
+        "ad1232abb37c2c6a26476f87a8fd661692d9c5a6202ee367aa6332a6d5fc2c8e"
+      ],
+      "reasons": [
+        "oom-escalation",
+        "larger-class-eligible"
+      ],
+      "role": "Verified",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "resource_observations": [
+    {
+      "observation_id": "observation-one",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "measurements": [
+        {
+          "name": "wall-clock",
+          "value": 42,
+          "unit": "s"
+        },
+        {
+          "name": "peak-rss",
+          "value": 1024,
+          "unit": "MiB"
+        }
+      ],
+      "collector": "mantle-executor",
+      "compatibility_scope": "class-comparison",
+      "terminal_outcome": "succeeded",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "retry_edges": [
+    {
+      "predecessor_attempt_identity": "bf3240c556fbb064eb6602eeefd555bc8fdf580b7f5ea04bb1d411b9d1c6d8d8",
+      "successor_attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "trigger": "oom_escalation",
+      "trigger_evidence": "oom-kill-event:6f6f6d6f6f6d6f6f6d6f6f6d6f6f6d6f6f6d6f6f6d6f6f6d6f6f6d6f6f6d6f6f",
+      "prior_class_identity": "cf2c52942006220198a52aa9a390bf670db76766bfa8e6c3c4e8c2383b81d339",
+      "next_class_identity": "d8088ea29e633874ddfde9dc4fd901f7a1e89e3f984d405c34baef278ea4964e",
+      "limit_state": "memory-limit-exceeded",
+      "policy": "mantle-retry-policy.v1",
+      "role": "Linked",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "usage_records": [
+    {
+      "usage_id": "usage-reservation",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "usage_kind": "reservation",
+      "unit_schedule": "cpu-second:1",
+      "window": "2026-08-05T12:00:00Z/2026-08-05T12:05:00Z",
+      "scope": "project:onix",
+      "outcome": "reserved",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    },
+    {
+      "usage_id": "usage-reconciliation",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "usage_kind": "reconciliation",
+      "unit_schedule": "cpu-second:1",
+      "window": "2026-08-05T12:00:00Z/2026-08-05T12:05:00Z",
+      "scope": "project:onix",
+      "outcome": "reconciled",
+      "role": "RecordedOnly",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "build_results": [
+    {
+      "result_id": "result-one",
+      "request_identity": "6df192003e1d7b2da62103e76d5d8bf8b2400ada40fc79278847165c895f7aa7",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "platform": "x86_64-linux",
+      "policy": "mantle-build-policy.v1",
+      "outputs": [
+        {
+          "path": "out/bin/tool",
+          "content_hash": "746f6f6c746f6f6c746f6f6c746f6f6c746f6f6c746f6f6c746f6f6c746f6f6c"
+        },
+        {
+          "path": "out/lib/core",
+          "content_hash": "636f7265636f7265636f7265636f7265636f7265636f7265636f7265636f7265"
+        }
+      ],
+      "producer_signature_ref": "mantle-signer:sig-1",
+      "cas_observation": "cas:present",
+      "role": "Signed",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "reuse_edges": [
+    {
+      "producer_result_identity": "0812cc08e1d83d5e2f0a60b831f3ba7a6bd25aa22475023976048ed16c281721",
+      "consumer_request_identity": "4b6912686930bf7296e8ce92a65594550ed7b816d4e0d52d33f6b894a25b80dc",
+      "sharing_policy": "mantle-sharing-policy.v1",
+      "authorization_decision_identity": "903f49ecbbb6ee9d4e8dd14d920f0661358cc17cbeb5cc07341b08f059a41155",
+      "request_compatible": true,
+      "platform_compatible": true,
+      "output_check_ref": "output-check:ok",
+      "signature_ref": "mantle-signer:sig-1",
+      "cas_observation": "cas:present",
+      "usability_outcome": "usable",
+      "role": "Verified",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "orchestration_jobs": [
+    {
+      "job_id": "lattice-job-1",
+      "workflow_identity": "lattice-workflow:build",
+      "matrix_job_identity": "matrix:x86_64-linux",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "role": "Linked",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ],
+  "external_statuses": [
+    {
+      "status_id": "check-run-1",
+      "provider": "github-check-run",
+      "job_identity": "7a3c8842ba3049fc5586c7ab0ea26fd31d72eb9c53902d22c9b2ad7422c61f11",
+      "attempt_identity": "773dfd77bae3f37f06af35834de13889134fd604431396fae1a56352feb49916",
+      "observed_state": "success",
+      "role": "External",
+      "non_claims": [
+        "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+      ]
+    }
+  ]
+}

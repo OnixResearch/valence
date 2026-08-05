@@ -39,6 +39,7 @@ Identity and envelope primitives:
 Evidence adapters and profiles:
 
 - `ast_grep_evidence`
+- `build_service`
 - `cob_evidence`
 - `evidence_adapters`
 - `formal_proof_chain`

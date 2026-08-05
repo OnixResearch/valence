@@ -255,6 +255,30 @@
               touch "$out"
             '';
 
+        build-service-nickel-contracts =
+          pkgs.runCommand "build-service-nickel-contracts"
+            {
+              nativeBuildInputs = [ pkgs.nickel ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+
+              for fixture in contracts/build-service-evidence/fixtures/pass/*.ncl; do
+                nickel export "$fixture" >/dev/null
+              done
+
+              for fixture in contracts/build-service-evidence/fixtures/fail/*.ncl; do
+                if nickel export "$fixture" >/dev/null 2>"$TMPDIR/nickel-error.log"; then
+                  echo "expected Nickel fixture to fail: $fixture" >&2
+                  exit 1
+                fi
+              done
+
+              touch "$out"
+            '';
+
         stack-provenance-nickel-contracts =
           pkgs.runCommand "stack-provenance-nickel-contracts"
             {

@@ -8,6 +8,9 @@
 //! - `artifact_ref`: validates typed artifact references, digest spelling profiles, confined path
 //!   metadata, declared hash/size metadata, and public-field compatibility adapters over
 //!   already-loaded in-memory metadata.
+//! - `build_service`: validates versioned build-service evidence profiles linking requests,
+//!   attempts, authority, resources, retries, usage, results, reuse, orchestration, and external
+//!   statuses with canonical identities, per-field roles, privacy exclusions, and non-claims.
 //! - `cob_evidence`: validates typed Valence evidence attachments, authorization inputs,
 //!   deterministic Radicle COB sidecar reduction, and saved binding/snapshot receipts over
 //!   already-loaded values.
@@ -61,6 +64,7 @@
 pub mod artifact_auth;
 pub mod artifact_ref;
 pub mod ast_grep_evidence;
+pub mod build_service;
 pub mod capability_plan;
 pub mod cob_evidence;
 pub mod content_bound_requirements;

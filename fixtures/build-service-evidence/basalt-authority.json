@@ -1,0 +1,13 @@
+{
+  "consumer": "basalt",
+  "non_claims": [
+    "build-service linkage proves canonical identity and bounded observation linkage only; it does not prove build correctness, hermeticity, sandboxing, host isolation, identity beyond checked claims, authorization freshness, future resource sufficiency, accounting fairness, external status correctness, or release eligibility"
+  ],
+  "produces": [
+    "authority_decisions"
+  ],
+  "record_identities": [
+    "0358858e52b56c8d5038d8986b70fcf811d71cd3b0aa6572a1d1ff341271f867",
+    "903f49ecbbb6ee9d4e8dd14d920f0661358cc17cbeb5cc07341b08f059a41155"
+  ]
+}
