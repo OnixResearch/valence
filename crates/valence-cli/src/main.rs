@@ -4,6 +4,7 @@
 //! and exit codes. All core logic lives in `valence_core`.
 
 mod content_bound_requirement_cli;
+mod nostr_identity_cli;
 
 use std::io::Read;
 use std::io::Write;
@@ -33,6 +34,7 @@ COMMANDS:
     function-address preserves --artifact-root <ROOT> --input <FILE>
     formal-proof aeneas-chain validate --artifact-root <ROOT> --input <FILE>
     evidence-chain validate --artifact-root <ROOT> --input <FILE>
+    nostr-identity validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --out <FILE>]
     requirement-reference validate --artifact-root <ROOT> --input <FILE> [--registry <FILE>] [--output-root <ROOT> --out <FILE>]
     stack-context validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --out <FILE>]
     wasm-component validate --artifact-root <ROOT> --input <FILE>
@@ -62,6 +64,7 @@ fn main() -> ExitCode {
         "function-address" => run_function_address(&args[2..]),
         "formal-proof" => run_formal_proof(&args[2..]),
         "evidence-chain" => run_evidence_chain(&args[2..]),
+        "nostr-identity" => nostr_identity_cli::run(&args[2..]),
         "requirement-reference" => content_bound_requirement_cli::run_requirement_reference(&args[2..]),
         "stack-context" => content_bound_requirement_cli::run_stack_context(&args[2..]),
         "wasm-component" => run_wasm_component(&args[2..]),

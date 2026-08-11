@@ -2,11 +2,12 @@
 
 ## Purpose
 
-Define recorded-only Evidence IR for reviewed Nostr authentication and stable subject bindings.
+Defines the `nostr-identity-evidence` capability.
 
 ## Requirements
 
 ### Requirement: The evidence profile is closed and versioned [r[valence.nostr_identity_evidence.profile]]
+r[valence.nostr_identity_evidence.profile]
 
 Valence MUST define a versioned Nostr identity evidence envelope with closed control fields and required non-claims.
 
@@ -23,6 +24,7 @@ Valence MUST define a versioned Nostr identity evidence envelope with closed con
 - THEN validation MUST fail with deterministic field-scoped diagnostics
 
 ### Requirement: Producer linkage is exact [r[valence.nostr_identity_evidence.producer_linkage]]
+r[valence.nostr_identity_evidence.producer_linkage]
 
 Valence MUST link the UCAN credential and Basalt binding through exact event, key, request, audience, purpose, subject, binding, policy, and schema identities.
 
@@ -41,6 +43,7 @@ Valence MUST link the UCAN credential and Basalt binding through exact event, ke
 - AND no fallback or nearest match MUST be selected
 
 ### Requirement: Protocol and evidence digest roles remain distinct [r[valence.nostr_identity_evidence.digest_domains]]
+r[valence.nostr_identity_evidence.digest_domains]
 
 Valence MUST preserve Nostr SHA-256 event identities separately from Valence-owned BLAKE3 artifact and receipt identities.
 
@@ -58,6 +61,7 @@ Valence MUST preserve Nostr SHA-256 event identities separately from Valence-own
 - THEN validation MUST fail with a digest-role diagnostic
 
 ### Requirement: Identity evidence remains recorded-only [r[valence.nostr_identity_evidence.role_policy]]
+r[valence.nostr_identity_evidence.role_policy]
 
 Valence MUST classify Nostr authentication, subject binding, and authorization composition evidence as `RecordedOnly`.
 
@@ -76,6 +80,7 @@ Valence MUST classify Nostr authentication, subject binding, and authorization c
 - AND no `Property` count MUST increase
 
 ### Requirement: The shell remains capability-rooted and offline [r[valence.nostr_identity_evidence.shell_boundary]]
+r[valence.nostr_identity_evidence.shell_boundary]
 
 The Valence shell MUST read declared producer artifacts through capability roots. It MUST NOT contact relays, DNS, or signers.
 
@@ -93,6 +98,7 @@ The Valence shell MUST read declared producer artifacts through capability roots
 - THEN it MUST fail before opening the input or writing output
 
 ### Requirement: Sensitive material is rejected [r[valence.nostr_identity_evidence.privacy]]
+r[valence.nostr_identity_evidence.privacy]
 
 The profile MUST reject private keys, NIP-46 secrets, credentials, proof bytes, challenges, encrypted payloads, and secret metadata.
 
@@ -109,6 +115,7 @@ The profile MUST reject private keys, NIP-46 secrets, credentials, proof bytes, 
 - THEN validation MUST fail before canonical identity or publication
 
 ### Requirement: Positive and negative evidence is complete [r[valence.nostr_identity_evidence.final_validation]]
+r[valence.nostr_identity_evidence.final_validation]
 
 The change MUST cover every profile, producer, digest, linkage, role, shell, privacy, and non-claim boundary before archive.
 

@@ -5326,6 +5326,66 @@
             "source_kind": "accepted_specs"
           }
         ]
+      },
+      {
+        "evidence_sources": [
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-core/src/nostr_identity_evidence.rs",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-core/src/nostr_identity_evidence",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-cli/src/nostr_identity_cli.rs",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "rs"
+            ],
+            "root": "crates/valence-cli/tests/nostr_identity_cli.rs",
+            "source_kind": "rust_source"
+          },
+          {
+            "extensions": [
+              "ncl"
+            ],
+            "root": "contracts/nostr-identity-evidence",
+            "source_kind": "nickel_source"
+          },
+          {
+            "extensions": [
+              "md"
+            ],
+            "root": "docs/nostr-identity-evidence.md",
+            "source_kind": "tool_source"
+          }
+        ],
+        "id": "nostr-identity-evidence",
+        "marker_verbs": [
+          "impl",
+          "verify"
+        ],
+        "requirement_sources": [
+          {
+            "extensions": [
+              "md"
+            ],
+            "root": "cairn/specs/nostr-identity-evidence/spec.md",
+            "source_kind": "accepted_specs"
+          }
+        ]
       }
     ]
   },

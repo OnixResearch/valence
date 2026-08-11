@@ -279,6 +279,27 @@
               touch "$out"
             '';
 
+        nostr-identity-evidence-profile =
+          pkgs.runCommand "valence-nostr-identity-evidence-profile"
+            {
+              nativeBuildInputs = [ pkgs.nickel ];
+              src = self;
+            }
+            ''
+              set -eu
+              cd "$src"
+              nickel typecheck contracts/nostr-identity-evidence/profile.ncl
+              nickel export --format json contracts/nostr-identity-evidence/profile.ncl > "$TMPDIR/profile.json"
+              cmp "$TMPDIR/profile.json" contracts/nostr-identity-evidence/generated/profile.json
+              for fixture in contracts/nostr-identity-evidence/fixtures/fail/*.ncl; do
+                if nickel export "$fixture" >/dev/null 2>"$TMPDIR/nickel-error.log"; then
+                  echo "expected Nostr identity evidence fixture to fail: $fixture" >&2
+                  exit 1
+                fi
+              done
+              touch "$out"
+            '';
+
         stack-provenance-nickel-contracts =
           pkgs.runCommand "stack-provenance-nickel-contracts"
             {

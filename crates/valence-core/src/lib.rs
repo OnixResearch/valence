@@ -31,6 +31,8 @@
 //! - `function_object`: constructs Function Object v1 DTOs, canonical hash payloads, caveat
 //!   summaries, and pure-cache eligibility from source facts. Octet retains scanning, source-marker
 //!   mutation, corpus orchestration, and CLI/status reporting.
+//! - `nostr_identity_evidence`: validates exact UCAN credential and Basalt subject-binding linkage
+//!   as recorded-only evidence with separate protocol and Evidence IR digest roles.
 //! - `oxide_primitives`: records reference-only Oxide primitive intake for typed IDs, derived-key
 //!   collections, semantic diffs, and bounded attestation vocabulary.
 //! - `preserves_evidence`: validates Preserves evidence envelopes and Preserves-to-Valence bridge
@@ -80,6 +82,7 @@ pub mod function_address_preserves;
 pub mod function_address_profile;
 pub mod function_object;
 pub mod hegel_property;
+pub mod nostr_identity_evidence;
 pub mod oxide_primitives;
 pub mod preserves_evidence;
 pub mod proof_carrying_ir;

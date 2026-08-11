@@ -155,6 +155,7 @@ valence function-address validate --artifact-root <ROOT> --input <FILE> [--outpu
 valence function-address preserves --artifact-root <ROOT> --input <FILE>
 valence formal-proof aeneas-chain validate --artifact-root <ROOT> --input <FILE>
 valence evidence-chain validate --artifact-root <ROOT> --input <FILE>
+valence nostr-identity validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --out <FILE>]
 valence requirement-reference validate --artifact-root <ROOT> --input <FILE> [--registry <FILE>] [--output-root <ROOT> --out <FILE>]
 valence stack-context validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --out <FILE>]
 valence wasm-component validate --artifact-root <ROOT> --input <FILE>
@@ -196,7 +197,7 @@ Read [Radicle COB evidence sidecars](docs/radicle-cob-evidence.md).
 ## Documentation by task
 
 - **Identity and envelopes:** [artifact envelope](docs/evidence-artifact-envelope.md), [digest roles](docs/nominal-digest-roles.md), [span integrity](docs/evidence-span-integrity.md), [requirements](docs/content-bound-requirements.md), and [Preserves migration](docs/preserves-integrity-migration.md).
-- **Evidence profiles:** [generic chains](docs/evidence-chain-profile.md), [function addresses](docs/function-address-evidence-profile.md), [build service](docs/build-service-evidence.md), [Preserves ingest](docs/function-address-preserves-ingest.md), [Wasm components](docs/wasm-component-evidence.md), [ast-grep spans](docs/ast-grep-evidence-spans.md), [Kani boundaries](docs/kani-evidence-boundaries.md), and [FSM receipts](docs/fsm-default-exhaustive.md).
+- **Evidence profiles:** [generic chains](docs/evidence-chain-profile.md), [function addresses](docs/function-address-evidence-profile.md), [build service](docs/build-service-evidence.md), [Nostr identity linkage](docs/nostr-identity-evidence.md), [Preserves ingest](docs/function-address-preserves-ingest.md), [Wasm components](docs/wasm-component-evidence.md), [ast-grep spans](docs/ast-grep-evidence-spans.md), [Kani boundaries](docs/kani-evidence-boundaries.md), and [FSM receipts](docs/fsm-default-exhaustive.md).
 - **Proof-oriented adapters:** [Aeneas/Lean chains](docs/aeneas-translation-chain.md), [Trellis evidence](docs/trellis-proof-evidence.md), and [proof-carrying IR lineage](docs/proof-carrying-ir-lineage.md).
 - **Operations and policy:** [CLI roots](docs/cli-capability-roots.md), [function-address publication](docs/function-address-publication.md), [Radicle sidecars](docs/radicle-cob-evidence.md), [Radicle forge operations](docs/radicle-forge-operations.md), and [Cairn compatibility](docs/cairn-policy-compatibility.md).
 - **Testing and pilots:** [testing harness](docs/testing-harness.md), [strict Rust admission](docs/octet-deterministic-core.md), and the rejected [build-graph pilot](docs/build-graph-pilot.md).

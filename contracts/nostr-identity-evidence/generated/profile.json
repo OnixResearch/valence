@@ -1,0 +1,28 @@
+{
+  "basalt_implementation_identity": {
+    "hex": "ced0ffcfe006a48ffd8f2b856ad0da9641a03a24e6ebda3877163c398252897c",
+    "role": "basalt_blake3"
+  },
+  "basalt_policy_identity": {
+    "hex": "9f5df806b5fac55a35a63f58c86e4218de1414141c20c999cbd140ea3c0556a2",
+    "role": "basalt_blake3"
+  },
+  "basalt_schema_identity": {
+    "hex": "45824d99ae765e885f085ef2c8c8294343415af8e5489c35509c3e255476e258",
+    "role": "basalt_blake3"
+  },
+  "basalt_source_revision": "bb8fb5f4a763f532df96b6e65407163ac668834e",
+  "evidence_schema": "valence.nostr-identity-evidence.v1",
+  "protocol_digest_role": "nostr_event_sha256",
+  "required_non_claims": [
+    "Valence records producer identity and linkage only; it does not verify Nostr signatures",
+    "RecordedOnly Nostr evidence does not count as Property evidence or authority",
+    "relay, DNS, signer, clock, replay, policy publication, and authorization remain external",
+    "BLAKE3 artifact identity does not authenticate a producer or establish release eligibility"
+  ],
+  "schema": "valence.nostr-identity-profile.v1",
+  "ucan_credential_revision": "c9d43a7c11dd2fab4d5cb3d100012fa9a2e5b026",
+  "ucan_source_revision": "277ab768eb532ac0c715a3bbff2a7dc37a702f11",
+  "valence_digest_role": "valence_blake3",
+  "verification_role": "recorded_only"
+}

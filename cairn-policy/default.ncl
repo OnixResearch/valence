@@ -1155,6 +1155,21 @@ let WorkflowRequiredNonClaims = [
         ],
         marker_verbs = ["impl", "verify", "depends", "related"],
       },
+      {
+        id = "nostr-identity-evidence",
+        requirement_sources = [
+          { root = "cairn/specs/nostr-identity-evidence/spec.md", source_kind = "accepted_specs", extensions = ["md"] },
+        ],
+        evidence_sources = [
+          { root = "crates/valence-core/src/nostr_identity_evidence.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-core/src/nostr_identity_evidence", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-cli/src/nostr_identity_cli.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "crates/valence-cli/tests/nostr_identity_cli.rs", source_kind = "rust_source", extensions = ["rs"] },
+          { root = "contracts/nostr-identity-evidence", source_kind = "nickel_source", extensions = ["ncl"] },
+          { root = "docs/nostr-identity-evidence.md", source_kind = "tool_source", extensions = ["md"] },
+        ],
+        marker_verbs = ["impl", "verify"],
+      },
     ],
   },
 
