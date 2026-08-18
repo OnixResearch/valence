@@ -36,7 +36,25 @@
     "root": {
       "inputs": {
         "artifact": "artifact",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "schema-identity": "schema-identity"
+      }
+    },
+    "schema-identity": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787068181,
+        "narHash": "sha256-gRrLAZUz+NE17zrRLSkxKMlwOwltF4yvCK0W++V63u0=",
+        "ref": "refs/heads/main",
+        "rev": "2562c8aa38a034061f9af9f3e17280494a5b8de2",
+        "revCount": 6,
+        "type": "git",
+        "url": "https://seed.radicle.garden/z6gGpUJtzdVBCCtZTzh4cV1skv4H.git"
+      },
+      "original": {
+        "rev": "2562c8aa38a034061f9af9f3e17280494a5b8de2",
+        "type": "git",
+        "url": "https://seed.radicle.garden/z6gGpUJtzdVBCCtZTzh4cV1skv4H.git"
       }
     }
   },

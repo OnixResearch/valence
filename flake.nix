@@ -6,12 +6,17 @@
     url = "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=e41340bec587b6d049b5cc518ec7db925dde84be";
     flake = false;
   };
+  inputs.schema-identity = {
+    url = "git+https://seed.radicle.garden/z6gGpUJtzdVBCCtZTzh4cV1skv4H.git?rev=2562c8aa38a034061f9af9f3e17280494a5b8de2";
+    flake = false;
+  };
 
   outputs =
     {
       self,
       nixpkgs,
       artifact,
+      schema-identity,
     }:
     let
       artifactSourcePin = import ./nix/artifact-source-pin.nix {
@@ -38,6 +43,25 @@
         resolvedNixRevision = artifact.rev or null;
         resolvedNixNarHash = artifact.narHash or null;
       };
+      schemaIdentityRevision = "2562c8aa38a034061f9af9f3e17280494a5b8de2";
+      schemaIdentityRepository = "https://seed.radicle.garden/z6gGpUJtzdVBCCtZTzh4cV1skv4H.git";
+      schemaIdentityCargoDependency =
+        (builtins.fromTOML (builtins.readFile ./Cargo.toml))
+        .workspace.dependencies."schema-identity-conformance";
+      schemaIdentityExpectedLockSource = "git+${schemaIdentityRepository}?rev=${schemaIdentityRevision}#${schemaIdentityRevision}";
+      schemaIdentityLockedPackages = builtins.filter (
+        package: (package.source or "") == schemaIdentityExpectedLockSource
+      ) (builtins.fromTOML (builtins.readFile ./Cargo.lock)).package;
+      schemaIdentityLockedNames = builtins.map (package: package.name) schemaIdentityLockedPackages;
+      schemaIdentitySourceAdmitted =
+        assert nixpkgs.lib.assertMsg (
+          schemaIdentityCargoDependency.git == schemaIdentityRepository
+          && schemaIdentityCargoDependency.rev == schemaIdentityRevision
+          && schema-identity.rev == schemaIdentityRevision
+          && builtins.elem "schema-identity-core" schemaIdentityLockedNames
+          && builtins.elem "schema-identity-conformance" schemaIdentityLockedNames
+        ) "Valence schema identity Cargo/Nix source identity drifted";
+        true;
       artifactSourceValidation = artifactSourcePin.validate artifactSourcePinInput;
       artifactSourceAdmitted =
         assert nixpkgs.lib.assertMsg artifactSourceValidation.valid (
@@ -59,7 +83,7 @@
           src = self;
           cargoLock = {
             lockFile = ./Cargo.lock;
-            allowBuiltinFetchGit = artifactSourceAdmitted;
+            allowBuiltinFetchGit = artifactSourceAdmitted && schemaIdentitySourceAdmitted;
           };
           cargoBuildFlags = [
             "-p"
@@ -75,7 +99,7 @@
           src = self;
           cargoLock = {
             lockFile = ./Cargo.lock;
-            allowBuiltinFetchGit = artifactSourceAdmitted;
+            allowBuiltinFetchGit = artifactSourceAdmitted && schemaIdentitySourceAdmitted;
           };
           cargoBuildFlags = [
             "-p"
@@ -125,7 +149,7 @@
           src = self;
           cargoLock = {
             lockFile = ./Cargo.lock;
-            allowBuiltinFetchGit = artifactSourceAdmitted;
+            allowBuiltinFetchGit = artifactSourceAdmitted && schemaIdentitySourceAdmitted;
           };
           doCheck = true;
           nativeBuildInputs = [ pkgs.pkg-config ];

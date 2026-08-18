@@ -250,6 +250,10 @@ Complete texts are in [`LICENSES/`](LICENSES/). Read [the licensing guide](docs/
 
 License metadata is outside canonical Evidence IR identity unless a versioned schema includes it.
 
+## Schema identity pilot
+
+Valence runs the exact cohort from `schema-identity-core` as an independent consumer. See [`docs/schema-identity-pilot.md`](docs/schema-identity-pilot.md).
+
 ## References
 
 ### Onix stack

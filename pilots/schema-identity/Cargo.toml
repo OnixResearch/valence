@@ -1,0 +1,15 @@
+[package]
+name = "valence-schema-identity-pilot"
+version.workspace = true
+edition.workspace = true
+license = "AGPL-3.0-or-later"
+publish = false
+repository.workspace = true
+homepage.workspace = true
+description = "Independent schema identity conformance pilot"
+
+[dependencies]
+schema-identity-conformance.workspace = true
+
+[lib]
+path = "src/lib.rs"

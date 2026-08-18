@@ -354,6 +354,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d52eff69cd5e647efe296129160853a42795992097e8af39800e1060caeea9b"
 
 [[package]]
+name = "content-identity-core"
+version = "0.1.0"
+source = "git+https://seed.radicle.garden/zA14jhTdwST4PxPBdsryc4zS7Kpq.git?rev=7f55597b5dc879b7601856e8d7fd0dbacaa2a498#7f55597b5dc879b7601856e8d7fd0dbacaa2a498"
+dependencies = [
+ "blake3",
+ "serde",
+]
+
+[[package]]
 name = "cpufeatures"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1605,6 +1614,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 
 [[package]]
+name = "schema-identity-conformance"
+version = "0.1.0"
+source = "git+https://seed.radicle.garden/z6gGpUJtzdVBCCtZTzh4cV1skv4H.git?rev=2562c8aa38a034061f9af9f3e17280494a5b8de2#2562c8aa38a034061f9af9f3e17280494a5b8de2"
+dependencies = [
+ "schema-identity-core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "schema-identity-core"
+version = "0.1.0"
+source = "git+https://seed.radicle.garden/z6gGpUJtzdVBCCtZTzh4cV1skv4H.git?rev=2562c8aa38a034061f9af9f3e17280494a5b8de2#2562c8aa38a034061f9af9f3e17280494a5b8de2"
+dependencies = [
+ "content-identity-core",
+]
+
+[[package]]
 name = "scopeguard"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1868,7 +1895,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.4.3",
+ "getrandom 0.3.4",
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",
@@ -2007,6 +2034,13 @@ dependencies = [
  "tempfile",
  "thiserror 2.0.18",
  "valence-core",
+]
+
+[[package]]
+name = "valence-schema-identity-pilot"
+version = "0.1.0"
+dependencies = [
+ "schema-identity-conformance",
 ]
 
 [[package]]
