@@ -20,3 +20,4 @@ serde_json.workspace = true
 
 [dev-dependencies]
 hegeltest.workspace = true
+preserves-admission-core.workspace = true

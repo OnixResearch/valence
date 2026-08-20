@@ -525,8 +525,16 @@ fn finish_report(
 
 #[cfg(test)]
 mod tests {
+    use preserves_admission_core::ErrorClass;
+    use preserves_admission_core::ProfileId;
+    use preserves_admission_core::Syntax;
+    use preserves_admission_core::admit;
+    use preserves_admission_core::select_profile;
+
     use super::*;
 
+    const ADMISSION_VALID_TEXT: &[u8] = b"<valence-evidence \"ok\">";
+    const ADMISSION_TRAILING_TEXT: &[u8] = b"<valence-evidence \"ok\"> #f";
     const VALID_TEXT: &str = "(envelope (schema \"valence.preserves-evidence.v1\") (payload \"ok\"))";
 
     fn envelope() -> PreservesEvidenceEnvelope {
@@ -539,6 +547,16 @@ mod tests {
             self_hash_exclusion_profile: NO_SELF_HASH_EXCLUSION_PROFILE.to_owned(),
             non_claims: vec![PRESERVES_EVIDENCE_REQUIRED_NON_CLAIM.to_owned()],
         }
+    }
+
+    #[test]
+    fn shared_admission_pilot_accepts_one_value_and_rejects_trailing_input() {
+        let profile = select_profile(ProfileId::KamaciteCompatibleV1);
+        let admitted = admit(ADMISSION_VALID_TEXT, Syntax::Text, profile);
+        let trailing = admit(ADMISSION_TRAILING_TEXT, Syntax::Text, profile);
+
+        assert!(admitted.is_ok());
+        assert_eq!(trailing.map_err(|error| error.class()), Err(ErrorClass::TrailingInput));
     }
 
     #[test]
