@@ -5,7 +5,7 @@
 ```
 crates/valence-core/   Pure Evidence IR core (no I/O, no filesystem, no process)
 crates/valence-cli/    CLI shell (arg parsing, file reads, stdout/stderr, exit codes)
-cairn/                 Native Cairn lifecycle (specs, changes, archive)
+.cairn/                Native Cairn lifecycle (specs, changes, archive)
 ```
 
 ## Build Environment
@@ -37,7 +37,7 @@ Expected result: no matches (except in `#[cfg(test)]` blocks).
 
 ## Cairn Lifecycle
 
-This repo uses native Cairn lifecycle (`cairn/` layout). Legacy OpenSpec is
+This repo uses native Cairn lifecycle (`.cairn/` layout). Legacy OpenSpec is
 not used. Run cairn from the cairn source checkout:
 
 ```bash

@@ -1597,7 +1597,7 @@ fn validate_specification_path(path: &str, field_path: &str, issues: &mut Vec<Re
         && !path.starts_with('/')
         && !path.contains('\\')
         && components.iter().all(|component| !component.is_empty() && *component != "." && *component != "..")
-        && path.starts_with("cairn/specs/")
+        && (path.starts_with("cairn/specs/") || path.starts_with(".cairn/specs/"))
         && path.ends_with("/spec.md");
     if !valid {
         push_issue(
