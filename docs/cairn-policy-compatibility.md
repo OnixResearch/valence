@@ -2,7 +2,7 @@
 
 Valence keeps its lifecycle policy in `cairn-policy/default.ncl`, checked by the typed contracts in `cairn-policy/contracts.ncl`. The generated `cairn-policy/generated/cairn-policy.json` file is an export artifact and must not be edited directly.
 
-The supported parser is the canonical local Cairn checkout selected by `CAIRN_SOURCE` (default `../cairn`). Refresh the generated policy with:
+The supported parser is the canonical local Cairn checkout selected by `CAIRN_SOURCE` (default `../cairn`). The current contract refresh targets Cairn revision `15f00875562025e7ea7e0d1f4af24d1a2e2ac06f`. Refresh the generated policy with:
 
 ```bash
 nix run path:${CAIRN_SOURCE:-../cairn}#cairn -- policy export \

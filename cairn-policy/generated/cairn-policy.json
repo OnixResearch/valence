@@ -3474,6 +3474,7 @@
         "receipt_hash"
       ],
       "issue_keys": [
+        "code",
         "message",
         "promoted",
         "scope"
@@ -3488,8 +3489,11 @@
         "layout",
         "policy",
         "policy_hash",
+        "probe_evidence",
         "receipt_hash",
         "stage",
+        "substance",
+        "task_ordering",
         "valid",
         "verdict"
       ]
@@ -5058,6 +5062,16 @@
         "id": "depends",
         "kind": "depends-prefix",
         "token": "[depends:<task-or-id>]"
+      },
+      {
+        "id": "task",
+        "kind": "task-id-prefix",
+        "token": "[task:<id>]"
+      },
+      {
+        "id": "after",
+        "kind": "task-predecessor-prefix",
+        "token": "[after:<task-id>]"
       }
     ],
     "stages": [
@@ -5069,6 +5083,8 @@
     "default_profile": "valence-default",
     "profiles": [
       {
+        "anchor_kind": "exact_marker_bytes",
+        "assurance_level": "declared",
         "evidence_sources": [
           {
             "extensions": [
@@ -5131,6 +5147,8 @@
         ]
       },
       {
+        "anchor_kind": "exact_marker_bytes",
+        "assurance_level": "declared",
         "evidence_sources": [
           {
             "extensions": [
@@ -5193,6 +5211,8 @@
         ]
       },
       {
+        "anchor_kind": "exact_marker_bytes",
+        "assurance_level": "declared",
         "evidence_sources": [
           {
             "extensions": [
@@ -5225,6 +5245,8 @@
         ]
       },
       {
+        "anchor_kind": "exact_marker_bytes",
+        "assurance_level": "declared",
         "evidence_sources": [
           {
             "extensions": [
@@ -5273,6 +5295,8 @@
         ]
       },
       {
+        "anchor_kind": "exact_marker_bytes",
+        "assurance_level": "declared",
         "evidence_sources": [
           {
             "extensions": [
@@ -5328,6 +5352,8 @@
         ]
       },
       {
+        "anchor_kind": "exact_marker_bytes",
+        "assurance_level": "declared",
         "evidence_sources": [
           {
             "extensions": [
