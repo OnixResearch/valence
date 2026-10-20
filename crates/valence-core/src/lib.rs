@@ -44,6 +44,8 @@
 //!   exclusion profiles, and reusable non-claim boundaries.
 //! - `stack_role_registry`: validates stack schema/role rows, verification-role counting
 //!   vocabulary, compatibility aliases, and consumer constant drift.
+//! - `source_review`: independently authenticates loaded Cairn source-review signatures under
+//!   explicit operator policy, retaining exact byte identities and manual-review-only roles.
 //!
 //! # Boundary
 //!
@@ -89,6 +91,7 @@ pub mod proof_carrying_ir;
 pub mod provenance;
 pub mod radicle_forge_ops;
 pub mod shared_identity;
+pub mod source_review;
 pub mod stack_provenance_adapter;
 pub mod stack_role_registry;
 pub mod trellis_proof_evidence;

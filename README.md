@@ -166,6 +166,52 @@ Exit status `0` means success. Status `1` means invalid evidence or a missing sp
 
 Run `nix run .#valence -- --help` for the authoritative command summary.
 
+### Source-review acceptance
+
+`valence-core::source_review::accept_source_review_bytes(attachment, policy)`
+independently consumes the exact closed Cairn v1 attachment and explicit operator
+verification-policy JSON bytes. It verifies actual Ed25519 signatures over Artifact
+Auth canonical statements, exact source/claim-root/reviewed-policy/context linkage,
+full-key identities, exclusive `source-review-approval` purpose, generations,
+currentness/revocation observations, author exclusion, and distinct-key threshold.
+It does not consume a Cairn verdict. `needs_revision` is authenticated attribution,
+never an approval. Duplicate full keys, unknown/duplicate JSON fields, unsupported
+schemas, and missing/extra/reordered nonclaims fail closed.
+
+```bash
+valence source-review verify \
+  --artifact-root /srv/review-input \
+  --attachment review-attachment.json --policy verification-policy.json \
+  --output-root /srv/review-output --receipt acceptance.json
+```
+
+Both input locators are capability-confined and read at most 1 MiB each. Attachments,
+trusted keys, and author-key lists are limited to 64 rows; the nonzero threshold
+must equal the Artifact Auth threshold. The CLI creates a **new** receipt file
+(existing files are never overwritten), prints the same receipt, and exits `0`
+only for `accepted_manual_review`, `1` for `insufficient`/`invalid`, and `2` for
+usage/I/O failure. Output directories must already exist. A failed write is not a
+published receipt; consumers must parse and independently revalidate retained
+bytes. No private keys or signing functionality are provided.
+
+The `valence.source-review-acceptance.v1` receipt has verification role
+`manual_review`, separate from Evidence IR roles: it cannot increase Property or
+verified-proof counts and is neither a build witness nor a release signature.
+It retains exact attachment/policy artifact BLAKE3 digests separately from logical
+identities, approved full-key hashes, canonical signed-statement hashes, exact
+source/claim-root/reviewed-policy values, and the seven frozen nonclaims. Logical
+identities use domain + NUL + recursively key-sorted compact JSON. Attachment rows
+are normalized by full-key digest then Artifact Auth statement identity; input
+byte order is still preserved by the artifact digest. Verification-policy logical
+identity sorts author hashes and trusted keys; Artifact Auth policy identity uses
+its own pinned API, not JSON hashing. Claim-root identity uses
+`cairn.claim-root.v1`; receipt identity uses `valence.source-review-acceptance.v1`
+and excludes only the top-level `receipt_blake3` field. Operator policy owns the
+truth and freshness of supplied currentness observations; acceptance does not
+establish source correctness, review quality, build correctness, reproducibility,
+witness independence, deployment safety, or release eligibility.
+
+
 ### Radicle sidecars
 
 `valence-radicle` records optional collaboration state. It does not change Evidence IR or Cairn source files.

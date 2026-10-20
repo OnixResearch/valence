@@ -5,6 +5,7 @@
 
 mod content_bound_requirement_cli;
 mod nostr_identity_cli;
+mod source_review_cli;
 
 use std::io::Read;
 use std::io::Write;
@@ -38,6 +39,7 @@ COMMANDS:
     requirement-reference validate --artifact-root <ROOT> --input <FILE> [--registry <FILE>] [--output-root <ROOT> --out <FILE>]
     stack-context validate --artifact-root <ROOT> --input <FILE> [--output-root <ROOT> --out <FILE>]
     wasm-component validate --artifact-root <ROOT> --input <FILE>
+    source-review verify --artifact-root <ROOT> --attachment <FILE> --policy <FILE> --output-root <ROOT> --receipt <FILE>
     version                             Print version
 
 EXIT CODES:
@@ -68,6 +70,7 @@ fn main() -> ExitCode {
         "requirement-reference" => content_bound_requirement_cli::run_requirement_reference(&args[2..]),
         "stack-context" => content_bound_requirement_cli::run_stack_context(&args[2..]),
         "wasm-component" => run_wasm_component(&args[2..]),
+        "source-review" => source_review_cli::run(&args[2..]),
         "help" | "--help" | "-h" => {
             print!("{USAGE}");
             ExitCode::SUCCESS

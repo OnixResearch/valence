@@ -12,11 +12,13 @@ keywords = ["valence", "evidence", "ir", "blake3", "provenance"]
 categories = ["development-tools"]
 
 [dependencies]
-artifact-auth-core.workspace = true
+artifact-auth-core = { workspace = true, features = ["serde"] }
+artifact-auth-ed25519.workspace = true
 blake3.workspace = true
 iddqd.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 
 [dev-dependencies]
+ed25519-dalek = "2.2"
 hegeltest.workspace = true

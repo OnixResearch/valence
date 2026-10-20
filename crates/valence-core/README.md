@@ -48,6 +48,7 @@ Evidence adapters and profiles:
 - `function_object`
 - `oxide_primitives`
 - `proof_carrying_ir`
+- `source_review`
 - `stack_provenance_adapter`
 - `trellis_proof_evidence`
 - `wasm_component_evidence`
