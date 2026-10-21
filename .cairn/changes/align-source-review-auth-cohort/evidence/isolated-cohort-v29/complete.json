@@ -1,0 +1,227 @@
+{
+  "source": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+  "prior_run": "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-source-cohort-resume28",
+  "prior_records": [
+    {
+      "label": "consumer-nix-lock-generation",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "flake",
+        "update",
+        "artifact"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.21904275566339493
+    },
+    {
+      "label": "consumer-cargo-lock-generation",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "update",
+        "-p",
+        "artifact-auth-core",
+        "-p",
+        "artifact-auth-ed25519"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 5.347297613508999
+    },
+    {
+      "label": "consumer-resolved-graph",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "metadata",
+        "--locked",
+        "--format-version",
+        "1"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 1.6044541290029883
+    },
+    {
+      "label": "artifact-source-pin-and-negative-fixtures",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "build",
+        "--no-link",
+        "--no-write-lock-file",
+        "-L",
+        "path:/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28#checks.x86_64-linux.artifact-auth-source-pin"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 1.2352761924266815
+    },
+    {
+      "label": "package-formatting",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 1,
+      "elapsed_s": 1.8318151757121086
+    }
+  ],
+  "preserved_unrelated_baseline_format_failure": "pilots/schema-identity/src/lib.rs: verify_published_cohort line wrapping; original public main source retained",
+  "artifact_revision": "5f3962d7471d1547e044f57daeda72f56621fd52",
+  "consumer_packages": [
+    {
+      "name": "artifact-auth-core",
+      "source": "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52#5f3962d7471d1547e044f57daeda72f56621fd52"
+    },
+    {
+      "name": "artifact-auth-ed25519",
+      "source": "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52#5f3962d7471d1547e044f57daeda72f56621fd52"
+    }
+  ],
+  "generated_lock_blake3": {
+    "Cargo.lock": "bc82162c66a5ebe81057fe2aa27d998d54964792a64860bc04b372ba18c1aa25",
+    "flake.lock": "3f25d95045ab294391b3d3040d15c17d2cc0f2b6b81a3a94075af1f057cd8e58"
+  },
+  "records": [
+    {
+      "label": "affected-package-formatting",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "fmt",
+        "-p",
+        "valence-core",
+        "-p",
+        "valence-cli",
+        "-p",
+        "valence-radicle",
+        "-p",
+        "valence-shared-identity-pilot",
+        "--",
+        "--check"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.9118023216724396
+    },
+    {
+      "label": "workspace-lib-tests",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--workspace",
+        "--lib",
+        "--tests"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 21.12278451770544,
+      "test_results": [
+        "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s",
+        "test result: ok. 284 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "executed_behavior_tests": true
+    },
+    {
+      "label": "strict-workspace-clippy",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 19.54616983886808
+    },
+    {
+      "label": "actual-valence-cli-build",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "-p",
+        "valence-cli"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 19.44671405199915
+    },
+    {
+      "label": "Cargo-lock-blake3",
+      "command": [
+        "/nix/store/n0kjqa4jilnpp6h04lqlwa9zch8x808a-b3sum-1.8.5/bin/b3sum",
+        "--no-names",
+        "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/Cargo.lock"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.02926933392882347
+    },
+    {
+      "label": "flake-lock-blake3",
+      "command": [
+        "/nix/store/n0kjqa4jilnpp6h04lqlwa9zch8x808a-b3sum-1.8.5/bin/b3sum",
+        "--no-names",
+        "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/flake.lock"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.027966267429292202
+    }
+  ],
+  "receiver_smoke_completed": false,
+  "lifecycle_completed": false,
+  "publication": false,
+  "real_reviewer_approval": false,
+  "release_authority": false
+}

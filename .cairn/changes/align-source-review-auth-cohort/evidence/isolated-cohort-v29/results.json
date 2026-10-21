@@ -1,0 +1,122 @@
+[
+  {
+    "label": "affected-package-formatting",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "develop",
+      "--no-write-lock-file",
+      "--command",
+      "cargo",
+      "fmt",
+      "-p",
+      "valence-core",
+      "-p",
+      "valence-cli",
+      "-p",
+      "valence-radicle",
+      "-p",
+      "valence-shared-identity-pilot",
+      "--",
+      "--check"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.9118023216724396
+  },
+  {
+    "label": "workspace-lib-tests",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "develop",
+      "--no-write-lock-file",
+      "--command",
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--workspace",
+      "--lib",
+      "--tests"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 21.12278451770544,
+    "test_results": [
+      "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+      "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+      "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s",
+      "test result: ok. 284 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s",
+      "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s",
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s",
+      "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ],
+    "executed_behavior_tests": true
+  },
+  {
+    "label": "strict-workspace-clippy",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "develop",
+      "--no-write-lock-file",
+      "--command",
+      "cargo",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--workspace",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 19.54616983886808
+  },
+  {
+    "label": "actual-valence-cli-build",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "develop",
+      "--no-write-lock-file",
+      "--command",
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "-p",
+      "valence-cli"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 19.44671405199915
+  },
+  {
+    "label": "Cargo-lock-blake3",
+    "command": [
+      "/nix/store/n0kjqa4jilnpp6h04lqlwa9zch8x808a-b3sum-1.8.5/bin/b3sum",
+      "--no-names",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/Cargo.lock"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.02926933392882347
+  },
+  {
+    "label": "flake-lock-blake3",
+    "command": [
+      "/nix/store/n0kjqa4jilnpp6h04lqlwa9zch8x808a-b3sum-1.8.5/bin/b3sum",
+      "--no-names",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/flake.lock"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.027966267429292202
+  }
+]

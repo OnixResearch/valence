@@ -1,0 +1,18 @@
+error: non mergeable terms
+     ┌─ /home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/cairn-policy/default.ncl:1294:25
+     │
+1294 │     required_boundary = "Valence function-address lifecycle policy accepts recorded-only source-shape identity and linkage evidence only; it does not prove Rust semantic correctness, compiler correctness, whole-program safety, verifier soundness, requirement satisfaction, or release eligibility",
+     │                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot merge this expression
+     │
+     ┌─ /home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/cairn-policy/fixtures/invalid-function-address-weakened-boundary.ncl:2:45
+     │  
+   1 │ ╭ (import "../default.ncl") & {
+   2 │ │   function_address_gate.required_boundary = "policy parses",
+     │ │                                             ^^^^^^^^^^^^^^^ with this expression
+   3 │ │ }
+     │ ╰─' originally merged here
+     │  
+     = Merge operands have the same merge priority but they can't be combined.
+     = Both values are of type String but they aren't equal.
+     = String values can only be merged if they are equal
+

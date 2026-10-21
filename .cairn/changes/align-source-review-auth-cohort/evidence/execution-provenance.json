@@ -1,0 +1,205 @@
+{
+  "schema": "valence.acceptance-execution-provenance.v1",
+  "jobs": {
+    "1412": {
+      "task": {
+        "id": 1412,
+        "created_at": "2026-10-20T22:40:45.260473037-04:00",
+        "original_command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-cohort-acceptance-resume24 18000 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command bash /home/brittonr/mantle-cairn-finish/bin/jobs/valence-cohort-acceptance-resume24.sh",
+        "command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-cohort-acceptance-resume24 18000 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command bash /home/brittonr/mantle-cairn-finish/bin/jobs/valence-cohort-acceptance-resume24.sh",
+        "path": "/home/brittonr",
+        "envs": {},
+        "group": "default",
+        "dependencies": [],
+        "priority": 0,
+        "label": null,
+        "status": {
+          "Done": {
+            "enqueued_at": "2026-10-20T22:40:45.260459842-04:00",
+            "start": "2026-10-20T22:40:45.364846040-04:00",
+            "end": "2026-10-20T22:42:21.861990291-04:00",
+            "result": "Success"
+          }
+        }
+      },
+      "output": "targets bytes=85950296064 cap=250000000000 low=220000000000\ntmp bytes=3098640384 cap=35000000000 low=30000000000"
+    },
+    "1413": {
+      "task": {
+        "id": 1413,
+        "created_at": "2026-10-20T22:58:49.522941658-04:00",
+        "original_command": "env MCF_TARGET_NAME=valence-receiver-evidence-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-receiver-policy-acceptance-20261020-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command bash /home/brittonr/mantle-cairn-finish/bin/jobs/valence-receiver-policy-acceptance-20261020-v1.sh",
+        "command": "env MCF_TARGET_NAME=valence-receiver-evidence-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-receiver-policy-acceptance-20261020-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command bash /home/brittonr/mantle-cairn-finish/bin/jobs/valence-receiver-policy-acceptance-20261020-v1.sh",
+        "path": "/home/brittonr",
+        "envs": {},
+        "group": "default",
+        "dependencies": [],
+        "priority": 0,
+        "label": null,
+        "status": {
+          "Done": {
+            "enqueued_at": "2026-10-20T22:58:49.522912403-04:00",
+            "start": "2026-10-20T22:58:49.599737372-04:00",
+            "end": "2026-10-20T22:58:59.273698920-04:00",
+            "result": {
+              "Failed": 1
+            }
+          }
+        }
+      },
+      "output": "targets bytes=88240041984 cap=250000000000 low=220000000000\ntmp bytes=3098722304 cap=35000000000 low=30000000000"
+    },
+    "1414": {
+      "task": {
+        "id": 1414,
+        "created_at": "2026-10-20T23:00:51.194346700-04:00",
+        "original_command": "env MCF_TARGET_NAME=valence-receiver-evidence-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-receiver-policy-acceptance-resume-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command nix develop /home/brittonr/mantle-cairn-finish/xrepo/cairn-source-review-main-20261020 --override-input octet git+ssh://git@github.com/OnixResearch/octet.git?rev=2f8213a88781d9d38bb81319d06a50805d48ccd3 --no-write-lock-file --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-receiver-policy-acceptance-resume-v1.py",
+        "command": "env MCF_TARGET_NAME=valence-receiver-evidence-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-receiver-policy-acceptance-resume-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command nix develop /home/brittonr/mantle-cairn-finish/xrepo/cairn-source-review-main-20261020 --override-input octet git+ssh://git@github.com/OnixResearch/octet.git?rev=2f8213a88781d9d38bb81319d06a50805d48ccd3 --no-write-lock-file --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-receiver-policy-acceptance-resume-v1.py",
+        "path": "/home/brittonr",
+        "envs": {},
+        "group": "default",
+        "dependencies": [],
+        "priority": 0,
+        "label": null,
+        "status": {
+          "Done": {
+            "enqueued_at": "2026-10-20T23:00:51.194321112-04:00",
+            "start": "2026-10-20T23:00:51.333827210-04:00",
+            "end": "2026-10-20T23:02:58.239236897-04:00",
+            "result": {
+              "Failed": 1
+            }
+          }
+        }
+      },
+      "output": "targets bytes=88240050176 cap=250000000000 low=220000000000\ntmp bytes=3098730496 cap=35000000000 low=30000000000"
+    },
+    "1417": {
+      "task": {
+        "id": 1417,
+        "created_at": "2026-10-20T23:03:49.405520515-04:00",
+        "original_command": "env MCF_TARGET_NAME=valence-receiver-evidence-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-receiver-policy-acceptance-resume-v2 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command nix develop /home/brittonr/mantle-cairn-finish/xrepo/cairn-source-review-main-20261020 --override-input octet git+ssh://git@github.com/OnixResearch/octet.git?rev=2f8213a88781d9d38bb81319d06a50805d48ccd3 --no-write-lock-file --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-receiver-policy-acceptance-resume-v2.py",
+        "command": "env MCF_TARGET_NAME=valence-receiver-evidence-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-receiver-policy-acceptance-resume-v2 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command nix develop /home/brittonr/mantle-cairn-finish/xrepo/cairn-source-review-main-20261020 --override-input octet git+ssh://git@github.com/OnixResearch/octet.git?rev=2f8213a88781d9d38bb81319d06a50805d48ccd3 --no-write-lock-file --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-receiver-policy-acceptance-resume-v2.py",
+        "path": "/home/brittonr",
+        "envs": {},
+        "group": "default",
+        "dependencies": [],
+        "priority": 0,
+        "label": null,
+        "status": {
+          "Done": {
+            "enqueued_at": "2026-10-20T23:03:49.405500477-04:00",
+            "start": "2026-10-20T23:03:49.595378241-04:00",
+            "end": "2026-10-20T23:07:12.137856650-04:00",
+            "result": "Killed"
+          }
+        }
+      },
+      "output": "targets bytes=88240058368 cap=250000000000 low=220000000000\ntmp bytes=3098738688 cap=35000000000 low=30000000000"
+    },
+    "1419": {
+      "task": {
+        "id": 1419,
+        "created_at": "2026-10-20T23:06:20.297206485-04:00",
+        "original_command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-native-readiness-20261020-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-native-readiness-20261020-v1.py",
+        "command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-native-readiness-20261020-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-native-readiness-20261020-v1.py",
+        "path": "/home/brittonr",
+        "envs": {},
+        "group": "default",
+        "dependencies": [],
+        "priority": 0,
+        "label": null,
+        "status": {
+          "Done": {
+            "enqueued_at": "2026-10-20T23:06:20.297182970-04:00",
+            "start": "2026-10-20T23:06:20.457587156-04:00",
+            "end": "2026-10-20T23:06:27.122213438-04:00",
+            "result": "Success"
+          }
+        }
+      },
+      "output": "targets bytes=88240066560 cap=250000000000 low=220000000000\ntmp bytes=3098738688 cap=35000000000 low=30000000000"
+    },
+    "1420": {
+      "task": {
+        "id": 1420,
+        "created_at": "2026-10-20T23:07:21.329762511-04:00",
+        "original_command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-receiver-policy-acceptance-resume-v3 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command nix develop /home/brittonr/mantle-cairn-finish/xrepo/cairn-source-review-main-20261020 --override-input octet git+ssh://git@github.com/OnixResearch/octet.git?rev=2f8213a88781d9d38bb81319d06a50805d48ccd3 --no-write-lock-file --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-receiver-policy-acceptance-resume-v2.py",
+        "command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-receiver-policy-acceptance-resume-v3 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command nix develop /home/brittonr/mantle-cairn-finish/xrepo/cairn-source-review-main-20261020 --override-input octet git+ssh://git@github.com/OnixResearch/octet.git?rev=2f8213a88781d9d38bb81319d06a50805d48ccd3 --no-write-lock-file --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-receiver-policy-acceptance-resume-v2.py",
+        "path": "/home/brittonr",
+        "envs": {},
+        "group": "default",
+        "dependencies": [],
+        "priority": 0,
+        "label": null,
+        "status": {
+          "Done": {
+            "enqueued_at": "2026-10-20T23:07:21.329749517-04:00",
+            "start": "2026-10-20T23:07:21.525336425-04:00",
+            "end": "2026-10-20T23:07:29.990196457-04:00",
+            "result": "Success"
+          }
+        }
+      },
+      "output": "targets bytes=88240066560 cap=250000000000 low=220000000000\ntmp bytes=3098738688 cap=35000000000 low=30000000000"
+    },
+    "1421": {
+      "task": {
+        "id": 1421,
+        "created_at": "2026-10-20T23:08:20.272329146-04:00",
+        "original_command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-native-sync-20261020-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-native-sync-20261020-v1.py",
+        "command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-native-sync-20261020-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-native-sync-20261020-v1.py",
+        "path": "/home/brittonr",
+        "envs": {},
+        "group": "default",
+        "dependencies": [],
+        "priority": 0,
+        "label": null,
+        "status": {
+          "Done": {
+            "enqueued_at": "2026-10-20T23:08:20.272315250-04:00",
+            "start": "2026-10-20T23:08:20.344378876-04:00",
+            "end": "2026-10-20T23:08:27.000393703-04:00",
+            "result": "Success"
+          }
+        }
+      },
+      "output": "targets bytes=88240066560 cap=250000000000 low=220000000000\ntmp bytes=3098746880 cap=35000000000 low=30000000000"
+    },
+    "1422": {
+      "task": {
+        "id": 1422,
+        "created_at": "2026-10-20T23:11:30.686472420-04:00",
+        "original_command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-native-final-20261020-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-native-final-20261020-v1.py",
+        "command": "env MCF_TARGET_NAME=valence-source-review-v1 /home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh finish-integrated-20261018 valence-native-final-20261020-v1 3600 -- nix shell --inputs-from path:/home/brittonr/mantle-cairn-finish/xrepo/artifact-source-cohort-traceability-resume21 nixpkgs#b3sum nixpkgs#python3 --command python3 /home/brittonr/mantle-cairn-finish/bin/jobs/valence-native-final-20261020-v1.py",
+        "path": "/home/brittonr",
+        "envs": {},
+        "group": "default",
+        "dependencies": [],
+        "priority": 0,
+        "label": null,
+        "status": {
+          "Done": {
+            "enqueued_at": "2026-10-20T23:11:30.686449817-04:00",
+            "start": "2026-10-20T23:11:30.851475256-04:00",
+            "end": "2026-10-20T23:11:37.507289398-04:00",
+            "result": "Success"
+          }
+        }
+      },
+      "output": "targets bytes=88240066560 cap=250000000000 low=220000000000\ntmp bytes=3098746880 cap=35000000000 low=30000000000"
+    }
+  },
+  "preliminary_driver_notes": {
+    "1413": "Preliminary capture-driver assertion incorrectly required Nickel failure for every negative fixture; supported exporter already passed. Missing-gate fixture actually fails owner semantic parser, retained in continuation. No input/source change.",
+    "1414": "Capture-driver assertion incorrectly expected Cairn-only needs_revision_key_blake3 in Valence receipt. Actual approval command succeeded. Continuation uses Valence contract and reuses successful captures. No product/source change.",
+    "1417": "Cancelled while cold-gate waiting before driver execution; no guard run pointer or new receiver command. Warm existing-target evidence-only continuation 1420 replaced launcher, with no builds."
+  },
+  "implementation_failure_found": false,
+  "source_behavior_build_checks_reexecuted": false,
+  "pueue_client_stderr": "",
+  "guard_capacity_or_limits_changed": false,
+  "rust_source_changes": false,
+  "terminal_archive_executed": false,
+  "publication": false
+}

@@ -1,0 +1,6 @@
+phase=preflight start=2026-10-21T01:18:54Z free=1524584099840 floor=214748364800 peak_reserve=107374182400 dev=66305
+cwd=/home/brittonr/mantle-cairn-finish/wt/finish-integrated-20261018 head=43ccd68840b748e03773fc1bff5eb1cfca99dffa CARGO_TARGET_DIR=/home/brittonr/mantle-cairn-finish/targets/valence-source-review-v1 TMPDIR=/home/brittonr/mantle-cairn-finish/tmp/finish-integrated-20261018 CARGO_BUILD_JOBS=32
+command=bash /home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/target/valence-policy-generate-canonical-v1.sh 
+phase=running launcher=3064466 pgid=3064466
+phase=child_exited exit=0 elapsed_s=4 free=1524322095104
+phase=final exit=0 group_survivors=0 end=2026-10-21T01:18:58Z elapsed_s=8 free=1524315578368 max_drop=139943936

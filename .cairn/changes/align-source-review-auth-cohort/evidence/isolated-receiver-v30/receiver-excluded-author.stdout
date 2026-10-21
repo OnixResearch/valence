@@ -1,0 +1,43 @@
+{
+  "schema": "valence.source-review-acceptance.v1",
+  "outcome": "invalid",
+  "verification_role": "manual_review",
+  "subject": {
+    "schema": "cairn.source-review-subject.v1",
+    "source_archive_blake3": "df04f94511dab2615e61a321ed18dcc74d49d75db301fbf418460d9728fa7ff9",
+    "source_revision": "test-only-operator-smoke",
+    "source_tree_blake3": null,
+    "snapshot_profile": "mantle-release-source",
+    "snapshot_profile_version": 1,
+    "projection": "source"
+  },
+  "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+  "claim_root": {
+    "claim_identity": "ddeecbaa0ca7d50a1b3a6a063bf9bfe09b448014cdf85984e2b44c3685344985",
+    "subject_root": "564753938c248934d87b6b6f8df4635fec32d9d01e9db1c0fda7f51bfa2b14f6",
+    "revision": 5
+  },
+  "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+  "review_policy_blake3": "bb17e7670f0a08b7b97de9e1db6a343a6f3e8f6de5781fff801d72b162176098",
+  "verification_policy_identity": "60c704aebf78dbce718e0b1e1fadd3cb716c03fa867212246d0dcf447a2acbc2",
+  "authentication_policy_identity": "8da8f616d0b66c7e1cb0af931c0d3cea3ceb0845064b3d4550842f35d3ae2005",
+  "approved_key_blake3": [],
+  "signed_statement_blake3": [],
+  "claim_identity": [],
+  "attachment_identity": "e20db6f8127d020008bb2d0ea90b871b8e95b400414eda487a72c63291d71909",
+  "attachment_artifact_blake3": "dcaf3a288e853500d7f32c892071d4d0fb433bce8627db99c2230e09edd8fc09",
+  "policy_artifact_blake3": "c8025321f36e74d84a52b23b2a49343b8fe99aae82f1fca8b3e245702234889a",
+  "receipt_blake3": "ed403d0d368a217dd41dd0d1c68a92b2996b026376e81ec8c4f1a85a5647973e",
+  "non_claims": [
+    "source-review-does-not-prove-build-correctness",
+    "source-review-does-not-prove-deployment-safety",
+    "source-review-does-not-prove-release-eligibility",
+    "source-review-does-not-prove-reproducibility",
+    "source-review-does-not-prove-review-quality",
+    "source-review-does-not-prove-source-correctness",
+    "source-review-does-not-prove-witness-independence"
+  ],
+  "issues": [
+    "review_author_excluded"
+  ]
+}

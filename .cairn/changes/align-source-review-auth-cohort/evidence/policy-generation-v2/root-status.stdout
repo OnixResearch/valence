@@ -1,0 +1,36 @@
+{
+  "changes": [],
+  "layout": "cairn",
+  "resolution": {
+    "diagnostics": [],
+    "locator_consulted": false,
+    "registry_lookup": "local_locator_only",
+    "selected": {
+      "project_identity": null,
+      "root": ".",
+      "source": "explicit_root",
+      "store_id": null,
+      "store_identity": null
+    },
+    "valid": true
+  },
+  "root": ".",
+  "specs": [
+    "./.cairn/specs/artifact-auth-adoption/spec.md",
+    "./.cairn/specs/artifact-auth-operational-receipt/spec.md",
+    "./.cairn/specs/artifact-auth-shell-verification/spec.md",
+    "./.cairn/specs/content-bound-requirements/spec.md",
+    "./.cairn/specs/evidence-ir/spec.md",
+    "./.cairn/specs/kani-contract-roles/spec.md",
+    "./.cairn/specs/kani-nonclaims/spec.md",
+    "./.cairn/specs/kani-stub-roles/spec.md",
+    "./.cairn/specs/nostr-identity-evidence/spec.md",
+    "./.cairn/specs/provenance/spec.md",
+    "./.cairn/specs/radicle-cob-evidence/spec.md",
+    "./.cairn/specs/radicle-forge-operations/spec.md",
+    "./.cairn/specs/stack-provenance-adapter/spec.md",
+    "./.cairn/specs/stack-schema-role-registry/spec.md",
+    "./.cairn/specs/strict-rust-admission/spec.md",
+    "./.cairn/specs/wasm-component-evidence/spec.md"
+  ]
+}

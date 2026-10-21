@@ -1,0 +1,184 @@
+{
+  "schema": "valence.receiver-retained-byte-verification.v1",
+  "method": "independent b3sum over exact retained files and domain-NUL canonical sorted compact JSON; no product execution repeated",
+  "receipts": [
+    {
+      "case": "approved",
+      "receipt_identity": "cfadb33538787d4600de6a7211cf28be92c2d41a6ad4e090234fd9127ca4d2d1",
+      "file_blake3": "5f8e8b09715fa7ea2fccb86864aa85d9a21d94866829e9838bde4d6df1cb6f57"
+    },
+    {
+      "case": "needs-revision",
+      "receipt_identity": "c8746e58f4a3ea080967d41da08541eac20fddfbc928c5bdcfd18fc0f4b5667e",
+      "file_blake3": "d6c76f13ca764f3ba861b30c68f1beb6ba6289e78f80a444ae3f372c641f4d5f"
+    },
+    {
+      "case": "revoked",
+      "receipt_identity": "1e13367482c43d552bf428c6bcbae8212c21fbc8335f0ecc68bc0490a0821baf",
+      "file_blake3": "e6a6022678bd4a0f1e6178faee0b4b94be084a491aa2335ac2d134b231996779"
+    },
+    {
+      "case": "substituted-source",
+      "receipt_identity": "1bf63acc2801c392c64560e1105de00c43daa76ecf1290a3180cad54573dd85b",
+      "file_blake3": "78ef5209cfbbc8b07663f7a742fea9a17a2c9819d1bc8b4c17e85bda7c608a4d"
+    },
+    {
+      "case": "excluded-author",
+      "receipt_identity": "ed403d0d368a217dd41dd0d1c68a92b2996b026376e81ec8c4f1a85a5647973e",
+      "file_blake3": "eb252e5b60db92bc4b92da911449a3c6fc19b5571c00e9072a2b5fb97552ba4f"
+    }
+  ],
+  "roots": [
+    {
+      "case": "approved",
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "non_claims": [
+        "source-review-does-not-prove-build-correctness",
+        "source-review-does-not-prove-deployment-safety",
+        "source-review-does-not-prove-release-eligibility",
+        "source-review-does-not-prove-reproducibility",
+        "source-review-does-not-prove-review-quality",
+        "source-review-does-not-prove-source-correctness",
+        "source-review-does-not-prove-witness-independence"
+      ]
+    },
+    {
+      "case": "needs-revision",
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "non_claims": [
+        "source-review-does-not-prove-build-correctness",
+        "source-review-does-not-prove-deployment-safety",
+        "source-review-does-not-prove-release-eligibility",
+        "source-review-does-not-prove-reproducibility",
+        "source-review-does-not-prove-review-quality",
+        "source-review-does-not-prove-source-correctness",
+        "source-review-does-not-prove-witness-independence"
+      ]
+    },
+    {
+      "case": "revoked",
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "non_claims": [
+        "source-review-does-not-prove-build-correctness",
+        "source-review-does-not-prove-deployment-safety",
+        "source-review-does-not-prove-release-eligibility",
+        "source-review-does-not-prove-reproducibility",
+        "source-review-does-not-prove-review-quality",
+        "source-review-does-not-prove-source-correctness",
+        "source-review-does-not-prove-witness-independence"
+      ]
+    },
+    {
+      "case": "substituted-source",
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "non_claims": [
+        "source-review-does-not-prove-build-correctness",
+        "source-review-does-not-prove-deployment-safety",
+        "source-review-does-not-prove-release-eligibility",
+        "source-review-does-not-prove-reproducibility",
+        "source-review-does-not-prove-review-quality",
+        "source-review-does-not-prove-source-correctness",
+        "source-review-does-not-prove-witness-independence"
+      ]
+    },
+    {
+      "case": "excluded-author",
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "non_claims": [
+        "source-review-does-not-prove-build-correctness",
+        "source-review-does-not-prove-deployment-safety",
+        "source-review-does-not-prove-release-eligibility",
+        "source-review-does-not-prove-reproducibility",
+        "source-review-does-not-prove-review-quality",
+        "source-review-does-not-prove-source-correctness",
+        "source-review-does-not-prove-witness-independence"
+      ]
+    }
+  ],
+  "canonical_input_bindings": [
+    {
+      "path": "Cargo.toml",
+      "blake3": "97db3f8196b61fba1d381d29bc821b19a7fc20460643e0cbf0dafbe7caeedbd9"
+    },
+    {
+      "path": "Cargo.lock",
+      "blake3": "012313dc9fe896e3f15cf3a2b3e7631728e7a107f94fdec745d4ae16d1cc0de0"
+    },
+    {
+      "path": "flake.nix",
+      "blake3": "33b8982e4523e94569f0b2916e7664a0a62d61e0cf65b2a9eeafd2b0194b9229"
+    },
+    {
+      "path": "flake.lock",
+      "blake3": "66bc88e9f89c5dbfd1fc81c196989553fbae8656e4b4d244dcbc99ca013f93a2"
+    },
+    {
+      "path": "cairn-policy/default.ncl",
+      "blake3": "e0de8fa6d3ad2cc4d8a0bf8436ad04e15fde3d4ec94261438c6c5fb9176b9596"
+    },
+    {
+      "path": "cairn-policy/contracts.ncl",
+      "blake3": "2ba05b3d7fe76619a50a2ca7284268c6aaddd3eff48386125814f0c9cf1ab5d3"
+    },
+    {
+      "path": "cairn-policy/generated/cairn-policy.json",
+      "blake3": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-attachment.json",
+      "blake3": "dcaf3a288e853500d7f32c892071d4d0fb433bce8627db99c2230e09edd8fc09"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-request.json",
+      "blake3": "8e133ba6241158fbf80b7ac031e82d43e3b0d776aefb7ee2b98f233d55d617a1"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-signature.bin",
+      "blake3": "9984029e4194501a1f2702f579678784fba87263bfeaade849cbb731acf2e0e5"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-unsigned.bin",
+      "blake3": "dca657c060efca111b0c83ad905f1831ddab45ebb1457c054334b4c526b41172"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/author-policy.json",
+      "blake3": "c8025321f36e74d84a52b23b2a49343b8fe99aae82f1fca8b3e245702234889a"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-attachment.json",
+      "blake3": "6362c60ed2a3d0396c00b1c84d37e43577fc8427d8632b2e278c231a36ca20dc"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-request.json",
+      "blake3": "e00a852adf8b991f60b71b54a03da2c4a4455cbb1b9af25566b448778be6d56e"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-signature.bin",
+      "blake3": "e8ea04689286607f464898f01d8da01c31018ef90192ccbb7253b82bb17d28b4"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-unsigned.bin",
+      "blake3": "02d3492a65e1decb528784cc5fe340d649f93e4ccba05c97ec433089a5d811d7"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/policy.json",
+      "blake3": "bab67a68ca4fecca015cacbe9cafbbda174ab7a2df46ce6fd0460b53a572d66b"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/revoked-policy.json",
+      "blake3": "fb5878bbc5e710209bfb23a50e43aefcecb7ae0d4f9f34b28a96575df8d9c763"
+    },
+    {
+      "path": ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/tampered-source.json",
+      "blake3": "423222afb2d33993cffc0c6026f352ae31f81070210856df7cd34f2001427adc"
+    }
+  ],
+  "real_human_review": false,
+  "witness_authority": false,
+  "release_authority": false
+}

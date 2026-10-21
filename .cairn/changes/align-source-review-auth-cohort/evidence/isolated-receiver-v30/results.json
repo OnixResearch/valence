@@ -1,0 +1,386 @@
+[
+  {
+    "label": "nickel-version",
+    "command": [
+      "nickel",
+      "--version"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.008434200659394264
+  },
+  {
+    "label": "nickel-runtime",
+    "command": [
+      "bash",
+      "-c",
+      "command -v nickel"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.0080479821190238
+  },
+  {
+    "label": "nickel-export-runtime",
+    "command": [
+      "bash",
+      "-c",
+      "command -v nickel-export"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.00790154654532671
+  },
+  {
+    "label": "policy-export-check",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "policy",
+      "export",
+      "--source",
+      "cairn-policy/default.ncl",
+      "--output",
+      "cairn-policy/generated/cairn-policy.json",
+      "--check"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 1.3666675128042698
+  },
+  {
+    "label": "positive-nickel",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/valid-function-address-policy.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.16467178612947464
+  },
+  {
+    "label": "negative-invalid-function-address-empty-roles",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-function-address-empty-roles.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11466786358505487
+  },
+  {
+    "label": "negative-invalid-function-address-empty-schemas",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-function-address-empty-schemas.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11489869933575392
+  },
+  {
+    "label": "negative-invalid-function-address-malformed-hash",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-function-address-malformed-hash.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11463085375726223
+  },
+  {
+    "label": "negative-invalid-function-address-mode",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-function-address-mode.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.114250716753304
+  },
+  {
+    "label": "negative-invalid-function-address-placeholder-hash",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-function-address-placeholder-hash.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11481120437383652
+  },
+  {
+    "label": "negative-invalid-function-address-stale-hash",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-function-address-stale-hash.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11464176513254642
+  },
+  {
+    "label": "negative-invalid-function-address-weakened-boundary",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-function-address-weakened-boundary.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11481362860649824
+  },
+  {
+    "label": "negative-invalid-missing-function-address-gate",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-missing-function-address-gate.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.16465385351330042
+  },
+  {
+    "label": "semantic-invalid-missing-function-address-gate",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "policy",
+      "--policy",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/negative-invalid-missing-function-address-gate.stdout"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.032053510658442974
+  },
+  {
+    "label": "negative-invalid-missing-workflow-profile-policy",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-missing-workflow-profile-policy.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11436759773641825
+  },
+  {
+    "label": "negative-invalid-outcome-machine-admission",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-outcome-machine-admission.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11443197913467884
+  },
+  {
+    "label": "negative-invalid-workflow-artifact-missing-output-path",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/fixtures/invalid-workflow-artifact-missing-output-path.ncl"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.11458954587578773
+  },
+  {
+    "label": "policy-parser",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "policy",
+      "--policy",
+      "cairn-policy/generated/cairn-policy.json"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.032343036495149136
+  },
+  {
+    "label": "native-status",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "status",
+      "--root",
+      "."
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.01599229034036398
+  },
+  {
+    "label": "native-change-list",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "change",
+      "list",
+      "--root",
+      "."
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.015941154211759567
+  },
+  {
+    "label": "native-workflow",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "workflow",
+      "status",
+      "align-source-review-auth-cohort",
+      "--root",
+      "."
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.0640606228262186
+  },
+  {
+    "label": "default-root-status",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "status",
+      "--root",
+      "."
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.015889286063611507
+  },
+  {
+    "label": "receiver-approved",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/valence",
+      "source-review",
+      "verify",
+      "--artifact-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/TEST-ONLY-NOT-REAL-REVIEW",
+      "--attachment",
+      "approved-attachment.json",
+      "--policy",
+      "policy.json",
+      "--output-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30",
+      "--receipt",
+      "approved-receipt.json"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.0320184538140893
+  },
+  {
+    "label": "receiver-needs-revision",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/valence",
+      "source-review",
+      "verify",
+      "--artifact-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/TEST-ONLY-NOT-REAL-REVIEW",
+      "--attachment",
+      "needs_revision-attachment.json",
+      "--policy",
+      "policy.json",
+      "--output-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30",
+      "--receipt",
+      "needs-revision-receipt.json"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.06433552224189043
+  },
+  {
+    "label": "receiver-revoked",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/valence",
+      "source-review",
+      "verify",
+      "--artifact-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/TEST-ONLY-NOT-REAL-REVIEW",
+      "--attachment",
+      "approved-attachment.json",
+      "--policy",
+      "revoked-policy.json",
+      "--output-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30",
+      "--receipt",
+      "revoked-receipt.json"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.032288042828440666
+  },
+  {
+    "label": "receiver-substituted-source",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/valence",
+      "source-review",
+      "verify",
+      "--artifact-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/TEST-ONLY-NOT-REAL-REVIEW",
+      "--attachment",
+      "tampered-source.json",
+      "--policy",
+      "policy.json",
+      "--output-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30",
+      "--receipt",
+      "substituted-source-receipt.json"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.01621933840215206
+  },
+  {
+    "label": "receiver-excluded-author",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/valence",
+      "source-review",
+      "verify",
+      "--artifact-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30/TEST-ONLY-NOT-REAL-REVIEW",
+      "--attachment",
+      "approved-attachment.json",
+      "--policy",
+      "author-policy.json",
+      "--output-root",
+      "/home/brittonr/mantle-cairn-finish/runs/valence-isolated-receiver-smoke-resume30",
+      "--receipt",
+      "excluded-author-receipt.json"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 0.016239386051893234
+  }
+]

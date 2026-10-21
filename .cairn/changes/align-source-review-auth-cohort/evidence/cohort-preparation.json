@@ -1,0 +1,106 @@
+{
+  "schema": "valence.source-review-cohort-preparation.v1",
+  "prepared_valence_parent_revision": "b5e558e87f57b0615b50e532846d6865e31042b",
+  "canonical_owner_baseline": {
+    "archive_blake3": "41244c822f93788886bff18c4ed38b242a84bf4081933a05e01ed39c273fab12",
+    "source_identifier_without_jj_auto_snapshot": "79d3706d0d634e47cd004a32e009ce1104ed9a25",
+    "includes_actual_working_files": true,
+    "committed_source_claim": false,
+    "file_inventory": "canonical-owner-baseline/inventory.json",
+    "regular_file_count": 653,
+    "canonical_workspace_mutated": false,
+    "owner_agpl_and_native_lifecycle_work_preserved": true
+  },
+  "canonical_baseline_artifact_revision": "e41340bec587b6d049b5cc518ec7db925dde84be",
+  "final_artifact_revision": "5f3962d7471d1547e044f57daeda72f56621fd52",
+  "final_source_admitted": true,
+  "final_verification_status": "receiver_source_policy_behavior_smoke_and_native_sync_evidenced_publication_not_executed",
+  "remaining_source_requirements": [],
+  "authentication_entry_points_scope": "published immutable source and full-source admission passed; current receiver CLI independently authenticated retained external-signer test-only fixtures, not actual Valence source review",
+  "published_primary_acquisition": {
+    "revision": "5f3962d7471d1547e044f57daeda72f56621fd52",
+    "source_uri": "ssh://git@github.com/OnixResearch/onix-artifact.git",
+    "nar_sri": "sha256-Xr7ocFkPN15XYb6NA4bv3I9Q42NvoSYtXWfsrj7I3WY=",
+    "nar_base16": "5ebee870590f375e5761be8d0386efdc8f50e3636fa1262d5d67ecae3ec8dd66",
+    "tracked_files_measured_by_parent": 180,
+    "primary_metadata_artifact": "artifact://9218",
+    "parent_retained_artifact_metadata": "evidence/published-source-v1/primary-nix-metadata.json",
+    "transferred_git_bundle_blake3": "fd9c4017e274a9b9bf4a85ab1623319996edc70cdd5936a044bdf03cca2c5d6e",
+    "anonymous_https_acquisition_established": false,
+    "transferred_source_full_owner_admission_established": true,
+    "consumer_execution_established": false
+  },
+  "transferred_source_owner_acceptance": {
+    "pueue_id": 1408,
+    "run": "artifact-published-source-verification-resume23-v3",
+    "source_revision": "5f3962d7471d1547e044f57daeda72f56621fd52",
+    "source_files_compared_with_primary": 180,
+    "prepared_files_unchanged": 154,
+    "documentation_only_changes": [".cairn/changes/align-source-package-inventory/tasks.md", "README.md"],
+    "full_owner_flake_check_exit": 0,
+    "native_validation_valid": true,
+    "native_gate_verdicts": {"proposal": "PASS", "design": "PASS", "tasks": "PASS"},
+    "sync_preview_blocked": false,
+    "sync_executed": false,
+    "archive_executed": false,
+    "consumer_admission": false,
+    "release_authority": false
+  },
+  "retained_remote_negative_fixture": {
+    "path": "cairn-policy/fixtures/invalid-outcome-machine-admission.ncl",
+    "origin": "prepared remote subject before canonical import",
+    "prior_remote_subject_archive_blake3": "37df1fea8e6ecc9d50570fe8e511447c549ee29e35a7539517fe845e0bd580bd",
+    "final_subject_fixture_check_run": false
+  },
+  "cairn_owner_revision": "1cacafebbff7b2716a953961a1ebf52bafb352e7",
+  "cairn_owner_implementation_commit_prefix": "7e9ff66",
+  "cairn_verified_cli": "runs/cairn-source-review-native-complete-20261020-v1/cairn",
+  "policy_owner_files": [
+    {"path": "cairn-policy/default.ncl", "blake3": "c3b5981d71789b04ff3a7567a84a7b1df29b5703dcb3a65e664143713e77a97e"},
+    {"path": "cairn-policy/contracts.ncl", "blake3": "bc537dc32ff01fc9004dc032b78ad6fb5855c5c6f0158ecda219d5912b46619c"},
+    {"path": "cairn-policy/LICENSING.md", "blake3": "d86b9a6d31606882ae6f2e0fb42493852472f12a60d0e9aeda932c2b9fe50b89"}
+  ],
+  "initial_artifact_revision": "c932138d880ddf4c2967f4c024b489b5c0022bf1",
+  "initial_source_admission_blocker": {
+    "workspace_members": ["artifact-auth-core", "artifact-auth-ed25519", "artifact-binding-core", "artifact-transfer-core"],
+    "release_profile_packages": ["artifact-auth-core", "artifact-auth-ed25519", "artifact-transfer-core"],
+    "resolution_owner": "OnixResearch/onix-artifact",
+    "validation_weakened": false,
+    "cohort_admitted": false
+  },
+  "authentication_entry_points": [
+    {"path": "crates/artifact-auth-core/src/lib.rs", "blake3": "839ea3e35429e2a1252020dd779b46ebd185b6911674036820da118d487d1d21"},
+    {"path": "crates/artifact-auth-ed25519/src/lib.rs", "blake3": "7fd3987fe3ddc6d30efca37878952135f19905a00b52f349db237054be6b3633"}
+  ],
+  "policy_generation_evidence": "policy-generation-canonical-v1/complete.json",
+  "precanonical_policy_generation_evidence": "policy-generation-v2/complete.json",
+  "policy_generation_cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+  "policy_generation_guard": {
+    "pueue_id": 1395,
+    "label": "valence-policy-canonical-generation-20261020-v1",
+    "exit": 0,
+    "generation_only": true,
+    "command": ["env", "MCF_TARGET_NAME=valence-source-review-v1", "/home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh", "finish-integrated-20261018", "valence-policy-canonical-generation-20261020-v1", "7200", "--", "bash", "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/target/valence-policy-generate-canonical-v1.sh"],
+    "owner_runtime_source": "xrepo/cairn-source-review-main-20261020",
+    "runtime_octet_override_revision": "2f8213a88781d9d38bb81319d06a50805d48ccd3"
+  },
+  "precanonical_policy_generation_guard": {
+    "pueue_id": 1385,
+    "label": "valence-policy-generate-20261020-v4",
+    "command": ["env", "MCF_TARGET_NAME=valence-source-review-v1", "/home/brittonr/mantle-cairn-finish/bin/mcf-guard.sh", "finish-integrated-20261018", "valence-policy-generate-20261020-v4", "7200", "--", "bash", "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/target/valence-policy-generate-v4.sh"],
+    "owner_runtime_source": "xrepo/cairn-source-review-main-20261020",
+    "runtime_octet_override_revision": "2f8213a88781d9d38bb81319d06a50805d48ccd3"
+  },
+  "source_review_fixture_origin": "runs/cairn-source-review-operator-smoke-20261020-v1/TEST-ONLY-NOT-REAL-REVIEW",
+  "source_behavior_acceptance_evidence": "cohort-acceptance-resume24/complete.json",
+  "receiver_policy_acceptance_evidence": "receiver-policy-acceptance-v1/complete.json",
+  "retained_byte_verification_evidence": "receiver-policy-acceptance-v1/retained-byte-verification.json",
+  "native_initial_gate_evidence": "native-readiness-v1/complete.json",
+  "native_sync_evidence": "native-sync-v1/complete.json",
+  "native_final_evidence": "native-final-v1/complete.json",
+  "terminal_archive_executed": false,
+  "test_only": true,
+  "real_manual_review_approval": false,
+  "release_authority": false,
+  "publication": false
+}

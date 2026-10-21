@@ -1,0 +1,8 @@
+    Checking content-identity-core v0.1.0 (https://seed.radicle.garden/zA14jhTdwST4PxPBdsryc4zS7Kpq.git?rev=7f55597b5dc879b7601856e8d7fd0dbacaa2a498#7f55597b)
+    Checking valence-core v0.1.0 (/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/crates/valence-core)
+    Checking schema-identity-core v0.1.0 (https://seed.radicle.garden/z6gGpUJtzdVBCCtZTzh4cV1skv4H.git?rev=2562c8aa38a034061f9af9f3e17280494a5b8de2#2562c8aa)
+    Checking schema-identity-conformance v0.1.0 (https://seed.radicle.garden/z6gGpUJtzdVBCCtZTzh4cV1skv4H.git?rev=2562c8aa38a034061f9af9f3e17280494a5b8de2#2562c8aa)
+    Checking valence-schema-identity-pilot v0.1.0 (/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/pilots/schema-identity)
+    Checking valence-radicle v0.1.0 (/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/crates/valence-radicle)
+    Checking valence-cli v0.1.0 (/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/crates/valence-cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 19.10s

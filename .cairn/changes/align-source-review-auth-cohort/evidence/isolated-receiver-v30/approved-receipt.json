@@ -1,0 +1,47 @@
+{
+  "schema": "valence.source-review-acceptance.v1",
+  "outcome": "accepted_manual_review",
+  "verification_role": "manual_review",
+  "subject": {
+    "schema": "cairn.source-review-subject.v1",
+    "source_archive_blake3": "df04f94511dab2615e61a321ed18dcc74d49d75db301fbf418460d9728fa7ff9",
+    "source_revision": "test-only-operator-smoke",
+    "source_tree_blake3": null,
+    "snapshot_profile": "mantle-release-source",
+    "snapshot_profile_version": 1,
+    "projection": "source"
+  },
+  "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+  "claim_root": {
+    "claim_identity": "ddeecbaa0ca7d50a1b3a6a063bf9bfe09b448014cdf85984e2b44c3685344985",
+    "subject_root": "564753938c248934d87b6b6f8df4635fec32d9d01e9db1c0fda7f51bfa2b14f6",
+    "revision": 5
+  },
+  "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+  "review_policy_blake3": "bb17e7670f0a08b7b97de9e1db6a343a6f3e8f6de5781fff801d72b162176098",
+  "verification_policy_identity": "f23dca91bba7d2be1f78f7c67080189d576c2bc4be1916c9e19965385ace4e1e",
+  "authentication_policy_identity": "8da8f616d0b66c7e1cb0af931c0d3cea3ceb0845064b3d4550842f35d3ae2005",
+  "approved_key_blake3": [
+    "6384c589c5d965c3c278571ac2bd27d672999ea131e8a5f78b37a5a9cce3c7b6"
+  ],
+  "signed_statement_blake3": [
+    "dca657c060efca111b0c83ad905f1831ddab45ebb1457c054334b4c526b41172"
+  ],
+  "claim_identity": [
+    "a45e7366c47a77e707cccaa55c74021c3dfa68a8ecd748c3fe6f2cbb447122be"
+  ],
+  "attachment_identity": "e20db6f8127d020008bb2d0ea90b871b8e95b400414eda487a72c63291d71909",
+  "attachment_artifact_blake3": "dcaf3a288e853500d7f32c892071d4d0fb433bce8627db99c2230e09edd8fc09",
+  "policy_artifact_blake3": "bab67a68ca4fecca015cacbe9cafbbda174ab7a2df46ce6fd0460b53a572d66b",
+  "receipt_blake3": "cfadb33538787d4600de6a7211cf28be92c2d41a6ad4e090234fd9127ca4d2d1",
+  "non_claims": [
+    "source-review-does-not-prove-build-correctness",
+    "source-review-does-not-prove-deployment-safety",
+    "source-review-does-not-prove-release-eligibility",
+    "source-review-does-not-prove-reproducibility",
+    "source-review-does-not-prove-review-quality",
+    "source-review-does-not-prove-source-correctness",
+    "source-review-does-not-prove-witness-independence"
+  ],
+  "issues": []
+}

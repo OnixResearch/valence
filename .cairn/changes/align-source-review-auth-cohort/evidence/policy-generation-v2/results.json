@@ -1,0 +1,120 @@
+[
+  {
+    "label": "export-policy",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "policy",
+      "export",
+      "--source",
+      "cairn-policy/default.ncl",
+      "--output",
+      "cairn-policy/generated/cairn-policy.json"
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 1.3688210882246494
+  },
+  {
+    "label": "policy-freshness-fixtures",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "policy",
+      "export",
+      "--check"
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 1.3548636846244335
+  },
+  {
+    "label": "positive-nickel-fixture",
+    "command": [
+      "nickel",
+      "export",
+      "--format",
+      "json",
+      "cairn-policy/fixtures/valid-function-address-policy.ncl"
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 0.1374608464539051
+  },
+  {
+    "label": "parser",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "policy",
+      "--policy",
+      "cairn-policy/generated/cairn-policy.json"
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 0.02740893606096506
+  },
+  {
+    "label": "root-status",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "status",
+      "--root",
+      "."
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 0.008406484499573708
+  },
+  {
+    "label": "change-list",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "change",
+      "list",
+      "--root",
+      "."
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 0.0073570748791098595
+  },
+  {
+    "label": "root-validation",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "validate",
+      "--root",
+      "."
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 0.07396532036364079
+  },
+  {
+    "label": "change-create",
+    "command": [
+      "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "change",
+      "create",
+      "align-source-review-auth-cohort",
+      "--profile",
+      "spec-driven",
+      "--root",
+      "."
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 0.020724027417600155
+  },
+  {
+    "label": "artifact-prefetch",
+    "command": [
+      "nix",
+      "flake",
+      "prefetch",
+      "--json",
+      "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=c932138d880ddf4c2967f4c024b489b5c0022bf1"
+    ],
+    "exit": 0,
+    "expected": 0,
+    "elapsed_s": 0.08937545213848352
+  }
+]

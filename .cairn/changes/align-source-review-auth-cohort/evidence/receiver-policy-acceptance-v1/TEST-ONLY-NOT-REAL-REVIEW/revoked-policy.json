@@ -1,0 +1,61 @@
+{
+  "schema": "cairn.source-review-verification-policy.v1",
+  "subject": {
+    "schema": "cairn.source-review-subject.v1",
+    "source_archive_blake3": "df04f94511dab2615e61a321ed18dcc74d49d75db301fbf418460d9728fa7ff9",
+    "source_revision": "test-only-operator-smoke",
+    "source_tree_blake3": null,
+    "snapshot_profile": "mantle-release-source",
+    "snapshot_profile_version": 1,
+    "projection": "source"
+  },
+  "claim_root": {
+    "claim_identity": "ddeecbaa0ca7d50a1b3a6a063bf9bfe09b448014cdf85984e2b44c3685344985",
+    "subject_root": "564753938c248934d87b6b6f8df4635fec32d9d01e9db1c0fda7f51bfa2b14f6",
+    "revision": 5
+  },
+  "review_policy_blake3": "bb17e7670f0a08b7b97de9e1db6a343a6f3e8f6de5781fff801d72b162176098",
+  "authentication_policy": {
+    "schema": "artifact-auth.policy.v1",
+    "profile_id": "cairn.source-review.v1",
+    "threshold": 1,
+    "trusted_keys": [
+      {
+        "producer_id": "test-only-reviewer",
+        "key_id": "test-only-key",
+        "key_identity": {
+          "profile": "ed25519-public-key.v1",
+          "algorithm": "blake3",
+          "digest_hex": "6384c589c5d965c3c278571ac2bd27d672999ea131e8a5f78b37a5a9cce3c7b6"
+        },
+        "allowed_purposes": [
+          "source-review-approval"
+        ],
+        "generation": 1,
+        "currentness": "revoked",
+        "currentness_ref": {
+          "profile": "test-only-currentness.v1",
+          "algorithm": "blake3",
+          "digest_hex": "5eb8407df93af25622c15d03d1453d3efdae01a2f6a0b0e585834ec25aa72263"
+        }
+      }
+    ]
+  },
+  "verifier_context": {
+    "profile": "test-only-currentness.v1",
+    "algorithm": "blake3",
+    "digest_hex": "5eb8407df93af25622c15d03d1453d3efdae01a2f6a0b0e585834ec25aa72263"
+  },
+  "author_key_blake3": [],
+  "exclude_authors": true,
+  "required_approvals": 1,
+  "non_claims": [
+    "source-review-does-not-prove-build-correctness",
+    "source-review-does-not-prove-deployment-safety",
+    "source-review-does-not-prove-release-eligibility",
+    "source-review-does-not-prove-reproducibility",
+    "source-review-does-not-prove-review-quality",
+    "source-review-does-not-prove-source-correctness",
+    "source-review-does-not-prove-witness-independence"
+  ]
+}

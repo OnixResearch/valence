@@ -1,0 +1,136 @@
+{
+  "records": [
+    {
+      "label": "validate",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "validate",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.11428386624902487
+    },
+    {
+      "label": "proposal-gate",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "gate",
+        "proposal",
+        "align-source-review-auth-cohort",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.11411579791456461
+    },
+    {
+      "label": "design-gate",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "gate",
+        "design",
+        "align-source-review-auth-cohort",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.16438990831375122
+    },
+    {
+      "label": "tasks-gate",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "gate",
+        "tasks",
+        "align-source-review-auth-cohort",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.11420695949345827
+    },
+    {
+      "label": "native-status",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "status",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.015895145945250988
+    },
+    {
+      "label": "native-workflow",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "workflow",
+        "status",
+        "align-source-review-auth-cohort",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.0641037318855524
+    },
+    {
+      "label": "sync-plan",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "sync",
+        "align-source-review-auth-cohort",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.2143313204869628
+    },
+    {
+      "label": "archive-plan",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "archive",
+        "align-source-review-auth-cohort",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.4148850468918681
+    },
+    {
+      "label": "readiness",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "readiness",
+        "align-source-review-auth-cohort",
+        "--root",
+        ".",
+        "--format",
+        "json"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.46503514237701893
+    }
+  ],
+  "gate_verdicts": {
+    "proposal-gate": "PASS",
+    "design-gate": "PASS",
+    "tasks-gate": "PASS"
+  },
+  "all_five_tasks_done": true,
+  "sync_idempotent": true,
+  "archive_preview_blocked": false,
+  "archive_executed": false,
+  "publication": false,
+  "release_authority": false
+}

@@ -1,0 +1,80 @@
+[
+  {
+    "label": "consumer-nix-lock-generation",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "flake",
+      "update",
+      "artifact"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 0.21904275566339493
+  },
+  {
+    "label": "consumer-cargo-lock-generation",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "develop",
+      "--no-write-lock-file",
+      "--command",
+      "cargo",
+      "update",
+      "-p",
+      "artifact-auth-core",
+      "-p",
+      "artifact-auth-ed25519"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 5.347297613508999
+  },
+  {
+    "label": "consumer-resolved-graph",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "develop",
+      "--no-write-lock-file",
+      "--command",
+      "cargo",
+      "metadata",
+      "--locked",
+      "--format-version",
+      "1"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 1.6044541290029883
+  },
+  {
+    "label": "artifact-source-pin-and-negative-fixtures",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "build",
+      "--no-link",
+      "--no-write-lock-file",
+      "-L",
+      "path:/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28#checks.x86_64-linux.artifact-auth-source-pin"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 0,
+    "elapsed_s": 1.2352761924266815
+  },
+  {
+    "label": "package-formatting",
+    "command": [
+      "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+      "develop",
+      "--no-write-lock-file",
+      "--command",
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+    "exit": 1,
+    "elapsed_s": 1.8318151757121086
+  }
+]

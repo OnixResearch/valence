@@ -1,0 +1,529 @@
+{
+  "actions": [
+    {
+      "argv": [],
+      "authority": "advisory",
+      "causes": [
+        "944ab4119666899c1b9fc20157280f156f05edc898ea5be3f290ef9bd388f012"
+      ],
+      "expected_observation": "reviewed remediation rule for this exact diagnostic",
+      "id": "5aac0b186798d7f35eafd6d31b4b672ea1be64ef72abdf247d3f29c5efa2299b",
+      "kind": "unresolved",
+      "prerequisites": [
+        "2260d4e305c4300bf46a3e07f624d37bd2fb62b7c949879ba2d67fd09b833643",
+        "2fb54f90a003245e3c3d6086d53b5977ed3d0144df52cae4024fda02409dd580",
+        "52b4b49bef217db1258e759788be5b6394ce5f18c9c8c467a8f171eb3e923882"
+      ],
+      "target": "align-source-review-auth-cohort"
+    }
+  ],
+  "blockers": [
+    {
+      "code": "observation.unavailable",
+      "id": "944ab4119666899c1b9fc20157280f156f05edc898ea5be3f290ef9bd388f012",
+      "message": "Observation is unavailable",
+      "stage": "completion",
+      "target": "align-source-review-auth-cohort"
+    }
+  ],
+  "classification": "unavailable",
+  "diagnostics": [],
+  "input_hash": "05501801132a8d8fa51ca1b1e7ce757469020764b04fe3d2d4d4f79ba16cb3e3",
+  "mutation_authorized": false,
+  "non_claims": [
+    "Readiness does not authorize mutation or execute checks",
+    "Readiness does not prove evidence truth, code correctness, or release eligibility"
+  ],
+  "readiness_policy_hash": "3daf5296f1c72472fa26cb1aa80b6c661ecf791b500443457c6f1c256669ad98",
+  "receipt_hash": "31c0afa32a52fe8974cabbe82211a921991f45693f37c8af4d06b05df6602fd4",
+  "schema": "cairn.readiness.v1",
+  "scope": {
+    "change": "align-source-review-auth-cohort",
+    "evidence_hash": "2260d4e305c4300bf46a3e07f624d37bd2fb62b7c949879ba2d67fd09b833643",
+    "policy_hash": "52b4b49bef217db1258e759788be5b6394ce5f18c9c8c467a8f171eb3e923882",
+    "source_hash": "2fb54f90a003245e3c3d6086d53b5977ed3d0144df52cae4024fda02409dd580"
+  },
+  "stages": [
+    {
+      "decision": {
+        "artifacts": [
+          {
+            "blockers": [],
+            "files": [
+              {
+                "blake3": "c1f58389666b3688220ee8378e8ccc888b40a3100d11e78217dadfb31ebfbb8c",
+                "path": ".cairn/changes/align-source-review-auth-cohort/proposal.md"
+              }
+            ],
+            "id": "proposal",
+            "missing": [],
+            "output_path": "proposal.md",
+            "path_kind": "file",
+            "requires": [],
+            "stage": "proposal",
+            "state": "done",
+            "structural_admission": "proposal",
+            "unlocks": [
+              "specs",
+              "design"
+            ]
+          },
+          {
+            "blockers": [],
+            "files": [
+              {
+                "blake3": "46e87ffd3f6254bc126cf449af75b21b50767fdec6cb7ae6a1dc927ac825bb6e",
+                "path": ".cairn/changes/align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md"
+              },
+              {
+                "blake3": "cf32587725c40b77e641166fc25f66946fb506cb91a7ba24a83f75926ceed310",
+                "path": ".cairn/changes/align-source-review-auth-cohort/specs/source-review-acceptance/spec.md"
+              }
+            ],
+            "id": "specs",
+            "missing": [],
+            "output_path": "specs",
+            "path_kind": "spec_directory",
+            "requires": [
+              "proposal"
+            ],
+            "stage": "design",
+            "state": "done",
+            "structural_admission": "delta_specs",
+            "unlocks": [
+              "tasks"
+            ]
+          },
+          {
+            "blockers": [],
+            "files": [
+              {
+                "blake3": "c3aa4f4a487ef4ab0482dff294a9c47ab2721cd3e4ec7396aae80fec223e4cd3",
+                "path": ".cairn/changes/align-source-review-auth-cohort/design.md"
+              }
+            ],
+            "id": "design",
+            "missing": [],
+            "output_path": "design.md",
+            "path_kind": "file",
+            "requires": [
+              "proposal"
+            ],
+            "stage": "design",
+            "state": "done",
+            "structural_admission": "design",
+            "unlocks": [
+              "tasks"
+            ]
+          },
+          {
+            "blockers": [],
+            "files": [
+              {
+                "blake3": "19a540f81927aeb1e1cbfe0ceb45b332e4e3c0dd741ad16ae5a0475b75c8f03f",
+                "path": ".cairn/changes/align-source-review-auth-cohort/tasks.md"
+              }
+            ],
+            "id": "tasks",
+            "missing": [],
+            "output_path": "tasks.md",
+            "path_kind": "file",
+            "requires": [
+              "specs",
+              "design"
+            ],
+            "stage": "tasks",
+            "state": "done",
+            "structural_admission": "tasks",
+            "unlocks": []
+          }
+        ],
+        "issues": [],
+        "next_actions": [],
+        "non_claims": [
+          "workflow state proves only the selected policy graph and observed structural artifact facts",
+          "workflow instructions do not prove artifact truth, review quality, or implementation correctness",
+          "workflow state does not satisfy proposal, design, tasks, sync, archive, evidence, or release gates",
+          "workflow commands are read-only and do not create, edit, delete, or approve lifecycle artifacts"
+        ],
+        "profile_evaluation": {
+          "acceptance_ids": [],
+          "issues": [],
+          "non_claims": [
+            "workflow state proves only the selected policy graph and observed structural artifact facts",
+            "workflow instructions do not prove artifact truth, review quality, or implementation correctness",
+            "workflow state does not satisfy proposal, design, tasks, sync, archive, evidence, or release gates",
+            "workflow commands are read-only and do not create, edit, delete, or approve lifecycle artifacts"
+          ],
+          "profile_id": "spec-driven",
+          "profile_version": 1,
+          "review_receipt_hashes": [],
+          "spec_effect": "delta"
+        },
+        "schema_description": "Cairn proposal, delta-spec, design, and tasks lifecycle",
+        "schema_id": "spec-driven",
+        "schema_version": "cairn.workflow-status.v1",
+        "valid": true
+      },
+      "decision_hash": "949f46fa4756a3a52b2efab1e420b9657497277e7c2e95d700ebd794f9365df5",
+      "stage": "artifact",
+      "state": "ready"
+    },
+    {
+      "decision": {
+        "change": "align-source-review-auth-cohort",
+        "issues": [],
+        "stage": "proposal",
+        "verdict": "PASS"
+      },
+      "decision_hash": "a7816049d1df58ae1aca88c760a1e83f4ee6c6da35af8f2e98a0a94949431eda",
+      "stage": "proposal",
+      "state": "ready"
+    },
+    {
+      "decision": {
+        "change": "align-source-review-auth-cohort",
+        "issues": [],
+        "stage": "design",
+        "verdict": "PASS"
+      },
+      "decision_hash": "5819b0294fce1e2eb84d27ceed863bc3c268af170251c017338fca845453a986",
+      "stage": "design",
+      "state": "ready"
+    },
+    {
+      "decision": {
+        "change": "align-source-review-auth-cohort",
+        "issues": [],
+        "stage": "tasks",
+        "verdict": "PASS"
+      },
+      "decision_hash": "9d54efecac5a4b14726dfceb5c57ef190654d99609227924073a5cdf725ca615",
+      "stage": "tasks",
+      "state": "ready"
+    },
+    {
+      "decision": null,
+      "decision_hash": "03f88b99c3d8073bba8948d6e762aac443b265f606cc05abd4d172f03a4def6a",
+      "stage": "completion",
+      "state": "unavailable"
+    },
+    {
+      "decision": {
+        "cross_repo_dependencies": {
+          "blocked_count": 0,
+          "dependency_count": 0,
+          "input_hash": "70d72b15caf84eb16b13750559de56b5a8bf6db45ebbf1586469476054653ea7",
+          "non_claims": [
+            "dependency satisfaction proves presented receipt linkage only",
+            "dependency satisfaction does not prove upstream correctness or remote trust",
+            "dependency satisfaction does not prove downstream integration correctness or release eligibility"
+          ],
+          "policy_hash": "52b4b49bef217db1258e759788be5b6394ce5f18c9c8c467a8f171eb3e923882",
+          "receipt_hash": "5987406d3ebc1a88ae8dcfcecd682d42a0e3eb3131a7b9babb801212116c6506",
+          "rows": [],
+          "satisfied_count": 0,
+          "schema": "cairn.cross-repo-dependency-receipt.v1",
+          "valid": true,
+          "verdict": "PASS"
+        },
+        "gate_required": true,
+        "merge_preflight": {
+          "documents": [
+            {
+              "accepted_before_exists": true,
+              "accepted_before_hash": "3c1927903a063a3750aeb01a11d2780e4d474e497f81969fd4fb7ed12ca6f663",
+              "blocked": false,
+              "changed": false,
+              "delta_hash": "46e87ffd3f6254bc126cf449af75b21b50767fdec6cb7ae6a1dc927ac825bb6e",
+              "destination": ".cairn/specs/artifact-auth-adoption/spec.md",
+              "diagnostics": [],
+              "expected_after_hash": "3c1927903a063a3750aeb01a11d2780e4d474e497f81969fd4fb7ed12ca6f663",
+              "operations": [
+                {
+                  "block_hash": "0b29167d7efeb73203741a33e5eb87270b124909dcdad3f659e50721e4e89a59",
+                  "heading": "### Requirement: Valence adopts one immutable reviewed source",
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.source"
+                },
+                {
+                  "block_hash": "3cf9fb379c9e574ccef7e13ae8cd23fce4ae8891c992ee75d8871f1b0fb0a71a",
+                  "heading": "### Requirement: Unified Artifact workspace source transport",
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.radicle_transport"
+                },
+                {
+                  "block_hash": "dce716092f8a4ab987148c3b75bf89953a2992e54953aa02f823d7743d91d1b7",
+                  "heading": "### Requirement: Cargo and Nix lock agreement",
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.lock_agreement"
+                }
+              ],
+              "outcomes": [
+                {
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.source",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.radicle_transport",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.lock_agreement",
+                  "state": "already_applied"
+                }
+              ],
+              "source": ".cairn/changes/align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md"
+            },
+            {
+              "accepted_before_exists": true,
+              "accepted_before_hash": "49dcd1ed8d2354d09e85b5b7aad677672ac2c927b0587c683417ee4ca867de8c",
+              "blocked": false,
+              "changed": false,
+              "delta_hash": "cf32587725c40b77e641166fc25f66946fb506cb91a7ba24a83f75926ceed310",
+              "destination": ".cairn/specs/source-review-acceptance/spec.md",
+              "diagnostics": [],
+              "expected_after_hash": "49dcd1ed8d2354d09e85b5b7aad677672ac2c927b0587c683417ee4ca867de8c",
+              "operations": [
+                {
+                  "block_hash": "572a86695e35c70e8a5f19af32c5d8ff707273f7e9d81e50243c1eac3cd1ed61",
+                  "heading": "### Requirement: Independent authenticated manual-review acceptance",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.independent_acceptance"
+                },
+                {
+                  "block_hash": "006b940ae9190f02de1f1138a293537c211b3489e2cd38c9c8dc83dbf6d49502",
+                  "heading": "### Requirement: Negative dispositions never count as approval",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.negative_disposition"
+                },
+                {
+                  "block_hash": "0ea0670a198db017c3e2179d4868e320354a4eb742524abb85ddcaa3cfaf5d50",
+                  "heading": "### Requirement: Capability-confined bounded receipt publication",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.cli_boundary"
+                },
+                {
+                  "block_hash": "070cdb92e2371ec258c985f3ba8f6cc970278d2b38ba0d1a36e663216f74d155",
+                  "heading": "### Requirement: Current owner-policy compatibility preserves trust",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.policy_compatibility"
+                },
+                {
+                  "block_hash": "9875eb3f054e7bd20c1fa3876927cfd84193bf4ed98deb646fe6a7676bef1338",
+                  "heading": "### Requirement: Bounded current receiver evidence",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.cohort_evidence"
+                }
+              ],
+              "outcomes": [
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.independent_acceptance",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.negative_disposition",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.cli_boundary",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.policy_compatibility",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.cohort_evidence",
+                  "state": "already_applied"
+                }
+              ],
+              "source": ".cairn/changes/align-source-review-auth-cohort/specs/source-review-acceptance/spec.md"
+            }
+          ]
+        },
+        "preview_argv": [
+          "cairn",
+          "sync",
+          "align-source-review-auth-cohort",
+          "--root",
+          ".",
+          "--policy",
+          "cairn-policy/generated/cairn-policy.json"
+        ],
+        "reasons": [],
+        "validation_input_hash": "d4a2569ed8750ca2d27ca86221841dd17f6423dc61af3218779b9823380fe8a3"
+      },
+      "decision_hash": "21c50a2e67428c3861de989e8e54cb1fa6278569f67b5b0fbccdc1070f370406",
+      "stage": "sync",
+      "state": "blocked"
+    },
+    {
+      "decision": {
+        "cross_repo_dependencies": {
+          "blocked_count": 0,
+          "dependency_count": 0,
+          "input_hash": "70d72b15caf84eb16b13750559de56b5a8bf6db45ebbf1586469476054653ea7",
+          "non_claims": [
+            "dependency satisfaction proves presented receipt linkage only",
+            "dependency satisfaction does not prove upstream correctness or remote trust",
+            "dependency satisfaction does not prove downstream integration correctness or release eligibility"
+          ],
+          "policy_hash": "52b4b49bef217db1258e759788be5b6394ce5f18c9c8c467a8f171eb3e923882",
+          "receipt_hash": "5987406d3ebc1a88ae8dcfcecd682d42a0e3eb3131a7b9babb801212116c6506",
+          "rows": [],
+          "satisfied_count": 0,
+          "schema": "cairn.cross-repo-dependency-receipt.v1",
+          "valid": true,
+          "verdict": "PASS"
+        },
+        "gate_required": true,
+        "merge_preflight": {
+          "documents": [
+            {
+              "accepted_before_exists": true,
+              "accepted_before_hash": "3c1927903a063a3750aeb01a11d2780e4d474e497f81969fd4fb7ed12ca6f663",
+              "blocked": false,
+              "changed": false,
+              "delta_hash": "46e87ffd3f6254bc126cf449af75b21b50767fdec6cb7ae6a1dc927ac825bb6e",
+              "destination": ".cairn/specs/artifact-auth-adoption/spec.md",
+              "diagnostics": [],
+              "expected_after_hash": "3c1927903a063a3750aeb01a11d2780e4d474e497f81969fd4fb7ed12ca6f663",
+              "operations": [
+                {
+                  "block_hash": "0b29167d7efeb73203741a33e5eb87270b124909dcdad3f659e50721e4e89a59",
+                  "heading": "### Requirement: Valence adopts one immutable reviewed source",
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.source"
+                },
+                {
+                  "block_hash": "3cf9fb379c9e574ccef7e13ae8cd23fce4ae8891c992ee75d8871f1b0fb0a71a",
+                  "heading": "### Requirement: Unified Artifact workspace source transport",
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.radicle_transport"
+                },
+                {
+                  "block_hash": "dce716092f8a4ab987148c3b75bf89953a2992e54953aa02f823d7743d91d1b7",
+                  "heading": "### Requirement: Cargo and Nix lock agreement",
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.lock_agreement"
+                }
+              ],
+              "outcomes": [
+                {
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.source",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.radicle_transport",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "modified",
+                  "requirement_id": "valence.artifact_auth_adoption.lock_agreement",
+                  "state": "already_applied"
+                }
+              ],
+              "source": ".cairn/changes/align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md"
+            },
+            {
+              "accepted_before_exists": true,
+              "accepted_before_hash": "49dcd1ed8d2354d09e85b5b7aad677672ac2c927b0587c683417ee4ca867de8c",
+              "blocked": false,
+              "changed": false,
+              "delta_hash": "cf32587725c40b77e641166fc25f66946fb506cb91a7ba24a83f75926ceed310",
+              "destination": ".cairn/specs/source-review-acceptance/spec.md",
+              "diagnostics": [],
+              "expected_after_hash": "49dcd1ed8d2354d09e85b5b7aad677672ac2c927b0587c683417ee4ca867de8c",
+              "operations": [
+                {
+                  "block_hash": "572a86695e35c70e8a5f19af32c5d8ff707273f7e9d81e50243c1eac3cd1ed61",
+                  "heading": "### Requirement: Independent authenticated manual-review acceptance",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.independent_acceptance"
+                },
+                {
+                  "block_hash": "006b940ae9190f02de1f1138a293537c211b3489e2cd38c9c8dc83dbf6d49502",
+                  "heading": "### Requirement: Negative dispositions never count as approval",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.negative_disposition"
+                },
+                {
+                  "block_hash": "0ea0670a198db017c3e2179d4868e320354a4eb742524abb85ddcaa3cfaf5d50",
+                  "heading": "### Requirement: Capability-confined bounded receipt publication",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.cli_boundary"
+                },
+                {
+                  "block_hash": "070cdb92e2371ec258c985f3ba8f6cc970278d2b38ba0d1a36e663216f74d155",
+                  "heading": "### Requirement: Current owner-policy compatibility preserves trust",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.policy_compatibility"
+                },
+                {
+                  "block_hash": "9875eb3f054e7bd20c1fa3876927cfd84193bf4ed98deb646fe6a7676bef1338",
+                  "heading": "### Requirement: Bounded current receiver evidence",
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.cohort_evidence"
+                }
+              ],
+              "outcomes": [
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.independent_acceptance",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.negative_disposition",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.cli_boundary",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.policy_compatibility",
+                  "state": "already_applied"
+                },
+                {
+                  "kind": "added",
+                  "requirement_id": "valence.source_review.cohort_evidence",
+                  "state": "already_applied"
+                }
+              ],
+              "source": ".cairn/changes/align-source-review-auth-cohort/specs/source-review-acceptance/spec.md"
+            }
+          ]
+        },
+        "preview_argv": [
+          "cairn",
+          "archive",
+          "align-source-review-auth-cohort",
+          "--root",
+          ".",
+          "--policy",
+          "cairn-policy/generated/cairn-policy.json"
+        ],
+        "reasons": [],
+        "validation_input_hash": "d4a2569ed8750ca2d27ca86221841dd17f6423dc61af3218779b9823380fe8a3"
+      },
+      "decision_hash": "18d5ca04dece6a84b2653ac840c5b0f89ae8edf880aa6ca1ce4b97afc4a20085",
+      "stage": "archive",
+      "state": "blocked"
+    }
+  ],
+  "valid": true
+}

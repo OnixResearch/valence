@@ -3,16 +3,16 @@
     "artifact": {
       "flake": false,
       "locked": {
-        "lastModified": 1785024816,
-        "narHash": "sha256-2cM912L2YXVnVX9LquwhAPKyjPP/z/oFQRe7Qq9bHHE=",
+        "lastModified": 1792547389,
+        "narHash": "sha256-Xr7ocFkPN15XYb6NA4bv3I9Q42NvoSYtXWfsrj7I3WY=",
         "ref": "refs/heads/main",
-        "rev": "e41340bec587b6d049b5cc518ec7db925dde84be",
-        "revCount": 13,
+        "rev": "5f3962d7471d1547e044f57daeda72f56621fd52",
+        "revCount": 21,
         "type": "git",
         "url": "ssh://git@github.com/OnixResearch/onix-artifact.git"
       },
       "original": {
-        "rev": "e41340bec587b6d049b5cc518ec7db925dde84be",
+        "rev": "5f3962d7471d1547e044f57daeda72f56621fd52",
         "type": "git",
         "url": "ssh://git@github.com/OnixResearch/onix-artifact.git"
       }

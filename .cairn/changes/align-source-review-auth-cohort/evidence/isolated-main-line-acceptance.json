@@ -1,0 +1,1385 @@
+{
+  "schema": "valence.isolated-main-line-receiver-acceptance.v1",
+  "public_main_base": "b5e5558e87f57b0615b50e532846d6865e31042b",
+  "initial_source_archive_blake3": "cbc83c8f0619f2151b33822180ec7816b45c1ab834175aa53375fd7202719667",
+  "artifact_revision": "5f3962d7471d1547e044f57daeda72f56621fd52",
+  "generated_locks": {
+    "Cargo.lock": "bc82162c66a5ebe81057fe2aa27d998d54964792a64860bc04b372ba18c1aa25",
+    "flake.lock": "3f25d95045ab294391b3d3040d15c17d2cc0f2b6b81a3a94075af1f057cd8e58"
+  },
+  "final_input_bindings": [
+    {
+      "path": "Cargo.toml",
+      "blake3": "7210f4b69ac38d6ccfa8d08a4d1c96693e6813904e45f9971682f270df9a3251"
+    },
+    {
+      "path": "Cargo.lock",
+      "blake3": "bc82162c66a5ebe81057fe2aa27d998d54964792a64860bc04b372ba18c1aa25"
+    },
+    {
+      "path": "flake.nix",
+      "blake3": "7de818c416febf9305a3e649c252579b5ef5dff6b303c2025fe006d3e5964c64"
+    },
+    {
+      "path": "flake.lock",
+      "blake3": "3f25d95045ab294391b3d3040d15c17d2cc0f2b6b81a3a94075af1f057cd8e58"
+    },
+    {
+      "path": "nix/artifact-source-pin.nix",
+      "blake3": "a70492a0762a860f12cc57ae75c25c2d5cff362fcbb67e66883b82251b679b5f"
+    },
+    {
+      "path": "cairn-policy/default.ncl",
+      "blake3": "e0de8fa6d3ad2cc4d8a0bf8436ad04e15fde3d4ec94261438c6c5fb9176b9596"
+    },
+    {
+      "path": "cairn-policy/contracts.ncl",
+      "blake3": "2ba05b3d7fe76619a50a2ca7284268c6aaddd3eff48386125814f0c9cf1ab5d3"
+    },
+    {
+      "path": "cairn-policy/generated/cairn-policy.json",
+      "blake3": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935"
+    },
+    {
+      "path": "docs/cairn-policy-compatibility.md",
+      "blake3": "eb2f9e38596412f71fa5abcc65b5606fef27a4b6f584456c9da53784fb13d397"
+    }
+  ],
+  "unchanged_product_members": [
+    {
+      "path": "flake.nix",
+      "blake3": "7de818c416febf9305a3e649c252579b5ef5dff6b303c2025fe006d3e5964c64"
+    },
+    {
+      "path": "pilots/canonical-json-preserve-order/LICENSE",
+      "blake3": "ca0292789c0a0ecba706f4b3f3493007a9951731c1d432c52c4aac1f1abba8ef"
+    },
+    {
+      "path": "pilots/canonical-json-preserve-order/Cargo.lock",
+      "blake3": "20ac683cd3c2c2632126f8e82737b0ed8238218bdd877cec063c616eb33f9e25"
+    },
+    {
+      "path": "pilots/canonical-json-preserve-order/src/lib.rs",
+      "blake3": "1c8eb9369e32431d1b53beb04130f8ac76cbbae53227cb828bba9d48e7d5c5a8"
+    },
+    {
+      "path": "pilots/canonical-json-preserve-order/Cargo.toml",
+      "blake3": "e220ec98bd4c0d79b0877b984a3941e997276abce10d7257001410f7c6438af0"
+    },
+    {
+      "path": "pilots/schema-identity/src/lib.rs",
+      "blake3": "8e7971624868d21d609e2f84fe4d78b03a40be3f74f3a1a1ff99e35b22e69617"
+    },
+    {
+      "path": "pilots/schema-identity/Cargo.toml",
+      "blake3": "c7b56e102913e0de5c03954ebbacd6f41e47b1ebce0dd9ab7cf9c199fc6a975f"
+    },
+    {
+      "path": "pilots/shared-identity/Cargo.toml",
+      "blake3": "33384d2c60deec6850bb03dde3f5d93afe6966285f549097b73ca20a0354ae48"
+    },
+    {
+      "path": "pilots/shared-identity/LICENSE",
+      "blake3": "ca0292789c0a0ecba706f4b3f3493007a9951731c1d432c52c4aac1f1abba8ef"
+    },
+    {
+      "path": "tools/import-aeneas-translation-fixture.rs",
+      "blake3": "b7d8f05368745b80245e4f1833505c1351c44dc40cf2475dbba3768d2bed9ac1"
+    },
+    {
+      "path": "tools/check-license-boundary.rs",
+      "blake3": "b33550c430518902b504013733d353e205b5d64529e24f28e677abb3ab999ef4"
+    },
+    {
+      "path": "tools/check-cairn-policy-compatibility.rs",
+      "blake3": "895b708ea00205cc88d6a0413f05d8dbf8c2b4ee42e07cded8b284edaf905c09"
+    },
+    {
+      "path": "README.md",
+      "blake3": "b6c68c1fc72a2a7a0a24c4f3473a2b9368c5e91696f184f2a05e683f9c0e7f3d"
+    },
+    {
+      "path": "license-policy.tsv",
+      "blake3": "237477bfbd3d87d89ab52fa3d34c7f921ccd0a67b8bee2befd4ba2999995cc76"
+    },
+    {
+      "path": "contracts/nostr-identity-evidence/profile.ncl",
+      "blake3": "237b0133c736b2fb25c596ad24388847548399728338cc5bf3015364dc0627bf"
+    },
+    {
+      "path": "contracts/nostr-identity-evidence/fixtures/fail/stale-basalt-revision.ncl",
+      "blake3": "a9ca78ff8fd4cb7330579996f71162f898ae4db8bea628aca702f12d04472ea1"
+    },
+    {
+      "path": "contracts/nostr-identity-evidence/fixtures/fail/role-promotion.ncl",
+      "blake3": "acd2cf3a1af0dfccace43e6ad92d3877372b0b5c709457dbae3620cb0c9205f1"
+    },
+    {
+      "path": "contracts/nostr-identity-evidence/contracts.ncl",
+      "blake3": "4f6fa14a729be31af726323a156a4ca83e5eb5cf789310ee2b2a74acae320ac6"
+    },
+    {
+      "path": "contracts/nostr-identity-evidence/generated/profile.json",
+      "blake3": "e07e7389acec3095e9523bb1cdca642494ebaf78e073e271fd9bbd7c34006926"
+    },
+    {
+      "path": "contracts/radicle-forge-operations/contracts.ncl",
+      "blake3": "45411a460b2362c24b14bef794ad870ad05d9c3f81ba0c4423b36d1e41f1f472"
+    },
+    {
+      "path": "contracts/radicle-forge-operations/fixtures/fail/unbounded-records.ncl",
+      "blake3": "c22ac814bbeeccd799b91f6d11efd249a81afd2bf7c3d8728fd8cc18e8433bd5"
+    },
+    {
+      "path": "contracts/radicle-forge-operations/fixtures/fail/missing-non-claim.ncl",
+      "blake3": "330f46c7b693c0a4df62486fcd88de9f2936ade0920062b525e31543563ed38f"
+    },
+    {
+      "path": "contracts/radicle-forge-operations/fixtures/fail/promoted-review.ncl",
+      "blake3": "b5bf6e4b50e08cae368aed6ddeba19fc96046bc711c3bd2db965bfec92dc3d27"
+    },
+    {
+      "path": "contracts/radicle-forge-operations/fixtures/pass/default-profile.ncl",
+      "blake3": "47c53fe13875c464adcd044bb5e548724bb13504e27d2d562b438727763c049f"
+    },
+    {
+      "path": "contracts/radicle-forge-operations/profile.ncl",
+      "blake3": "2c05058a375bcca358bc7aebdbe5e8526870c180e54568da06196e84cc518a31"
+    },
+    {
+      "path": "contracts/radicle-forge-operations/generated/profile.json",
+      "blake3": "05576250d4ae5499a2147a151fdd13a53370b1bb83a6637fc9b7238fb0acd807"
+    },
+    {
+      "path": "contracts/radicle-cob-evidence/README.md",
+      "blake3": "b44b8ce7052b360938b85bf5bc95b3e7914241b6ed1c3ab7db3b127b0b68f689"
+    },
+    {
+      "path": "contracts/radicle-cob-evidence/contracts.ncl",
+      "blake3": "f4a6229e78471f0c29f08ee245621adba33a6e1615142fe4b5eaad83dcd995b2"
+    },
+    {
+      "path": "contracts/radicle-cob-evidence/profile.ncl",
+      "blake3": "b566454ba3c97c098c447d9cdd151b2c6d4c0842e5c1955b24eb0fcf7340d232"
+    },
+    {
+      "path": "contracts/radicle-cob-evidence/fixtures/fail/unknown-relationship.ncl",
+      "blake3": "b1bb9d9bacee82e070d83dd6ef20788505cbb9cc31a3f498360313841a3a47d6"
+    },
+    {
+      "path": "contracts/radicle-cob-evidence/fixtures/fail/zero-embed-limit.ncl",
+      "blake3": "033aee6468b76f74dba772f631bc9d5326cdc88ef0e6b8d911d168158c7cda6f"
+    },
+    {
+      "path": "contracts/radicle-cob-evidence/fixtures/fail/missing-non-claim.ncl",
+      "blake3": "e0f612643b7d3275f2b37cb1282ce3e8672f4b71ca47015d7918c4836638d0e0"
+    },
+    {
+      "path": "contracts/radicle-cob-evidence/fixtures/pass/default-profile.ncl",
+      "blake3": "47c53fe13875c464adcd044bb5e548724bb13504e27d2d562b438727763c049f"
+    },
+    {
+      "path": "contracts/radicle-cob-evidence/generated/profile.json",
+      "blake3": "ae0fe6285622cc7ae27d19675333d14eb7e3d517d0c2f600b0bf074832a5b38f"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/fail/malformed-blake3.ncl",
+      "blake3": "1e3fe07b0d05c22c3def97dd3edb23a95dffb0969bbc735f8a79adfe1ca532f0"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/fail/tier-promotion.ncl",
+      "blake3": "1e1945eea181561323ad82412abcc5ff5cc750603cb0df0f83657c17bc54a41e"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/fail/missing-sidecar-role.ncl",
+      "blake3": "e9a19157c143a67990c17c6747bb79965380ead0f5d736f409c2f0cf0b49fb14"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/fail/bad-schema.ncl",
+      "blake3": "5e50398ac1cc8f427fd62c6e655a1246a37de2979fbfb3d5dc76bae8826d5c36"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/fail/stale-parent-link.ncl",
+      "blake3": "c59f1cd63b3b55f505161591ea01d4b8d33470d84c0ea89301a84c0eab7fadfe"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/fail/missing-non-claim.ncl",
+      "blake3": "af7a2312e25c8b3e2291e771f8e12f1fce614adeb011da31c8f7d31be9306bf2"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/fail/overclaim-report.ncl",
+      "blake3": "b146f40f30d28aaa6f45e92f398a99e488c76761df5056d92b53ceb44d859990"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/pass/built-binary-thread-report.ncl",
+      "blake3": "d662e141ca7569b5e0b433b9cddda93ada13ba904c5a92491e37d057cb76465f"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/pass/mantle-release-manifest.ncl",
+      "blake3": "b3e2316e05974b96473f5de7caae67f3299514589affa47e893d9b79f0680f48"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/pass/octet-export.ncl",
+      "blake3": "77699789ecd3d022935f16d823f42ee8ac83e2d389874a785ecb484ff5241bc3"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/pass/thread-input.ncl",
+      "blake3": "eafd64aed4f4f83c6aa35579affe7cadbfd71b52f0138e0adafb8258aae67278"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/pass/sidecar.ncl",
+      "blake3": "a599d070be2d62ed85e595d8a5626a7247e817843de6711dfc6f405c06a117f9"
+    },
+    {
+      "path": "contracts/stack-provenance/fixtures/values.ncl",
+      "blake3": "de1fa8a4bdc5cd83f32f83ac16f8a47d4c8f4c06f632bf64d68405d85260228e"
+    },
+    {
+      "path": "contracts/stack-provenance/preserves-corpus/corpus.json",
+      "blake3": "d62ea9c2102d780e52a5b99faba7d93656d9eaff35da8b0b637a8ce0bccb18a2"
+    },
+    {
+      "path": "contracts/stack-provenance/preserves-corpus/README.md",
+      "blake3": "9d829e289543b0460066db0dc9b5d90d3d2d18f3eb8d217f3fb17a829187005b"
+    },
+    {
+      "path": "contracts/stack-provenance/README.md",
+      "blake3": "5dfca305af6e79ab141232522203e876272fac9916c65c96712d04a76a82f6cd"
+    },
+    {
+      "path": "contracts/stack-provenance/contracts.ncl",
+      "blake3": "11ad517e2d1168a34497f3795065f95fcca859429a6029ca60fd6c24171ba39a"
+    },
+    {
+      "path": "contracts/wasm-component/contracts.ncl",
+      "blake3": "77c8555784a7573be20634fa820822de4795ee59e30cccb600430ced2137f7e7"
+    },
+    {
+      "path": "contracts/build-service-evidence/README.md",
+      "blake3": "abd31c056eb6001de110562894eadb446ef5f55a31e70b1c7d5300eaf0de3583"
+    },
+    {
+      "path": "contracts/build-service-evidence/contracts.ncl",
+      "blake3": "627c49debf10a85820f2694bd807edc8b135ff8eac2ee1e1909763109d766fb9"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/base.ncl",
+      "blake3": "132c18b2d8e7f558adbae4a7a8ae13c973b544e35ed9fea500f1efdc03afe05b"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/pass/minimal-build.ncl",
+      "blake3": "32c822ef9255093619243a1daf51bf5e88ac2a66fa9d77ed4b9c351445204e6f"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/pass/complete-build.ncl",
+      "blake3": "92e77dfab6ba65f4530c7fed7c949e1f0bf607d27450dfd66826cc6b2d04e2f0"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/fail/forbidden-material.ncl",
+      "blake3": "6498cf48a5d041a76fd5ce55d6a9122d570ffa9f3d202c2ae1ad3001abef4ce8"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/fail/usable-reuse-missing-authority.ncl",
+      "blake3": "e7e5db99f6572395ed58e0d35f134ad55600497fb89255d87b0086701a256d7c"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/fail/unsupported-profile-version.ncl",
+      "blake3": "566e2ce46c7b66a8b0c440a3aa110efd44b3fbe887e77731340a8593357e30c5"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/fail/overclaim-non-claims.ncl",
+      "blake3": "84608de2a57efa3714058d713ef5121c3ddd73ab25d76f97648f2d95b16d110b"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/fail/missing-unit.ncl",
+      "blake3": "b1476c06c4128d2925bcca4046937c1728e2d146fc1faae21ef5edf13fa128e8"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/fail/malformed-digest.ncl",
+      "blake3": "da651472020c801472aaab1d12aeef282bd4ebe1666f5b0516e8c6621761ebdd"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/fail/external-status-role-overclaim.ncl",
+      "blake3": "8f8ca32e01af995304b153091d2823000a1686f7dece0206009d39d0ed05f990"
+    },
+    {
+      "path": "contracts/build-service-evidence/fixtures/fail/missing-non-claims.ncl",
+      "blake3": "928d5005434a34b28e74d4a98c22a9565285d83111e1ad4cab5bc24c7bd5c84b"
+    },
+    {
+      "path": "dylint.toml",
+      "blake3": "aecf21bb9915b16cbb253bf7357b02424d32388c44db2235ec8a1755da583fba"
+    },
+    {
+      "path": "AGENTS.md",
+      "blake3": "76c10198dfaabbfb17385e1d5dfb1826a30715622224e07440ec7f7077d7ade9"
+    },
+    {
+      "path": "docs/evidence-chain-profile.md",
+      "blake3": "103049f50f2de80eb17b0043ff4a998d48478a84f5fc6aab99efc1d04fd72755"
+    },
+    {
+      "path": "docs/fsm-default-exhaustive.md",
+      "blake3": "12680c14a53f56fd45eb0c42270eca11661aacdc2ad28663cb1867708427550d"
+    },
+    {
+      "path": "docs/evidence-span-integrity.md",
+      "blake3": "31885b19c6143ee94f8c6b1d4271c24cc3149b05e9146f51cdc038e1ea83b4ce"
+    },
+    {
+      "path": "docs/radicle-forge-operations.md",
+      "blake3": "bb943553806b8266c7bc9f2d8712d06fb261e5339abfa87c22294ff5266c06c0"
+    },
+    {
+      "path": "docs/cli-capability-roots.md",
+      "blake3": "06307b5a5e3ca0128e643129cbfa9fbbf0e34428ae133b18688158e5d0a55cf5"
+    },
+    {
+      "path": "docs/octet-deterministic-core.md",
+      "blake3": "7db3023009b82a384450ce9d4b276f1df1ad64ff775a32a8a15139da6367ee3a"
+    },
+    {
+      "path": "docs/function-address-publication.md",
+      "blake3": "d278f863ad1aa262937c9afb768b6af28a358e143a2c51d92389fb3c387b22d7"
+    },
+    {
+      "path": "docs/ast-grep-evidence-spans.md",
+      "blake3": "c2f941c23a6ec4e73135332437b3c69fb77388eb5b17df88a23e103125205bb7"
+    },
+    {
+      "path": "docs/trellis-proof-evidence.md",
+      "blake3": "c3c264d45511f9c07e8063bb107ec5167b7e00eea5f3fc699d51eda15a5a8315"
+    },
+    {
+      "path": "docs/function-address-evidence-profile.md",
+      "blake3": "ffe9c6e2e980ef616fc76e2df45c3d9b4645a7e03ecdb6ee740074dbae389235"
+    },
+    {
+      "path": "docs/kani-evidence-boundaries.md",
+      "blake3": "142a3a106791b4ddb89c9897aa948d64d3796991a1c2a4180085808812223a2a"
+    },
+    {
+      "path": "docs/testing-harness.md",
+      "blake3": "7bcd180bfd03330e32b3e3ce403a385ba4d8dd3c0ff2a43966da9d1ea7aee645"
+    },
+    {
+      "path": "docs/build-service-evidence.md",
+      "blake3": "3bae3159844153a5ddd7096aef598911a62d5ac984a6d959eeadc95c759d9cc5"
+    },
+    {
+      "path": "docs/radicle-cob-evidence.md",
+      "blake3": "d4058e4eaf29461f030b7463ce98a9f00c6faede8adbbac90a0f9388da9b8c04"
+    },
+    {
+      "path": "docs/content-bound-requirements.md",
+      "blake3": "c2ebbf977c07938b684a0dd933d5bdcac20757c4b6c9398a779bae48b9c2a1a7"
+    },
+    {
+      "path": "docs/function-address-preserves-ingest.md",
+      "blake3": "9d03c7d86f2d98f67845f8eefcb6deb9bb592dba5b2652019be195875b19e56d"
+    },
+    {
+      "path": "docs/licensing.md",
+      "blake3": "3a48de701d83ade2b4ee41751950dc240181ab9a7300e772b106d9064fbe9536"
+    },
+    {
+      "path": "docs/nominal-digest-roles.md",
+      "blake3": "3bba1a28073345ed933bc56d6db5d6bfbfbfb4fc507b9bf6c7ea9905992fae6f"
+    },
+    {
+      "path": "docs/aeneas-translation-chain.md",
+      "blake3": "1a81a5a0c895e388eeecd48c3b0556d53d8cabab08278c124d6d9693fa1ffbd8"
+    },
+    {
+      "path": "docs/schema-identity-pilot.md",
+      "blake3": "131254b2c998d321ddeaffe489fe0b3aed7584759088727d5aadfe5c83185337"
+    },
+    {
+      "path": "docs/wasm-component-evidence.md",
+      "blake3": "cc1accfbbc56469e70fac8ba5a739c0476975efea44a8b6c56cc240d5d194b9b"
+    },
+    {
+      "path": "docs/preserves-integrity-migration.md",
+      "blake3": "182c1d72cdc681921969c8d91fc417a6ac035603f23e2a92636deabfc34f3258"
+    },
+    {
+      "path": "docs/build-graph-pilot.md",
+      "blake3": "6e6690627658e80632becb74621567b3487f28a6d92a2cc35ab68ddbaafc49e0"
+    },
+    {
+      "path": "docs/proof-carrying-ir-lineage.md",
+      "blake3": "f7cfa2af5c476a01c64a21105cd0f282b423af10c8fb222a5a82b8d9ebc556e1"
+    },
+    {
+      "path": "docs/nostr-identity-evidence.md",
+      "blake3": "ebcb7ffc9c83fab86c01f520cb8237040d5c8320f9add2626067f2e5a6652b35"
+    },
+    {
+      "path": "docs/evidence-artifact-envelope.md",
+      "blake3": "b948114f3bc73ee10d13486af214469c70dc2c23ad6e937017e6d87c366c9892"
+    },
+    {
+      "path": "tests/artifact-auth-cutover.ncl",
+      "blake3": "382ffc0943f12b0b4a0a23fa746a5d626a1b3b6afe37cf58c4ea2295e35031f0"
+    },
+    {
+      "path": "tests/artifact-source-migration.ncl",
+      "blake3": "dfbde5c7841ccdf4838b9d779a4952f8d24731cf53c6b467871fc92533d97c9a"
+    },
+    {
+      "path": "cairn-policy/generated/stack-provenance-authentication-profile.json",
+      "blake3": "93993e99e87206d232b64efcc8631611aad3b5b0c4b81855e7e1a0cdcc391cff"
+    },
+    {
+      "path": "cairn-policy/generated/function-address-authentication-profile.json",
+      "blake3": "62c88a0263720dea4c37a48ef46921c46e5dd3e4924fff096b84a65d5738a412"
+    },
+    {
+      "path": "cairn-policy/generated/cairn-policy.json",
+      "blake3": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935"
+    },
+    {
+      "path": "cairn-policy/nominal-evidence-identities.ncl",
+      "blake3": "6e4798683072695e0c06feb2ceac31d9aa9fa74f6821c048c875dfe5b4c92b6c"
+    },
+    {
+      "path": "cairn-policy/lifecycle-store-contracts.ncl",
+      "blake3": "cfa0842a93d34d87db473c5f3a26b2e6b8285bf4d0fffc6bc9ffc54c77f32b99"
+    },
+    {
+      "path": "cairn-policy/structured-lifecycle-contracts.ncl",
+      "blake3": "fb2a6cb07107a9b34ef2aa2eed7b1b5a0b83dcf005fb95b5abd6d65ed70d5047"
+    },
+    {
+      "path": "cairn-policy/contracts.ncl",
+      "blake3": "2ba05b3d7fe76619a50a2ca7284268c6aaddd3eff48386125814f0c9cf1ab5d3"
+    },
+    {
+      "path": "cairn-policy/default.ncl",
+      "blake3": "e0de8fa6d3ad2cc4d8a0bf8436ad04e15fde3d4ec94261438c6c5fb9176b9596"
+    },
+    {
+      "path": "cairn-policy/stack-provenance-authentication-profile.ncl",
+      "blake3": "5e001242f3db2be3010c49f1d4ee2668ffdce00543310251786ea4bbe7d1d01c"
+    },
+    {
+      "path": "cairn-policy/function-address-authentication-profile.ncl",
+      "blake3": "fe834ad37e9896cbe70e049979d26856a7b011c831f7d7dcf9e307cd86a2edf4"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-outcome-machine-admission.ncl",
+      "blake3": "084d3ca26018f55d16640640ea835a95a9a4ff48b46e51a5f2e87bd4d9e8922d"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-function-address-empty-schemas.ncl",
+      "blake3": "5bb85d94a67cd76b72660d807f9e999b5432e6d851d708b2c31e35180455d7d7"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-workflow-artifact-missing-output-path.ncl",
+      "blake3": "4b24e048fdd2421adaed6fbfe5cb1c5e71a3a7f955abe4431f183f0649bd3e1d"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-function-address-mode.ncl",
+      "blake3": "fd81cbf390f26bf0076cc1b47fe0e7e1dafbdc003a4023f0616133b716459554"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-function-address-weakened-boundary.ncl",
+      "blake3": "db1be23d5f11f04273f5e586e6220ba28eb1bbb0830768fa8f49d8de77d2c7f8"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-missing-function-address-gate.ncl",
+      "blake3": "3f8200e809ce8e8556f0951310d28ddc3f1b22ce8a8b443b040e6b3ca0e3ce54"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-function-address-empty-roles.ncl",
+      "blake3": "dc85d3b39d9100896765d3af882a3097ad927bb6f9a6f9aa78fa9fabbaae0b87"
+    },
+    {
+      "path": "cairn-policy/fixtures/valid-function-address-policy.ncl",
+      "blake3": "05e47ac40b8ef640c84179bd3ffac27f4653cd28c7ebfd9a86e38acd2e2a1506"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-function-address-stale-hash.ncl",
+      "blake3": "805c0c127d52349f50f7b4202c0095a8ca615579e46fb70d4ca25f451d189c75"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-function-address-malformed-hash.ncl",
+      "blake3": "33c39e2eb3f811b86b0c422a3f220148331d6cbc30777953b318f748f47e8dcb"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-missing-workflow-profile-policy.ncl",
+      "blake3": "e5c125e42aaaaa0724bebf036e5257deacbee025f2713d5b02aff38d5dbe26e7"
+    },
+    {
+      "path": "cairn-policy/fixtures/invalid-function-address-placeholder-hash.ncl",
+      "blake3": "607cd77343675ee980df7d7500624a961ef2328756fab24275cb2916e64e6d48"
+    },
+    {
+      "path": "cairn-policy/evidence/valence-preserves-integrity-archive-receipt.json",
+      "blake3": "a1c63619b0f72140c6e350b61ed18d3d552310067406ba0b819ace462d1f1e48"
+    },
+    {
+      "path": "evidence/source/artifact-workspace-migration-v1.json",
+      "blake3": "0b3b742587f06ce6ae131b41fa954e9285d10f5d556800cbe262517fc44f9a6a"
+    },
+    {
+      "path": "evidence/source/artifact-workspace-migration-v1.blake3",
+      "blake3": "4a25497109540c25a5e79ab3f8a08adf8f0f3d6bc0753254d7209e6d40c7ea2f"
+    },
+    {
+      "path": "evidence/source/artifact-workspace-migration-v1.ncl",
+      "blake3": "761d8d4311c324e445bfd3b04124d39f56ced6e0795cd1c4eb5a602fef9098e0"
+    },
+    {
+      "path": "evidence/radicle/artifact-auth-cutover-v1.json",
+      "blake3": "ef8d13a0cb8d560a99b79f91f9471350db774e8c3bf753d52fed7382f9bd85f7"
+    },
+    {
+      "path": "evidence/radicle/artifact-auth-cutover-v1.blake3",
+      "blake3": "b1591ad1f64ad9a2e1fdc3d0d7e59cc895d406e6074e2d2382d38929c9b894b7"
+    },
+    {
+      "path": "evidence/radicle/artifact-auth-cutover-v1.ncl",
+      "blake3": "a75364ee583f75fa01a799225145a853bd22b771f19e606bb40f4bd8c4a3f7b4"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/baseline/status.json",
+      "blake3": "2dda1ff7ef16d898937f7295497586cbc81422ccd9661aee7ea93efbef653dde"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/baseline/command.txt",
+      "blake3": "a539a1813a29aa26493f94d6794a64637278ad96c82f5d14e929c7536a3a1a14"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/baseline/provenance.jsonl",
+      "blake3": "57b5be8d8b11a04f31f3d48d2ebad5af10b0aacf0e23c3f213379fdfa1d8dc39"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/baseline/summary.txt",
+      "blake3": "c15f88b2bb97263c7f0362a481e6112f9cb2624a09f4c0f0d693a29c44a9fc89"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/baseline/function-addresses.json",
+      "blake3": "b90400b27c0b41a2e03457b97519dfef24359929412642f0143b841e9d423ca5"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/admission/command.txt",
+      "blake3": "fef652db3ae5e394a944610d6ae2f7077abc8f166e5d36d3d62cf49bedf55009"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/admission/status.json",
+      "blake3": "7e26caa77f8a585dedb7d8096ddfc1f61d612a1015447027485493fed69e1622"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/admission/summary.txt",
+      "blake3": "f15ca849859c43f7d5e59d2fe9d2f116a6dedb40311d8f3864120d4ece15a1ef"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/admission/function-addresses.json",
+      "blake3": "09721623686a13f8fe3eac969dbbfb79e37cae31052d36c66d672458a6e5a6e4"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/admission/provenance.jsonl",
+      "blake3": "e5ba99e1ff3a36ab18c5f2d251722881ed8adae8457e6e63f1cf5ac456f1f5a9"
+    },
+    {
+      "path": "evidence/octet/deterministic-core/admission-verification.json",
+      "blake3": "39215aedeb233ab7a3ff3560c5d794ed4d7f2d197b28b358c4e09393fc6ea913"
+    },
+    {
+      "path": "evidence/octet/effect-closure/parent-tamper-verification.json",
+      "blake3": "2652f4853eb3a7344197bd55b9a8d01960420275e3a530a15749294ec8456cf8"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/dependency-graph.json",
+      "blake3": "b227083b2a0c27d0d05ffb59ff9460114cd284190f4e5c6d2b9ed26d7fed496f"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/workspace-policy.json",
+      "blake3": "9e03ed201a2d17a86893b759107e9700628e2d22e7df0e82428b92d35d2a0783"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/summary.txt",
+      "blake3": "c80f4dc0b020a701ba807f542d19f27db112113b08594aef5126f9e7f6a0d998"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/check/status.json",
+      "blake3": "9cdeb572232dcc076ece1df81eb46d1147d0bff07819e1baba46fc26885fd9ef"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/check/command.txt",
+      "blake3": "f30156f108e13588a8923292bfdc7f105ec1f9b31188e152f3c64ee337c9bc28"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/check/summary.txt",
+      "blake3": "3b23569233c731c413768e2544555c9a6a73e4ca76af6cb923b03769546d8717"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/check/provenance.jsonl",
+      "blake3": "6f67f40fd884083ae4f99690c09660d835d534adacb5e68cf136153cab2c6715"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/check/function-addresses.json",
+      "blake3": "d6a9cbf06bec48e75bc341f11288e351a50e3ef960acd20e70f6eabf9ab51705"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/effect-closure.json",
+      "blake3": "93d85522360ce0b392679c1f3ee47623fecbb25cef40dba2600c6d3448dfa84c"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/command.txt",
+      "blake3": "f30156f108e13588a8923292bfdc7f105ec1f9b31188e152f3c64ee337c9bc28"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/status.json",
+      "blake3": "35893fa789013af06a90e246fcf1533a5b1273df36c34282c9bbabffe078d84e"
+    },
+    {
+      "path": "evidence/octet/effect-closure/initial-denied/provenance.jsonl",
+      "blake3": "f4d02d7b42cae6dc4fa50b6880d59283a5058983785246aa1bd364be1839a4e6"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission-verification.json",
+      "blake3": "e4d23081b37022ea19b90f83630411acf4e3ce1e3383f73e4a1d307a25e94fbd"
+    },
+    {
+      "path": "evidence/octet/effect-closure/validation.md",
+      "blake3": "9eebe712a92941ba3eeaa609b466ddd4f5760442291069a17ca8a4546f3b3a95"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/summary.txt",
+      "blake3": "f42154f82d94a7da2b743f36510239b73bb7dd168502b8728ef60220cae24662"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/provenance.jsonl",
+      "blake3": "0cfbc7be13ae3ff3f69801d4658c78fc6791beee3f2e89f770c86fda35009a51"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/status.json",
+      "blake3": "8030e53b39a29634a3a0e9a6586fcfd90ea8df1610bb6e516eb2881c83ec36b9"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/command.txt",
+      "blake3": "331e12fd6d0d437af6ae2ee0e45f04ae60faf34d17de47e232d321793e245be4"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/dependency-graph.json",
+      "blake3": "b227083b2a0c27d0d05ffb59ff9460114cd284190f4e5c6d2b9ed26d7fed496f"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/workspace-policy.json",
+      "blake3": "dde2473a994a5aaff59c7cd5d079f83f0292ce472cf5801637fa2403b0fb34a9"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/check/provenance.jsonl",
+      "blake3": "8368f0b7f6e48ab936148c31ccd3d112608eec2939202ab03eb9fc45d664dd72"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/check/summary.txt",
+      "blake3": "3b23569233c731c413768e2544555c9a6a73e4ca76af6cb923b03769546d8717"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/check/status.json",
+      "blake3": "9cdeb572232dcc076ece1df81eb46d1147d0bff07819e1baba46fc26885fd9ef"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/check/command.txt",
+      "blake3": "331e12fd6d0d437af6ae2ee0e45f04ae60faf34d17de47e232d321793e245be4"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/check/function-addresses.json",
+      "blake3": "d6a9cbf06bec48e75bc341f11288e351a50e3ef960acd20e70f6eabf9ab51705"
+    },
+    {
+      "path": "evidence/octet/effect-closure/admission/effect-closure.json",
+      "blake3": "dfb09c26070f89a08d7203c0452a8ce31d40e7ca0aa45d79b89e6e1b5fe512a3"
+    },
+    {
+      "path": "evidence/octet/effect-closure/tamper-verification.json",
+      "blake3": "145a5ff6a250f56517d39f01d5d287db6adf88e838040b8ff40f407ef762ab14"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/negative-cases.json",
+      "blake3": "1c1d96f61dbc944de4d9cc6c353b3ca8ab6f0c38cb6e1ad6b2a9595068d2dfdf"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/trust-closure.json",
+      "blake3": "021c033fb39bbf2ba3ef4d1e14a473e5988c1b464978881ec720c3b4e01d8379"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/translation.json",
+      "blake3": "0e8c4e0040003a4488fc572c04e2a66509834857a4b2786ad443cfc90fb100c8"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/llbc.llbc",
+      "blake3": "2af893a633e19e0d8d5b96bbe2bdfec84b658f28e5eb583b1ef522ff17c029e5"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/checker-result.json",
+      "blake3": "64e64cc32fc5966221fd60c6efd5ea84669478ad975fc483a169488985de5455"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/generated.lean",
+      "blake3": "7b6726a5a5a9271ffed325f25aae9c11871f3dc681a3a9d90f5f70ba4d2ad48f"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/producer-adapter.json",
+      "blake3": "19a10c8d3e4ce29b4a058bd2202ff52fc42cee7508f04312840d0bfd398b00a8"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/provider-profile.json",
+      "blake3": "cd11b49d1acede2c6a91fa26f0b7a6b4b28db4007b4601a65b3269706a0ce625"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/aeneas-command.json",
+      "blake3": "7255d9366ad9340a5abcb82a970c8b8f461739e90274b2698db2f3b4ffb3880b"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/charon-command.json",
+      "blake3": "3d546d9090d3331d821aa2f328c7323f9b2aca9bf1836f14d4804fa94b992aef"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/source.rs",
+      "blake3": "fc70d39d863627bf99ab6a2c13a0b798aac059dc2520d9d2e48f7ac599fb4502"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/package-lock.json",
+      "blake3": "a90f0bc8c3ab6544519d582a901324b218242e006e4f53236a4f486b3ed07a7d"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/theorem-adequacy.json",
+      "blake3": "dbda19205e0a5202032ed61b4dae184a68f00af38161324416ae2a4f1ecc5eb4"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/provenance.json",
+      "blake3": "1378e8646e230bd8976f25b57dcb5bf1a8693d0953157ecddc9cd54205d39ba0"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/charon-options.json",
+      "blake3": "628826f12a1951a45e105272e54328586bbc1591b25d74bf8a5afc9453b5ff95"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/octet-receipt.json",
+      "blake3": "b0ce7c7d5673e67b0dc5fff7f54d351f4f58f2b70c986023a3933dee15bcf489"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/proof-cards.json",
+      "blake3": "fff32b3950ae540eccec22cfd7122866b73b0fb904b479f94b471ba2561222a2"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/external-models.json",
+      "blake3": "9fa8dc9570625be2be53d308f958332981ec8fb8137d3dd7ba0ae5da317eaa7d"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/artifacts/theorem.lean",
+      "blake3": "08e7c2d1fb1e21b2e7a174340a9f5b87c3acc634c591c6102624cd3a231f1125"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/negative-cases.ncl",
+      "blake3": "8f9e00ff5822454b7f21a6d0a9e770941507adfd82a20a98201643147d770579"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/chain.ncl",
+      "blake3": "23c2e5ecaf0c18ea39155d6a3d028556fe59f3bea54c4c6fe443c8215a26bb7a"
+    },
+    {
+      "path": "fixtures/aeneas-translation-chain/chain.json",
+      "blake3": "b58be39ff18f3d231ae88762aa4c1a4e02d7733fecdfce14d8d2a82507fa9d6a"
+    },
+    {
+      "path": "fixtures/stack-provenance-chain/positive/complete.json",
+      "blake3": "81b78371d6095b5640642a64db846f3a6125937e8f8212132a79b859abc0d48b"
+    },
+    {
+      "path": "fixtures/stack-provenance-chain/negative/span-source-drift.json",
+      "blake3": "0eec7745debd29abd5ae2bcabe706518446c04c8e1f997eb1e6a99ffc1bf6d17"
+    },
+    {
+      "path": "fixtures/stack-provenance-chain/negative/tier-promotion.json",
+      "blake3": "94130cbca6efd3a4ce203b19bdbcf84e64974c97344020f2ed2ea13610410e4a"
+    },
+    {
+      "path": "fixtures/stack-provenance-chain/negative/unsupported-edge.json",
+      "blake3": "941f6c50c46fcd0e86a84d984c4137b1ad1446c8404087690b4b70d8dfdebbb0"
+    },
+    {
+      "path": "fixtures/stack-provenance-chain/negative/stale-policy.json",
+      "blake3": "725b4ecc98fb620364e52f58d3d35c888caf810e610fefaf5ded20ac619c9c51"
+    },
+    {
+      "path": "fixtures/stack-provenance-chain/negative/weakened-non-claim.json",
+      "blake3": "e94e07316b083f249fd660f625ae445f6dd7e6399654862d7f28384f404745ae"
+    },
+    {
+      "path": "fixtures/stack-provenance-chain/negative/missing-parent.json",
+      "blake3": "5c3498fa6030294394bf72d326520d8c6d848d24ad0b60893b545a0225c76a38"
+    },
+    {
+      "path": "fixtures/stack-provenance-chain/negative/digest-mismatch.json",
+      "blake3": "6d91638d4c363f01dee82b33a1667286f7ef668fbc4e70f8636865fe8e3e7773"
+    },
+    {
+      "path": "fixtures/preserves-canonicalization/corpus.json",
+      "blake3": "2ad54c857e03287fbb991c0a0d5f38c3101b57b499eee9eb1ed447db2506d0f0"
+    },
+    {
+      "path": "fixtures/radicle-forge-operations/ci-admission-report.json",
+      "blake3": "3ff5431ec813cc36e1d03f2e2e08053fe22305af078666436be4c7f9d51b604c"
+    },
+    {
+      "path": "fixtures/radicle-forge-operations/ci-admission-input.json",
+      "blake3": "15a21fa3d28c15cdb27af21b2c34ab4e18fa92c954704e98801bed6224aff58f"
+    },
+    {
+      "path": "fixtures/radicle-forge-operations/migration-plan.json",
+      "blake3": "aefb8d12fba01344b1019c13f8dcc7d06ba8d198b9f2f16f8ff74c593bcfd8ed"
+    },
+    {
+      "path": "fixtures/radicle-forge-operations/source-batch.json",
+      "blake3": "ac5482159fde716d2562ff2d73d9a3c4fc6f428b0ecee3aa18c377df21adae27"
+    },
+    {
+      "path": "fixtures/build-service-evidence/basalt-authority.json",
+      "blake3": "3d8fc82215d88d3171622187726c8ffc04c26bcf0e2d4b5b45a9ddf85045fcb7"
+    },
+    {
+      "path": "fixtures/build-service-evidence/cairn-check-run.json",
+      "blake3": "0aa508365c1778756b7736197a5a9809ba4fe8690a9fc458373d6512d12c9732"
+    },
+    {
+      "path": "fixtures/build-service-evidence/lattice-orchestration.json",
+      "blake3": "bb7820f3c2c16ecce1f825ca03a687e49b17290798eb362fb0d099a552151310"
+    },
+    {
+      "path": "fixtures/build-service-evidence/mantle-build.json",
+      "blake3": "040862b0c34cf5449d2f2842d4fcaf7482cb6d17caefa73288fc64409e8edf02"
+    },
+    {
+      "path": "fixtures/build-service-evidence/onixos-consumption.json",
+      "blake3": "1e6140b3889dca4d70d08d275fd9fc319034c65ab0d78f3ba9c053ac5b5c381b"
+    },
+    {
+      "path": "fixtures/agent-receipts/positive.json",
+      "blake3": "e3a6ade0c8adfeccbb06eab68031a1e5b8b54d88d9db8829205e6b98b7da94a9"
+    },
+    {
+      "path": "fixtures/content-bound-requirements/cairn-registry.json",
+      "blake3": "53385e979fa7ea854075724bf82d07345c96265181dcab44ec67fb42c6cca7f7"
+    },
+    {
+      "path": "fixtures/content-bound-requirements/cairn-root/cairn/specs/content-bound-requirements/spec.md",
+      "blake3": "3bff0bb0d2ad330767215996dd7cae9cf48c971e723b84491837833ef8166e76"
+    },
+    {
+      "path": "fixtures/content-bound-requirements/cairn-root/cairn-policy/generated/cairn-policy.json",
+      "blake3": "edf7a39209c3f5bca74db35b448f6d8cd6c4601e7c45c1ca447dd3dc63dcd208"
+    },
+    {
+      "path": "octet-effect-closure.json",
+      "blake3": "dde2473a994a5aaff59c7cd5d079f83f0292ce472cf5801637fa2403b0fb34a9"
+    },
+    {
+      "path": ".github/workflows/nix-flake-check.yml",
+      "blake3": "076245bd199076d24a5ae476f1b5bce74139b4e963aa79f769ce82771729e03f"
+    },
+    {
+      "path": "clippy.toml",
+      "blake3": "072dcfba6f0147b072c71feb5fd8fbeb214bafbf0106d11e7580b58323738ea0"
+    },
+    {
+      "path": "LICENSES/MPL-2.0.txt",
+      "blake3": "7ad11002cb765572342fc15096832825a9071dfc7f4f427d92c6906d83ea9b54"
+    },
+    {
+      "path": "LICENSES/AGPL-3.0-or-later.txt",
+      "blake3": "ca0292789c0a0ecba706f4b3f3493007a9951731c1d432c52c4aac1f1abba8ef"
+    },
+    {
+      "path": "rustfmt.toml",
+      "blake3": "366ca880e683e683ad02a1df968f30f4522c57881aaf1b6b2665754acebfeddf"
+    },
+    {
+      "path": "policy/octet-effect-closure.ncl",
+      "blake3": "a4fbfe457a942c4c3e768fb72bb8f52e3192437cf23c93a738b30add0de81c35"
+    },
+    {
+      "path": "policy/octet-effect-closure-contracts.ncl",
+      "blake3": "5ccd15aa6b30f8491fc0a1cc308edba3b221cecca9df96e36a469cc15fc50ed0"
+    },
+    {
+      "path": "policy/octet-effect-closure-call-summaries.ncl",
+      "blake3": "8f32d02fd3d0474224ef8d3aa1e2cde7dc7d4681f82bcd48d8282dd7ab4d8104"
+    },
+    {
+      "path": ".gitignore",
+      "blake3": "60159bb9ddb1faae084168319ab2bf8b35b86817f3b354996603a4be97740f92"
+    },
+    {
+      "path": "nix/artifact-source-pin.nix",
+      "blake3": "a70492a0762a860f12cc57ae75c25c2d5cff362fcbb67e66883b82251b679b5f"
+    },
+    {
+      "path": "SECURITY.md",
+      "blake3": "572f6e428992c2900e54ce7e8665660fd153f1b9573c07ddc25d18df4ee1cc65"
+    },
+    {
+      "path": "lib/artifact-source-migration-receipt.ncl",
+      "blake3": "dfb824e4283c15ef9659ff83ef14b0d3f7dca3afbd35362cd25259a8144110ce"
+    },
+    {
+      "path": "lib/artifact-auth-cutover-receipt.ncl",
+      "blake3": "3f6788236f0fa110492eedc66336bb305dcfbe5997f8531bed1582859fbaf8cd"
+    },
+    {
+      "path": "crates/valence-radicle-native/src/main.rs",
+      "blake3": "123a751b6f0722a55e681cd889440ada6a9107869e430e91fa3507c2dd4c2885"
+    },
+    {
+      "path": "crates/valence-radicle-native/src/model.rs",
+      "blake3": "c5aaf35005240172a00a30be7c5295c8a00e752d1c061200a1389d2a46487ade"
+    },
+    {
+      "path": "crates/valence-radicle-native/src/forge_ops.rs",
+      "blake3": "a18473bef27fd1be581b33299a5955872b54a11b8b2d4fa1fba7e04059587ad0"
+    },
+    {
+      "path": "crates/valence-radicle-native/Cargo.lock",
+      "blake3": "75f5bb699402003767350066e3520e0a826b209ab0bfa1836392b8ac944486f4"
+    },
+    {
+      "path": "crates/valence-radicle-native/README.md",
+      "blake3": "291ebf4c2ea660e67bf62d9602b1c6bb9396363b3f104a6c5dd2f4012755bb1c"
+    },
+    {
+      "path": "crates/valence-radicle-native/Cargo.toml",
+      "blake3": "8d4e8266e96c52f7df23fc371631e8dc2cb96b0692c831cb154918f218b7d8d0"
+    },
+    {
+      "path": "crates/valence-core/testdata/stack-provenance/cross-repo-fixture.json",
+      "blake3": "3e60d06ac9a08be3baf1da708fc3b55933b991ba90514d12306778ddd59ad98b"
+    },
+    {
+      "path": "crates/valence-core/testdata/transcripts/fail/malformed-artifact.json",
+      "blake3": "60c4f97dc3b76fb141243146b2c8081131561844d3dc88ab2fd671bfb09b93e4"
+    },
+    {
+      "path": "crates/valence-core/testdata/transcripts/pass/capability-policy-pass.json",
+      "blake3": "e1afe23acd28cf842548c1df42d4e9153d389bb0cfa7b2f6b860bfdbb0159ec2"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_adapters.rs",
+      "blake3": "d9b56a91315c086aad4c6aa78ea2262ed8d8067bfb1c542ba30adb44ddaa4d76"
+    },
+    {
+      "path": "crates/valence-core/src/formal_proof_chain.rs",
+      "blake3": "3626f10da149274e3d617ecbc39d51f5fa0151a99045833b41693f381dca3de6"
+    },
+    {
+      "path": "crates/valence-core/src/artifact_ref.rs",
+      "blake3": "d72e61af861da2854cdf793c8564cb8df9ba2a093e310a48d1837d826b1589a5"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_model.rs",
+      "blake3": "d750a086165c01f73a5f7bc491fd2bfa2141c85482d5c69d23772cebba8d7d29"
+    },
+    {
+      "path": "crates/valence-core/src/stack_provenance_adapter.rs",
+      "blake3": "a34171bd3bad6e3ca95fdb17fc7fe45066d6f539944b8b02297960d9a1cc214e"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_harness.rs",
+      "blake3": "4e065c0baee85107114a751167b328374df13ce5a1326ee3d2bf27e272f3ea3f"
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity.rs",
+      "blake3": "f89b3ab2b4f7d5571ba0fa1587d1d67149d5865ddb4506ee4f8323656ed0e1b2"
+    },
+    {
+      "path": "crates/valence-core/src/nostr_identity_evidence/identity.rs",
+      "blake3": "d4a326a53cbe15368536b52f8515fdfed827993363c0c55149d74f4914245c06"
+    },
+    {
+      "path": "crates/valence-core/src/nostr_identity_evidence/model.rs",
+      "blake3": "895930fef3e87fc2bf53797fb1a32c2327aadc5e0fa5ae9360396f3b05c5a4ae"
+    },
+    {
+      "path": "crates/valence-core/src/nostr_identity_evidence/tests.rs",
+      "blake3": "289779aac14f3c6ce70e2abf0dbf1fb3852b0812ec1de252b5b3b7b7fd9700f2"
+    },
+    {
+      "path": "crates/valence-core/src/nostr_identity_evidence/validate.rs",
+      "blake3": "5c68cc15c0e636b3c3991dda4b2e5539b691d7550ad12267579e983fc5689166"
+    },
+    {
+      "path": "crates/valence-core/src/formal_proof_chain/aeneas.rs",
+      "blake3": "9022abfcf714e0ebdbdb5016dbbf66d4d4c0f0562d03cd967bf06ff826a9fd38"
+    },
+    {
+      "path": "crates/valence-core/src/build_service/tests.rs",
+      "blake3": "661905069cc4d919a63a7f5e5ed30ab76e36c8486a57b47357867f66535f82a2"
+    },
+    {
+      "path": "crates/valence-core/src/source_review.rs",
+      "blake3": "0307840294d12d5b68ba02bf8581af3b74943ca3366659ced2860a2ccbd3ceb1"
+    },
+    {
+      "path": "crates/valence-core/src/stack_provenance_adapter/graph.rs",
+      "blake3": "a90c122498b1b1b98c1264975e2e9f6021e65a1ecfa562c5a0e1c788d88c1c3e"
+    },
+    {
+      "path": "crates/valence-core/src/wasm_component_evidence.rs",
+      "blake3": "72784b086cb02abeb4dc6cd49e59d58c18cdd3a62dc613383369183033b497ff"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_index.rs",
+      "blake3": "75320ed218e1a726745ad166b394c2a640159ec08863fa7e231e2f221d780c4e"
+    },
+    {
+      "path": "crates/valence-core/src/provenance.rs",
+      "blake3": "2329e60af5d917a6e280379ae8a84f17c8d09a8924142e267e178ce260b628dc"
+    },
+    {
+      "path": "crates/valence-core/src/artifact_auth.rs",
+      "blake3": "e6267aa01b823c2fa745ffc35f6cee784800167b1272deed690c22edcdd062f7"
+    },
+    {
+      "path": "crates/valence-core/src/function_address_profile.rs",
+      "blake3": "0b7c8eafdf51fca9af71d5b5a92587389c00af7b9631784906dfcae59cdf9fa2"
+    },
+    {
+      "path": "crates/valence-core/src/nostr_identity_evidence.rs",
+      "blake3": "8f1e0b635036d3f1a20365582dfcd5d26c698f0a07aa0117dc04146e395ed85d"
+    },
+    {
+      "path": "crates/valence-core/src/build_service.rs",
+      "blake3": "a5974b2d7b56f01ea02c7d21d593776152a7427e7d681bc6ee8aa00383d1587a"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_codebase_index.rs",
+      "blake3": "20c34a80ed5cfd276617e76315dd58becad2a134d2d312d0a80a300436f200d2"
+    },
+    {
+      "path": "crates/valence-core/src/content_bound_requirements.rs",
+      "blake3": "36df33cb05c8d97da5ec802c0786df5ac66d33b110c32cebeffaf4fb92059c4e"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_codebase_index/query.rs",
+      "blake3": "cc9f3359e52758fcc97809ad328062afeeecda9eaf8cbca4019b0dcd3a57b82b"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_codebase_index/html.rs",
+      "blake3": "a831cb703b243b26980a8ade307f60f6eeb3b148d0f5b9b574a538f2996f0204"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_codebase_index/model.rs",
+      "blake3": "c6b454d79703b6e5f0b62e4c8b2a4bcb0cb0bf80ede17d537238e48624e93613"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_codebase_index/ingest.rs",
+      "blake3": "7c7a874b351f7230b779a3e44c969d496b4df4ea821fd1fd5d8c77bbce8cce32"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_codebase_index/boundary.rs",
+      "blake3": "a94b15d5b00cea3bf12baef2b5772f4003de38c3fe366c53c9a52923988d8f93"
+    },
+    {
+      "path": "crates/valence-core/src/proof_carrying_ir.rs",
+      "blake3": "ecd6139bce66cacf1d89a455941e383630f539fabeaea4f1f60feda9e2cb0614"
+    },
+    {
+      "path": "crates/valence-core/src/trellis_proof_evidence.rs",
+      "blake3": "6394fa18387f56b1d8fba59d41f22db8b24296f19ccf568f664cce0b6b38cf37"
+    },
+    {
+      "path": "crates/valence-core/src/ast_grep_evidence.rs",
+      "blake3": "88842facf47e1fe1a200e30469a55a21e0ec736bbf373fed129134ddf73331f3"
+    },
+    {
+      "path": "crates/valence-core/src/function_object.rs",
+      "blake3": "90165fa493397aa7fbd620d191ebb5990b355b42a71f5310b306f8b0d32c435c"
+    },
+    {
+      "path": "crates/valence-core/src/lib.rs",
+      "blake3": "cd4b714f642c80433361cad197bc678a641cf8fa1202fcddb6114a03b0a14ae2"
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity/tests.rs",
+      "blake3": "26430a8eea3579a9353613dadf7f5df0c266db34722f1f7c16a4f6b3901b3387"
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity/typed_digest.rs",
+      "blake3": "81c860b3ea861c286097732ffc7c4f27b9c1cb338be82d0badc539d32a2e8620"
+    },
+    {
+      "path": "crates/valence-core/src/shared_identity/canonical_hash_profile.rs",
+      "blake3": "30eccae8d51718cf0219d6001c93fe089e2f72b32a0f7760becb6e27785e4233"
+    },
+    {
+      "path": "crates/valence-core/src/stack_role_registry.rs",
+      "blake3": "00dcf8c62e48bc1e45f4cdfc077a285195e2c45a8e8507c2b55737bd36f69945"
+    },
+    {
+      "path": "crates/valence-core/src/oxide_primitives.rs",
+      "blake3": "5dd8c891a84f7d764526a566888c51cd0aa6bd99765f6fb86fec64bc8111fdb4"
+    },
+    {
+      "path": "crates/valence-core/src/function_address_preserves.rs",
+      "blake3": "8e269407138d51750ebd73c2697332fe08093ee3eff80e738a02e1df142a40b4"
+    },
+    {
+      "path": "crates/valence-core/src/source_review/tests.rs",
+      "blake3": "ee576a15002977551ed3826e086d80d077398f82b9324bd19a1e767c82c1a1b4"
+    },
+    {
+      "path": "crates/valence-core/src/capability_plan.rs",
+      "blake3": "59f3bd6c9d5a7b1d3ab60a2a592800e3856c6c87873139c31cd38d836f1991a6"
+    },
+    {
+      "path": "crates/valence-core/src/hegel_property.rs",
+      "blake3": "c273e38544d16ab14cbd30586ba18e6fb12941dc24c35dadb903b890dc61b9da"
+    },
+    {
+      "path": "crates/valence-core/src/radicle_forge_ops.rs",
+      "blake3": "ebfbfe3ee755e5c64b00714838e2d70e7900acee84a56aa7c805d552cab2db0a"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_ir.rs",
+      "blake3": "b8060cc7c3d00c844f5f3e29e2b95831f2c83166181f27557bd2ede3361947e6"
+    },
+    {
+      "path": "crates/valence-core/src/cob_evidence.rs",
+      "blake3": "ab58818ec63356f635d8707a47de8719b8d61a00cf8ca3ebe78f9692dafb6cf1"
+    },
+    {
+      "path": "crates/valence-core/src/preserves_evidence.rs",
+      "blake3": "bcb73acaaf4efc484ce0541ce6908b1ba55b615f28b431ee609ebcab6a22caad"
+    },
+    {
+      "path": "crates/valence-core/src/evidence_chain.rs",
+      "blake3": "8d8ef3cea65b6ddba9b1fd9227c4d09d735b6b5bc91624c9a685d0c330604251"
+    },
+    {
+      "path": "crates/valence-core/LICENSE",
+      "blake3": "7ad11002cb765572342fc15096832825a9071dfc7f4f427d92c6906d83ea9b54"
+    },
+    {
+      "path": "crates/valence-core/Cargo.toml",
+      "blake3": "45cc097d5604b19331de47e893624f8fce6ce26709a55884b7dac4a8e371be5c"
+    },
+    {
+      "path": "crates/valence-core/examples/emit_build_service_examples.rs",
+      "blake3": "da536f4fbfb117f7865f63c1c6063984025e3856b47e9d08146b3db270152ac0"
+    },
+    {
+      "path": "crates/valence-core/README.md",
+      "blake3": "68839a45d0a8d21663056be0c89c88ace0b817d0fc0088fe5a836d9f1a346154"
+    },
+    {
+      "path": "crates/valence-core/tests/build_service_properties.rs",
+      "blake3": "fc61655a0c003c6c7716679674d777c03f59deb4c4fa5e90948c936c8d431032"
+    },
+    {
+      "path": "crates/valence-core/tests/build_service_examples.rs",
+      "blake3": "e35af93236e85e3a2d79820b093820d626ee0521985adce5547a025971c234ab"
+    },
+    {
+      "path": "crates/valence-core/tests/aeneas_translation_chain.rs",
+      "blake3": "4a953da95160a8dabaaa51ef2d6332d5d8d7f166bc21047ec4ce720f06aff7af"
+    },
+    {
+      "path": "crates/valence-core/tests/hegel_property_laws.rs",
+      "blake3": "0ea6f744e987ea2146ce5fbd2f6c2fb17bcc92064200219ba367d0a249a70595"
+    },
+    {
+      "path": "crates/valence-cli/tests/nostr_identity_cli.rs",
+      "blake3": "42cad9fdf11c699a5694d3103086900ac69d4224aa5e96d429c626ea3c4a4b8f"
+    },
+    {
+      "path": "crates/valence-cli/tests/cli_round_trip.rs",
+      "blake3": "9866e2ed98b9b463cd2c3dfc362288b761fec25eb9ff868c46f54e3ed89e6e39"
+    },
+    {
+      "path": "crates/valence-cli/tests/source_review_cli.rs",
+      "blake3": "b6622a7d09fb2b32ac10ddb24b137ef3a96ee079e0b9d02fde4949630767c9e7"
+    },
+    {
+      "path": "crates/valence-cli/src/main.rs",
+      "blake3": "0977a6c86f38afa3a4f5dae79035a314505da6ed0fba09245527c894b104b51c"
+    },
+    {
+      "path": "crates/valence-cli/src/source_review_cli.rs",
+      "blake3": "31a733934d2f7910d96e99a6d6dc6e3de4e366aa0c645bec189affbf16a2a72d"
+    },
+    {
+      "path": "crates/valence-cli/src/nostr_identity_cli.rs",
+      "blake3": "fd86adc74e3ed29d407054822fedfe61c702cd559dc4afe23d09cc85dda39a2f"
+    },
+    {
+      "path": "crates/valence-cli/src/content_bound_requirement_cli.rs",
+      "blake3": "6d18f2d988d4507be7fb7f887e97bbd3298663106bb696ce6a1b6ec9e00cffe1"
+    },
+    {
+      "path": "crates/valence-cli/Cargo.toml",
+      "blake3": "12af9f21cc66c31c5ccd0d3c1cbd04c88437020b06da8367f1aa48a87bbf4b02"
+    },
+    {
+      "path": "crates/valence-cli/LICENSE",
+      "blake3": "ca0292789c0a0ecba706f4b3f3493007a9951731c1d432c52c4aac1f1abba8ef"
+    },
+    {
+      "path": "crates/valence-radicle/README.md",
+      "blake3": "5037726fc37848c1a469a18e12cf8b970d63af337f6e5b0a43c21a0dad593f7c"
+    },
+    {
+      "path": "crates/valence-radicle/src/store.rs",
+      "blake3": "6758b81fac2ded433d2088e95ff34d374b6b335dbf4b51e532dcb2a4e171172c"
+    },
+    {
+      "path": "crates/valence-radicle/src/main.rs",
+      "blake3": "5aa39487a856ed264f93eb5b99c650a4dd22d78e92a2b7c1feba9118cea353a2"
+    },
+    {
+      "path": "crates/valence-radicle/src/tests.rs",
+      "blake3": "9385166ec453896d2f2c5c5b14f5c25336d897d85e1cc7b6a9c1d39ed2a6dc6c"
+    },
+    {
+      "path": "crates/valence-radicle/src/lib.rs",
+      "blake3": "8bd622b2cc8c1a4d060e2a9bb0dfdb70284d474360c852b574a16993cd43e814"
+    },
+    {
+      "path": "crates/valence-radicle/src/artifact_auth.rs",
+      "blake3": "bb13e591494762736373945852bb0745c9316e7106d7f3d547b88338b162d42b"
+    },
+    {
+      "path": "crates/valence-radicle/src/transport.rs",
+      "blake3": "5efde582ab72b40a1912e90776c678c421267ee13fa5522fe5d4aad47dd19457"
+    },
+    {
+      "path": "crates/valence-radicle/Cargo.toml",
+      "blake3": "9a22635025538af82a97db767d65b95a11c8daa8ec525452f3e00cb34dae1f05"
+    },
+    {
+      "path": "crates/valence-radicle/LICENSE",
+      "blake3": "ca0292789c0a0ecba706f4b3f3493007a9951731c1d432c52c4aac1f1abba8ef"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "blake3": "3d7b2b77ab6cc5774493ae73e0fd7923a2166d8e58302932513e537567529348"
+    },
+    {
+      "path": "Cargo.toml",
+      "blake3": "7210f4b69ac38d6ccfa8d08a4d1c96693e6813904e45f9971682f270df9a3251"
+    }
+  ],
+  "proof_bindings": [
+    {
+      "path": "isolated-cohort-v29/complete.json",
+      "blake3": "0d206a322135c30081f83d77b4d343431f1511c7e5fc2ff4c7f7e09d6eedaec5"
+    },
+    {
+      "path": "isolated-receiver-v30/complete.json",
+      "blake3": "6d66237a1c8624d2e4bc5ece9477659e157f98d55c3370d911aeb63790db34ad"
+    },
+    {
+      "path": "isolated-native-v31/complete.json",
+      "blake3": "ceb4804b7243dae71581ed4948e2abe6bdfe832d61c8759fb5913c49d3e41657"
+    }
+  ],
+  "workspace_test_result_lines": [
+    "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+    "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+    "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+    "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s",
+    "test result: ok. 284 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s",
+    "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s",
+    "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+    "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+    "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+    "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s",
+    "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+    "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+    "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+  ],
+  "affected_package_formatting_passed": true,
+  "workspace_clippy_passed": true,
+  "full_workspace_formatting_passed": false,
+  "unrelated_baseline_format_failure": "pilots/schema-identity/src/lib.rs: verify_published_cohort line wrapping; original public main source retained",
+  "receiver_cases": [
+    {
+      "case": "approved",
+      "path": "approved-receipt.json",
+      "file_blake3": "5f8e8b09715fa7ea2fccb86864aa85d9a21d94866829e9838bde4d6df1cb6f57",
+      "receipt_identity": "cfadb33538787d4600de6a7211cf28be92c2d41a6ad4e090234fd9127ca4d2d1",
+      "outcome": "accepted_manual_review",
+      "issues": [],
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "attachment_identity": "e20db6f8127d020008bb2d0ea90b871b8e95b400414eda487a72c63291d71909"
+    },
+    {
+      "case": "needs-revision",
+      "path": "needs-revision-receipt.json",
+      "file_blake3": "d6c76f13ca764f3ba861b30c68f1beb6ba6289e78f80a444ae3f372c641f4d5f",
+      "receipt_identity": "c8746e58f4a3ea080967d41da08541eac20fddfbc928c5bdcfd18fc0f4b5667e",
+      "outcome": "insufficient",
+      "issues": [
+        "approval_threshold_unsatisfied"
+      ],
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "attachment_identity": "1318edaa48056d210f2de62f1d24b792156416c437a763581df42358a0b52314"
+    },
+    {
+      "case": "revoked",
+      "path": "revoked-receipt.json",
+      "file_blake3": "e6a6022678bd4a0f1e6178faee0b4b94be084a491aa2335ac2d134b231996779",
+      "receipt_identity": "1e13367482c43d552bf428c6bcbae8212c21fbc8335f0ecc68bc0490a0821baf",
+      "outcome": "invalid",
+      "issues": [
+        "auth.distinct_key_threshold_unsatisfied",
+        "auth.key_not_current",
+        "review_authentication_failed"
+      ],
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "attachment_identity": "e20db6f8127d020008bb2d0ea90b871b8e95b400414eda487a72c63291d71909"
+    },
+    {
+      "case": "substituted-source",
+      "path": "substituted-source-receipt.json",
+      "file_blake3": "78ef5209cfbbc8b07663f7a742fea9a17a2c9819d1bc8b4c17e85bda7c608a4d",
+      "receipt_identity": "1bf63acc2801c392c64560e1105de00c43daa76ecf1290a3180cad54573dd85b",
+      "outcome": "invalid",
+      "issues": [
+        "review_subject_root_or_policy_mismatch"
+      ],
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "attachment_identity": "e49f18b45024e3a260347c42a64d1b7348dd605ee50411ff30545177f4ace228"
+    },
+    {
+      "case": "excluded-author",
+      "path": "excluded-author-receipt.json",
+      "file_blake3": "eb252e5b60db92bc4b92da911449a3c6fc19b5571c00e9072a2b5fb97552ba4f",
+      "receipt_identity": "ed403d0d368a217dd41dd0d1c68a92b2996b026376e81ec8c4f1a85a5647973e",
+      "outcome": "invalid",
+      "issues": [
+        "review_author_excluded"
+      ],
+      "subject_identity": "e86246a68bf96d6c2cd22611eecbf9feb92e1649111fb7d9afafe87de7f87813",
+      "claim_root_identity": "470dfeddf830e814d17b0782fe0e8a60ec8c519879ef925a04b6bb36a90ea992",
+      "attachment_identity": "e20db6f8127d020008bb2d0ea90b871b8e95b400414eda487a72c63291d71909"
+    }
+  ],
+  "native_gate_verdicts": {
+    "proposal-gate": "PASS",
+    "design-gate": "PASS",
+    "tasks-gate": "PASS"
+  },
+  "archive_preview_blocked": false,
+  "test_only": true,
+  "real_human_review": false,
+  "release_authority": false,
+  "archive_executed": false,
+  "publication": false
+}

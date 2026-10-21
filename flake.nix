@@ -3,7 +3,7 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.artifact = {
-    url = "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=e41340bec587b6d049b5cc518ec7db925dde84be";
+    url = "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52";
     flake = false;
   };
   inputs.schema-identity = {
@@ -39,6 +39,12 @@
         );
         sourceEd25519Manifest = builtins.fromTOML (
           builtins.readFile "${artifact}/crates/artifact-auth-ed25519/Cargo.toml"
+        );
+        sourceTransferManifest = builtins.fromTOML (
+          builtins.readFile "${artifact}/crates/artifact-transfer-core/Cargo.toml"
+        );
+        sourceBindingManifest = builtins.fromTOML (
+          builtins.readFile "${artifact}/crates/artifact-binding-core/Cargo.toml"
         );
         resolvedNixRevision = artifact.rev or null;
         resolvedNixNarHash = artifact.narHash or null;

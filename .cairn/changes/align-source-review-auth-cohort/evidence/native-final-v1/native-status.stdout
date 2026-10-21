@@ -1,0 +1,148 @@
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./.cairn/changes/add-model-checked-artifact-evidence/specs/model-checked-artifact-evidence/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-model-checked-artifact-evidence",
+      "path": "./.cairn/changes/add-model-checked-artifact-evidence",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./.cairn/changes/adopt-owned-source-agpl/specs/evidence-ir/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "adopt-owned-source-agpl",
+      "path": "./.cairn/changes/adopt-owned-source-agpl",
+      "task_counts": {
+        "done": 4,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 5,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./.cairn/changes/align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md",
+        "./.cairn/changes/align-source-review-auth-cohort/specs/source-review-acceptance/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "align-source-review-auth-cohort",
+      "path": "./.cairn/changes/align-source-review-auth-cohort",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 0,
+        "total": 5,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./.cairn/changes/record-nostr-identity-bindings/specs/nostr-identity-evidence/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "record-nostr-identity-bindings",
+      "path": "./.cairn/changes/record-nostr-identity-bindings",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 13,
+        "total": 13,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./.cairn/changes/record-storage-fault-evidence/specs/evidence-ir/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "record-storage-fault-evidence",
+      "path": "./.cairn/changes/record-storage-fault-evidence",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 10,
+        "total": 10,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "resolution": {
+    "diagnostics": [],
+    "locator_consulted": false,
+    "registry_lookup": "local_locator_only",
+    "selected": {
+      "project_identity": null,
+      "root": ".",
+      "source": "explicit_root",
+      "store_id": null,
+      "store_identity": null
+    },
+    "valid": true
+  },
+  "root": ".",
+  "specs": [
+    "./.cairn/specs/artifact-auth-adoption/spec.md",
+    "./.cairn/specs/artifact-auth-operational-receipt/spec.md",
+    "./.cairn/specs/artifact-auth-shell-verification/spec.md",
+    "./.cairn/specs/content-bound-requirements/spec.md",
+    "./.cairn/specs/evidence-ir/spec.md",
+    "./.cairn/specs/kani-contract-roles/spec.md",
+    "./.cairn/specs/kani-nonclaims/spec.md",
+    "./.cairn/specs/kani-stub-roles/spec.md",
+    "./.cairn/specs/provenance/spec.md",
+    "./.cairn/specs/radicle-cob-evidence/spec.md",
+    "./.cairn/specs/radicle-forge-operations/spec.md",
+    "./.cairn/specs/source-review-acceptance/spec.md",
+    "./.cairn/specs/stack-provenance-adapter/spec.md",
+    "./.cairn/specs/stack-schema-role-registry/spec.md",
+    "./.cairn/specs/strict-rust-admission/spec.md",
+    "./.cairn/specs/wasm-component-evidence/spec.md"
+  ]
+}

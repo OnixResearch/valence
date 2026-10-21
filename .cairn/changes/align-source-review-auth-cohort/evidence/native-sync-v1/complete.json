@@ -1,0 +1,57 @@
+{
+  "records": [
+    {
+      "label": "sync-execute",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "sync",
+        "align-source-review-auth-cohort",
+        "--root",
+        ".",
+        "--execute"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 0.2643753606826067
+    },
+    {
+      "label": "post-sync-validation",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "validate",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 0.2644493691623211
+    },
+    {
+      "label": "post-sync-archive-plan",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "archive",
+        "align-source-review-auth-cohort",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 0.1645465148612857
+    }
+  ],
+  "inspected_plan": "/home/brittonr/mantle-cairn-finish/runs/valence-native-readiness-20261020-v1/sync-plan.stdout",
+  "inspected_plan_hash": "e80cb6329c8def12a5b96b7f4980e02291ce80f7ae9622da23374c061e827c8d",
+  "changed_paths": [
+    ".cairn/specs/artifact-auth-adoption/spec.md",
+    ".cairn/specs/source-review-acceptance/spec.md"
+  ],
+  "sync_executed": true,
+  "archive_executed": false,
+  "archive_preview_blocked": true,
+  "archive_preview_reasons": [
+    "align-source-review-auth-cohort: tasks not archive-ready (todo: 1, in_progress: 0, unmarked: 0)"
+  ],
+  "publication": false,
+  "release_authority": false
+}

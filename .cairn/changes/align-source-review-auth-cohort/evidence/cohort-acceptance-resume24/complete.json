@@ -1,0 +1,197 @@
+{
+  "source": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+  "artifact_revision": "5f3962d7471d1547e044f57daeda72f56621fd52",
+  "consumer_packages": [
+    {
+      "name": "artifact-auth-core",
+      "source": "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52#5f3962d7471d1547e044f57daeda72f56621fd52"
+    },
+    {
+      "name": "artifact-auth-ed25519",
+      "source": "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52#5f3962d7471d1547e044f57daeda72f56621fd52"
+    }
+  ],
+  "generated_lock_blake3": {
+    "Cargo.lock": "012313dc9fe896e3f15cf3a2b3e7631728e7a107f94fdec745d4ae16d1cc0de0",
+    "flake.lock": "66bc88e9f89c5dbfd1fc81c196989553fbae8656e4b4d244dcbc99ca013f93a2"
+  },
+  "records": [
+    {
+      "label": "consumer-nix-lock-generation",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "flake",
+        "update",
+        "artifact"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 0.3580529326573014
+    },
+    {
+      "label": "consumer-cargo-lock-generation",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "update",
+        "-p",
+        "artifact-auth-core",
+        "-p",
+        "artifact-auth-ed25519"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 4.9696192648261786
+    },
+    {
+      "label": "consumer-resolved-graph",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "metadata",
+        "--locked",
+        "--format-version",
+        "1"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 1.6652768002822995
+    },
+    {
+      "label": "artifact-source-pin-and-negative-fixtures",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "build",
+        "--no-link",
+        "--no-write-lock-file",
+        "-L",
+        "path:/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020#checks.x86_64-linux.artifact-auth-source-pin"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 2.8880107952281833
+    },
+    {
+      "label": "package-formatting",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 1.9187710294499993
+    },
+    {
+      "label": "workspace-lib-tests",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--workspace",
+        "--lib",
+        "--tests"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 31.85039570182562,
+      "test_results": [
+        "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s",
+        "test result: ok. 276 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "executed_behavior_tests": true
+    },
+    {
+      "label": "strict-workspace-clippy",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 24.537088826298714
+    },
+    {
+      "label": "actual-valence-cli-build",
+      "command": [
+        "/nix/store/kgwqirnzhflf9vmrkzgqz16z2bry397z-nix-2.34.8/bin/nix",
+        "develop",
+        "--no-write-lock-file",
+        "--command",
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "-p",
+        "valence-cli"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 22.866438665427268
+    },
+    {
+      "label": "Cargo-lock-blake3",
+      "command": [
+        "/nix/store/n0kjqa4jilnpp6h04lqlwa9zch8x808a-b3sum-1.8.5/bin/b3sum",
+        "--no-names",
+        "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/Cargo.lock"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 0.027015937492251396
+    },
+    {
+      "label": "flake-lock-blake3",
+      "command": [
+        "/nix/store/n0kjqa4jilnpp6h04lqlwa9zch8x808a-b3sum-1.8.5/bin/b3sum",
+        "--no-names",
+        "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/flake.lock"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "elapsed_s": 0.02537369169294834
+    }
+  ],
+  "receiver_smoke_completed": false,
+  "lifecycle_completed": false,
+  "publication": false,
+  "real_reviewer_approval": false,
+  "release_authority": false
+}

@@ -1,0 +1,16 @@
+{
+  "schema": "valence.current-canonical-source-binding.v1",
+  "remote_inventory": "native-sync-v1/after-inventory.json",
+  "remote_inventory_blake3": "035cf659253699da0b2481259275507d1a184318116d6cc342253c0d30afb0d3",
+  "canonical_product_file_set_matches_remote": true,
+  "bound_product_file_count": 103,
+  "all_product_file_bytes_match": true,
+  "native_sync_changed_only": [
+    ".cairn/specs/artifact-auth-adoption/spec.md",
+    ".cairn/specs/source-review-acceptance/spec.md"
+  ],
+  "canonical_accepted_specs_match_native_sync": true,
+  "rust_source_changed_by_this_assignment": false,
+  "scope": "crates, cairn-policy, Cargo/Nix manifests and locks; accepted native specs checked separately",
+  "publication": false
+}

@@ -1,0 +1,402 @@
+
+running 7 tests
+test content_bound_requirement_cli::tests::option_parser_accepts_complete_and_rejects_partial_output ... ok
+test content_bound_requirement_cli::tests::parse_failure_reports_only_a_bounded_field_path ... ok
+test tests::usage_documentation_is_stable ... ok
+test tests::version_command_prints_version ... ok
+test tests::missing_capability_root_fails_before_read ... ok
+test tests::symlink_escape_is_rejected ... ok
+test tests::capability_roots_read_and_write_in_root ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 19 tests
+test version_command_succeeds ... ok
+test check_rejects_overclaim_artifact ... ok
+test check_accepts_library_emitted_artifact ... ok
+test explain_reports_not_found_for_unknown_id ... ok
+test function_address_validate_rejects_role_promotion_and_overclaim ... ok
+test check_prints_kani_non_claim_boundaries ... ok
+test explain_resolves_known_id_from_manifest ... ok
+test explain_rejects_duplicate_and_invalid_manifest_without_selecting_span ... ok
+test function_address_bundle_staging_failure_preserves_existing_output ... ok
+test stack_provenance_graph_report_rejects_unsupported_edge_fixture ... ok
+test stack_provenance_builds_and_verifies_mantle_sidecar ... ok
+test stack_provenance_verify_rejects_tampered_sidecar_digest ... ok
+test stack_provenance_verify_built_binary_rejects_tampered_bytes ... ok
+test stack_provenance_graph_report_outputs_json_and_markdown ... ok
+test stack_provenance_verify_built_binary_accepts_measured_thread ... ok
+test content_bound_cli_rejects_malformed_unsafe_and_legacy_only_strict_inputs_without_writes ... ok
+test function_address_validate_emits_receipt_and_graph ... ok
+test declared_roots_fail_closed_for_omission_absolute_locators_and_traversal ... ok
+test content_bound_requirement_and_stack_context_cli_round_trip ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 2 tests
+test invalid_evidence_publishes_invalid_receipt_without_overwriting_existing_files ... ok
+test traversal_and_byte_bound_fail_before_output_creation ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+
+running 276 tests
+test artifact_auth::tests::mapping_rejects_lossy_oids_related_targets_and_key_identity_drift ... ok
+test artifact_ref::tests::malformed_and_unsupported_digest_spellings_fail_closed ... ok
+test artifact_ref::tests::metadata_pairing_requires_measured_hash_and_size_together ... ok
+test artifact_auth::tests::protocol_verified_mapping_preserves_identity_and_authority_boundaries ... ok
+test artifact_ref::tests::missing_boundary_and_overclaim_fail_closed ... ok
+test artifact_ref::tests::public_field_adapter_rejects_empty_field_name ... ok
+test artifact_ref::tests::role_mismatch_fails_closed_and_same_digest_preserves_role ... ok
+test artifact_ref::tests::path_and_label_confinement_rejects_escape_patterns ... ok
+test artifact_ref::tests::stale_hash_and_size_metadata_fail_closed ... ok
+test artifact_ref::tests::public_field_adapter_preserves_field_name_and_validates ... ok
+test artifact_auth::tests::dual_run_rejects_false_parity_unknown_currentness_and_decode_failure_masking ... ok
+test artifact_ref::tests::positive_stack_fixtures_accept_current_digest_spellings ... ok
+test ast_grep_evidence::tests::finding_identity_binds_review_metadata ... ok
+test ast_grep_evidence::tests::malformed_span_and_rewrite_overclaim_fail ... ok
+test ast_grep_evidence::tests::stale_bundle_missing_span_and_role_promotion_fail ... ok
+test ast_grep_evidence::tests::valid_finding_maps_exact_span ... ok
+test build_service::tests::identity_is_stable_and_domain_separated ... ok
+test capability_plan::tests::explicit_nested_read_and_output_write_plans_pass ... ok
+test capability_plan::tests::omitted_root_escape_and_wrong_role_plans_fail ... ok
+test cob_evidence::tests::malformed_profile_target_and_duplicate_fields_fail_closed ... ok
+test build_service::tests::set_like_fields_canonicalize_under_permutation ... ok
+test content_bound_requirements::tests::legacy_ids_remain_recorded_only_and_cannot_satisfy_strict_profile ... ok
+test evidence_adapters::tests::cairn_manifest_and_receipt_positive_fixture_pass ... ok
+test evidence_adapters::tests::cairn_receipt_negative_fixture_fails_closed ... ok
+test cob_evidence::tests::malformed_domains_role_payload_and_binding_fail_closed ... ok
+test evidence_adapters::tests::canonical_core_manifest_and_drift_checks_cover_pass_and_fail ... ok
+test evidence_adapters::tests::chaoscontrol_export_positive_and_negative_rows ... ok
+test cob_evidence::tests::secret_and_deletion_dependent_evidence_fail_policy ... ok
+test cob_evidence::tests::oversized_tampered_embed_and_weakened_boundary_fail_closed ... ok
+test evidence_adapters::tests::fsm_default_exhaustive_negative_fixture_fails_closed ... ok
+test evidence_adapters::tests::fsm_default_exhaustive_kamacite_and_proof_link_preserve_boundaries ... ok
+test cob_evidence::tests::unknown_attachment_control_field_is_rejected_by_serde ... ok
+test build_service::tests::claimed_class_without_records_fails ... ok
+test evidence_adapters::tests::fsm_default_exhaustive_octet_only_fixture_passes ... ok
+test cob_evidence::tests::profile_attachment_and_binding_round_trip ... ok
+test evidence_adapters::tests::state_machine_receipt_negative_fixture_fails_closed ... ok
+test evidence_adapters::tests::state_machine_receipt_positive_fixture_passes ... ok
+test build_service::tests::optional_records_may_be_absent ... ok
+test build_service::tests::ambiguous_timestamp_fails ... ok
+test build_service::tests::complete_successful_build_validates ... ok
+test content_bound_requirements::tests::current_typed_reference_validates_against_frozen_cairn_contract ... ok
+test evidence_chain::tests::generic_chain_rejects_identity_projection_role_and_profile_failures ... ok
+test evidence_codebase_index::tests::advisory_mode_keeps_partial_caveats_without_panic ... ok
+test build_service::tests::measurements_require_units ... ok
+test evidence_codebase_index::tests::boundary_rejects_ownership_and_non_proof_overclaims ... ok
+test evidence_chain::tests::function_address_chain_validates_and_emits_graph_root ... ok
+test cob_evidence::tests::unauthorized_actor_and_tampered_resolution_are_rejected_not_promoted ... ok
+test content_bound_requirements::tests::stack_context_identity_is_order_independent_for_a_selected_stack ... ok
+test build_service::tests::wrong_kind_reference_is_dangling ... ok
+test evidence_codebase_index::tests::malformed_and_missing_identity_artifacts_fail_closed_in_strict_mode ... ok
+test evidence_codebase_index::tests::iddqd_source_index_reports_advisory_conflicting_duplicate_locators ... ok
+test evidence_harness::tests::capability_enforcement_separates_labels_from_sandbox_probes ... ok
+test evidence_harness::tests::golden_normalization_rejects_raw_stdout_strings ... ok
+test evidence_codebase_index::tests::stale_provenance_hash_is_reported ... ok
+test evidence_harness::tests::golden_normalization_is_stable_and_diffs_semantic_fields ... ok
+test evidence_harness::tests::hash_helpers_are_stable_for_test_values ... ok
+test evidence_harness::tests::requirement_coverage_rows_are_deterministic_and_fail_when_required ... ok
+test evidence_harness::tests::suite_partition_defines_stable_fast_deep_and_nightly_lanes ... ok
+test evidence_harness::tests::property_invariants_cover_identity_graph_alias_and_cache_boundaries ... ok
+test evidence_harness::tests::malformed_input_corpus_reports_expected_failures ... ok
+test evidence_harness::tests::transcript_fixture_runner_loads_checked_in_pass_and_fail_fixtures ... ok
+test evidence_codebase_index::tests::query_returns_direct_and_linked_records ... ok
+test content_bound_requirements::tests::duplicate_repository_and_stale_optional_link_fail_closed ... ok
+test evidence_harness::tests::transcript_refresh_plan_is_explicit_and_deterministic ... ok
+test cob_evidence::tests::duplicate_replay_is_idempotent_and_invalid_signature_or_predecessor_is_rejected ... ok
+test evidence_codebase_index::tests::absolute_root_prefixes_do_not_change_index_hash ... ok
+test evidence_codebase_index::tests::html_surface_has_links_and_non_claim_boundary ... ok
+test cob_evidence::tests::concurrent_incompatible_dispositions_are_explicit_conflicts ... ok
+test evidence_index::tests::evidence_index_check_fails_closed_for_missing_pass_signal ... ok
+test evidence_harness::tests::stack_cross_repo_fixture_stays_hermetic_and_identity_bounded ... ok
+test evidence_codebase_index::tests::deterministic_build_has_stable_records_and_hash ... ok
+test evidence_codebase_index::tests::evidence_index_law_conflicting_duplicate_locator_fails_closed_stably ... ok
+test evidence_index::tests::evidence_index_render_roundtrips_through_check ... ok
+test evidence_codebase_index::tests::evidence_index_law_duplicate_advisory_inputs_preserve_identity ... ok
+test evidence_index::tests::evidence_index_check_fails_closed_for_stale_payload_commit ... ok
+test evidence_index::tests::evidence_index_check_fails_closed_for_weakened_non_claims ... ok
+test evidence_index::tests::evidence_index_check_fails_closed_for_missing_rail ... ok
+test evidence_harness::tests::transcript_runner_supports_stack_provenance_identity_checks ... ok
+test evidence_ir::tests::artifact_hash_is_stable_for_same_core_inputs ... ok
+test evidence_ir::tests::artifact_builder_and_checker_reject_invalid_span ... ok
+test evidence_ir::tests::check_fails_closed_for_empty_stable_id ... ok
+test evidence_ir::tests::check_fails_closed_for_malformed_json ... ok
+test evidence_ir::tests::check_fails_closed_for_missing_non_claims ... ok
+test evidence_ir::tests::check_fails_closed_for_hash_mismatch ... ok
+test evidence_ir::tests::check_fails_closed_for_weakened_non_claims ... ok
+test evidence_ir::tests::check_fails_closed_for_schema_mismatch ... ok
+test evidence_ir::tests::check_rejects_overclaim_in_non_claims ... ok
+test evidence_ir::tests::check_passes_for_valid_artifact ... ok
+test content_bound_requirements::tests::stale_cross_repository_duplicate_and_domain_substitution_fail_closed ... ok
+test evidence_ir::tests::duplicate_manifest_id_never_selects_first_row ... ok
+test evidence_ir::tests::check_rejects_overclaim_in_payload ... ok
+test cob_evidence::tests::snapshot_is_recorded_only_and_detects_tamper ... ok
+test evidence_ir::tests::explain_distinguishes_not_found_from_invalid_manifest ... ok
+test build_service::tests::external_status_cannot_overclaim ... ok
+test build_service::tests::duplicate_and_dangling_links_fail ... ok
+test evidence_ir::tests::explain_resolves_known_id ... ok
+test evidence_ir::tests::impossible_span_coordinates_fail_closed ... ok
+test build_service::tests::non_claims_are_required_and_bounded ... ok
+test evidence_ir::tests::hash_excludes_display_fields ... ok
+test build_service::tests::privacy_markers_fail_closed ... ok
+test evidence_ir::tests::kani_artifact_rejects_missing_required_non_claims ... ok
+test build_service::tests::usage_reconciliation_conflicts_fail ... ok
+test evidence_ir::tests::kani_contract_accepts_loop_decreases_for_termination_claim ... ok
+test evidence_ir::tests::kani_contract_accepts_scoped_passing_function_contract ... ok
+test evidence_ir::tests::kani_contract_keeps_bounded_harness_recorded_only ... ok
+test evidence_ir::tests::kani_contract_rejects_missing_target_solver_and_receipt ... ok
+test evidence_ir::tests::kani_contract_rejects_all_monomorphization_and_recursive_termination_overclaims ... ok
+test evidence_ir::tests::kani_stub_accepts_environmental_boundary_with_assumptions ... ok
+test cob_evidence::tests::multiple_physical_roots_converge_independent_of_input_order ... ok
+test evidence_ir::tests::kani_contract_rejects_failed_receipt_as_property ... ok
+test evidence_ir::tests::kani_stub_accepts_verified_contract_linkage ... ok
+test evidence_ir::tests::kani_stub_rejects_plain_stub_promotion_and_missing_assumptions ... ok
+test evidence_ir::tests::kani_stub_rejects_missing_contract_link ... ok
+test evidence_ir::tests::strict_envelope_preserves_legacy_artifact_identity ... ok
+test evidence_ir::tests::strict_envelope_accepts_open_hash_bound_payload ... ok
+test evidence_ir::tests::kani_stub_rejects_stale_contract_hash_and_signature_mismatch ... ok
+test evidence_ir::tests::typed_artifact_identity_rejects_malformed_wire_hash ... ok
+test evidence_ir::tests::verification_role_serializes_to_snake_case ... ok
+test evidence_ir::tests::zero_width_span_is_valid ... ok
+test evidence_model::tests::binding_history_fails_closed_for_ambiguous_alias ... ok
+test evidence_model::tests::binding_history_reports_stale_bindings ... ok
+test evidence_ir::tests::strict_envelope_rejects_unknown_duplicate_and_trailing_control_data ... ok
+test evidence_model::tests::binding_history_resolves_alias_to_content_identity ... ok
+test evidence_model::tests::cache_decision_blocks_effectful_capabilities_by_default ... ok
+test evidence_model::tests::cache_decision_hits_for_identical_replay_safe_keys ... ok
+test evidence_model::tests::cache_decision_misses_for_changed_key_fields ... ok
+test evidence_codebase_index::tests::evidence_index_law_equivalent_inputs_have_byte_stable_identity ... ok
+test evidence_model::tests::capability_policy_fails_for_denied_or_unknown_capabilities ... ok
+test evidence_model::tests::capability_sets_are_sorted_round_trippable_and_pure_cache_eligible ... ok
+test evidence_model::tests::durable_storage_accepts_supported_legacy_migration_metadata ... ok
+test evidence_model::tests::durable_storage_decodes_valid_current_envelope ... ok
+test evidence_model::tests::durable_storage_fails_closed_for_hash_type_codec_and_missing_migration ... ok
+test evidence_model::tests::evidence_definition_identity_changes_when_dependency_identity_changes ... ok
+test evidence_model::tests::evidence_definition_identity_ignores_name_and_path_metadata ... ok
+test evidence_model::tests::evidence_definition_validation_fails_without_boundary_or_dependency_identity ... ok
+test evidence_model::tests::graph_queries_return_deterministic_linkage ... ok
+test evidence_model::tests::evidence_ir_transcript_passes_when_expected_report_and_hash_match ... ok
+test evidence_model::tests::graph_validation_fails_for_duplicate_nodes_dangling_edges_and_ambiguous_aliases ... ok
+test evidence_model::tests::refactoring_plan_allows_identity_preserving_alias_migration ... ok
+test evidence_model::tests::refactoring_plan_blocks_ambiguous_dangling_or_semantic_equivalence_sessions ... ok
+test evidence_model::tests::graph_export_and_identity_are_stable_for_reordered_inputs ... ok
+test evidence_model::tests::transcript_fails_when_expected_issue_codes_are_stale ... ok
+test evidence_model::tests::transcript_negative_fixture_passes_when_expected_failure_matches ... ok
+test formal_proof_chain::tests::negative_formal_proof_stack_chain_fixture_fails_closed ... ok
+test formal_proof_chain::tests::positive_formal_proof_stack_chain_fixture_passes ... ok
+test build_service::tests::malformed_digest_and_version_fail ... ok
+test build_service::tests::oom_retry_requires_evidence_and_increasing_class ... ok
+test function_address_profile::tests::digest_spelling_adapters_normalize_octet_kamacite_and_mantle_boundaries ... ok
+test function_address_profile::tests::digest_spelling_adapters_reject_malformed_prefixes_and_cross_domain_substitution ... ok
+test function_address_preserves::tests::stale_domain_projection_role_and_boundary_fail ... ok
+test function_address_preserves::tests::valid_preserves_receipt_emits_recorded_graph_rows ... ok
+test function_address_profile::tests::invalid_duplicate_and_empty_edges_never_produce_publication ... ok
+test function_address_profile::tests::octet_only_profile_builds_recorded_only_evidence_artifact ... ok
+test function_address_profile::tests::rejects_duplicate_locator_stale_span_and_unknown_edge ... ok
+test function_address_profile::tests::rejects_malformed_digest_text ... ok
+test function_address_profile::tests::octet_plus_kamacite_profile_exports_graph_rows ... ok
+test function_address_profile::tests::policy_identity_is_deterministic_and_embedded_in_valid_artifacts ... ok
+test function_address_profile::tests::rejects_profile_version_roles_domains_and_overclaims ... ok
+test function_address_profile::tests::rejects_stale_receipt_identity_and_missing_span ... ok
+test function_address_profile::tests::policy_identity_rejects_missing_malformed_stale_and_substituted_values ... ok
+test function_object::tests::function_object_records_effect_caveats_without_claiming_purity ... ok
+test function_object::tests::core_owned_normalization_is_stable_across_constructions ... ok
+test function_object::tests::malformed_dependency_identity_status_fails_with_typed_error ... ok
+test function_object::tests::function_object_hash_is_stable_for_same_core_inputs ... ok
+test function_object::tests::normalization_mismatch_fails_closed_without_object_hash ... ok
+test function_object::tests::macro_context_dependency_status_serializes_to_stable_string ... ok
+test function_object::tests::typed_contracts_serialize_to_existing_v1_strings ... ok
+test function_object::tests::hash_payload_is_reviewable_and_excludes_display_fields ... ok
+test function_object::tests::legacy_inline_json_payload_matches_new_canonical_json ... ok
+test hegel_property::tests::complete_hegel_receipt_validates ... ok
+test hegel_property::tests::failed_receipt_preserves_counterexample ... ok
+test hegel_property::tests::suite_lane_definitions_are_bounded_and_ordered ... ok
+test hegel_property::tests::overclaim_and_tier_promotion_fail_closed ... ok
+test hegel_property::tests::receipt_missing_identity_hash_or_non_claim_fails_closed ... ok
+test hegel_property::tests::stale_generator_identity_and_receipt_hash_fail_closed ... ok
+test function_address_profile::tests::publication_is_validated_order_stable_and_identity_bound ... ok
+test oxide_primitives::tests::attestation_metadata_requires_explicit_scope_and_boundary ... ok
+test oxide_primitives::tests::derived_key_collection_rejects_duplicates ... ok
+test oxide_primitives::tests::reference_inventory_records_boundaries ... ok
+test oxide_primitives::tests::semantic_diff_rejects_stale_baseline ... ok
+test oxide_primitives::tests::typed_id_role_or_uuid_mismatch_fails_closed ... ok
+test oxide_primitives::tests::typed_ids_keep_blake3_canonical_and_uuid_external ... ok
+test preserves_evidence::tests::bridge_validation_keeps_bounded_role_checks ... ok
+test preserves_evidence::tests::duplicate_and_nested_self_hash_fields_fail_closed ... ok
+test preserves_evidence::tests::equivalent_renderings_have_equal_corrected_identity ... ok
+test preserves_evidence::tests::malformed_or_stale_envelope_fails_closed ... ok
+test preserves_evidence::tests::migration_binds_original_bytes_and_both_identities ... ok
+test preserves_evidence::tests::migration_without_bytes_or_with_wrong_identity_fails ... ok
+test preserves_evidence::tests::payload_occurrences_of_self_hash_names_remain_hash_bearing ... ok
+test preserves_evidence::tests::typed_and_prose_overclaims_fail ... ok
+test preserves_evidence::tests::typed_identity_boundary_passes ... ok
+test preserves_evidence::tests::valid_envelope_passes_and_legacy_profile_fails ... ok
+test proof_carrying_ir::tests::stale_sidecar_role_cross_artifact_and_overclaim_fail ... ok
+test proof_carrying_ir::tests::valid_unknown_dialect_is_preserved_recorded_only ... ok
+test provenance::tests::chain_resolves_requirement_to_function_objects ... ok
+test provenance::tests::chain_resolves_source_id_to_link ... ok
+test provenance::tests::chain_resolves_unknown_requirement_to_empty ... ok
+test provenance::tests::chain_resolves_unknown_source_id_to_none ... ok
+test provenance::tests::chain_serializes_to_json_with_boundary ... ok
+test provenance::tests::chain_traces_binary_to_source_functions ... ok
+test provenance::tests::chain_traces_unknown_binary_to_empty ... ok
+test provenance::tests::chain_with_multiple_links_resolves_correctly ... ok
+test provenance::tests::check_fails_closed_for_duplicate_source_id ... ok
+test provenance::tests::check_fails_closed_for_empty_function_object_id ... ok
+test provenance::tests::check_fails_closed_for_empty_source_id ... ok
+test provenance::tests::check_fails_closed_for_schema_mismatch ... ok
+test provenance::tests::check_fails_closed_for_weakened_boundary ... ok
+test provenance::tests::check_passes_for_valid_chain ... ok
+test provenance::tests::link_without_artifact_or_binary_hash_is_valid ... ok
+test radicle_forge_ops::tests::admits_exact_successful_revision_and_verifies_receipt ... ok
+test radicle_forge_ops::tests::rejects_bot_delegate_and_weakened_admission_non_claims ... ok
+test shared_identity::tests::canonical_json_hash_is_order_stable ... ok
+test shared_identity::tests::canonical_profile_names_are_visible ... ok
+test radicle_forge_ops::tests::rejects_duplicate_keys_malformed_patch_and_review_shape ... ok
+test radicle_forge_ops::tests::rejects_failed_unsigned_duplicate_wrong_revision_and_non_descendant_admission ... ok
+test shared_identity::tests::closed_wire_dto_rejects_unknown_duplicate_and_unsupported_roles ... ok
+test shared_identity::tests::digest_roles_are_not_interchangeable ... ok
+test shared_identity::tests::every_owned_role_uses_the_shared_checked_core ... ok
+test shared_identity::tests::heterogeneous_wire_round_trip_preserves_public_json_and_identity ... ok
+test shared_identity::tests::malformed_or_unsupported_digest_fails_closed ... ok
+test shared_identity::tests::missing_exclusion_profile_fails_closed ... ok
+test shared_identity::tests::named_compatibility_parser_normalizes_existing_uppercase_fields ... ok
+test shared_identity::tests::frozen_baseline_binds_shared_wire_and_stack_provenance_identities ... ok
+test shared_identity::tests::non_claim_boundary_rejects_overclaim ... ok
+test shared_identity::tests::receipt_hash_exclusion_removes_self_reference_only ... ok
+test shared_identity::tests::supported_digest_spellings_normalize_by_profile ... ok
+test radicle_forge_ops::tests::exact_existing_mapping_is_verify_only_and_conflict_fails ... ok
+test radicle_forge_ops::tests::plans_native_issue_and_patch_deterministically_without_promoting_review ... ok
+test shared_identity::tests::typed_parser_accepts_supported_spellings_and_borrowed_views ... ok
+test shared_identity::tests::typed_parser_rejects_unsupported_malformed_and_non_hex_inputs ... ok
+test shared_identity::tests::typed_validation_has_no_runtime_expected_role ... ok
+test shared_identity::tests::wire_admission_rejects_stale_normalization_and_cross_role_extraction ... ok
+test radicle_forge_ops::tests::binding_receipt_replays_and_tampering_fails ... ok
+test stack_provenance_adapter::graph::tests::canonical_ids_ignore_field_order_and_paths ... ok
+test build_service::tests::reuse_requires_distinct_facts ... ok
+test stack_provenance_adapter::tests::built_binary_thread_json_rejects_malformed_manifest ... ok
+test stack_provenance_adapter::tests::builds_and_verifies_minimal_release_trace ... ok
+test stack_provenance_adapter::tests::keeps_octet_proof_card_requirement_links ... ok
+test stack_provenance_adapter::tests::built_binary_thread_accepts_measured_binary_identity ... ok
+test stack_provenance_adapter::tests::rejects_malformed_octet_export ... ok
+test stack_provenance_adapter::tests::rejects_stale_parent_and_trellis_tier_promotion ... ok
+test stack_provenance_adapter::tests::built_binary_thread_rejects_stale_bytes_and_missing_binary_identity ... ok
+test stack_provenance_adapter::tests::built_binary_thread_rejects_missing_parent_tier_promotion_and_overclaim ... ok
+test stack_provenance_adapter::tests::built_binary_thread_rejects_stale_sidecar_digest_and_octet_mismatch ... ok
+test stack_provenance_adapter::tests::rejects_missing_mantle_role_digest_mismatch_and_binary_mismatch ... ok
+test radicle_forge_ops::tests::pure_core_has_no_effect_markers_and_detector_rejects_effects ... ok
+test stack_provenance_adapter::tests::typed_boundary_parsers_reject_invalid_strings ... ok
+test stack_provenance_adapter::tests::stack_provenance_preserves_report_diff_fixture_is_fresh ... ok
+test stack_role_registry::tests::consumer_constant_drift_validation_records_digest ... ok
+test stack_role_registry::tests::invalid_stack_schema_registry_rows_fail_closed ... ok
+test stack_provenance_adapter::tests::unknown_evidence_tier_is_preserved_but_conservative ... ok
+test stack_role_registry::tests::known_stack_schema_registry_rows_pass ... ok
+test stack_provenance_adapter::tests::stack_provenance_preserves_report_diff_ignores_json_field_order ... ok
+test stack_provenance_adapter::tests::typed_boundary_parsers_accept_valid_stack_metadata ... ok
+test stack_provenance_adapter::tests::typed_binary_adapter_preserves_accepted_wire_spelling ... ok
+test stack_role_registry::tests::stack_role_registry_accepts_schema_role_and_alias_rows ... ok
+test stack_provenance_adapter::tests::typed_digest_roles_accept_prefixed_uppercase_hashes_without_json_shape_changes ... ok
+test stack_role_registry::tests::stack_role_registry_rejects_role_schema_and_alias_failures ... ok
+test stack_role_registry::tests::verification_role_counting_drift_fails_closed ... ok
+test stack_role_registry::tests::verification_role_vocabulary_preserves_counting_boundary ... ok
+test trellis_proof_evidence::tests::accepted_proof_and_graph_pass ... ok
+test trellis_proof_evidence::tests::missing_assumptions_promotion_domain_and_boundary_fail ... ok
+test stack_provenance_adapter::graph::tests::graph_report_accepts_complete_fixture ... ok
+test wasm_component_evidence::tests::complete_component_materialization_graph_passes ... ok
+test wasm_component_evidence::tests::digest_role_equivalence_cycle_property_and_bundle_shortcut_fail ... ok
+test stack_provenance_adapter::tests::stack_provenance_preserves_corpus_is_fresh ... ok
+test source_review::tests::malformed_or_open_json_and_weakened_nonclaims_fail_closed ... ok
+test stack_provenance_adapter::graph::tests::graph_report_rejects_broken_fixtures ... ok
+test source_review::tests::explicit_count_and_byte_bounds_reject_oversized_inputs ... ok
+test source_review::tests::missing_reviews_and_under_threshold_are_insufficient_not_accepted ... ok
+test source_review::tests::real_signatures_accept_only_manual_review_and_preserve_all_linkage ... ok
+test source_review::tests::valid_needs_revision_is_attributed_but_not_approval ... ok
+test source_review::tests::duplicated_full_key_and_author_only_evidence_cannot_inflate_threshold ... ok
+test source_review::tests::changed_subject_root_policy_scope_or_signer_label_is_invalid ... ok
+test source_review::tests::logical_identity_ignores_json_layout_but_exact_artifact_digest_does_not ... ok
+test source_review::tests::signature_key_generation_currentness_and_purpose_fail_closed ... ok
+
+test result: ok. 276 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+
+running 5 tests
+test frozen_octet_aeneas_chain_passes_with_bounded_handoff ... ok
+test proof_relevant_material_changes_chain_identity ... ok
+test canonical_identity_ignores_order_labels_paths_and_run_local_ids ... ok
+test every_required_stage_edge_domain_role_and_artifact_fails_closed ... ok
+test declared_negative_matrix_fails_for_expected_reason ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s
+
+
+running 3 tests
+test consumer_projections_reference_bundle_identities ... ok
+test tampered_bundle_fails_closed ... ok
+test checked_in_bundle_validates ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test ordered_fields_reject_permutation ... ok
+test canonical_identity_is_deterministic ... ok
+test set_like_fields_are_permutation_invariant ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 3 tests
+test hegel_generated_negative_graph_and_cache_inputs_fail_closed ... ok
+test hegel_artifact_identity_ignores_display_span_path ... ok
+test hegel_graph_and_cache_identities_are_deterministic ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 10 tests
+test tests::dedicated_artifact_auth_signature_uses_real_radicle_signer_without_authority_promotion ... ok
+test tests::unauthorized_and_unsafe_requests_do_not_mutate_repository ... ok
+test tests::malformed_and_corrupted_legacy_refs_block_snapshot_materialization ... ok
+test tests::malformed_related_root_remains_visible_as_rejected_evidence ... ok
+test tests::real_radicle_cob_round_trip_is_preview_first_and_ref_confined ... ok
+test tests::artifact_auth_operational_receipt_rejects_sequence_authorization_operation_and_payload_drift ... ok
+test tests::embedded_attach_then_revoke_preserves_history_and_changes_only_accepted_state ... ok
+test tests::independent_physical_sidecars_converge_and_require_explicit_future_selection ... ok
+test tests::artifact_auth_operational_receipt_is_capability_written_cob_attached_and_replayed ... ok
+test tests::dedicated_artifact_auth_signature_rejects_protocol_tamper_key_currentness_and_false_parity ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+
+running 2 tests
+test tests::duplicate_unknown_and_escaping_outputs_fail ... ok
+test tests::flags_accept_values_and_execute_switch ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 17 tests
+test tests::canonical_profile_names_are_visible ... ok
+test tests::canonical_json_hash_is_order_stable ... ok
+test tests::digest_roles_are_not_interchangeable ... ok
+test tests::closed_wire_dto_rejects_unknown_duplicate_and_unsupported_roles ... ok
+test tests::every_owned_role_uses_the_shared_checked_core ... ok
+test tests::malformed_or_unsupported_digest_fails_closed ... ok
+test tests::heterogeneous_wire_round_trip_preserves_public_json_and_identity ... ok
+test tests::missing_exclusion_profile_fails_closed ... ok
+test tests::named_compatibility_parser_normalizes_existing_uppercase_fields ... ok
+test tests::frozen_baseline_binds_shared_wire_and_stack_provenance_identities ... ok
+test tests::non_claim_boundary_rejects_overclaim ... ok
+test tests::receipt_hash_exclusion_removes_self_reference_only ... ok
+test tests::supported_digest_spellings_normalize_by_profile ... ok
+test tests::typed_parser_accepts_supported_spellings_and_borrowed_views ... ok
+test tests::typed_parser_rejects_unsupported_malformed_and_non_hex_inputs ... ok
+test tests::typed_validation_has_no_runtime_expected_role ... ok
+test tests::wire_admission_rejects_stale_normalization_and_cross_role_extraction ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

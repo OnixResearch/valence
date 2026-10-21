@@ -1,0 +1,54 @@
+{
+  "change": "align-source-review-auth-cohort",
+  "command": "change_create",
+  "created": [
+    ".cairn/changes/align-source-review-auth-cohort",
+    ".cairn/changes/align-source-review-auth-cohort/design.md",
+    ".cairn/changes/align-source-review-auth-cohort/metadata.json",
+    ".cairn/changes/align-source-review-auth-cohort/proposal.md",
+    ".cairn/changes/align-source-review-auth-cohort/specs",
+    ".cairn/changes/align-source-review-auth-cohort/tasks.md"
+  ],
+  "existing": [],
+  "layout": "cairn",
+  "mutated": true,
+  "non_claims": [
+    "workflow state proves only the selected policy graph and observed structural artifact facts",
+    "workflow instructions do not prove artifact truth, review quality, or implementation correctness",
+    "workflow state does not satisfy proposal, design, tasks, sync, archive, evidence, or release gates",
+    "workflow commands are read-only and do not create, edit, delete, or approve lifecycle artifacts"
+  ],
+  "receipt_hash": "156421f72e4e2241cffc69b5516eff111e58c898f4445de3dddf009e89f99d87",
+  "root": ".",
+  "scaffold": [
+    {
+      "artifact_id": "proposal",
+      "path": "proposal.md",
+      "path_kind": "file",
+      "structural_admission": "proposal"
+    },
+    {
+      "artifact_id": "specs",
+      "path": "specs",
+      "path_kind": "spec_directory",
+      "structural_admission": "delta_specs"
+    },
+    {
+      "artifact_id": "design",
+      "path": "design.md",
+      "path_kind": "file",
+      "structural_admission": "design"
+    },
+    {
+      "artifact_id": "tasks",
+      "path": "tasks.md",
+      "path_kind": "file",
+      "structural_admission": "tasks"
+    }
+  ],
+  "scaffold_hash": "86253c0e15f0dec8c3100247ba589b14e416b2ee525a39053f6e993b98a92722",
+  "spec_effect": "delta",
+  "workflow_profile": "spec-driven",
+  "workflow_profile_source": "change_create",
+  "workflow_profile_version": 1
+}

@@ -1,0 +1,124 @@
+{
+  "acceptance_ids": [],
+  "artifacts": [
+    {
+      "blockers": [],
+      "files": [
+        {
+          "blake3": "c1f58389666b3688220ee8378e8ccc888b40a3100d11e78217dadfb31ebfbb8c",
+          "path": ".cairn/changes/align-source-review-auth-cohort/proposal.md"
+        }
+      ],
+      "id": "proposal",
+      "missing": [],
+      "output_path": "proposal.md",
+      "path_kind": "file",
+      "requires": [],
+      "stage": "proposal",
+      "state": "done",
+      "structural_admission": "proposal",
+      "unlocks": [
+        "specs",
+        "design"
+      ]
+    },
+    {
+      "blockers": [],
+      "files": [
+        {
+          "blake3": "46e87ffd3f6254bc126cf449af75b21b50767fdec6cb7ae6a1dc927ac825bb6e",
+          "path": ".cairn/changes/align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md"
+        },
+        {
+          "blake3": "cf32587725c40b77e641166fc25f66946fb506cb91a7ba24a83f75926ceed310",
+          "path": ".cairn/changes/align-source-review-auth-cohort/specs/source-review-acceptance/spec.md"
+        }
+      ],
+      "id": "specs",
+      "missing": [],
+      "output_path": "specs",
+      "path_kind": "spec_directory",
+      "requires": [
+        "proposal"
+      ],
+      "stage": "design",
+      "state": "done",
+      "structural_admission": "delta_specs",
+      "unlocks": [
+        "tasks"
+      ]
+    },
+    {
+      "blockers": [],
+      "files": [
+        {
+          "blake3": "c3aa4f4a487ef4ab0482dff294a9c47ab2721cd3e4ec7396aae80fec223e4cd3",
+          "path": ".cairn/changes/align-source-review-auth-cohort/design.md"
+        }
+      ],
+      "id": "design",
+      "missing": [],
+      "output_path": "design.md",
+      "path_kind": "file",
+      "requires": [
+        "proposal"
+      ],
+      "stage": "design",
+      "state": "done",
+      "structural_admission": "design",
+      "unlocks": [
+        "tasks"
+      ]
+    },
+    {
+      "blockers": [],
+      "files": [
+        {
+          "blake3": "c199a2e6fa736d7280705137999b386c1879e7d6fb850728e1b898ccbb015ad0",
+          "path": ".cairn/changes/align-source-review-auth-cohort/tasks.md"
+        }
+      ],
+      "id": "tasks",
+      "missing": [],
+      "output_path": "tasks.md",
+      "path_kind": "file",
+      "requires": [
+        "specs",
+        "design"
+      ],
+      "stage": "tasks",
+      "state": "done",
+      "structural_admission": "tasks",
+      "unlocks": []
+    }
+  ],
+  "change": "align-source-review-auth-cohort",
+  "command": "workflow status",
+  "input_hash": "f086acc2d6d676f3ef3d250a02bdbf04eb2319b8b560e02a7e867f3f2489e156",
+  "issues": [],
+  "layout": "cairn",
+  "mutated": false,
+  "next_actions": [],
+  "non_claims": [
+    "workflow state proves only the selected policy graph and observed structural artifact facts",
+    "workflow instructions do not prove artifact truth, review quality, or implementation correctness",
+    "workflow state does not satisfy proposal, design, tasks, sync, archive, evidence, or release gates",
+    "workflow commands are read-only and do not create, edit, delete, or approve lifecycle artifacts"
+  ],
+  "policy": "valence-default",
+  "policy_hash": "52b4b49bef217db1258e759788be5b6394ce5f18c9c8c467a8f171eb3e923882",
+  "profile_identity_hash": "c51f52eec6c3255606093da82f2f010961bdda5a5b4d7db4b881eba9cf2537cf",
+  "read_only": true,
+  "receipt_hash": "1ba9524acfb62c7e975701eeedcac2debefef0e1a62e554f7b007a5526a2110b",
+  "review_receipt_hashes": [],
+  "root": ".",
+  "schema_version": "cairn.workflow-status.v1",
+  "spec_effect": "delta",
+  "valid": true,
+  "workflow_description": "Cairn proposal, delta-spec, design, and tasks lifecycle",
+  "workflow_profile": "spec-driven",
+  "workflow_profile_compatibility_fallback": false,
+  "workflow_profile_source": "change_create",
+  "workflow_profile_version": 1,
+  "workflow_schema": "spec-driven"
+}

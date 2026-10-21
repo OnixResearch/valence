@@ -1,0 +1,210 @@
+{
+  "acceptance_ids": [],
+  "change": "align-source-review-auth-cohort",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "bd44ada2421447215990332858452772581de83e2faf5043da13e57385c028c1",
+  "issues": [],
+  "layout": "cairn",
+  "non_claims": [
+    "workflow state proves only the selected policy graph and observed structural artifact facts",
+    "workflow instructions do not prove artifact truth, review quality, or implementation correctness",
+    "workflow state does not satisfy proposal, design, tasks, sync, archive, evidence, or release gates",
+    "workflow commands are read-only and do not create, edit, delete, or approve lifecycle artifacts"
+  ],
+  "policy": "valence-default",
+  "policy_hash": "52b4b49bef217db1258e759788be5b6394ce5f18c9c8c467a8f171eb3e923882",
+  "policy_selection": {
+    "blake3": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+    "installation_receipt": false,
+    "locator": "cairn-policy/generated/cairn-policy.json",
+    "source": "legacy_default"
+  },
+  "probe_evidence": {
+    "declarations_present": false,
+    "probes": []
+  },
+  "profile_identity_hash": "76d14ae2680863e19436b27e0454b1c3cab8af11d53178b0ad49fdd52f00d90b",
+  "receipt_hash": "90882abe82b69f16a9c446b6f65783d4f6a5e12534fb29bbc9c0a80ccf8290f5",
+  "review_receipt_hashes": [],
+  "spec_effect": "delta",
+  "stage": "tasks",
+  "substance": [
+    {
+      "checkbox_tasks": 0,
+      "kind": "design",
+      "malformed_dependency_markers": 0,
+      "path": "./.cairn/changes/align-source-review-auth-cohort/design.md",
+      "requirement_blocks": 0,
+      "scenario_blocks": 0,
+      "substantive_lines": 11,
+      "substantive_requirement_blocks": 0,
+      "substantive_tasks": 0,
+      "task_done": 0,
+      "task_in_progress": 0,
+      "task_todo": 0
+    },
+    {
+      "checkbox_tasks": 0,
+      "kind": "proposal",
+      "malformed_dependency_markers": 0,
+      "path": "./.cairn/changes/align-source-review-auth-cohort/proposal.md",
+      "requirement_blocks": 0,
+      "scenario_blocks": 0,
+      "substantive_lines": 7,
+      "substantive_requirement_blocks": 0,
+      "substantive_tasks": 0,
+      "task_done": 0,
+      "task_in_progress": 0,
+      "task_todo": 0
+    },
+    {
+      "checkbox_tasks": 0,
+      "kind": "delta_spec",
+      "malformed_dependency_markers": 0,
+      "path": "./.cairn/changes/align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md",
+      "requirement_blocks": 3,
+      "scenario_blocks": 3,
+      "substantive_lines": 12,
+      "substantive_requirement_blocks": 3,
+      "substantive_tasks": 0,
+      "task_done": 0,
+      "task_in_progress": 0,
+      "task_todo": 0
+    },
+    {
+      "checkbox_tasks": 0,
+      "kind": "delta_spec",
+      "malformed_dependency_markers": 0,
+      "path": "./.cairn/changes/align-source-review-auth-cohort/specs/source-review-acceptance/spec.md",
+      "requirement_blocks": 5,
+      "scenario_blocks": 6,
+      "substantive_lines": 23,
+      "substantive_requirement_blocks": 5,
+      "substantive_tasks": 0,
+      "task_done": 0,
+      "task_in_progress": 0,
+      "task_todo": 0
+    },
+    {
+      "checkbox_tasks": 5,
+      "kind": "tasks",
+      "malformed_dependency_markers": 0,
+      "path": "./.cairn/changes/align-source-review-auth-cohort/tasks.md",
+      "requirement_blocks": 0,
+      "scenario_blocks": 0,
+      "substantive_lines": 5,
+      "substantive_requirement_blocks": 0,
+      "substantive_tasks": 5,
+      "task_done": 5,
+      "task_in_progress": 0,
+      "task_todo": 0
+    }
+  ],
+  "task_ordering": {
+    "active": true,
+    "edges": [
+      {
+        "predecessor": "policy",
+        "task": "behavior"
+      },
+      {
+        "predecessor": "source",
+        "task": "behavior"
+      },
+      {
+        "predecessor": "smoke",
+        "task": "lifecycle"
+      },
+      {
+        "predecessor": "behavior",
+        "task": "smoke"
+      }
+    ],
+    "issues": [],
+    "nodes": [
+      {
+        "blocked_by": [],
+        "blocks": [
+          "smoke"
+        ],
+        "id": "behavior",
+        "line": 13,
+        "predecessors": [
+          "policy",
+          "source"
+        ],
+        "ready": false,
+        "state": "done"
+      },
+      {
+        "blocked_by": [],
+        "blocks": [],
+        "id": "lifecycle",
+        "line": 18,
+        "predecessors": [
+          "smoke"
+        ],
+        "ready": false,
+        "state": "done"
+      },
+      {
+        "blocked_by": [],
+        "blocks": [
+          "behavior"
+        ],
+        "id": "policy",
+        "line": 9,
+        "predecessors": [],
+        "ready": false,
+        "state": "done"
+      },
+      {
+        "blocked_by": [],
+        "blocks": [
+          "lifecycle"
+        ],
+        "id": "smoke",
+        "line": 14,
+        "predecessors": [
+          "behavior"
+        ],
+        "ready": false,
+        "state": "done"
+      },
+      {
+        "blocked_by": [],
+        "blocks": [
+          "behavior"
+        ],
+        "id": "source",
+        "line": 5,
+        "predecessors": [],
+        "ready": false,
+        "state": "done"
+      }
+    ],
+    "order": [
+      "policy",
+      "source",
+      "behavior",
+      "smoke",
+      "lifecycle"
+    ],
+    "ready_tasks": [],
+    "valid": true
+  },
+  "valid": true,
+  "verdict": "PASS",
+  "workflow_profile": "spec-driven",
+  "workflow_profile_compatibility_fallback": false,
+  "workflow_profile_source": "change_create",
+  "workflow_profile_version": 1
+}

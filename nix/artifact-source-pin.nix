@@ -1,24 +1,25 @@
 { lib }:
 
 let
-  expectedRevision = "e41340bec587b6d049b5cc518ec7db925dde84be";
+  expectedRevision = "5f3962d7471d1547e044f57daeda72f56621fd52";
   rollbackRevision = "799459346d5416fbd7b9f55840a7371441b55afa";
   historicalRadicleRepository = "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git";
   mismatchedRevision = "0000000000000000000000000000000000000000";
   expectedProfileRepository = "https://github.com/OnixResearch/onix-artifact";
   expectedSshRepository = "ssh://git@github.com/OnixResearch/onix-artifact.git";
-  expectedNixNarHash = "sha256-2cM912L2YXVnVX9LquwhAPKyjPP/z/oFQRe7Qq9bHHE=";
-  expectedLicense = "MIT OR Apache-2.0";
-  incompatibleLicense = "AGPL-3.0-or-later";
+  expectedNixNarHash = "sha256-Xr7ocFkPN15XYb6NA4bv3I9Q42NvoSYtXWfsrj7I3WY=";
+  expectedLicense = "AGPL-3.0-or-later";
+  incompatibleLicense = "LicenseRef-unreviewed";
   expectedVersion = "0.1.0";
   corePackage = "artifact-auth-core";
   ed25519Package = "artifact-auth-ed25519";
   transferPackage = "artifact-transfer-core";
+  bindingPackage = "artifact-binding-core";
   consumerPackageNames = [
     corePackage
     ed25519Package
   ];
-  sourcePackageNames = consumerPackageNames ++ [ transferPackage ];
+  sourcePackageNames = consumerPackageNames ++ [ transferPackage bindingPackage ];
   expectedWorkspaceMembers = map (packageName: "crates/${packageName}") sourcePackageNames;
   expectedConsumerPackageCount = builtins.length consumerPackageNames;
   expectedCargoSource = "git+${expectedSshRepository}?rev=${expectedRevision}#${expectedRevision}";
@@ -75,6 +76,11 @@ let
     ] false input.coreManifest) "valence-core.workspace-dependency"
     ++ issueUnless (valueAt [
       "dependencies"
+      ed25519Package
+      "workspace"
+    ] false input.coreManifest) "valence-core.ed25519-workspace-dependency"
+    ++ issueUnless (valueAt [
+      "dependencies"
       corePackage
       "workspace"
     ] false input.radicleManifest) "valence-radicle.core-workspace-dependency"
@@ -106,12 +112,18 @@ let
     ++ issueUnless (input.resolvedNixNarHash == expectedNixNarHash) "nix.resolved.nar-hash";
 
   sourcePackageIssues =
-    manifest: packageName:
+    workspacePackage: manifest: packageName:
     let
       package = manifest.package or { };
     in
     issueUnless ((package.name or null) == packageName) "source.${packageName}.name"
-    ++ issueUnless ((package.publish or null) == false) "source.${packageName}.publish"
+    ++ issueUnless (
+      (package.publish or null) == false
+      || (
+        (package.publish or null) == { workspace = true; }
+        && (workspacePackage.publish or null) == false
+      )
+    ) "source.${packageName}.publish"
     ++ issueUnless (valueAt [
       "license"
       "workspace"
@@ -139,8 +151,10 @@ let
     ++ issueUnless ((distribution.crates_io or null) == false) "source.profile.crates-io"
     ++ issueUnless ((distribution.floating_revisions or null) == false) "source.profile.floating"
     ++ issueUnless ((distribution.sibling_paths or null) == false) "source.profile.sibling-paths"
-    ++ sourcePackageIssues input.sourceCoreManifest corePackage
-    ++ sourcePackageIssues input.sourceEd25519Manifest ed25519Package;
+    ++ sourcePackageIssues workspacePackage input.sourceCoreManifest corePackage
+    ++ sourcePackageIssues workspacePackage input.sourceEd25519Manifest ed25519Package
+    ++ sourcePackageIssues workspacePackage input.sourceTransferManifest transferPackage
+    ++ sourcePackageIssues workspacePackage input.sourceBindingManifest bindingPackage;
 
   validate =
     input:
@@ -193,6 +207,9 @@ let
       transferLockPackage = coreLockPackage // {
         name = transferPackage;
       };
+      bindingLockPackage = coreLockPackage // {
+        name = bindingPackage;
+      };
       floatingInput = replaceWorkspaceDependency input corePackage {
         git = expectedSshRepository;
         branch = "main";
@@ -231,6 +248,31 @@ let
           package = (input.cargoLock.package or [ ]) ++ [ transferLockPackage ];
         };
       };
+      bindingConsumerGraphInput = input // {
+        cargoLock = input.cargoLock // {
+          package = (input.cargoLock.package or [ ]) ++ [ bindingLockPackage ];
+        };
+      };
+      missingBindingSourceProfileInput = input // {
+        releaseProfile = input.releaseProfile // {
+          packages = consumerPackageNames ++ [ transferPackage ];
+        };
+      };
+      bindingLicenseInput = input // {
+        sourceBindingManifest = lib.recursiveUpdate input.sourceBindingManifest {
+          package.license = incompatibleLicense;
+        };
+      };
+      transferPublishInput = input // {
+        sourceTransferManifest = lib.recursiveUpdate input.sourceTransferManifest {
+          package.publish = true;
+        };
+      };
+      workspacePublishInput = input // {
+        sourceWorkspaceManifest = lib.recursiveUpdate input.sourceWorkspaceManifest {
+          workspace.package.publish = true;
+        };
+      };
       incompleteSourceProfileInput = input // {
         releaseProfile = input.releaseProfile // {
           packages = consumerPackageNames;
@@ -259,6 +301,11 @@ let
     ++ expectRejected "nix.locked.revision" mismatchedInput
     ++ expectRejected "cargo-lock.${corePackage}.unique" duplicateInput
     ++ expectRejected "cargo-lock.consumer-package-set" widenedConsumerGraphInput
+    ++ expectRejected "cargo-lock.consumer-package-set" bindingConsumerGraphInput
+    ++ expectRejected "source.profile.packages" missingBindingSourceProfileInput
+    ++ expectRejected "source.${bindingPackage}.license-inheritance" bindingLicenseInput
+    ++ expectRejected "source.${transferPackage}.publish" transferPublishInput
+    ++ expectRejected "source.${bindingPackage}.publish" workspacePublishInput
     ++ expectRejected "source.profile.packages" incompleteSourceProfileInput
     ++ expectRejected "source.workspace.members" incompleteSourceWorkspaceInput
     ++ expectRejected "source.workspace.license" incompatibleLicenseInput

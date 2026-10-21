@@ -1,0 +1,29 @@
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./.cairn/changes/align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md",
+        "./.cairn/changes/align-source-review-auth-cohort/specs/source-review-acceptance/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "align-source-review-auth-cohort",
+      "path": "./.cairn/changes/align-source-review-auth-cohort",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 0,
+        "total": 5,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}

@@ -1,0 +1,4 @@
+warning: updating lock file "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/flake.lock":
+• Updated input 'artifact':
+    'git+ssh://git@github.com/OnixResearch/onix-artifact.git?ref=refs/heads/main&rev=e41340bec587b6d049b5cc518ec7db925dde84be' (2026-07-26)
+  → 'git+ssh://git@github.com/OnixResearch/onix-artifact.git?ref=refs/heads/main&rev=5f3962d7471d1547e044f57daeda72f56621fd52' (2026-10-21)

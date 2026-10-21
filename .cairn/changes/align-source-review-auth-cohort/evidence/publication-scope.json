@@ -1,0 +1,70 @@
+{
+  "schema": "valence.receiver-acceptance-publication-scope.v1",
+  "canonical_repository": "/home/brittonr/git/OnixResearch/valence",
+  "vcs": "Jujutsu only; no commit, bookmark update, or publication performed",
+  "this_slice_file_scope": [
+    "cairn-policy/generated/cairn-policy.json",
+    "docs/cairn-policy-compatibility.md",
+    ".cairn/changes/align-source-review-auth-cohort/tasks.md",
+    ".cairn/specs/artifact-auth-adoption/spec.md",
+    ".cairn/specs/source-review-acceptance/spec.md",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/cohort-preparation.json",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/acceptance.json",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/canonical-source-binding.json",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/execution-provenance.json",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/publication-scope.json"
+  ],
+  "this_slice_bounded_evidence_directories": [
+    ".cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/"
+  ],
+  "parent_owned_related_preparation_not_edited_here": [
+    "Cargo.toml",
+    "Cargo.lock",
+    "flake.nix",
+    "flake.lock",
+    "nix/artifact-source-pin.nix",
+    "cairn-policy/default.ncl",
+    "cairn-policy/contracts.ncl",
+    "cairn-policy/fixtures/",
+    ".cairn/changes/align-source-review-auth-cohort/proposal.md",
+    ".cairn/changes/align-source-review-auth-cohort/design.md",
+    ".cairn/changes/align-source-review-auth-cohort/metadata.json",
+    ".cairn/changes/align-source-review-auth-cohort/specs/",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/",
+    ".cairn/changes/align-source-review-auth-cohort/evidence/canonical-owner-baseline/"
+  ],
+  "parent_owned_related_scope_note": "Parent must deliberately account for related source/policy/delta preparation in its broader cohort publication; it is not added to this slice by broad directory selection. Do not commit generated policy without the required reviewed source preparation.",
+  "exclude_preexisting_unrelated_paths": [
+    ".cairn/archive/1970-01-01-reuse-shared-radicle-cob-git-store/",
+    ".cairn/changes/adopt-owned-source-agpl/",
+    ".cairn/changes/add-model-checked-artifact-evidence/",
+    ".cairn/changes/record-nostr-identity-bindings/",
+    ".cairn/changes/record-storage-fault-evidence/",
+    ".cairn/specs/evidence-ir/spec.md",
+    ".cairn/specs/radicle-cob-evidence/spec.md",
+    "crates/",
+    "docs/licensing.md",
+    "docs/radicle-cob-evidence.md",
+    "evidence/source/artifact-workspace-migration-v1.blake3",
+    "evidence/source/artifact-workspace-migration-v1.json",
+    "evidence/source/artifact-workspace-migration-v1.ncl",
+    "license-policy.tsv",
+    "tools/check-license-boundary.rs",
+    "tools/import-radicle-cob-git-store.sh",
+    "vendor/onix-radicle-cob-git-store/"
+  ],
+  "exclude_unlisted_paths_by_default": true,
+  "snapshot_boundary": {
+    "command": "jj --ignore-working-copy status",
+    "observed_working_copy_snapshot": "79d3706d0d634e47cd004a32e009ce1104ed9a25",
+    "change_id_prefix": "qysvlumv",
+    "note": "Read-only snapshot-boundary inspection, not a current un-snapshotted filesystem diff; includes preserved pre-existing owner work. Bookmark cairn/kernel-proof-evidence-20260904 was already conflicted and was not touched."
+  },
+  "terminal_archive_executed": false,
+  "publication": false
+}

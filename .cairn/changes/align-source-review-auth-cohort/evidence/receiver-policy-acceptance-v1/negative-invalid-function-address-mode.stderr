@@ -1,0 +1,18 @@
+error: non mergeable terms
+     ┌─ /home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/cairn-policy/default.ncl:1281:12
+     │
+1281 │     mode = "optional",
+     │            ^^^^^^^^^^ cannot merge this expression
+     │
+     ┌─ /home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/cairn-policy/fixtures/invalid-function-address-mode.ncl:2:32
+     │  
+   1 │ ╭ (import "../default.ncl") & {
+   2 │ │   function_address_gate.mode = "ambient",
+     │ │                                ^^^^^^^^^ with this expression
+   3 │ │ }
+     │ ╰─' originally merged here
+     │  
+     = Merge operands have the same merge priority but they can't be combined.
+     = Both values are of type String but they aren't equal.
+     = String values can only be merged if they are equal
+

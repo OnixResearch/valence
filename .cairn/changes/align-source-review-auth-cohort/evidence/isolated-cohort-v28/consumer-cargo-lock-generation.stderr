@@ -1,0 +1,9 @@
+    Updating git repository `ssh://git@github.com/OnixResearch/onix-artifact.git`
+    Updating git repository `ssh://git@github.com/OnixResearch/onix-artifact.git`
+    Updating crates.io index
+     Locking 2 packages to latest compatible versions
+      Adding artifact-auth-core v0.1.0 (ssh://git@github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52#5f3962d7)
+    Removing artifact-auth-core v0.1.0 (ssh://git@github.com/OnixResearch/onix-artifact.git?rev=e41340bec587b6d049b5cc518ec7db925dde84be#e41340be)
+      Adding artifact-auth-ed25519 v0.1.0 (ssh://git@github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52#5f3962d7)
+    Removing artifact-auth-ed25519 v0.1.0 (ssh://git@github.com/OnixResearch/onix-artifact.git?rev=e41340bec587b6d049b5cc518ec7db925dde84be#e41340be)
+note: pass `--verbose` to see 80 unchanged dependencies behind latest

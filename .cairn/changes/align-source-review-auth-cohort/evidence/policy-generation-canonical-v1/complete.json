@@ -1,0 +1,41 @@
+{
+  "schema": "valence.canonical-policy-generation.v1",
+  "canonical_baseline_archive_blake3": "41244c822f93788886bff18c4ed38b242a84bf4081933a05e01ed39c273fab12",
+  "records": [
+    {
+      "label": "export-policy-canonical-baseline",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "policy",
+        "export",
+        "--source",
+        "cairn-policy/default.ncl",
+        "--output",
+        "cairn-policy/generated/cairn-policy.json"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+      "exit": 0,
+      "expected": 0,
+      "elapsed_s": 1.3774864226579666
+    }
+  ],
+  "input_identities": [
+    {
+      "path": "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+      "blake3": "104939af5a4ff5bff0e62851110c1c388b15f7974535fb167d05b2266029b45c"
+    },
+    {
+      "path": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/cairn-policy/default.ncl",
+      "blake3": "e0de8fa6d3ad2cc4d8a0bf8436ad04e15fde3d4ec94261438c6c5fb9176b9596"
+    },
+    {
+      "path": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020/cairn-policy/contracts.ncl",
+      "blake3": "2ba05b3d7fe76619a50a2ca7284268c6aaddd3eff48386125814f0c9cf1ab5d3"
+    }
+  ],
+  "compatibility_checks_run": false,
+  "final_source_admitted": false,
+  "publication": false,
+  "release_authority": false,
+  "generated_policy_blake3": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935"
+}

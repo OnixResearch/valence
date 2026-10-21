@@ -1,0 +1,20 @@
+{
+  "command": [
+    "ssh",
+    "leviathan.cymric-daggertooth.ts.net",
+    "env",
+    "-C",
+    "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+    "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+    "workflow",
+    "status",
+    "align-source-review-auth-cohort",
+    "--root",
+    "."
+  ],
+  "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-artifact-cohort-20261020",
+  "exit": 0,
+  "expected": 0,
+  "structural_only": true,
+  "source_admission_claim": false
+}

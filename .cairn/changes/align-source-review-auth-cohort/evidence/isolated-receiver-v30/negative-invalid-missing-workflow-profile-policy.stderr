@@ -1,0 +1,11 @@
+error: missing definition for `workflow_profile_policy`
+     ┌─ /home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28/cairn-policy/contracts.ncl:921:5
+     │
+ 921 │     workflow_profile_policy | WorkflowProfilePolicy,
+     │     ^^^^^^^^^^^^^^^^^^^^^^^ required here
+     │
+     ┌─ <stdlib/std.ncl>:3866:46
+     │
+3866 │       = fun field r => %record/remove% field (%record/freeze% r),
+     │                                              ------------------- in this record
+
