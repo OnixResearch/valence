@@ -1,0 +1,141 @@
+{
+  "change_issues": [],
+  "changes": 0,
+  "cross_repo_dependencies": [],
+  "cross_repo_evidence_issues": [],
+  "findings": [],
+  "issues": [],
+  "layout": "cairn",
+  "policy": "valence-default",
+  "policy_selection": {
+    "blake3": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+    "installation_receipt": false,
+    "locator": "cairn-policy/generated/cairn-policy.json",
+    "source": "legacy_default"
+  },
+  "receipt_hash": "3eedebf7684d795228c69c50e29e66260fe2ad7b12dbc5c4470a9f8eaddce219",
+  "resolution": {
+    "diagnostics": [],
+    "locator_consulted": false,
+    "registry_lookup": "local_locator_only",
+    "selected": {
+      "project_identity": null,
+      "root": ".",
+      "source": "explicit_root",
+      "store_id": null,
+      "store_identity": null
+    },
+    "valid": true
+  },
+  "spec_findings": [],
+  "spec_issues": [],
+  "spec_substance": [
+    {
+      "path": "./.cairn/specs/artifact-auth-adoption/spec.md",
+      "requirement_blocks": 8,
+      "scenario_blocks": 11,
+      "substantive_requirement_blocks": 8
+    },
+    {
+      "path": "./.cairn/specs/artifact-auth-operational-receipt/spec.md",
+      "requirement_blocks": 4,
+      "scenario_blocks": 7,
+      "substantive_requirement_blocks": 4
+    },
+    {
+      "path": "./.cairn/specs/artifact-auth-shell-verification/spec.md",
+      "requirement_blocks": 3,
+      "scenario_blocks": 3,
+      "substantive_requirement_blocks": 3
+    },
+    {
+      "path": "./.cairn/specs/content-bound-requirements/spec.md",
+      "requirement_blocks": 4,
+      "scenario_blocks": 10,
+      "substantive_requirement_blocks": 4
+    },
+    {
+      "path": "./.cairn/specs/evidence-ir/spec.md",
+      "requirement_blocks": 171,
+      "scenario_blocks": 321,
+      "substantive_requirement_blocks": 171
+    },
+    {
+      "path": "./.cairn/specs/kani-contract-roles/spec.md",
+      "requirement_blocks": 6,
+      "scenario_blocks": 10,
+      "substantive_requirement_blocks": 6
+    },
+    {
+      "path": "./.cairn/specs/kani-nonclaims/spec.md",
+      "requirement_blocks": 6,
+      "scenario_blocks": 10,
+      "substantive_requirement_blocks": 6
+    },
+    {
+      "path": "./.cairn/specs/kani-stub-roles/spec.md",
+      "requirement_blocks": 7,
+      "scenario_blocks": 11,
+      "substantive_requirement_blocks": 7
+    },
+    {
+      "path": "./.cairn/specs/nostr-identity-evidence/spec.md",
+      "requirement_blocks": 7,
+      "scenario_blocks": 13,
+      "substantive_requirement_blocks": 7
+    },
+    {
+      "path": "./.cairn/specs/provenance/spec.md",
+      "requirement_blocks": 22,
+      "scenario_blocks": 40,
+      "substantive_requirement_blocks": 22
+    },
+    {
+      "path": "./.cairn/specs/radicle-cob-evidence/spec.md",
+      "requirement_blocks": 14,
+      "scenario_blocks": 28,
+      "substantive_requirement_blocks": 14
+    },
+    {
+      "path": "./.cairn/specs/radicle-forge-operations/spec.md",
+      "requirement_blocks": 9,
+      "scenario_blocks": 18,
+      "substantive_requirement_blocks": 9
+    },
+    {
+      "path": "./.cairn/specs/source-review-acceptance/spec.md",
+      "requirement_blocks": 5,
+      "scenario_blocks": 6,
+      "substantive_requirement_blocks": 5
+    },
+    {
+      "path": "./.cairn/specs/stack-provenance-adapter/spec.md",
+      "requirement_blocks": 31,
+      "scenario_blocks": 82,
+      "substantive_requirement_blocks": 31
+    },
+    {
+      "path": "./.cairn/specs/stack-schema-role-registry/spec.md",
+      "requirement_blocks": 4,
+      "scenario_blocks": 5,
+      "substantive_requirement_blocks": 4
+    },
+    {
+      "path": "./.cairn/specs/strict-rust-admission/spec.md",
+      "requirement_blocks": 9,
+      "scenario_blocks": 15,
+      "substantive_requirement_blocks": 9
+    },
+    {
+      "path": "./.cairn/specs/wasm-component-evidence/spec.md",
+      "requirement_blocks": 12,
+      "scenario_blocks": 19,
+      "substantive_requirement_blocks": 12
+    }
+  ],
+  "specs_validated": 17,
+  "substance": [],
+  "substance_findings": [],
+  "substance_issues": [],
+  "valid": true
+}

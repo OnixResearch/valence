@@ -1,0 +1,2991 @@
+{
+  "acceptance_ids": [],
+  "actions": [
+    {
+      "description": "move active change to archive: align-source-review-auth-cohort",
+      "kind": "archive_change",
+      "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort"
+    }
+  ],
+  "blocked": false,
+  "change": "align-source-review-auth-cohort",
+  "cross_repo_dependencies": {
+    "blocked_count": 0,
+    "dependency_count": 0,
+    "input_hash": "70d72b15caf84eb16b13750559de56b5a8bf6db45ebbf1586469476054653ea7",
+    "non_claims": [
+      "dependency satisfaction proves presented receipt linkage only",
+      "dependency satisfaction does not prove upstream correctness or remote trust",
+      "dependency satisfaction does not prove downstream integration correctness or release eligibility"
+    ],
+    "policy_hash": "52b4b49bef217db1258e759788be5b6394ce5f18c9c8c467a8f171eb3e923882",
+    "receipt_hash": "5987406d3ebc1a88ae8dcfcecd682d42a0e3eb3131a7b9babb801212116c6506",
+    "rows": [],
+    "satisfied_count": 0,
+    "schema": "cairn.cross-repo-dependency-receipt.v1",
+    "valid": true,
+    "verdict": "PASS"
+  },
+  "cross_repo_evidence_issues": [],
+  "dry_run": false,
+  "input_hash": "6f683c15925107222047bca5b57219a6c884d8107d680236e2b01ce881e3a81b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "c3aa4f4a487ef4ab0482dff294a9c47ab2721cd3e4ec7396aae80fec223e4cd3",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/design.md"
+        },
+        {
+          "content_hash": "d79e13d670da70d1ceb5bed4749edf55a4d9b8cac96350dc611a5a9f6cf8c7c3",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/acceptance.json"
+        },
+        {
+          "content_hash": "1f329f98193a3646fe6d2f03fc596c0983334bdf0b03b220cf3fa1afb55d02e0",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/canonical-owner-baseline/inventory.json"
+        },
+        {
+          "content_hash": "b27fba96ff1279ccac1eca57b3d1283ce4712789f2a80e0ad1c96099dfb2914c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/canonical-source-binding.json"
+        },
+        {
+          "content_hash": "e8b9b213dc3da3cf4c98e6bad3d8926edf0aaf4186ad08e1b56d06beb80b67f7",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/actual-valence-cli-build.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/actual-valence-cli-build.stdout"
+        },
+        {
+          "content_hash": "a715ea93ed6436456e5beaa763cb8163a49172bcb4d47ca06385a0c3398d82ab",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/artifact-source-pin-and-negative-fixtures.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/artifact-source-pin-and-negative-fixtures.stdout"
+        },
+        {
+          "content_hash": "b1c545b50a6c33f8bbdef750079e8c061cc5bdd3de76086c0f56ef9d86f8957e",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/package-formatting.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/package-formatting.stdout"
+        },
+        {
+          "content_hash": "986f969f55de8dccb3ea570ba58472d6c9fadd318e4af6831a577b04503822ef",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/results.json"
+        },
+        {
+          "content_hash": "041df9958d0aa365052b3ceb1177dd57323134553eaf8ac4b96183f18f98900c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/strict-workspace-clippy.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/strict-workspace-clippy.stdout"
+        },
+        {
+          "content_hash": "77841e0377ec0cb5c6268c515b754cb1e19ea45b7aabae0e3658c56520ba708d",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/workspace-lib-tests.stderr"
+        },
+        {
+          "content_hash": "bc6e0bf597f61a27edfeee6cc1eecdcc44a6d34fa83967a6e04fd59b8f2653a2",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/workspace-lib-tests.stdout"
+        },
+        {
+          "content_hash": "c1393e32da69991d37a55fb141b0ab837b8fab529055702f53ea073bbf24129b",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/cohort-preparation.json"
+        },
+        {
+          "content_hash": "875994def2067ea5b84887b2fd77dfd16363702d57cc8862943d9030ef11a89c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/execution-provenance.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/artifact-source-pin-and-negative-fixtures.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/artifact-source-pin-and-negative-fixtures.stdout"
+        },
+        {
+          "content_hash": "37c9dca6046bf1b8f8b2e7966f72a3e2edef1d3275d5a0f8dae129524f26efaa",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-cargo-lock-generation.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-cargo-lock-generation.stdout"
+        },
+        {
+          "content_hash": "0f41b2c297fcdc6be4f76116dab31566e3f7e7e65c98eee505467b0c1086ef08",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-nix-lock-generation.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-nix-lock-generation.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-resolved-graph.stderr"
+        },
+        {
+          "content_hash": "b3d8e9d6cfbbb24d5125e3cab4ff938e35f29f48efce13b53d35ef260dfd2df4",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-resolved-graph.stdout"
+        },
+        {
+          "content_hash": "3403a4eddf007e82d89ccffdcf78876790d14dd07673210ea60850a5e48d187c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/executed-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/package-formatting.stderr"
+        },
+        {
+          "content_hash": "80b9bac3c9b4ca9d0820c1af97635ce7cf6d0a7e6684e61bbe88709abf837856",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/package-formatting.stdout"
+        },
+        {
+          "content_hash": "85d99c22400596912b43b9664ca30a784c3c9fcf0b32b37f1c70aef844e3238a",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v28/results.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/Cargo-lock-blake3.stderr"
+        },
+        {
+          "content_hash": "155020d78649657b9187dc80af6d7a4bea570d2efb768d0401b54610a1825afd",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/Cargo-lock-blake3.stdout"
+        },
+        {
+          "content_hash": "09da14025ca27c8739afe82b27565ff7b10e9ed4869e170efd866fea647c6367",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/actual-valence-cli-build.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/actual-valence-cli-build.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/affected-package-formatting.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/affected-package-formatting.stdout"
+        },
+        {
+          "content_hash": "0d206a322135c30081f83d77b4d343431f1511c7e5fc2ff4c7f7e09d6eedaec5",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/complete.json"
+        },
+        {
+          "content_hash": "642621b3c12ef61704e1af75f9cc8a651a2b78b8d71d11f243edf1cbfac09eb9",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/executed-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/flake-lock-blake3.stderr"
+        },
+        {
+          "content_hash": "3958f64c969e5c1a77010f8972360093de0dfba3e0c634e7a2bd184d49063d17",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/flake-lock-blake3.stdout"
+        },
+        {
+          "content_hash": "2d206a89daed7b8ad7b28f74c440b783272c7697dda8b1ef983435d23c787be1",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/results.json"
+        },
+        {
+          "content_hash": "f9d755d10e70e3d0033b50a466d7c82463918237ee08a5cec4ebf865c048949f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/strict-workspace-clippy.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/strict-workspace-clippy.stdout"
+        },
+        {
+          "content_hash": "8c5b10024fe2dc44ccc36ce86d72a82935c36e87279649798847baec0d1298e3",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/workspace-lib-tests.stderr"
+        },
+        {
+          "content_hash": "7aa45b28fa2d8da759da8cb53e6575a56b0b7f1047e32199172d3a6416dc649d",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-cohort-v29/workspace-lib-tests.stdout"
+        },
+        {
+          "content_hash": "953501299e6d3735229b4be6f67ed30111d00b37fad74f9148b90f8a1baec052",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-main-line-acceptance.json"
+        },
+        {
+          "content_hash": "c70a23fb7fabe69e683667acf70602b7bc9a4bab0d5adb7c771ae72293ff1d3f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-main-line-retention-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/archive-plan.stderr"
+        },
+        {
+          "content_hash": "ae88b45a784c92251a2b1f8b883f4293e80ee4097315b81f1aa73cf5429e067b",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/archive-plan.stdout"
+        },
+        {
+          "content_hash": "ceb4804b7243dae71581ed4948e2abe6bdfe832d61c8759fb5913c49d3e41657",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/design-gate.stderr"
+        },
+        {
+          "content_hash": "90fb66a0bdf732a44d7bd766d3b612414fa4c66804d49c418958dca79107a541",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/design-gate.stdout"
+        },
+        {
+          "content_hash": "7fb0e797924862361216cd445aba597381a65a02fbb701c56d20d0c8d9565fed",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/executed-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/native-status.stderr"
+        },
+        {
+          "content_hash": "72f2cb770d942d4c381812c2a50bf9b78e65520dda789602a679b1add6676328",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/native-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/native-workflow.stderr"
+        },
+        {
+          "content_hash": "fabea8efe7c659c3fc592b3e5b49d8259044942a0584673640e903c5cf598e3c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/native-workflow.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/proposal-gate.stderr"
+        },
+        {
+          "content_hash": "717216de77334d3ab2a7e476034c541a592a83f30ff9c3001e18522c5c2d4ed6",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/proposal-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/readiness.stderr"
+        },
+        {
+          "content_hash": "45a70b8b71f480653ddbd5c1adc75aa2f3b26b23787610a6f63886eeef1847aa",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/readiness.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/sync-plan.stderr"
+        },
+        {
+          "content_hash": "663845e03f308ba6b6043603242187c3b3b228efc56185806285c26275428686",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/sync-plan.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/tasks-gate.stderr"
+        },
+        {
+          "content_hash": "59ca9574856e1bc24a74211570f2badb271982d37052822bdcb61914e5987957",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/tasks-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/validate.stderr"
+        },
+        {
+          "content_hash": "1708332b0db0e745bcefeebd76038c9dc4ecfb75940870135c87f6d3559d6dec",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-native-v31/validate.stdout"
+        },
+        {
+          "content_hash": "5f8e8b09715fa7ea2fccb86864aa85d9a21d94866829e9838bde4d6df1cb6f57",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/approved-receipt.json"
+        },
+        {
+          "content_hash": "6d66237a1c8624d2e4bc5ece9477659e157f98d55c3370d911aeb63790db34ad",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/default-root-status.stderr"
+        },
+        {
+          "content_hash": "72f2cb770d942d4c381812c2a50bf9b78e65520dda789602a679b1add6676328",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/default-root-status.stdout"
+        },
+        {
+          "content_hash": "eb252e5b60db92bc4b92da911449a3c6fc19b5571c00e9072a2b5fb97552ba4f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/excluded-author-receipt.json"
+        },
+        {
+          "content_hash": "5672144ddc5187fe0fa676e4ea0e045dba6ca20f9488ca4bab826a8eb6be2910",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/executed-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-change-list.stderr"
+        },
+        {
+          "content_hash": "cfd4f938df6d4d30b5ef9068e36e472a675273aaee349ef0ea27306e39cff896",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-change-list.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-status.stderr"
+        },
+        {
+          "content_hash": "72f2cb770d942d4c381812c2a50bf9b78e65520dda789602a679b1add6676328",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-workflow.stderr"
+        },
+        {
+          "content_hash": "fabea8efe7c659c3fc592b3e5b49d8259044942a0584673640e903c5cf598e3c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-workflow.stdout"
+        },
+        {
+          "content_hash": "d6c76f13ca764f3ba861b30c68f1beb6ba6289e78f80a444ae3f372c641f4d5f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/needs-revision-receipt.json"
+        },
+        {
+          "content_hash": "de39274d96f55905fc368bc3fa655eacfe242cca7108d5e22d5252cc7881818f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-empty-roles.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-empty-roles.stdout"
+        },
+        {
+          "content_hash": "450b5642c89a2c0d95348d5ed8231492bf4d972f135c2c04c03d2c771ae4573a",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-empty-schemas.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-empty-schemas.stdout"
+        },
+        {
+          "content_hash": "ff74409fe5c0167ed1e2f12a2aef92a5d50bd1a8ff913b379f4b4020e25d2538",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-malformed-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-malformed-hash.stdout"
+        },
+        {
+          "content_hash": "fb6596ef82ffc2a51e967895721ff62a0fbec546207e1d5f48f004855f283f14",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-mode.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-mode.stdout"
+        },
+        {
+          "content_hash": "54f3773e19df365c1795ebf0db1ab9ad55b897b9bcb31467725ba16445efc5b7",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-placeholder-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-placeholder-hash.stdout"
+        },
+        {
+          "content_hash": "c54f89d3e077dfe12b9d5557dd7a520112c0180ab66eba9833aacacdddd28e23",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-stale-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-stale-hash.stdout"
+        },
+        {
+          "content_hash": "379ddddb1a112739bc8a6cd018ef431a548ee749bea2f5b5c7c2d806223abd2c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-weakened-boundary.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-weakened-boundary.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-missing-function-address-gate.stderr"
+        },
+        {
+          "content_hash": "5df640fb7122ed54090d088182e59a5660836aa4cb5f773937749e8531129b50",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-missing-function-address-gate.stdout"
+        },
+        {
+          "content_hash": "f34efc33c786f90077a5ba446f7200585dcbfa2adbc2d2cb658a95882cbf3e70",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-missing-workflow-profile-policy.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-missing-workflow-profile-policy.stdout"
+        },
+        {
+          "content_hash": "755e391ce80a728445e08d7966808703b7504db44bc3b5cdd014ce96d1dffa08",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-outcome-machine-admission.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-outcome-machine-admission.stdout"
+        },
+        {
+          "content_hash": "755e391ce80a728445e08d7966808703b7504db44bc3b5cdd014ce96d1dffa08",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-workflow-artifact-missing-output-path.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-workflow-artifact-missing-output-path.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-export-runtime.stderr"
+        },
+        {
+          "content_hash": "aaba0376e9d448d81a183324f871ec5edfbab96b85bb2ec1000f3d4c0c4271fd",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-export-runtime.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-runtime.stderr"
+        },
+        {
+          "content_hash": "cc808bc448cfcad3b95550eeddb23cc9bf7496309edbb7c7db733090c5d795cc",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-runtime.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-version.stderr"
+        },
+        {
+          "content_hash": "73748fe4aedd6b1962d27a6fea04d5a63724b4b37d00e350331e8f3e52b562f7",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-version.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/policy-export-check.stderr"
+        },
+        {
+          "content_hash": "626bb5e31eed06caa9eff49fd1d1a339f21e19bb3347e93255daa23e716b1f47",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/policy-export-check.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/policy-parser.stderr"
+        },
+        {
+          "content_hash": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/policy-parser.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/positive-nickel.stderr"
+        },
+        {
+          "content_hash": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/positive-nickel.stdout"
+        },
+        {
+          "content_hash": "a4ce5157b69bb46c9b57f33cf9028a3576beef2bca3e42a48648ba9aad195ce8",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/producer-complete.json"
+        },
+        {
+          "content_hash": "452afb2f368e738807e8ecac41785db7344ae46e47f355fa27456dbcc6b8e15e",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/producer-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-approved.stderr"
+        },
+        {
+          "content_hash": "b9022fbf371926c2d3682d57750971a1211bee6e96e487687761e08a3337f9eb",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-approved.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-excluded-author.stderr"
+        },
+        {
+          "content_hash": "a0aeb6f37a5ebef5b6c11687e32b110a1f138edbc8d636df46a5699ce34ccbb1",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-excluded-author.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-needs-revision.stderr"
+        },
+        {
+          "content_hash": "be125df4b9a342baaa926502a928f91a9bed89e7c3f6d31b3abdf798231c0176",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-needs-revision.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-revoked.stderr"
+        },
+        {
+          "content_hash": "518cb815d2df0354bf62658ada492a64b8ae706768589638fb9d4a0c46fb9064",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-revoked.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-substituted-source.stderr"
+        },
+        {
+          "content_hash": "0312928d04000c9d762c1a808c33a7a9bc4507785910d86ccdf6f1a14b30371e",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-substituted-source.stdout"
+        },
+        {
+          "content_hash": "52cec41d48d7241b74d5ad5cd4ffa24db0790e04d45fde74a62a1b2b09497819",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/results.json"
+        },
+        {
+          "content_hash": "e6a6022678bd4a0f1e6178faee0b4b94be084a491aa2335ac2d134b231996779",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/revoked-receipt.json"
+        },
+        {
+          "content_hash": "9f1efb166933e878eb8f5f1865798563d26ec9d0d5d1dbd8cf0eb0a2a46cd56c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/semantic-invalid-missing-function-address-gate.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/semantic-invalid-missing-function-address-gate.stdout"
+        },
+        {
+          "content_hash": "78ef5209cfbbc8b07663f7a742fea9a17a2c9819d1bc8b4c17e85bda7c608a4d",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/isolated-receiver-v30/substituted-source-receipt.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/archive-plan.stderr"
+        },
+        {
+          "content_hash": "ae88b45a784c92251a2b1f8b883f4293e80ee4097315b81f1aa73cf5429e067b",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/archive-plan.stdout"
+        },
+        {
+          "content_hash": "543ce679f7bf8c0c4265763aabd47728c735d2db9ba7fe9a6c3273c5ce2504a3",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/design-gate.stderr"
+        },
+        {
+          "content_hash": "90fb66a0bdf732a44d7bd766d3b612414fa4c66804d49c418958dca79107a541",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/design-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/native-status.stderr"
+        },
+        {
+          "content_hash": "1e5ada84459609f0a04e461e434382e46e1ec0c3447483aa16e85463300b331c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/native-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/native-workflow.stderr"
+        },
+        {
+          "content_hash": "fabea8efe7c659c3fc592b3e5b49d8259044942a0584673640e903c5cf598e3c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/native-workflow.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/proposal-gate.stderr"
+        },
+        {
+          "content_hash": "717216de77334d3ab2a7e476034c541a592a83f30ff9c3001e18522c5c2d4ed6",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/proposal-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/readiness.stderr"
+        },
+        {
+          "content_hash": "df81d58c3e8869881b17de8399c0c372acf264f27b998c9a27d15abce6393518",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/readiness.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/sync-plan.stderr"
+        },
+        {
+          "content_hash": "663845e03f308ba6b6043603242187c3b3b228efc56185806285c26275428686",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/sync-plan.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/tasks-gate.stderr"
+        },
+        {
+          "content_hash": "59ca9574856e1bc24a74211570f2badb271982d37052822bdcb61914e5987957",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/tasks-gate.stdout"
+        },
+        {
+          "content_hash": "94ad8beb2a67d5a72028d5a99125dd0d7ef3434019690afd6a0886cad5bac91f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/valence-native-final-20261020-v1.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/validate.stderr"
+        },
+        {
+          "content_hash": "7793ce8195da22dc568f14253232a108f1dc263f2819825a1cec4ce2723ae6d3",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-final-v1/validate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/archive-plan.stderr"
+        },
+        {
+          "content_hash": "6ed7352a54d4e9bfbdffd647284bb8ec9f36b9f87b5b993f2da50f31a54c439a",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/archive-plan.stdout"
+        },
+        {
+          "content_hash": "cf9dbeebf9a53144f2a753ad3e85bc38c31c0df31192c5114029ce3b0234e113",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/design-gate.stderr"
+        },
+        {
+          "content_hash": "2c1648c0479e28a65f10022fa4efb1b464f521b031891dfb07891c56e8a1d205",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/design-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/proposal-gate.stderr"
+        },
+        {
+          "content_hash": "8617e6a683a4a765e1145d58bdbfb10231f14e6b5dae77c2c750fcfade35901a",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/proposal-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/readiness.stderr"
+        },
+        {
+          "content_hash": "9fda966740749c6d2126df36903b84eff146fb4e7b797a0409afd0656e9d67fb",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/readiness.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/sync-plan.stderr"
+        },
+        {
+          "content_hash": "234a20429667c27267bd801a292bae467999e40331bf67b49a523d56e761aafa",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/sync-plan.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/tasks-gate.stderr"
+        },
+        {
+          "content_hash": "cae0340d56da73e839b815de2ff7bf04259f6bcf67c0ef5f0eaa29f845469695",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/tasks-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/validate-before-sync.stderr"
+        },
+        {
+          "content_hash": "34a157760fa89787c1854ab7d3adeb1da5ca0fdeae31ce871b9e7198976ee5b7",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-readiness-v1/validate-before-sync.stdout"
+        },
+        {
+          "content_hash": "035cf659253699da0b2481259275507d1a184318116d6cc342253c0d30afb0d3",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/after-inventory.json"
+        },
+        {
+          "content_hash": "990727b46dd433c2628f429bde7b27b7c6244bc0172ca1ee50561eb1dc8628ed",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/before-inventory.json"
+        },
+        {
+          "content_hash": "1f88b54c3f7e872d9fce1e5a73719819f18da44436df6bef1c7f934947816056",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/post-sync-archive-plan.stderr"
+        },
+        {
+          "content_hash": "1452ba62c449ba1ffcd27a61b6fcc6b2e54bc31a0e949830b7cd1340306330fc",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/post-sync-archive-plan.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/post-sync-validation.stderr"
+        },
+        {
+          "content_hash": "34d00fbb9a1f50e935ffb264887a3fd07dafeba343c0851129d0e60fb17566cf",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/post-sync-validation.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/sync-execute.stderr"
+        },
+        {
+          "content_hash": "25b178b0c04866f620a7ebf5f384297b4e854191a8b42d81d06e05c7e8edb60c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/sync-execute.stdout"
+        },
+        {
+          "content_hash": "6547e8b10bd66ac0f737a588cea92cc4efae785c848ff32a25a09ffa8e412159",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/native-sync-v1/valence-native-sync-20261020-v1.py"
+        },
+        {
+          "content_hash": "c9ba8481ee4f2cfdd0a9bf32dee1ecfbf5973d12e461e582568947125a63a936",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/export-policy.stderr"
+        },
+        {
+          "content_hash": "404607d97df6313f62bda46519606c5e5396de6619d81c98226a962f6e1b6153",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/export-policy.stdout"
+        },
+        {
+          "content_hash": "9712b31d2c4ae3216ecaa87e67749c981f1f2dff504f1e6dfab4cc3d46273b2d",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/guard.log"
+        },
+        {
+          "content_hash": "32ae740ae18eb43ee33d59fef81bedcade890daafdc9aeb93b6e59cc3c4ff85b",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/artifact-auth-core.blake3"
+        },
+        {
+          "content_hash": "ab507aa171467246293472a6a04a5cf745660827ba654c40623868b0b397aa77",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/artifact-auth-ed25519.blake3"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/artifact-prefetch.stderr"
+        },
+        {
+          "content_hash": "b0fae7b9833c346f9606fcd77173fc5f6d2eba9f89c5099e4d50b5e17e7522cc",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/artifact-prefetch.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/change-create.stderr"
+        },
+        {
+          "content_hash": "9ea423edb39a56594d1a298e4a2d1d91d7db447e3ae455ac5d156e3b0b10891a",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/change-create.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/change-list.stderr"
+        },
+        {
+          "content_hash": "bc2a5e52c31fe5a1a3097a539e165ae0e7bb20c8efd9a1cb3d553de71fe3b63d",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/change-list.stdout"
+        },
+        {
+          "content_hash": "e0f1d54d486235a25e8ce2e6b9c2a01206b9178909adfd48700c75ceba2692d7",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/export-policy.stderr"
+        },
+        {
+          "content_hash": "404607d97df6313f62bda46519606c5e5396de6619d81c98226a962f6e1b6153",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/export-policy.stdout"
+        },
+        {
+          "content_hash": "3ea1b99388de66c9047307b772fd444b35e45c7b7880e35208c555066ad85a25",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/guard.log"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/parser.stderr"
+        },
+        {
+          "content_hash": "4380fc9b5fc2cb6513693e9d3fad81e5bd8d1833580be3dc27d57e81365f188d",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/parser.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/policy-freshness-fixtures.stderr"
+        },
+        {
+          "content_hash": "626bb5e31eed06caa9eff49fd1d1a339f21e19bb3347e93255daa23e716b1f47",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/policy-freshness-fixtures.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/positive-nickel-fixture.stderr"
+        },
+        {
+          "content_hash": "4380fc9b5fc2cb6513693e9d3fad81e5bd8d1833580be3dc27d57e81365f188d",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/positive-nickel-fixture.stdout"
+        },
+        {
+          "content_hash": "2224313e643bb33d0229f05e354e81d0ccc2733db8474370af27004808d67aee",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/results.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/root-status.stderr"
+        },
+        {
+          "content_hash": "b525f720ba24559de198dd84294cf1c36f6860296072937f4b8290d2975fa885",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/root-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/root-validation.stderr"
+        },
+        {
+          "content_hash": "226922e73af0f150233f6a3b12100b7305307abbf8724b10e70f82c62ae0602b",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/root-validation.stdout"
+        },
+        {
+          "content_hash": "1bdb50ed81ba63dc34b1fd438d7bb5e24e14fbaedb2c0c97d684f7c533e4bf2e",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/workflow-status.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/workflow-status.stderr"
+        },
+        {
+          "content_hash": "e05b87048e53d1c41cc5b89dedca2a47ec67025da9a0a84ab0c21e06012c6e64",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/policy-generation-v2/workflow-status.stdout"
+        },
+        {
+          "content_hash": "bb7d7b9857258e6b18097370ebce8d8f54fecbe2d434d7f64a6524d7d95ba488",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/publication-scope.json"
+        },
+        {
+          "content_hash": "dcaf3a288e853500d7f32c892071d4d0fb433bce8627db99c2230e09edd8fc09",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-attachment.json"
+        },
+        {
+          "content_hash": "8e133ba6241158fbf80b7ac031e82d43e3b0d776aefb7ee2b98f233d55d617a1",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-request.json"
+        },
+        {
+          "content_hash": "9984029e4194501a1f2702f579678784fba87263bfeaade849cbb731acf2e0e5",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-signature.bin"
+        },
+        {
+          "content_hash": "dca657c060efca111b0c83ad905f1831ddab45ebb1457c054334b4c526b41172",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-unsigned.bin"
+        },
+        {
+          "content_hash": "c8025321f36e74d84a52b23b2a49343b8fe99aae82f1fca8b3e245702234889a",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/author-policy.json"
+        },
+        {
+          "content_hash": "6362c60ed2a3d0396c00b1c84d37e43577fc8427d8632b2e278c231a36ca20dc",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-attachment.json"
+        },
+        {
+          "content_hash": "e00a852adf8b991f60b71b54a03da2c4a4455cbb1b9af25566b448778be6d56e",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-request.json"
+        },
+        {
+          "content_hash": "e8ea04689286607f464898f01d8da01c31018ef90192ccbb7253b82bb17d28b4",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-signature.bin"
+        },
+        {
+          "content_hash": "02d3492a65e1decb528784cc5fe340d649f93e4ccba05c97ec433089a5d811d7",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-unsigned.bin"
+        },
+        {
+          "content_hash": "bab67a68ca4fecca015cacbe9cafbbda174ab7a2df46ce6fd0460b53a572d66b",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/policy.json"
+        },
+        {
+          "content_hash": "fb5878bbc5e710209bfb23a50e43aefcecb7ae0d4f9f34b28a96575df8d9c763",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/revoked-policy.json"
+        },
+        {
+          "content_hash": "423222afb2d33993cffc0c6026f352ae31f81070210856df7cd34f2001427adc",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/tampered-source.json"
+        },
+        {
+          "content_hash": "5f8e8b09715fa7ea2fccb86864aa85d9a21d94866829e9838bde4d6df1cb6f57",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/approved-receipt.json"
+        },
+        {
+          "content_hash": "1a1cc9f88024004a9b177733b217df1613c8151c7a0f7a22564c7ee840b8e14b",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/default-root-status.stderr"
+        },
+        {
+          "content_hash": "4175e152ea4ac13f3a5cfb70222a06aedb9d25573757d7b83211bd7bda3700f8",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/default-root-status.stdout"
+        },
+        {
+          "content_hash": "eb252e5b60db92bc4b92da911449a3c6fc19b5571c00e9072a2b5fb97552ba4f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/excluded-author-receipt.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-change-list.stderr"
+        },
+        {
+          "content_hash": "aa5abf2acca181ce9b7b94308f5b1dac11c0deffe830d7a51bae9d405f2e4755",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-change-list.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-status.stderr"
+        },
+        {
+          "content_hash": "4175e152ea4ac13f3a5cfb70222a06aedb9d25573757d7b83211bd7bda3700f8",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-workflow.stderr"
+        },
+        {
+          "content_hash": "842e98f3ab4a1761efe7529559ec96d1a5ac876bc15abbdc6cefb85c66ea7998",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-workflow.stdout"
+        },
+        {
+          "content_hash": "d6c76f13ca764f3ba861b30c68f1beb6ba6289e78f80a444ae3f372c641f4d5f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/needs-revision-receipt.json"
+        },
+        {
+          "content_hash": "18047206686acb504d94457d9b8c8807f92aed7391ea88fb1983fe067deafe16",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-empty-roles.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-empty-roles.stdout"
+        },
+        {
+          "content_hash": "2c767b017ad7c2503d9a6d19674df33e4aef855239ed6508cbeb5c05d0afcb9f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-empty-schemas.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-empty-schemas.stdout"
+        },
+        {
+          "content_hash": "87f9194d00d48c0c52e42c538285699d5f0b9f08c7e9907e0b9e69cc02987558",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-malformed-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-malformed-hash.stdout"
+        },
+        {
+          "content_hash": "586a6dd1bceb3da0cd96034460811ccb3e859e3011e95d839f44781f337b7966",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-mode.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-mode.stdout"
+        },
+        {
+          "content_hash": "c80e3c553b8ab587c081e881227d4085d321cd8bea43fdc08065f53e78048cba",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-placeholder-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-placeholder-hash.stdout"
+        },
+        {
+          "content_hash": "fdaf1cafe138d0270f5dace8683ea2f077c81d51923df249bf71657ab46405e7",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-stale-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-stale-hash.stdout"
+        },
+        {
+          "content_hash": "c0378ebe626b9f01feee80252c18a58fd4d19fabc20c648b794cd1b657830da1",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-weakened-boundary.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-weakened-boundary.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-missing-function-address-gate.stderr"
+        },
+        {
+          "content_hash": "5df640fb7122ed54090d088182e59a5660836aa4cb5f773937749e8531129b50",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-missing-function-address-gate.stdout"
+        },
+        {
+          "content_hash": "986c78b2f0f1d04e86169c096bc910fcdd708e67db816f66fc1453d4b3e88201",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-missing-workflow-profile-policy.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-missing-workflow-profile-policy.stdout"
+        },
+        {
+          "content_hash": "ef8c622a2a1d1cffe339da82dbd78ab39060aa42d26844d2dfe97b908e0b0d51",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-outcome-machine-admission.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-outcome-machine-admission.stdout"
+        },
+        {
+          "content_hash": "ef8c622a2a1d1cffe339da82dbd78ab39060aa42d26844d2dfe97b908e0b0d51",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-workflow-artifact-missing-output-path.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-workflow-artifact-missing-output-path.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-export-runtime.stderr"
+        },
+        {
+          "content_hash": "aaba0376e9d448d81a183324f871ec5edfbab96b85bb2ec1000f3d4c0c4271fd",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-export-runtime.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-runtime.stderr"
+        },
+        {
+          "content_hash": "cc808bc448cfcad3b95550eeddb23cc9bf7496309edbb7c7db733090c5d795cc",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-runtime.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-version.stderr"
+        },
+        {
+          "content_hash": "73748fe4aedd6b1962d27a6fea04d5a63724b4b37d00e350331e8f3e52b562f7",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-version.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/policy-export-check.stderr"
+        },
+        {
+          "content_hash": "626bb5e31eed06caa9eff49fd1d1a339f21e19bb3347e93255daa23e716b1f47",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/policy-export-check.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/policy-parser.stderr"
+        },
+        {
+          "content_hash": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/policy-parser.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/positive-nickel.stderr"
+        },
+        {
+          "content_hash": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/positive-nickel.stdout"
+        },
+        {
+          "content_hash": "a4ce5157b69bb46c9b57f33cf9028a3576beef2bca3e42a48648ba9aad195ce8",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/producer-complete.json"
+        },
+        {
+          "content_hash": "452afb2f368e738807e8ecac41785db7344ae46e47f355fa27456dbcc6b8e15e",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/producer-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-approved.stderr"
+        },
+        {
+          "content_hash": "b9022fbf371926c2d3682d57750971a1211bee6e96e487687761e08a3337f9eb",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-approved.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-excluded-author.stderr"
+        },
+        {
+          "content_hash": "a0aeb6f37a5ebef5b6c11687e32b110a1f138edbc8d636df46a5699ce34ccbb1",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-excluded-author.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-needs-revision.stderr"
+        },
+        {
+          "content_hash": "be125df4b9a342baaa926502a928f91a9bed89e7c3f6d31b3abdf798231c0176",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-needs-revision.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-revoked.stderr"
+        },
+        {
+          "content_hash": "518cb815d2df0354bf62658ada492a64b8ae706768589638fb9d4a0c46fb9064",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-revoked.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-substituted-source.stderr"
+        },
+        {
+          "content_hash": "0312928d04000c9d762c1a808c33a7a9bc4507785910d86ccdf6f1a14b30371e",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-substituted-source.stdout"
+        },
+        {
+          "content_hash": "c1e54761eaea9472ebbf3a31541482df6a9ccd154fbc2c830e795581b9fa4e4b",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/results.json"
+        },
+        {
+          "content_hash": "3689334b6e861a65562f927ca46fa90e8bf4bd72db632ea515eb8aaac0c542d2",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/retained-byte-verification.json"
+        },
+        {
+          "content_hash": "e6a6022678bd4a0f1e6178faee0b4b94be084a491aa2335ac2d134b231996779",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/revoked-receipt.json"
+        },
+        {
+          "content_hash": "0c723f71f7f91e69c0e4c00d478f811100c0751e8baac4bc67e53e546a7be1b8",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/semantic-invalid-missing-function-address-gate.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/semantic-invalid-missing-function-address-gate.stdout"
+        },
+        {
+          "content_hash": "78ef5209cfbbc8b07663f7a742fea9a17a2c9819d1bc8b4c17e85bda7c608a4d",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/substituted-source-receipt.json"
+        },
+        {
+          "content_hash": "38f98d8c8beb84ea40090ba39330f016ad06b25a6121dfea2742bb7c7a88a088",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/valence-receiver-policy-acceptance-20261020-v1.py"
+        },
+        {
+          "content_hash": "025340493f193e448c8b23886b3191a492219eec7c59a8511760ca028b845610",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/valence-receiver-policy-acceptance-20261020-v1.sh"
+        },
+        {
+          "content_hash": "42c3b0d91105cc45e7d6ebddfed5509f98bb9a16d5ef22ed5832a0c943778bf1",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/valence-receiver-policy-acceptance-resume-v1.py"
+        },
+        {
+          "content_hash": "220b5986f1b9e23db6b1c68d8256d47b22830d7b241d50406520230f3f56b9bc",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/valence-receiver-policy-acceptance-resume-v2.py"
+        },
+        {
+          "content_hash": "df8b71bae570eb5accd702e7370a816b8ea9f2e4521254c5d75ea82a9cfcf4db",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/metadata.json"
+        },
+        {
+          "content_hash": "c1f58389666b3688220ee8378e8ccc888b40a3100d11e78217dadfb31ebfbb8c",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/proposal.md"
+        },
+        {
+          "content_hash": "46e87ffd3f6254bc126cf449af75b21b50767fdec6cb7ae6a1dc927ac825bb6e",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md"
+        },
+        {
+          "content_hash": "cf32587725c40b77e641166fc25f66946fb506cb91a7ba24a83f75926ceed310",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/specs/source-review-acceptance/spec.md"
+        },
+        {
+          "content_hash": "19a540f81927aeb1e1cbfe0ceb45b332e4e3c0dd741ad16ae5a0475b75c8f03f",
+          "exists": true,
+          "path": "./.cairn/archive/1970-01-01-align-source-review-auth-cohort/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./.cairn/changes/align-source-review-auth-cohort"
+        }
+      ],
+      "manifest_hash": "3373ce85b5542df6bf9ee97e9de586066ac220dfe4f9790f154f4ee9dc409567"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "c3aa4f4a487ef4ab0482dff294a9c47ab2721cd3e4ec7396aae80fec223e4cd3",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/design.md"
+        },
+        {
+          "content_hash": "d79e13d670da70d1ceb5bed4749edf55a4d9b8cac96350dc611a5a9f6cf8c7c3",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/acceptance.json"
+        },
+        {
+          "content_hash": "1f329f98193a3646fe6d2f03fc596c0983334bdf0b03b220cf3fa1afb55d02e0",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/canonical-owner-baseline/inventory.json"
+        },
+        {
+          "content_hash": "b27fba96ff1279ccac1eca57b3d1283ce4712789f2a80e0ad1c96099dfb2914c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/canonical-source-binding.json"
+        },
+        {
+          "content_hash": "e8b9b213dc3da3cf4c98e6bad3d8926edf0aaf4186ad08e1b56d06beb80b67f7",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/actual-valence-cli-build.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/actual-valence-cli-build.stdout"
+        },
+        {
+          "content_hash": "a715ea93ed6436456e5beaa763cb8163a49172bcb4d47ca06385a0c3398d82ab",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/artifact-source-pin-and-negative-fixtures.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/artifact-source-pin-and-negative-fixtures.stdout"
+        },
+        {
+          "content_hash": "b1c545b50a6c33f8bbdef750079e8c061cc5bdd3de76086c0f56ef9d86f8957e",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/package-formatting.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/package-formatting.stdout"
+        },
+        {
+          "content_hash": "986f969f55de8dccb3ea570ba58472d6c9fadd318e4af6831a577b04503822ef",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/results.json"
+        },
+        {
+          "content_hash": "041df9958d0aa365052b3ceb1177dd57323134553eaf8ac4b96183f18f98900c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/strict-workspace-clippy.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/strict-workspace-clippy.stdout"
+        },
+        {
+          "content_hash": "77841e0377ec0cb5c6268c515b754cb1e19ea45b7aabae0e3658c56520ba708d",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/workspace-lib-tests.stderr"
+        },
+        {
+          "content_hash": "bc6e0bf597f61a27edfeee6cc1eecdcc44a6d34fa83967a6e04fd59b8f2653a2",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-acceptance-resume24/workspace-lib-tests.stdout"
+        },
+        {
+          "content_hash": "c1393e32da69991d37a55fb141b0ab837b8fab529055702f53ea073bbf24129b",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/cohort-preparation.json"
+        },
+        {
+          "content_hash": "875994def2067ea5b84887b2fd77dfd16363702d57cc8862943d9030ef11a89c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/execution-provenance.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/artifact-source-pin-and-negative-fixtures.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/artifact-source-pin-and-negative-fixtures.stdout"
+        },
+        {
+          "content_hash": "37c9dca6046bf1b8f8b2e7966f72a3e2edef1d3275d5a0f8dae129524f26efaa",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-cargo-lock-generation.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-cargo-lock-generation.stdout"
+        },
+        {
+          "content_hash": "0f41b2c297fcdc6be4f76116dab31566e3f7e7e65c98eee505467b0c1086ef08",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-nix-lock-generation.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-nix-lock-generation.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-resolved-graph.stderr"
+        },
+        {
+          "content_hash": "b3d8e9d6cfbbb24d5125e3cab4ff938e35f29f48efce13b53d35ef260dfd2df4",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/consumer-resolved-graph.stdout"
+        },
+        {
+          "content_hash": "3403a4eddf007e82d89ccffdcf78876790d14dd07673210ea60850a5e48d187c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/executed-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/package-formatting.stderr"
+        },
+        {
+          "content_hash": "80b9bac3c9b4ca9d0820c1af97635ce7cf6d0a7e6684e61bbe88709abf837856",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/package-formatting.stdout"
+        },
+        {
+          "content_hash": "85d99c22400596912b43b9664ca30a784c3c9fcf0b32b37f1c70aef844e3238a",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v28/results.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/Cargo-lock-blake3.stderr"
+        },
+        {
+          "content_hash": "155020d78649657b9187dc80af6d7a4bea570d2efb768d0401b54610a1825afd",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/Cargo-lock-blake3.stdout"
+        },
+        {
+          "content_hash": "09da14025ca27c8739afe82b27565ff7b10e9ed4869e170efd866fea647c6367",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/actual-valence-cli-build.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/actual-valence-cli-build.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/affected-package-formatting.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/affected-package-formatting.stdout"
+        },
+        {
+          "content_hash": "0d206a322135c30081f83d77b4d343431f1511c7e5fc2ff4c7f7e09d6eedaec5",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/complete.json"
+        },
+        {
+          "content_hash": "642621b3c12ef61704e1af75f9cc8a651a2b78b8d71d11f243edf1cbfac09eb9",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/executed-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/flake-lock-blake3.stderr"
+        },
+        {
+          "content_hash": "3958f64c969e5c1a77010f8972360093de0dfba3e0c634e7a2bd184d49063d17",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/flake-lock-blake3.stdout"
+        },
+        {
+          "content_hash": "2d206a89daed7b8ad7b28f74c440b783272c7697dda8b1ef983435d23c787be1",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/results.json"
+        },
+        {
+          "content_hash": "f9d755d10e70e3d0033b50a466d7c82463918237ee08a5cec4ebf865c048949f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/strict-workspace-clippy.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/strict-workspace-clippy.stdout"
+        },
+        {
+          "content_hash": "8c5b10024fe2dc44ccc36ce86d72a82935c36e87279649798847baec0d1298e3",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/workspace-lib-tests.stderr"
+        },
+        {
+          "content_hash": "7aa45b28fa2d8da759da8cb53e6575a56b0b7f1047e32199172d3a6416dc649d",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-cohort-v29/workspace-lib-tests.stdout"
+        },
+        {
+          "content_hash": "953501299e6d3735229b4be6f67ed30111d00b37fad74f9148b90f8a1baec052",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-main-line-acceptance.json"
+        },
+        {
+          "content_hash": "c70a23fb7fabe69e683667acf70602b7bc9a4bab0d5adb7c771ae72293ff1d3f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-main-line-retention-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/archive-plan.stderr"
+        },
+        {
+          "content_hash": "ae88b45a784c92251a2b1f8b883f4293e80ee4097315b81f1aa73cf5429e067b",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/archive-plan.stdout"
+        },
+        {
+          "content_hash": "ceb4804b7243dae71581ed4948e2abe6bdfe832d61c8759fb5913c49d3e41657",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/design-gate.stderr"
+        },
+        {
+          "content_hash": "90fb66a0bdf732a44d7bd766d3b612414fa4c66804d49c418958dca79107a541",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/design-gate.stdout"
+        },
+        {
+          "content_hash": "7fb0e797924862361216cd445aba597381a65a02fbb701c56d20d0c8d9565fed",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/executed-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/native-status.stderr"
+        },
+        {
+          "content_hash": "72f2cb770d942d4c381812c2a50bf9b78e65520dda789602a679b1add6676328",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/native-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/native-workflow.stderr"
+        },
+        {
+          "content_hash": "fabea8efe7c659c3fc592b3e5b49d8259044942a0584673640e903c5cf598e3c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/native-workflow.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/proposal-gate.stderr"
+        },
+        {
+          "content_hash": "717216de77334d3ab2a7e476034c541a592a83f30ff9c3001e18522c5c2d4ed6",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/proposal-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/readiness.stderr"
+        },
+        {
+          "content_hash": "45a70b8b71f480653ddbd5c1adc75aa2f3b26b23787610a6f63886eeef1847aa",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/readiness.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/sync-plan.stderr"
+        },
+        {
+          "content_hash": "663845e03f308ba6b6043603242187c3b3b228efc56185806285c26275428686",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/sync-plan.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/tasks-gate.stderr"
+        },
+        {
+          "content_hash": "59ca9574856e1bc24a74211570f2badb271982d37052822bdcb61914e5987957",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/tasks-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/validate.stderr"
+        },
+        {
+          "content_hash": "1708332b0db0e745bcefeebd76038c9dc4ecfb75940870135c87f6d3559d6dec",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-native-v31/validate.stdout"
+        },
+        {
+          "content_hash": "5f8e8b09715fa7ea2fccb86864aa85d9a21d94866829e9838bde4d6df1cb6f57",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/approved-receipt.json"
+        },
+        {
+          "content_hash": "6d66237a1c8624d2e4bc5ece9477659e157f98d55c3370d911aeb63790db34ad",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/default-root-status.stderr"
+        },
+        {
+          "content_hash": "72f2cb770d942d4c381812c2a50bf9b78e65520dda789602a679b1add6676328",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/default-root-status.stdout"
+        },
+        {
+          "content_hash": "eb252e5b60db92bc4b92da911449a3c6fc19b5571c00e9072a2b5fb97552ba4f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/excluded-author-receipt.json"
+        },
+        {
+          "content_hash": "5672144ddc5187fe0fa676e4ea0e045dba6ca20f9488ca4bab826a8eb6be2910",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/executed-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-change-list.stderr"
+        },
+        {
+          "content_hash": "cfd4f938df6d4d30b5ef9068e36e472a675273aaee349ef0ea27306e39cff896",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-change-list.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-status.stderr"
+        },
+        {
+          "content_hash": "72f2cb770d942d4c381812c2a50bf9b78e65520dda789602a679b1add6676328",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-workflow.stderr"
+        },
+        {
+          "content_hash": "fabea8efe7c659c3fc592b3e5b49d8259044942a0584673640e903c5cf598e3c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/native-workflow.stdout"
+        },
+        {
+          "content_hash": "d6c76f13ca764f3ba861b30c68f1beb6ba6289e78f80a444ae3f372c641f4d5f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/needs-revision-receipt.json"
+        },
+        {
+          "content_hash": "de39274d96f55905fc368bc3fa655eacfe242cca7108d5e22d5252cc7881818f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-empty-roles.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-empty-roles.stdout"
+        },
+        {
+          "content_hash": "450b5642c89a2c0d95348d5ed8231492bf4d972f135c2c04c03d2c771ae4573a",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-empty-schemas.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-empty-schemas.stdout"
+        },
+        {
+          "content_hash": "ff74409fe5c0167ed1e2f12a2aef92a5d50bd1a8ff913b379f4b4020e25d2538",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-malformed-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-malformed-hash.stdout"
+        },
+        {
+          "content_hash": "fb6596ef82ffc2a51e967895721ff62a0fbec546207e1d5f48f004855f283f14",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-mode.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-mode.stdout"
+        },
+        {
+          "content_hash": "54f3773e19df365c1795ebf0db1ab9ad55b897b9bcb31467725ba16445efc5b7",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-placeholder-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-placeholder-hash.stdout"
+        },
+        {
+          "content_hash": "c54f89d3e077dfe12b9d5557dd7a520112c0180ab66eba9833aacacdddd28e23",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-stale-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-stale-hash.stdout"
+        },
+        {
+          "content_hash": "379ddddb1a112739bc8a6cd018ef431a548ee749bea2f5b5c7c2d806223abd2c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-weakened-boundary.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-function-address-weakened-boundary.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-missing-function-address-gate.stderr"
+        },
+        {
+          "content_hash": "5df640fb7122ed54090d088182e59a5660836aa4cb5f773937749e8531129b50",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-missing-function-address-gate.stdout"
+        },
+        {
+          "content_hash": "f34efc33c786f90077a5ba446f7200585dcbfa2adbc2d2cb658a95882cbf3e70",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-missing-workflow-profile-policy.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-missing-workflow-profile-policy.stdout"
+        },
+        {
+          "content_hash": "755e391ce80a728445e08d7966808703b7504db44bc3b5cdd014ce96d1dffa08",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-outcome-machine-admission.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-outcome-machine-admission.stdout"
+        },
+        {
+          "content_hash": "755e391ce80a728445e08d7966808703b7504db44bc3b5cdd014ce96d1dffa08",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-workflow-artifact-missing-output-path.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/negative-invalid-workflow-artifact-missing-output-path.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-export-runtime.stderr"
+        },
+        {
+          "content_hash": "aaba0376e9d448d81a183324f871ec5edfbab96b85bb2ec1000f3d4c0c4271fd",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-export-runtime.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-runtime.stderr"
+        },
+        {
+          "content_hash": "cc808bc448cfcad3b95550eeddb23cc9bf7496309edbb7c7db733090c5d795cc",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-runtime.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-version.stderr"
+        },
+        {
+          "content_hash": "73748fe4aedd6b1962d27a6fea04d5a63724b4b37d00e350331e8f3e52b562f7",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/nickel-version.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/policy-export-check.stderr"
+        },
+        {
+          "content_hash": "626bb5e31eed06caa9eff49fd1d1a339f21e19bb3347e93255daa23e716b1f47",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/policy-export-check.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/policy-parser.stderr"
+        },
+        {
+          "content_hash": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/policy-parser.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/positive-nickel.stderr"
+        },
+        {
+          "content_hash": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/positive-nickel.stdout"
+        },
+        {
+          "content_hash": "a4ce5157b69bb46c9b57f33cf9028a3576beef2bca3e42a48648ba9aad195ce8",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/producer-complete.json"
+        },
+        {
+          "content_hash": "452afb2f368e738807e8ecac41785db7344ae46e47f355fa27456dbcc6b8e15e",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/producer-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-approved.stderr"
+        },
+        {
+          "content_hash": "b9022fbf371926c2d3682d57750971a1211bee6e96e487687761e08a3337f9eb",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-approved.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-excluded-author.stderr"
+        },
+        {
+          "content_hash": "a0aeb6f37a5ebef5b6c11687e32b110a1f138edbc8d636df46a5699ce34ccbb1",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-excluded-author.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-needs-revision.stderr"
+        },
+        {
+          "content_hash": "be125df4b9a342baaa926502a928f91a9bed89e7c3f6d31b3abdf798231c0176",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-needs-revision.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-revoked.stderr"
+        },
+        {
+          "content_hash": "518cb815d2df0354bf62658ada492a64b8ae706768589638fb9d4a0c46fb9064",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-revoked.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-substituted-source.stderr"
+        },
+        {
+          "content_hash": "0312928d04000c9d762c1a808c33a7a9bc4507785910d86ccdf6f1a14b30371e",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/receiver-substituted-source.stdout"
+        },
+        {
+          "content_hash": "52cec41d48d7241b74d5ad5cd4ffa24db0790e04d45fde74a62a1b2b09497819",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/results.json"
+        },
+        {
+          "content_hash": "e6a6022678bd4a0f1e6178faee0b4b94be084a491aa2335ac2d134b231996779",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/revoked-receipt.json"
+        },
+        {
+          "content_hash": "9f1efb166933e878eb8f5f1865798563d26ec9d0d5d1dbd8cf0eb0a2a46cd56c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/semantic-invalid-missing-function-address-gate.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/semantic-invalid-missing-function-address-gate.stdout"
+        },
+        {
+          "content_hash": "78ef5209cfbbc8b07663f7a742fea9a17a2c9819d1bc8b4c17e85bda7c608a4d",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/isolated-receiver-v30/substituted-source-receipt.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/archive-plan.stderr"
+        },
+        {
+          "content_hash": "ae88b45a784c92251a2b1f8b883f4293e80ee4097315b81f1aa73cf5429e067b",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/archive-plan.stdout"
+        },
+        {
+          "content_hash": "543ce679f7bf8c0c4265763aabd47728c735d2db9ba7fe9a6c3273c5ce2504a3",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/design-gate.stderr"
+        },
+        {
+          "content_hash": "90fb66a0bdf732a44d7bd766d3b612414fa4c66804d49c418958dca79107a541",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/design-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/native-status.stderr"
+        },
+        {
+          "content_hash": "1e5ada84459609f0a04e461e434382e46e1ec0c3447483aa16e85463300b331c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/native-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/native-workflow.stderr"
+        },
+        {
+          "content_hash": "fabea8efe7c659c3fc592b3e5b49d8259044942a0584673640e903c5cf598e3c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/native-workflow.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/proposal-gate.stderr"
+        },
+        {
+          "content_hash": "717216de77334d3ab2a7e476034c541a592a83f30ff9c3001e18522c5c2d4ed6",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/proposal-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/readiness.stderr"
+        },
+        {
+          "content_hash": "df81d58c3e8869881b17de8399c0c372acf264f27b998c9a27d15abce6393518",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/readiness.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/sync-plan.stderr"
+        },
+        {
+          "content_hash": "663845e03f308ba6b6043603242187c3b3b228efc56185806285c26275428686",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/sync-plan.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/tasks-gate.stderr"
+        },
+        {
+          "content_hash": "59ca9574856e1bc24a74211570f2badb271982d37052822bdcb61914e5987957",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/tasks-gate.stdout"
+        },
+        {
+          "content_hash": "94ad8beb2a67d5a72028d5a99125dd0d7ef3434019690afd6a0886cad5bac91f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/valence-native-final-20261020-v1.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/validate.stderr"
+        },
+        {
+          "content_hash": "7793ce8195da22dc568f14253232a108f1dc263f2819825a1cec4ce2723ae6d3",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-final-v1/validate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/archive-plan.stderr"
+        },
+        {
+          "content_hash": "6ed7352a54d4e9bfbdffd647284bb8ec9f36b9f87b5b993f2da50f31a54c439a",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/archive-plan.stdout"
+        },
+        {
+          "content_hash": "cf9dbeebf9a53144f2a753ad3e85bc38c31c0df31192c5114029ce3b0234e113",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/design-gate.stderr"
+        },
+        {
+          "content_hash": "2c1648c0479e28a65f10022fa4efb1b464f521b031891dfb07891c56e8a1d205",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/design-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/proposal-gate.stderr"
+        },
+        {
+          "content_hash": "8617e6a683a4a765e1145d58bdbfb10231f14e6b5dae77c2c750fcfade35901a",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/proposal-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/readiness.stderr"
+        },
+        {
+          "content_hash": "9fda966740749c6d2126df36903b84eff146fb4e7b797a0409afd0656e9d67fb",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/readiness.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/sync-plan.stderr"
+        },
+        {
+          "content_hash": "234a20429667c27267bd801a292bae467999e40331bf67b49a523d56e761aafa",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/sync-plan.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/tasks-gate.stderr"
+        },
+        {
+          "content_hash": "cae0340d56da73e839b815de2ff7bf04259f6bcf67c0ef5f0eaa29f845469695",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/tasks-gate.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/validate-before-sync.stderr"
+        },
+        {
+          "content_hash": "34a157760fa89787c1854ab7d3adeb1da5ca0fdeae31ce871b9e7198976ee5b7",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-readiness-v1/validate-before-sync.stdout"
+        },
+        {
+          "content_hash": "035cf659253699da0b2481259275507d1a184318116d6cc342253c0d30afb0d3",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/after-inventory.json"
+        },
+        {
+          "content_hash": "990727b46dd433c2628f429bde7b27b7c6244bc0172ca1ee50561eb1dc8628ed",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/before-inventory.json"
+        },
+        {
+          "content_hash": "1f88b54c3f7e872d9fce1e5a73719819f18da44436df6bef1c7f934947816056",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/post-sync-archive-plan.stderr"
+        },
+        {
+          "content_hash": "1452ba62c449ba1ffcd27a61b6fcc6b2e54bc31a0e949830b7cd1340306330fc",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/post-sync-archive-plan.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/post-sync-validation.stderr"
+        },
+        {
+          "content_hash": "34d00fbb9a1f50e935ffb264887a3fd07dafeba343c0851129d0e60fb17566cf",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/post-sync-validation.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/sync-execute.stderr"
+        },
+        {
+          "content_hash": "25b178b0c04866f620a7ebf5f384297b4e854191a8b42d81d06e05c7e8edb60c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/sync-execute.stdout"
+        },
+        {
+          "content_hash": "6547e8b10bd66ac0f737a588cea92cc4efae785c848ff32a25a09ffa8e412159",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/native-sync-v1/valence-native-sync-20261020-v1.py"
+        },
+        {
+          "content_hash": "c9ba8481ee4f2cfdd0a9bf32dee1ecfbf5973d12e461e582568947125a63a936",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/export-policy.stderr"
+        },
+        {
+          "content_hash": "404607d97df6313f62bda46519606c5e5396de6619d81c98226a962f6e1b6153",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/export-policy.stdout"
+        },
+        {
+          "content_hash": "9712b31d2c4ae3216ecaa87e67749c981f1f2dff504f1e6dfab4cc3d46273b2d",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-canonical-v1/guard.log"
+        },
+        {
+          "content_hash": "32ae740ae18eb43ee33d59fef81bedcade890daafdc9aeb93b6e59cc3c4ff85b",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/artifact-auth-core.blake3"
+        },
+        {
+          "content_hash": "ab507aa171467246293472a6a04a5cf745660827ba654c40623868b0b397aa77",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/artifact-auth-ed25519.blake3"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/artifact-prefetch.stderr"
+        },
+        {
+          "content_hash": "b0fae7b9833c346f9606fcd77173fc5f6d2eba9f89c5099e4d50b5e17e7522cc",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/artifact-prefetch.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/change-create.stderr"
+        },
+        {
+          "content_hash": "9ea423edb39a56594d1a298e4a2d1d91d7db447e3ae455ac5d156e3b0b10891a",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/change-create.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/change-list.stderr"
+        },
+        {
+          "content_hash": "bc2a5e52c31fe5a1a3097a539e165ae0e7bb20c8efd9a1cb3d553de71fe3b63d",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/change-list.stdout"
+        },
+        {
+          "content_hash": "e0f1d54d486235a25e8ce2e6b9c2a01206b9178909adfd48700c75ceba2692d7",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/export-policy.stderr"
+        },
+        {
+          "content_hash": "404607d97df6313f62bda46519606c5e5396de6619d81c98226a962f6e1b6153",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/export-policy.stdout"
+        },
+        {
+          "content_hash": "3ea1b99388de66c9047307b772fd444b35e45c7b7880e35208c555066ad85a25",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/guard.log"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/parser.stderr"
+        },
+        {
+          "content_hash": "4380fc9b5fc2cb6513693e9d3fad81e5bd8d1833580be3dc27d57e81365f188d",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/parser.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/policy-freshness-fixtures.stderr"
+        },
+        {
+          "content_hash": "626bb5e31eed06caa9eff49fd1d1a339f21e19bb3347e93255daa23e716b1f47",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/policy-freshness-fixtures.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/positive-nickel-fixture.stderr"
+        },
+        {
+          "content_hash": "4380fc9b5fc2cb6513693e9d3fad81e5bd8d1833580be3dc27d57e81365f188d",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/positive-nickel-fixture.stdout"
+        },
+        {
+          "content_hash": "2224313e643bb33d0229f05e354e81d0ccc2733db8474370af27004808d67aee",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/results.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/root-status.stderr"
+        },
+        {
+          "content_hash": "b525f720ba24559de198dd84294cf1c36f6860296072937f4b8290d2975fa885",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/root-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/root-validation.stderr"
+        },
+        {
+          "content_hash": "226922e73af0f150233f6a3b12100b7305307abbf8724b10e70f82c62ae0602b",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/root-validation.stdout"
+        },
+        {
+          "content_hash": "1bdb50ed81ba63dc34b1fd438d7bb5e24e14fbaedb2c0c97d684f7c533e4bf2e",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/workflow-status.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/workflow-status.stderr"
+        },
+        {
+          "content_hash": "e05b87048e53d1c41cc5b89dedca2a47ec67025da9a0a84ab0c21e06012c6e64",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/policy-generation-v2/workflow-status.stdout"
+        },
+        {
+          "content_hash": "bb7d7b9857258e6b18097370ebce8d8f54fecbe2d434d7f64a6524d7d95ba488",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/publication-scope.json"
+        },
+        {
+          "content_hash": "dcaf3a288e853500d7f32c892071d4d0fb433bce8627db99c2230e09edd8fc09",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-attachment.json"
+        },
+        {
+          "content_hash": "8e133ba6241158fbf80b7ac031e82d43e3b0d776aefb7ee2b98f233d55d617a1",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-request.json"
+        },
+        {
+          "content_hash": "9984029e4194501a1f2702f579678784fba87263bfeaade849cbb731acf2e0e5",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-signature.bin"
+        },
+        {
+          "content_hash": "dca657c060efca111b0c83ad905f1831ddab45ebb1457c054334b4c526b41172",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/approved-unsigned.bin"
+        },
+        {
+          "content_hash": "c8025321f36e74d84a52b23b2a49343b8fe99aae82f1fca8b3e245702234889a",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/author-policy.json"
+        },
+        {
+          "content_hash": "6362c60ed2a3d0396c00b1c84d37e43577fc8427d8632b2e278c231a36ca20dc",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-attachment.json"
+        },
+        {
+          "content_hash": "e00a852adf8b991f60b71b54a03da2c4a4455cbb1b9af25566b448778be6d56e",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-request.json"
+        },
+        {
+          "content_hash": "e8ea04689286607f464898f01d8da01c31018ef90192ccbb7253b82bb17d28b4",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-signature.bin"
+        },
+        {
+          "content_hash": "02d3492a65e1decb528784cc5fe340d649f93e4ccba05c97ec433089a5d811d7",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/needs_revision-unsigned.bin"
+        },
+        {
+          "content_hash": "bab67a68ca4fecca015cacbe9cafbbda174ab7a2df46ce6fd0460b53a572d66b",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/policy.json"
+        },
+        {
+          "content_hash": "fb5878bbc5e710209bfb23a50e43aefcecb7ae0d4f9f34b28a96575df8d9c763",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/revoked-policy.json"
+        },
+        {
+          "content_hash": "423222afb2d33993cffc0c6026f352ae31f81070210856df7cd34f2001427adc",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/TEST-ONLY-NOT-REAL-REVIEW/tampered-source.json"
+        },
+        {
+          "content_hash": "5f8e8b09715fa7ea2fccb86864aa85d9a21d94866829e9838bde4d6df1cb6f57",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/approved-receipt.json"
+        },
+        {
+          "content_hash": "1a1cc9f88024004a9b177733b217df1613c8151c7a0f7a22564c7ee840b8e14b",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/complete.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/default-root-status.stderr"
+        },
+        {
+          "content_hash": "4175e152ea4ac13f3a5cfb70222a06aedb9d25573757d7b83211bd7bda3700f8",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/default-root-status.stdout"
+        },
+        {
+          "content_hash": "eb252e5b60db92bc4b92da911449a3c6fc19b5571c00e9072a2b5fb97552ba4f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/excluded-author-receipt.json"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-change-list.stderr"
+        },
+        {
+          "content_hash": "aa5abf2acca181ce9b7b94308f5b1dac11c0deffe830d7a51bae9d405f2e4755",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-change-list.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-status.stderr"
+        },
+        {
+          "content_hash": "4175e152ea4ac13f3a5cfb70222a06aedb9d25573757d7b83211bd7bda3700f8",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-status.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-workflow.stderr"
+        },
+        {
+          "content_hash": "842e98f3ab4a1761efe7529559ec96d1a5ac876bc15abbdc6cefb85c66ea7998",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/native-workflow.stdout"
+        },
+        {
+          "content_hash": "d6c76f13ca764f3ba861b30c68f1beb6ba6289e78f80a444ae3f372c641f4d5f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/needs-revision-receipt.json"
+        },
+        {
+          "content_hash": "18047206686acb504d94457d9b8c8807f92aed7391ea88fb1983fe067deafe16",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-empty-roles.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-empty-roles.stdout"
+        },
+        {
+          "content_hash": "2c767b017ad7c2503d9a6d19674df33e4aef855239ed6508cbeb5c05d0afcb9f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-empty-schemas.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-empty-schemas.stdout"
+        },
+        {
+          "content_hash": "87f9194d00d48c0c52e42c538285699d5f0b9f08c7e9907e0b9e69cc02987558",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-malformed-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-malformed-hash.stdout"
+        },
+        {
+          "content_hash": "586a6dd1bceb3da0cd96034460811ccb3e859e3011e95d839f44781f337b7966",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-mode.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-mode.stdout"
+        },
+        {
+          "content_hash": "c80e3c553b8ab587c081e881227d4085d321cd8bea43fdc08065f53e78048cba",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-placeholder-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-placeholder-hash.stdout"
+        },
+        {
+          "content_hash": "fdaf1cafe138d0270f5dace8683ea2f077c81d51923df249bf71657ab46405e7",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-stale-hash.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-stale-hash.stdout"
+        },
+        {
+          "content_hash": "c0378ebe626b9f01feee80252c18a58fd4d19fabc20c648b794cd1b657830da1",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-weakened-boundary.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-function-address-weakened-boundary.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-missing-function-address-gate.stderr"
+        },
+        {
+          "content_hash": "5df640fb7122ed54090d088182e59a5660836aa4cb5f773937749e8531129b50",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-missing-function-address-gate.stdout"
+        },
+        {
+          "content_hash": "986c78b2f0f1d04e86169c096bc910fcdd708e67db816f66fc1453d4b3e88201",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-missing-workflow-profile-policy.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-missing-workflow-profile-policy.stdout"
+        },
+        {
+          "content_hash": "ef8c622a2a1d1cffe339da82dbd78ab39060aa42d26844d2dfe97b908e0b0d51",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-outcome-machine-admission.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-outcome-machine-admission.stdout"
+        },
+        {
+          "content_hash": "ef8c622a2a1d1cffe339da82dbd78ab39060aa42d26844d2dfe97b908e0b0d51",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-workflow-artifact-missing-output-path.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/negative-invalid-workflow-artifact-missing-output-path.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-export-runtime.stderr"
+        },
+        {
+          "content_hash": "aaba0376e9d448d81a183324f871ec5edfbab96b85bb2ec1000f3d4c0c4271fd",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-export-runtime.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-runtime.stderr"
+        },
+        {
+          "content_hash": "cc808bc448cfcad3b95550eeddb23cc9bf7496309edbb7c7db733090c5d795cc",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-runtime.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-version.stderr"
+        },
+        {
+          "content_hash": "73748fe4aedd6b1962d27a6fea04d5a63724b4b37d00e350331e8f3e52b562f7",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/nickel-version.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/policy-export-check.stderr"
+        },
+        {
+          "content_hash": "626bb5e31eed06caa9eff49fd1d1a339f21e19bb3347e93255daa23e716b1f47",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/policy-export-check.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/policy-parser.stderr"
+        },
+        {
+          "content_hash": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/policy-parser.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/positive-nickel.stderr"
+        },
+        {
+          "content_hash": "90a7d6b63788e450adb2e5bea4d380a002a702068567fb7aef5845fb63776935",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/positive-nickel.stdout"
+        },
+        {
+          "content_hash": "a4ce5157b69bb46c9b57f33cf9028a3576beef2bca3e42a48648ba9aad195ce8",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/producer-complete.json"
+        },
+        {
+          "content_hash": "452afb2f368e738807e8ecac41785db7344ae46e47f355fa27456dbcc6b8e15e",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/producer-driver.py"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-approved.stderr"
+        },
+        {
+          "content_hash": "b9022fbf371926c2d3682d57750971a1211bee6e96e487687761e08a3337f9eb",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-approved.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-excluded-author.stderr"
+        },
+        {
+          "content_hash": "a0aeb6f37a5ebef5b6c11687e32b110a1f138edbc8d636df46a5699ce34ccbb1",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-excluded-author.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-needs-revision.stderr"
+        },
+        {
+          "content_hash": "be125df4b9a342baaa926502a928f91a9bed89e7c3f6d31b3abdf798231c0176",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-needs-revision.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-revoked.stderr"
+        },
+        {
+          "content_hash": "518cb815d2df0354bf62658ada492a64b8ae706768589638fb9d4a0c46fb9064",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-revoked.stdout"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-substituted-source.stderr"
+        },
+        {
+          "content_hash": "0312928d04000c9d762c1a808c33a7a9bc4507785910d86ccdf6f1a14b30371e",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/receiver-substituted-source.stdout"
+        },
+        {
+          "content_hash": "c1e54761eaea9472ebbf3a31541482df6a9ccd154fbc2c830e795581b9fa4e4b",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/results.json"
+        },
+        {
+          "content_hash": "3689334b6e861a65562f927ca46fa90e8bf4bd72db632ea515eb8aaac0c542d2",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/retained-byte-verification.json"
+        },
+        {
+          "content_hash": "e6a6022678bd4a0f1e6178faee0b4b94be084a491aa2335ac2d134b231996779",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/revoked-receipt.json"
+        },
+        {
+          "content_hash": "0c723f71f7f91e69c0e4c00d478f811100c0751e8baac4bc67e53e546a7be1b8",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/semantic-invalid-missing-function-address-gate.stderr"
+        },
+        {
+          "content_hash": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/semantic-invalid-missing-function-address-gate.stdout"
+        },
+        {
+          "content_hash": "78ef5209cfbbc8b07663f7a742fea9a17a2c9819d1bc8b4c17e85bda7c608a4d",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/substituted-source-receipt.json"
+        },
+        {
+          "content_hash": "38f98d8c8beb84ea40090ba39330f016ad06b25a6121dfea2742bb7c7a88a088",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/valence-receiver-policy-acceptance-20261020-v1.py"
+        },
+        {
+          "content_hash": "025340493f193e448c8b23886b3191a492219eec7c59a8511760ca028b845610",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/valence-receiver-policy-acceptance-20261020-v1.sh"
+        },
+        {
+          "content_hash": "42c3b0d91105cc45e7d6ebddfed5509f98bb9a16d5ef22ed5832a0c943778bf1",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/valence-receiver-policy-acceptance-resume-v1.py"
+        },
+        {
+          "content_hash": "220b5986f1b9e23db6b1c68d8256d47b22830d7b241d50406520230f3f56b9bc",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/evidence/receiver-policy-acceptance-v1/valence-receiver-policy-acceptance-resume-v2.py"
+        },
+        {
+          "content_hash": "df8b71bae570eb5accd702e7370a816b8ea9f2e4521254c5d75ea82a9cfcf4db",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/metadata.json"
+        },
+        {
+          "content_hash": "c1f58389666b3688220ee8378e8ccc888b40a3100d11e78217dadfb31ebfbb8c",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/proposal.md"
+        },
+        {
+          "content_hash": "46e87ffd3f6254bc126cf449af75b21b50767fdec6cb7ae6a1dc927ac825bb6e",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/specs/artifact-auth-adoption/spec.md"
+        },
+        {
+          "content_hash": "cf32587725c40b77e641166fc25f66946fb506cb91a7ba24a83f75926ceed310",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/specs/source-review-acceptance/spec.md"
+        },
+        {
+          "content_hash": "19a540f81927aeb1e1cbfe0ceb45b332e4e3c0dd741ad16ae5a0475b75c8f03f",
+          "exists": true,
+          "path": "./.cairn/changes/align-source-review-auth-cohort/tasks.md"
+        }
+      ],
+      "manifest_hash": "9eb5f64838f2cf5b5c67ebb6178773c975babde6969fcf0e12ba6ee37344d6e9"
+    },
+    "kind": "archive",
+    "manifest_hash": "550b076ac8914432b5526e805e518e3d424961a04fbd4ca692554b9328766528"
+  },
+  "non_claims": [
+    "workflow state proves only the selected policy graph and observed structural artifact facts",
+    "workflow instructions do not prove artifact truth, review quality, or implementation correctness",
+    "workflow state does not satisfy proposal, design, tasks, sync, archive, evidence, or release gates",
+    "workflow commands are read-only and do not create, edit, delete, or approve lifecycle artifacts"
+  ],
+  "plan_hash": "fc779a895802b6e45857de7df9cdfcba62ece1d6ba1186ee00fd08aaeb5d6207",
+  "policy": "valence-default",
+  "policy_hash": "52b4b49bef217db1258e759788be5b6394ce5f18c9c8c467a8f171eb3e923882",
+  "profile_identity_hash": "76d14ae2680863e19436b27e0454b1c3cab8af11d53178b0ad49fdd52f00d90b",
+  "reasons": [],
+  "receipt_hash": "3a66f24494f0603c76e46a4edf8d57f0299ba1dcbf56a03c103db9766d19ea27",
+  "review_receipt_hashes": [],
+  "spec_effect": "delta",
+  "workflow_profile": "spec-driven",
+  "workflow_profile_compatibility_fallback": false,
+  "workflow_profile_source": "change_create",
+  "workflow_profile_version": 1
+}

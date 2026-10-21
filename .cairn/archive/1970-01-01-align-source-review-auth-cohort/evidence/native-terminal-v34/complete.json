@@ -1,0 +1,62 @@
+{
+  "implementation_revision": "f93e66192b49f651cdbaa57cbaf2dbbed19e0912",
+  "pre_archive_commit": "f93e66192b49f651cdbaa57cbaf2dbbed19e0912",
+  "records": [
+    {
+      "label": "native-archive-preview",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "archive",
+        "align-source-review-auth-cohort",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.6161833722144365
+    },
+    {
+      "label": "native-archive-execute",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "archive",
+        "align-source-review-auth-cohort",
+        "--root",
+        ".",
+        "--execute"
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 1.116189713589847
+    },
+    {
+      "label": "native-post-archive-validation",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "validate",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.11425249371677637
+    },
+    {
+      "label": "native-post-archive-status",
+      "command": [
+        "/home/brittonr/mantle-cairn-finish/runs/cairn-source-review-native-complete-20261020-v1/cairn",
+        "status",
+        "--root",
+        "."
+      ],
+      "cwd": "/home/brittonr/mantle-cairn-finish/xrepo/valence-isolated-source-cohort-resume28",
+      "exit": 0,
+      "elapsed_s": 0.015940692275762558
+    }
+  ],
+  "archive_path": ".cairn/archive/1970-01-01-align-source-review-auth-cohort",
+  "archive_executed": true,
+  "post_archive_validation_passed": true,
+  "release_authority": false,
+  "archive_publication": false
+}
