@@ -104,6 +104,7 @@ pub const STACK_PROVENANCE_NON_CLAIM: &str = "stack provenance proves identity a
 pub const BUILT_BINARY_THREAD_NON_CLAIM: &str = "built-binary thread verification proves measured-byte identity and linkage only; it does not prove behavioral correctness, semantic equivalence, requirement satisfaction, release eligibility, verifier soundness, or whole-program safety";
 const FORMAL_PROOF_TIER: &str = "formal_proof";
 const MANUAL_REVIEW_TIER: &str = "manual_review_required";
+const POLICY_CHECK_TIER: &str = "policy_check";
 const EXTERNAL_TRELLIS_ORIGIN: &str = "external_trellis_import";
 const VALID_VERIFICATION_STATUS: &str = "valid";
 const BUILT_BINARY_OVERCLAIM_PATTERNS: &[&str] = &[
@@ -324,11 +325,14 @@ impl MantleExternalEvidenceRole {
     }
 }
 
+// r[impl valence.stack_provenance_adapter.policy_check_records]
 /// Evidence tiers accepted or explicitly preserved by this verifier.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EvidenceTier<'a> {
     FormalProof,
     ManualReviewRequired,
+    /// A static provenance observation, not an admitted proof-card tier.
+    PolicyCheck,
     Unknown(&'a str),
 }
 
@@ -338,6 +342,7 @@ impl<'a> EvidenceTier<'a> {
         match value {
             FORMAL_PROOF_TIER => Self::FormalProof,
             MANUAL_REVIEW_TIER => Self::ManualReviewRequired,
+            POLICY_CHECK_TIER => Self::PolicyCheck,
             unknown => Self::Unknown(unknown),
         }
     }
@@ -347,6 +352,7 @@ impl<'a> EvidenceTier<'a> {
         match self {
             Self::FormalProof => FORMAL_PROOF_TIER,
             Self::ManualReviewRequired => MANUAL_REVIEW_TIER,
+            Self::PolicyCheck => POLICY_CHECK_TIER,
             Self::Unknown(value) => value,
         }
     }
@@ -1762,7 +1768,7 @@ fn validate_evidence_tiers(export: &OctetValenceProvenanceExport) -> Vec<String>
         if !card.diagnostics.is_empty() {
             issues.push("proof_card_diagnostics_present".to_owned());
         }
-        if typed_tier.is_unknown() {
+        if typed_tier.is_unknown() || matches!(typed_tier, EvidenceTier::PolicyCheck) {
             issues.push("unknown_evidence_tier".to_owned());
         }
         if card.evidence_origin == EXTERNAL_TRELLIS_ORIGIN && typed_tier.is_formal_proof() {
@@ -1958,6 +1964,49 @@ mod tests {
         assert!(mantle_issues.contains(&"mantle_claim_scope_mismatch".to_owned()));
     }
 
+    // r[verify valence.stack_provenance_adapter.policy_check_records]
+    // r[verify valence.stack_provenance_adapter.policy_check_records.admit]
+    // r[verify valence.stack_provenance_adapter.policy_check_records.nonclaims]
+    #[test]
+    fn policy_check_records_verify_the_binary_thread_without_inventing_proof_links() {
+        let mut export = sample_export();
+        export.provenance_records[0].source_id = "octet.artifact.wasm-tools".to_owned();
+        export.provenance_records[0].evidence_tier = POLICY_CHECK_TIER.to_owned();
+        export.provenance_records[0].verifier_identity = None;
+        export.provenance_records[0].proof_artifact_identity = None;
+        export.proof_cards.clear();
+        let binary_bytes = b"policy-check-subject";
+        let binary_hash = blake3_hex(binary_bytes);
+        let sidecar_json =
+            build_sidecar_json_from_octet_export_json(&serde_json::to_string(&export).expect("export"), &binary_hash)
+                .expect("policy-check sidecar");
+        let sidecar: StackProvenanceSidecar = serde_json::from_str(&sidecar_json).expect("sidecar");
+        let manifest = mantle_release_manifest(&blake3_hex(sidecar_json.as_bytes()), &binary_hash);
+        let report = verify_built_binary_thread(BuiltBinaryThreadInput {
+            binary_bytes,
+            octet_export: &export,
+            sidecar: &sidecar,
+            sidecar_bytes: sidecar_json.as_bytes(),
+            mantle_manifest: &manifest,
+        });
+
+        assert!(report.valid, "unexpected issues: {:?}", report.issue_codes);
+        assert!(sidecar.chain.resolve_requirement("r[octet.policy.no_unwrap]").is_empty());
+        assert!(sidecar.non_claims.iter().any(|claim| claim == STACK_PROVENANCE_NON_CLAIM));
+    }
+
+    // r[verify valence.stack_provenance_adapter.policy_check_records.cards]
+    #[test]
+    fn recognizing_policy_records_does_not_admit_policy_check_proof_cards() {
+        let mut export = sample_export();
+        export.proof_cards[0].evidence_tier = POLICY_CHECK_TIER.to_owned();
+        let report = validate_octet_export(&export);
+
+        assert!(!report.valid);
+        assert!(report.issue_codes.contains(&"unknown_evidence_tier".to_owned()));
+    }
+
+    // r[verify valence.stack_provenance_adapter.policy_check_records.unknown]
     #[test]
     fn unknown_evidence_tier_is_preserved_but_conservative() {
         let mut export = sample_export();

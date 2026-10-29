@@ -106,6 +106,13 @@ Producers still own source analysis and artifact creation. Shells own file acces
 
 Downstream consumers must apply their own freshness, authorization, lifecycle, and release rules.
 
+The stack-provenance adapter accepts `formal_proof` and `manual_review_required` tiers;
+provenance records also accept Octet's `policy_check` tier. A policy check remains a
+recorded static observation, not a proof-card tier or a verified runtime property.
+The adapter preserves the producer's tier string and identity/linkage-only boundary.
+Unknown tiers still fail validation, and manual-review evidence cannot be promoted
+to formal proof. A valid sidecar does not grant runtime or release authority.
+
 ## Components
 
 | Component | Purpose |
