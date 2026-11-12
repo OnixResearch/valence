@@ -37,17 +37,21 @@ Expected result: no matches (except in `#[cfg(test)]` blocks).
 
 ## Cairn Lifecycle
 
-This repo uses native Cairn lifecycle (`cairn/` layout). Legacy OpenSpec is
-not used. Run cairn from the cairn source checkout:
+This repo uses native Cairn lifecycle under `.cairn/`. The legacy `cairn/`
+tree is retained historical material; do not add new changes to it.
+
+Cairn is an external lifecycle tool, not a Valence build input. Point
+`CAIRN_SOURCE` at a Cairn checkout that supports the native layout (public
+repository: <https://github.com/OnixResearch/cairn>). Nothing depends on a
+machine-specific home directory:
 
 ```bash
-export CAIRN_SOURCE=/home/brittonr/git/cairn
-nix run path:$CAIRN_SOURCE#cairn -- init --root .
-nix run path:$CAIRN_SOURCE#cairn -- validate --root .
-nix run path:$CAIRN_SOURCE#cairn -- change list --root .
-nix run path:$CAIRN_SOURCE#cairn -- gate proposal <change> --root .
-nix run path:$CAIRN_SOURCE#cairn -- gate design <change> --root .
-nix run path:$CAIRN_SOURCE#cairn -- gate tasks <change> --root .
+CAIRN_SOURCE=${CAIRN_SOURCE:-../cairn}
+nix run "path:$(realpath "$CAIRN_SOURCE")#cairn" -- validate --root .
+nix run "path:$(realpath "$CAIRN_SOURCE")#cairn" -- change list --root .
+nix run "path:$(realpath "$CAIRN_SOURCE")#cairn" -- gate proposal <change> --root .
+nix run "path:$(realpath "$CAIRN_SOURCE")#cairn" -- gate design <change> --root .
+nix run "path:$(realpath "$CAIRN_SOURCE")#cairn" -- gate tasks <change> --root .
 ```
 
 Requirements use EARS-style shape: `MUST`/`SHALL`/`SHOULD`/`MAY` normative

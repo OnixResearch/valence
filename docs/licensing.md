@@ -6,6 +6,7 @@
 | `crates/valence-cli/**` | `AGPL-3.0-or-later` |
 | `crates/valence-radicle/**` | `AGPL-3.0-or-later` |
 | `pilots/shared-identity/**` | `AGPL-3.0-or-later` |
+| `pilots/schema-identity/**` | `AGPL-3.0-or-later` |
 | `pilots/canonical-json-preserve-order/**` | `AGPL-3.0-or-later` |
 | Repository documentation and lifecycle material not carrying another notice | `AGPL-3.0-or-later` |
 | Dependencies, generated artifacts containing upstream material, and external references | Their stated upstream terms |

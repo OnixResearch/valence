@@ -102,7 +102,7 @@ $ nix run .#cairn -- change list --root .\n\
 }}\n\
 ```\n\n\
 ## Focused command sweep\n\n\
-Commands run from `/home/brittonr/git/octet`:\n\n\
+Commands run from the Octet checkout root:\n\n\
 ```bash\n\
 TMPDIR=/tmp nix develop -c bash -c 'cargo fmt --check'\n\
 TMPDIR=/tmp nix develop -c bash -c 'cargo test -p cargo-octet evidence_index -- --nocapture'\n\

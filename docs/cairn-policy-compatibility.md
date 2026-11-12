@@ -5,10 +5,11 @@ Valence keeps its lifecycle policy in `cairn-policy/default.ncl`, checked by the
 The supported parser is the canonical local Cairn checkout selected by `CAIRN_SOURCE` (default `../cairn`). Refresh the generated policy with:
 
 ```bash
-nix run path:${CAIRN_SOURCE:-../cairn}#cairn -- policy export \
+CAIRN_SOURCE=$(realpath "${CAIRN_SOURCE:-../cairn}")
+nix run "path:$CAIRN_SOURCE#cairn" -- policy export \
   --output cairn-policy/generated/cairn-policy.json
-nix run path:${CAIRN_SOURCE:-../cairn}#cairn -- policy export --check
-nix run path:${CAIRN_SOURCE:-../cairn}#cairn -- validate --root .
+nix run "path:$CAIRN_SOURCE#cairn" -- policy export --check
+nix run "path:$CAIRN_SOURCE#cairn" -- validate --root .
 ```
 
 ## Reviewed function-address gate
@@ -162,7 +163,8 @@ change inputs or weaken validation. No function-address/trust boundary changed.
 For reproduction from the Valence root, select the exact reviewed owner source:
 
 ```bash
-export CAIRN_SOURCE=/tmp/cairn-source-review-main-20261020
+# Point CAIRN_SOURCE at the reviewed OnixResearch/cairn checkout or flake ref.
+CAIRN_SOURCE=$(realpath /path/to/reviewed/cairn)
 nix run path:$CAIRN_SOURCE#cairn -- policy export \
   --source cairn-policy/default.ncl \
   --output cairn-policy/generated/cairn-policy.json
@@ -172,12 +174,10 @@ nix run path:$CAIRN_SOURCE#cairn -- status --root .
 nix run path:$CAIRN_SOURCE#cairn -- change list --root .
 ```
 
-On the campaign host, `CAIRN_SOURCE` is
-`/home/brittonr/mantle-cairn-finish/xrepo/cairn-source-review-main-20261020`.
-The exercised binary is
-`runs/cairn-source-review-native-complete-20261020-v1/cairn` under the campaign
-root, run in that owner's Nix shell so its supported `nickel` and
-`nickel-export` executables are available. Campaign commands also retain the
+The exercised binary was the campaign-specific native Cairn build
+(`runs/cairn-source-review-native-complete-20261020-v1/cairn` under the campaign
+root), run in that owner's Nix shell so its supported `nickel` and
+`nickel-export` executables were available. Campaign commands also retain the
 process-scoped exact dependency mirrors. The recorded source identities and
 commands bind this observation; an ambient binary is not a substitute.
 

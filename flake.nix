@@ -3,7 +3,7 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.artifact = {
-    url = "git+ssh://git@github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52";
+    url = "git+https://github.com/OnixResearch/onix-artifact.git?rev=5f3962d7471d1547e044f57daeda72f56621fd52";
     flake = false;
   };
   inputs.schema-identity = {

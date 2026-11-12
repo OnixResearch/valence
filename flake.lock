@@ -9,12 +9,12 @@
         "rev": "5f3962d7471d1547e044f57daeda72f56621fd52",
         "revCount": 21,
         "type": "git",
-        "url": "ssh://git@github.com/OnixResearch/onix-artifact.git"
+        "url": "https://github.com/OnixResearch/onix-artifact.git"
       },
       "original": {
         "rev": "5f3962d7471d1547e044f57daeda72f56621fd52",
         "type": "git",
-        "url": "ssh://git@github.com/OnixResearch/onix-artifact.git"
+        "url": "https://github.com/OnixResearch/onix-artifact.git"
       }
     },
     "nixpkgs": {

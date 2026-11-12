@@ -6,7 +6,7 @@ let
   historicalRadicleRepository = "https://git.onix.computer/z4JGYYW7WsesXUq7MXVdx16Fawu2f.git";
   mismatchedRevision = "0000000000000000000000000000000000000000";
   expectedProfileRepository = "https://github.com/OnixResearch/onix-artifact";
-  expectedSshRepository = "ssh://git@github.com/OnixResearch/onix-artifact.git";
+  expectedHttpsRepository = "https://github.com/OnixResearch/onix-artifact.git";
   expectedNixNarHash = "sha256-Xr7ocFkPN15XYb6NA4bv3I9Q42NvoSYtXWfsrj7I3WY=";
   expectedLicense = "AGPL-3.0-or-later";
   incompatibleLicense = "LicenseRef-unreviewed";
@@ -22,7 +22,7 @@ let
   sourcePackageNames = consumerPackageNames ++ [ transferPackage bindingPackage ];
   expectedWorkspaceMembers = map (packageName: "crates/${packageName}") sourcePackageNames;
   expectedConsumerPackageCount = builtins.length consumerPackageNames;
-  expectedCargoSource = "git+${expectedSshRepository}?rev=${expectedRevision}#${expectedRevision}";
+  expectedCargoSource = "git+${expectedHttpsRepository}?rev=${expectedRevision}#${expectedRevision}";
   nixInputNode = "artifact";
 
   valueAt =
@@ -36,7 +36,7 @@ let
     let
       dependency = valueAt [ "workspace" "dependencies" packageName ] { } cargoWorkspace;
     in
-    issueUnless (dependency ? git && dependency.git == expectedSshRepository) "cargo.${packageName}.git"
+    issueUnless (dependency ? git && dependency.git == expectedHttpsRepository) "cargo.${packageName}.git"
     ++ issueUnless (
       dependency ? rev && dependency.rev == expectedRevision
     ) "cargo.${packageName}.revision"
@@ -101,11 +101,11 @@ let
     issueUnless (rootInput == nixInputNode) "nix.root-input"
     ++ issueUnless ((node.flake or null) == false) "nix.input.flake-enabled"
     ++ issueUnless ((locked.type or null) == "git") "nix.locked.type"
-    ++ issueUnless ((locked.url or null) == expectedSshRepository) "nix.locked.repository"
+    ++ issueUnless ((locked.url or null) == expectedHttpsRepository) "nix.locked.repository"
     ++ issueUnless ((locked.rev or null) == expectedRevision) "nix.locked.revision"
     ++ issueUnless ((locked.narHash or null) == expectedNixNarHash) "nix.locked.nar-hash"
     ++ issueUnless ((original.type or null) == "git") "nix.original.type"
-    ++ issueUnless ((original.url or null) == expectedSshRepository) "nix.original.repository"
+    ++ issueUnless ((original.url or null) == expectedHttpsRepository) "nix.original.repository"
     ++ issueUnless ((original.rev or null) == expectedRevision) "nix.original.revision"
     ++ issueUnless (!(original ? path) && !(original ? ref)) "nix.original.floating-or-path"
     ++ issueUnless (input.resolvedNixRevision == expectedRevision) "nix.resolved.revision"
@@ -211,7 +211,7 @@ let
         name = bindingPackage;
       };
       floatingInput = replaceWorkspaceDependency input corePackage {
-        git = expectedSshRepository;
+        git = expectedHttpsRepository;
         branch = "main";
       };
       historicalCargoInput = replaceWorkspaceDependency input corePackage {
@@ -316,7 +316,7 @@ in
   expected = {
     inherit expectedCargoSource expectedLicense expectedNixNarHash;
     profile_repository = expectedProfileRepository;
-    ssh_repository = expectedSshRepository;
+    https_repository = expectedHttpsRepository;
     packages = consumerPackageNames;
     source_packages = sourcePackageNames;
     revision = expectedRevision;

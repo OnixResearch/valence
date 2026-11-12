@@ -9,9 +9,7 @@
 ///
 /// Returns an error when the published vector bytes or pure decisions drift.
 pub fn verify_published_cohort() -> Result<(), schema_identity_conformance::FixtureError> {
-    schema_identity_conformance::verify_fixture_json(
-        schema_identity_conformance::CHECKED_VECTORS_JSON,
-    )
+    schema_identity_conformance::verify_fixture_json(schema_identity_conformance::CHECKED_VECTORS_JSON)
 }
 
 #[cfg(test)]

@@ -4,7 +4,7 @@ let receipt = import "../evidence/radicle/artifact-auth-cutover-v1.ncl" in
 let digest_a = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" in
 let missing_commit = "1111111111111111111111111111111111111111" in
 let unknown_rid = "rad:z3gqcJUoA1n9HaHKufZs5FCSGazv5" in
-let github_source = "ssh://git@github.com/OnixResearch/artifact-auth.git" in
+let github_source = "https://github.com/OnixResearch/artifact-auth.git" in
 let result = fun candidate => cutover.validate candidate in
 let accepted = fun candidate => result candidate |> match { 'Ok => true, 'Error _ => false } in
 let rejected_as = fun code candidate =>

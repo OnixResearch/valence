@@ -36,6 +36,8 @@ Valence provides canonical forms and fail-closed checks. These checks keep each 
 
 ## Quick start
 
+Requirements: Nix with flakes enabled. The workspace pins its Rust nightly in `rust-toolchain.toml`; the devshell installs the remaining tools.
+
 Show the CLI:
 
 ```bash
@@ -277,7 +279,7 @@ Nickel contracts in `contracts/` provide static preflight checks. Rust owns runt
 
 Cargo and Nix resolve `artifact-auth-core` and `artifact-auth-ed25519` from [`OnixResearch/onix-artifact`](https://github.com/OnixResearch/onix-artifact).
 
-Both tools pin revision `e41340bec587b6d049b5cc518ec7db925dde84be`.
+Both tools pin revision `5f3962d7471d1547e044f57daeda72f56621fd52`.
 
 The [migration receipt](evidence/source/artifact-workspace-migration-v1.ncl) binds source, package graph, byte parity, rollback, and non-claims.
 
@@ -290,6 +292,10 @@ Valence is under active development. Documented schema and identity versions are
 `valence-core`, `valence-cli`, and `valence-radicle` set `publish = false`. They use reviewed Git revisions.
 
 A registry release or broader compatibility promise requires a separate review.
+
+## Security
+
+Report vulnerabilities through GitHub private vulnerability reporting for this repository. Do not open a public issue containing vulnerability details. See [SECURITY.md](SECURITY.md).
 
 ## License
 
