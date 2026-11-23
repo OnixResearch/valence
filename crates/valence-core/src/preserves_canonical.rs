@@ -205,11 +205,15 @@ impl SignedInt {
     /// Parse a decimal integer string (arbitrary precision) into minimal
     /// big-endian two's-complement bytes.
     pub fn from_decimal_str(text: &str) -> Result<Self, PreservesCodecError> {
-        let (negative, digits) = match text.as_bytes().first() {
-            Some(b'-') => (true, &text[1..]),
-            Some(b'+') => (false, &text[1..]),
-            Some(_) => (false, text),
-            None => return Err(PreservesCodecError::MalformedSyntax("empty_integer")),
+        if text.is_empty() {
+            return Err(PreservesCodecError::MalformedSyntax("empty_integer"));
+        }
+        let (negative, digits) = if let Some(rest) = text.strip_prefix('-') {
+            (true, rest)
+        } else if let Some(rest) = text.strip_prefix('+') {
+            (false, rest)
+        } else {
+            (false, text)
         };
         if digits.is_empty() || !digits.bytes().all(|b| b.is_ascii_digit()) {
             return Err(PreservesCodecError::MalformedSyntax("invalid_integer"));
@@ -990,7 +994,11 @@ impl<'a> TextParser<'a> {
             } else if byte < 0x20 {
                 return Err(PreservesCodecError::MalformedSyntax("control_char_in_text"));
             } else {
-                let ch = self.input[self.cursor..].chars().next().ok_or(PreservesCodecError::UnexpectedEof)?;
+                let ch = self
+                    .input
+                    .get(self.cursor..)
+                    .and_then(|rest| rest.chars().next())
+                    .ok_or(PreservesCodecError::InvalidUtf8)?;
                 self.cursor += ch.len_utf8();
                 out.push(ch);
             }
@@ -1022,7 +1030,7 @@ impl<'a> TextParser<'a> {
     fn parse_unicode_escape(&mut self) -> Result<char, PreservesCodecError> {
         let first = self.read_hex_u16()?;
         if (0xD800..=0xDBFF).contains(&first) {
-            if self.bytes.get(self.cursor..self.cursor + 2) != Some(b"\\u") {
+            if !self.bytes.get(self.cursor..).is_some_and(|rest| rest.starts_with(b"\\u")) {
                 return Err(PreservesCodecError::MalformedSyntax("unpaired_high_surrogate"));
             }
             self.cursor += 2;
@@ -1040,12 +1048,15 @@ impl<'a> TextParser<'a> {
     }
 
     fn read_hex_u16(&mut self) -> Result<u16, PreservesCodecError> {
-        if self.cursor + 4 > self.bytes.len() {
-            return Err(PreservesCodecError::UnexpectedEof);
+        let end = self.cursor.checked_add(4).ok_or(PreservesCodecError::UnexpectedEof)?;
+        let hex_bytes = self.bytes.get(self.cursor..end).ok_or(PreservesCodecError::UnexpectedEof)?;
+        let mut value: u16 = 0;
+        for &byte in hex_bytes {
+            let nibble = hex_nibble(byte).ok_or(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))?;
+            value = (value << 4) | u16::from(nibble);
         }
-        let hex_slice = &self.input[self.cursor..self.cursor + 4];
-        self.cursor += 4;
-        u16::from_str_radix(hex_slice, 16).map_err(|_| PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        self.cursor = end;
+        Ok(value)
     }
 
     fn parse_quoted_byte_string(&mut self) -> Result<Vec<u8>, PreservesCodecError> {
@@ -1083,12 +1094,12 @@ impl<'a> TextParser<'a> {
     }
 
     fn read_hex_u8(&mut self) -> Result<u8, PreservesCodecError> {
-        if self.cursor + 2 > self.bytes.len() {
-            return Err(PreservesCodecError::UnexpectedEof);
-        }
-        let hex_slice = &self.input[self.cursor..self.cursor + 2];
-        self.cursor += 2;
-        u8::from_str_radix(hex_slice, 16).map_err(|_| PreservesCodecError::MalformedSyntax("invalid_hex_byte"))
+        let end = self.cursor.checked_add(2).ok_or(PreservesCodecError::UnexpectedEof)?;
+        let hex_bytes = self.bytes.get(self.cursor..end).ok_or(PreservesCodecError::UnexpectedEof)?;
+        let hi = hex_nibble(hex_bytes[0]).ok_or(PreservesCodecError::MalformedSyntax("invalid_hex_byte"))?;
+        let lo = hex_nibble(hex_bytes[1]).ok_or(PreservesCodecError::MalformedSyntax("invalid_hex_byte"))?;
+        self.cursor = end;
+        Ok((hi << 4) | lo)
     }
 
     fn parse_hex_byte_string(&mut self) -> Result<Vec<u8>, PreservesCodecError> {
@@ -1156,7 +1167,7 @@ impl<'a> TextParser<'a> {
         if self.cursor == start {
             return Err(PreservesCodecError::MalformedSyntax("unexpected_delimiter"));
         }
-        let token = &self.input[start..self.cursor];
+        let token = self.input.get(start..self.cursor).ok_or(PreservesCodecError::InvalidUtf8)?;
         if looks_numeric(token) {
             if token.contains('.') || token.contains('e') || token.contains('E') {
                 return Err(PreservesCodecError::UnsupportedFloat);
@@ -1427,5 +1438,103 @@ mod tests {
             text_to_canonical_binary("<x>", PreservesLimits { max_depth: 0, ..limits }),
             Err(PreservesCodecError::InvalidLimit("max_depth"))
         );
+    }
+
+    #[test]
+    fn rejects_multibyte_utf8_and_signed_hex_escapes_without_panicking() {
+        let limits = PreservesLimits::default();
+
+        // Multibyte UTF-8 inside \u and \x hex escapes must return Err, never panic on char boundary
+        assert_eq!(
+            parse_preserves_text("\"\\u000é\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("\"\\u00é\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("\"\\u🚀\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(parse_preserves_text("\"\\ué\"", limits), Err(PreservesCodecError::UnexpectedEof));
+        assert_eq!(
+            parse_preserves_text("|\\u000é|", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("\"\\uD83D\\u000é\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("\"\\uD83Dé\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("unpaired_high_surrogate"))
+        );
+        assert_eq!(
+            parse_preserves_text("#\"\\x0é\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_byte"))
+        );
+        assert_eq!(
+            parse_preserves_text("#\"\\xé\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_byte"))
+        );
+        assert_eq!(parse_preserves_text("#\"\\x\"", limits), Err(PreservesCodecError::UnexpectedEof));
+
+        // Leading '+' or '-' must be strictly rejected (from_str_radix would accept '+')
+        assert_eq!(
+            parse_preserves_text("\"\\u+041\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("\"\\u-041\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("|\\u+041|", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("\"\\uD83D\\u+E80\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("#\"\\x+1\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_byte"))
+        );
+        assert_eq!(
+            parse_preserves_text("#\"\\x-1\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_byte"))
+        );
+
+        // Other multibyte UTF-8 edge cases around escapes, byte strings, numbers, and symbols
+        assert_eq!(
+            parse_preserves_text("\"\\é\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("unsupported_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("#\"\\é\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("unsupported_byte_escape"))
+        );
+        assert_eq!(
+            parse_preserves_text("#x\"0é\"", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_hex_digit"))
+        );
+        assert_eq!(
+            parse_preserves_text("#[é]", limits),
+            Err(PreservesCodecError::MalformedSyntax("invalid_base64_char"))
+        );
+        assert_eq!(parse_preserves_text("1é", limits), Err(PreservesCodecError::MalformedSyntax("invalid_integer")));
+
+        // Valid ASCII hex escapes and multibyte symbols remain accepted
+        assert_eq!(
+            parse_preserves_text("\"\\u0041\\u006a\\u006A\"", limits),
+            Ok(PreservesValue::String("Ajj".to_owned()))
+        );
+        assert_eq!(
+            parse_preserves_text("#\"\\x41\\xff\\x00\"", limits),
+            Ok(PreservesValue::ByteString(vec![0x41, 0xFF, 0x00]))
+        );
+        assert_eq!(parse_preserves_text("é", limits), Ok(PreservesValue::Symbol("é".to_owned())));
+        assert_eq!(parse_preserves_text("|é|", limits), Ok(PreservesValue::Symbol("é".to_owned())));
     }
 }
