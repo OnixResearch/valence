@@ -91,6 +91,7 @@ pub mod preserves_evidence;
 pub mod proof_carrying_ir;
 pub mod provenance;
 pub mod radicle_forge_ops;
+pub mod semantic_merge_evidence;
 pub mod shared_identity;
 pub mod source_review;
 pub mod stack_provenance_adapter;

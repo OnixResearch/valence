@@ -4,8 +4,11 @@ Valence validates already-loaded Kamacite evidence-chain envelopes in two
 stages. Generic checks bind canonical envelope bytes, profile and policy roots,
 typed parent links, compatibility projections, verification roles, and required
 non-claims. An explicit registry then dispatches the kind-specific payload
-validator; function-address is the first complete profile and Trellis proof
-evidence is a separately registered extension.
+validator; function-address is the first complete profile, Trellis proof
+evidence is a separately registered extension, and four-version semantic-merge
+evidence (`semantic-merge` / `valence.semantic-merge-evidence.v1`, documented in
+`docs/semantic-merge-evidence-profile.md`) is a registered profile with
+consumer-supplied applicability checking.
 
 Successful validation emits deterministic typed graph rows and a BLAKE3 graph
 root. Digest domains remain explicit, and recorded-only input is not promoted

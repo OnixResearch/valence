@@ -15,6 +15,7 @@ use crate::shared_identity::canonical_json_bytes;
 pub const EVIDENCE_CHAIN_PROFILE_VERSION: &str = "valence.evidence-chain.v1";
 pub const FUNCTION_ADDRESS_CHAIN_KIND: &str = "function-address";
 pub const TRELLIS_PROOF_CHAIN_KIND: &str = "trellis-proof";
+pub const SEMANTIC_MERGE_CHAIN_KIND: &str = "semantic-merge";
 pub const EVIDENCE_CHAIN_NON_CLAIM: &str =
     "evidence-chain validation proves identity, linkage, role, projection, and non-claim conformance only";
 const BLAKE3_HEX_LENGTH: usize = 64;
@@ -182,6 +183,22 @@ fn validate_registered_profile(envelope: &EvidenceChainEnvelope, issues: &mut Ve
                     let report = crate::trellis_proof_evidence::validate_trellis_proof_evidence(&input);
                     if !report.valid {
                         issues.push(EvidenceChainIssue::new("payload", "trellis_profile_validation_failed"));
+                    }
+                }
+                Err(_) => issues.push(EvidenceChainIssue::new("payload", "profile_payload_malformed")),
+            }
+        }
+        SEMANTIC_MERGE_CHAIN_KIND => {
+            match serde_json::from_value::<crate::semantic_merge_evidence::SemanticMergeEvidence>(
+                envelope.payload.clone(),
+            ) {
+                Ok(input) => {
+                    if envelope.verification_role != input.verification_role {
+                        issues.push(EvidenceChainIssue::new("verification_role", "role_promotion_denied"));
+                    }
+                    let report = crate::semantic_merge_evidence::validate_semantic_merge_evidence(&input);
+                    if !report.valid {
+                        issues.push(EvidenceChainIssue::new("payload", "semantic_merge_profile_validation_failed"));
                     }
                 }
                 Err(_) => issues.push(EvidenceChainIssue::new("payload", "profile_payload_malformed")),

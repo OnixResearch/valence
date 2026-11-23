@@ -49,6 +49,7 @@ Evidence adapters and profiles:
 - `function_object`
 - `oxide_primitives`
 - `proof_carrying_ir`
+- `semantic_merge_evidence`
 - `source_review`
 - `stack_provenance_adapter`
 - `trellis_proof_evidence`
