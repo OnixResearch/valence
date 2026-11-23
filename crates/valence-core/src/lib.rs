@@ -86,6 +86,7 @@ pub mod function_object;
 pub mod hegel_property;
 pub mod nostr_identity_evidence;
 pub mod oxide_primitives;
+pub mod preserves_canonical;
 pub mod preserves_evidence;
 pub mod proof_carrying_ir;
 pub mod provenance;

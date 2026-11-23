@@ -31,6 +31,7 @@ Identity and envelope primitives:
 - `evidence_ir`
 - `evidence_chain`
 - `evidence_model`
+- `preserves_canonical`
 - `preserves_evidence`
 - `provenance`
 - `shared_identity`

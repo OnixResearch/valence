@@ -1,0 +1,26 @@
+{
+  "fixture_id": "valence.preserves-canonical-v3.kamacite-interop.v1",
+  "classification": "bounded_interoperability_fixture",
+  "producer": {
+    "repository": "OnixResearch/kamacite",
+    "codec": "kamacite-preserves-packed-canonical-v2-preserves-rs-5.0.0-rc.7",
+    "preserves_spec_version": "0.996.3",
+    "source_reference": "crates/kamacite-core/src/preserves/codec.rs::TEST_TEXT"
+  },
+  "consumer": {
+    "repository": "OnixResearch/valence",
+    "profile": "preserves-canonical-binary-v3",
+    "exclusion_profile": "none-canonical-v3",
+    "hash_algorithm": "blake3"
+  },
+  "schema_label": "kamacite.preserves-record.v1",
+  "preserves_text": "<BoundRecord \"alpha\" [1 2]>",
+  "expected_canonical_binary_hex": "b4b30b426f756e645265636f7264b105616c706861b5b00101b001028484",
+  "expected_blake3": "12506c3fc6f90a251905c5fe5bb167fb1c4a664a982763bded57c95c634bf454",
+  "negative_nonminimal_integer_hex": "b4b30b426f756e645265636f7264b105616c706861b5b0020001b001028484",
+  "non_claims": [
+    "Preserves bridge validation proves only identity, schema, role, and non-claim mapping",
+    "Preserves evidence validation proves only canonical Preserves content identity and bounded envelope compatibility",
+    "does not prove receipt truth, behavioral correctness, execution authority, or release eligibility"
+  ]
+}
